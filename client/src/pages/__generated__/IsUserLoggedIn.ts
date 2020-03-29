@@ -4,13 +4,9 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: addOrRemoveFromCart
+// GraphQL query operation: IsUserLoggedIn
 // ====================================================
 
-export interface addOrRemoveFromCart {
-  addOrRemoveFromCart: string[];
-}
-
-export interface addOrRemoveFromCartVariables {
-  launchId: string;
+export interface IsUserLoggedIn {
+  isLoggedIn: boolean;
 }

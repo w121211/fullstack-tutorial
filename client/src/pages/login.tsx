@@ -4,22 +4,34 @@ import gql from 'graphql-tag';
 
 import { LoginForm, Loading } from '../components';
 import ApolloClient from 'apollo-client';
-import * as LoginTypes from './__generated__/login';
+import * as Types from './__generated__/login';
 
-export const LOGIN_USER = gql`
-  mutation login($email: String!) {
-    login(email: $email)
+export const LOGIN = gql`
+  mutation login($email: String!, password: String!) {
+    login(email: $email, password: $password) {
+      token
+      user {
+        id
+      }
+    }
   }
-`;
+`
+
+export const IS_LOGGED_IN = gql`
+  query IsUserLoggedIn {
+    isLoggedIn @client
+  }
+`
 
 export default function Login() {
   const client: ApolloClient<any> = useApolloClient();
-  const [login, { loading, error }] = useMutation<LoginTypes.login, LoginTypes.loginVariables>(
-    LOGIN_USER,
+  const [login, { loading, error }] = useMutation<Types.login, Types.loginVariables>(
+    LOGIN,
     {
-      onCompleted({ login }) {
-        localStorage.setItem('token', login as string);
-        client.writeData({ data: { isLoggedIn: true } });
+      onCompleted(data) {
+        // localStorage.setItem('token', data.token as string)
+        localStorage.setItem('token', data.login as string)
+        client.writeData({ data: { isLoggedIn: true } })
       }
     }
   );

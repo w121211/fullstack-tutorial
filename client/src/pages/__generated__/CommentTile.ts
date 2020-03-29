@@ -4,13 +4,10 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: addOrRemoveFromCart
+// GraphQL fragment: CommentTile
 // ====================================================
 
-export interface addOrRemoveFromCart {
-  addOrRemoveFromCart: string[];
-}
-
-export interface addOrRemoveFromCartVariables {
-  launchId: string;
+export interface CommentTile {
+  __typename: "Comment";
+  id: string;
 }
