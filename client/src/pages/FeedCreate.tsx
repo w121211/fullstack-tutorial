@@ -1,5 +1,5 @@
 import gql from 'graphql-tag'
-import React from 'react'
+import React, { useState, useEffect, MouseEvent } from 'react'
 import { RouteComponentProps } from '@reach/router'
 import ApolloClient from 'apollo-client'
 import { useApolloClient, useMutation } from '@apollo/react-hooks'
@@ -37,31 +37,43 @@ import { FeedForm } from '../components'
 //   return <FeedForm />
 // }
 
-export const UPSERT_FEED = gql`
-  mutation UpsertFeed($id: ID, $data: FeedInput!) {
-    upsertFeed(id: $id, data: $data) {
-      id
-    }
-  }
-`
 
 interface Props extends RouteComponentProps { }
 
 const FeedCreate: React.FC<Props> = () => {
   // const client: ApolloClient<any> = useApolloClient()
   // const [upsert, { loading, error }] = useMutation(
-  const [upsert] = useMutation(
-    UPSERT_FEED,
-    {
-      onCompleted(data) {
-        console.log(data)
-        // localStorage.setItem('token', login as string)
-        // client.writeData({ data: { isLoggedIn: true } })
-      }
-    }
-  )
+  // const [upsert] = useMutation(
+  //   UPSERT_FEED,
+  //   {
+  //     onCompleted(data) {
+  //       console.log(data)
+  //       // localStorage.setItem('token', login as string)
+  //       // client.writeData({ data: { isLoggedIn: true } })
+  //     }
+  //   }
+  // )
 
-  return <FeedForm upsert={upsert} />
+  // return <FeedForm upsert={upsert} />
+  const [isClicked, setIsClicked] = useState<boolean>(false)
+
+  var isAnotherClicked = false
+
+  function onClick(e: MouseEvent<HTMLAnchorElement>) {
+    // setIsClicked(!isClicked)
+    isAnotherClicked = !isAnotherClicked
+  }
+
+  useEffect(() => {
+    // console.log(`isClicked changed: ${isClicked}`)
+  }, [isClicked])
+
+  return isAnotherClicked ?
+    <a onClick={onClick}>clicked</a> :
+    <a onClick={onClick}>not click</a>
+  //   return isClicked ?
+  //     <a onClick={onClick}>clicked</a> :
+  //     <a onClick={onClick}>not click</a>
 }
 
 export default FeedCreate

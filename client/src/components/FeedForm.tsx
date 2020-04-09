@@ -13,7 +13,7 @@ import React from 'react'
 
 import { useForm } from 'react-hook-form'
 
-import * as UpsertFeed from '../pages/__generated__/UpsertFeed'
+// import * as UpsertFeed from '../pages/__generated__/UpsertFeed'
 
 type FormData = {
   id: string
@@ -22,8 +22,9 @@ type FormData = {
 }
 
 interface Props {
-  // login: (a: { variables: LoginTypes.loginVariables }) => void
-  upsert: (a: { variables: UpsertFeed.UpsertFeedVariables }) => void
+  // login: (a: { variables: LoginTypes.loginVariables }) => voidx
+  // upsert: (a: { variables: UpsertFeed.UpsertFeedVariables }) => void
+  upsert: any
 }
 
 const FeedForm: React.FC<Props> = ({ upsert }) => {

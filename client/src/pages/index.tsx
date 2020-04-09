@@ -1,31 +1,31 @@
 import React, { Fragment } from 'react'
 import { Router } from '@reach/router'
 
-import FeedCreate from './FeedCreate'
-import Feed from './Feed'
 import Feeds from './Feeds'
+import FeedCreate from './FeedCreate'
 // import Launch from './launch'
 // import Launches from './launches'
 // import Cart from './cart'
 // import Profile from './profile'
-import { Footer, PageContainer } from '../components'
+import { PageContainer, Pane } from '../components'
 
 export default function Pages() {
   return (
     <>
-      {/* <PageContainer> */}
-      <Router primary={false} component={Fragment}>
-        <Feeds path="feeds" />
-        <FeedCreate path="feed/new" />
-        <Feed path="feed/:id" />
+      <PageContainer>
+        <Router primary={false} component={Fragment}>
+          <Pane path="/" left={<Feeds />} right={undefined} />
+          <FeedCreate path="feed/new" />
+          {/* <Pane path="feeds" left={Feeds} right={Tracks} /> */}
+          {/* <Feeds path="feeds" />
+          <Feed path="feed/:id" /> */}
 
-        {/* <Launches path="/" />
+          {/* <Launches path="/" />
           <Launch path="launch/:launchId" />
           <Cart path="cart" />
           <Profile path="profile" /> */}
-      </Router>
-      {/* </PageContainer> */}
-      {/* <Footer /> */}
+        </Router>
+      </PageContainer>
     </>
   );
 }

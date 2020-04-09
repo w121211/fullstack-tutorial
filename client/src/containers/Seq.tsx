@@ -6,10 +6,10 @@ import { useQuery } from '@apollo/react-hooks';
 import { List } from 'antd'
 
 // import { LAUNCH_TILE_DATA } from './launches';
-import { Loading, Header, FeedDetail } from '../components';
+import { Loading, Header } from '../components';
 // import { ActionButton } from '../containers';
 // import * as LaunchDetailsTypes from './__generated__/LaunchDetails';
-import * as Types from './__generated__/GetComments'
+// import * as Types from './__generated__/GetComments'
 
 export const GET_SEQ = gql`
   query GetSeq($id: ID!, $after: String) {
@@ -21,7 +21,7 @@ export const GET_SEQ = gql`
   }
 `
 
-interface Props extends Types.GetCommentsVariables { }
+// interface Props extends Types.GetCommentsVariables { }
 
 // const Seq: React.FC<Props> = ({ id }) => {
 //   const { data, loading, error } = useQuery<Types.GetComments, Types.GetCommentsVariables>(

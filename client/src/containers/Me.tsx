@@ -6,17 +6,11 @@ import { useQuery } from '@apollo/react-hooks';
 import { List } from 'antd'
 
 // import { LAUNCH_TILE_DATA } from './launches';
-import { Loading, Header, FeedDetail } from '../components';
+import { Loading, Header } from '../components';
 // import { ActionButton } from '../containers';
 // import * as LaunchDetailsTypes from './__generated__/LaunchDetails';
 
-export const GET_ME = gql`
-  query GetMe {
-    me {
-      id
-    }
-  }
-`
+
 
 
 // const LOGIN = gql`

@@ -13,7 +13,7 @@ import React from 'react'
 
 import { useForm } from 'react-hook-form'
 
-import * as UpsertFeed from '../pages/__generated__/UpsertFeed'
+import * as UpsertFeed from '../store/__generated__/UpsertFeed'
 
 type FormData = {
   id: string

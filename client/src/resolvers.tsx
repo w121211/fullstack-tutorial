@@ -1,9 +1,27 @@
 import gql from 'graphql-tag';
-import { GET_CART_ITEMS } from './pages/cart';
-import * as LaunchTileTypes from './pages/__generated__/LaunchTile';
-import { ApolloCache } from 'apollo-cache';
-import * as GetCartItemTypes from './pages/__generated__/GetCartItems';
 import { Resolvers } from 'apollo-client'
+import { ApolloCache } from 'apollo-cache';
+import { GET_CART_ITEMS } from './pages/cart';
+import { MY_LIKES_MAP } from './store/query'
+import * as LaunchTileTypes from './pages/__generated__/LaunchTile';
+import * as GetCartItemTypes from './pages/__generated__/GetCartItems';
+import * as MyLikesType from './store/__generated__/MyLikes'
+
+type ResolverFn = (
+  parent: any,
+  args: any,
+  { cache }: { cache: ApolloCache<any> }
+) => any
+
+interface ResolverMap {
+  [field: string]: ResolverFn
+}
+
+interface AppResolvers extends Resolvers {
+  Comment: ResolverMap
+  Launch: ResolverMap
+  Mutation: ResolverMap
+}
 
 export const typeDefs = gql`
   extend type Query {
@@ -11,37 +29,53 @@ export const typeDefs = gql`
     cartItems: [ID!]!
   }
 
-  extend type Launch {
-    isInCart: Boolean!
-  }
-
   extend type Mutation {
     addOrRemoveFromCart(id: ID!): [ID!]!
   }
-`;
 
-type ResolverFn = (
-  parent: any, 
-  args: any, 
-  { cache } : { cache: ApolloCache<any> }
-) => any;
+  extend type Launch {
+    isInCart: Boolean!
+  }
+  
+  extend type Feed {
+    isClicked: Boolean!
+  }
 
-interface ResolverMap {
-  [field: string]: ResolverFn;
-}
+  extend type Comment {
+    meLike: Int
+  }
+`
 
-interface AppResolvers extends Resolvers {
-  Launch: ResolverMap;
-  Mutation: ResolverMap;
-}
 
 export const resolvers: AppResolvers = {
+  Comment: {
+    meLike: (parent, args, { cache }): number => {
+
+      // const queryResult = cache.readQuery({ query: GET_CLICK })
+      // const id = getCacheKey({ __typename: 'MyLike', id: variables.id })
+      const fragment = gql`
+          fragment completeTodo on TodoItem {
+            completed
+          }
+        `;
+      // const todo = cache.readFragment<MyLikesType, >({ fragment, id });
+      // cache.readFragment()
+      // return queryResult
+      return 0
+    },
+  },
+  // Feed: {
+  //   isClicked: (parent, args, { cache }): boolean => {
+  //     const queryResult = cache.readQuery({ query: GET_CLICK })
+  //     return queryResult
+  //   },
+  // },
   Launch: {
     isInCart: (launch: LaunchTileTypes.LaunchTile, _, { cache }): boolean => {
       const queryResult = cache.readQuery<GetCartItemTypes.GetCartItems>({ query: GET_CART_ITEMS });
       if (queryResult) {
         return queryResult.cartItems.includes(launch.id)
-      } 
+      }
       return false;
     }
   },

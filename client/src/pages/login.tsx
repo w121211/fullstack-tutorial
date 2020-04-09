@@ -4,7 +4,7 @@ import gql from 'graphql-tag';
 
 import { LoginForm, Loading } from '../components';
 import ApolloClient from 'apollo-client';
-import * as Types from './__generated__/login';
+// import * as Types from './__generated__/login';
 
 export const LOGIN = gql`
   mutation login($email: String!, password: String!) {
@@ -25,7 +25,8 @@ export const IS_LOGGED_IN = gql`
 
 export default function Login() {
   const client: ApolloClient<any> = useApolloClient();
-  const [login, { loading, error }] = useMutation<Types.login, Types.loginVariables>(
+  // const [login, { loading, error }] = useMutation<Types.login, Types.loginVariables>(
+  const [login, { loading, error }] = useMutation<any, any>(
     LOGIN,
     {
       onCompleted(data) {

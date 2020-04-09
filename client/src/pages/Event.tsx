@@ -4,37 +4,10 @@ import { RouteComponentProps } from '@reach/router';
 import { useQuery } from '@apollo/react-hooks';
 
 // import { LAUNCH_TILE_DATA } from './launches';
-import { Loading, Header, FeedDetail } from '../components';
+import { Loading, Header } from '../components';
 // import { ActionButton } from '../containers';
 // import * as LaunchDetailsTypes from './__generated__/LaunchDetails';
 
-
-export const GET_EVENT = gql`
-  query GetEvent($id: ID!) {
-    event(id: $id) {
-      slug
-      header
-      tickers {
-        id
-        name
-      }
-      # comments {
-      #   ...CommentTile
-      # }
-      # stats {
-      #   nViews
-      #   nVoteUps
-      #   nVoteDowns
-      # }
-      # isInCart @client
-      # site
-      # rocket {
-        # type
-      # }
-      # ...LaunchTile
-    }
-  }
-`
 
 interface Props extends RouteComponentProps {
   id?: any
