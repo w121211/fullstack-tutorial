@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled, { css } from 'react-emotion';
 import { size } from 'polished';
 
-import Button from './button';
+// import Button from './button';
 import space from '../assets/images/space.jpg';
 import { ReactComponent as Logo } from '../assets/logo.svg';
 import { ReactComponent as Curve } from '../assets/curve.svg';
@@ -51,7 +51,7 @@ export default class LoginForm extends Component<any, any> {
             data-testid="login-input"
             onChange={(e) => this.onChange(e)}
           />
-          <Button type="submit">Log in</Button>
+          {/* <Button type="submit">Log in</Button> */}
         </StyledForm>
       </Container>
     );

@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import { Router } from '@reach/router'
 
-import Feeds from './Feeds'
+import Feeds from './Feed'
 import FeedCreate from './FeedCreate'
 // import Launch from './launch'
 // import Launches from './launches'

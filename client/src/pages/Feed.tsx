@@ -6,69 +6,98 @@ import { Input, Card, Divider, Typography, Tag, Button, Form } from 'antd'
 import { UpOutlined, DownOutlined } from '@ant-design/icons'
 import { useForm } from 'react-hook-form'
 
-import { GET_FEEDS, GET_COMMENTS, CREATE_COMMENT, MY_LIKES } from '../store/query'
+import { FEEDS, COMMENTS, CREATE_COMMENT, MY_LIKES } from '../store/queries'
 // import * as FeedDetailTypes from '../store/__generated__/FeedDetail'
-import * as GetFeedsTypes from '../store/__generated__/GetFeeds'
-import * as GetCommentsTypes from '../store/__generated__/GetComments'
+import * as GetFeedsTypes from '../store/__generated__/Feeds'
+import * as GetCommentsTypes from '../store/__generated__/Comments'
 import * as CreateCommentTypes from '../store/__generated__/CreateComment'
+import * as MyLikesTypes from '../store/__generated__/MyLikes'
 import * as CreateLikeTypes from '../store/__generated__/CreateLike'
 import * as UpdateLikeTypes from '../store/__generated__/UpdateLike'
-import * as MyLikesTypes from '../store/__generated__/MyLikes'
+import { queries } from '@testing-library/react';
 
 interface LikeProps {
-  objType: string
-  objId: string
+  parent: GetCommentsTypes.Comments_comments | GetFeedsTypes.Feeds_feeds
   myLikes: MyLikesTypes.MyLikes
 }
 
-// const CreateLike: React.FC<LikeProps> = ({ objType, objId, myLikes }) => {
-//   objType = "Feed"
-//   objId = "1234"
+const Like: React.FC<LikeProps> = ({ parent, myLikes }) => {
+  const [createLike, { loading, error }] = useMutation<CreateLikeTypes.CreateLike, CreateLikeTypes.CreateLikeVariables>(
+    CREATE_COMMENT,
+    {
+      update(cache, { data }) {
+        const res = cache.readQuery<MyLikesTypes.MyLikes>({
+          query: MY_LIKES,
+          // variables: { feedId, after },
+        })
+        if (data && data.createLike) {
+          cache.writeQuery({
+            query: MY_LIKES,
+            data: { myLikes: res?.myLikes?.concat([data.createLike]) }
+          })
+        }
+      }
+    }
+  )
 
+  let variables: CreateLikeTypes.CreateLikeVariables = {
+    data: { choice: 0 }
+  }
+  switch (parent.__typename) {
+    case "Comment": variables.data.commentId = parent.id
+    case "Feed": variables.data.feedId = parent.id
+  }
+  // const _createLike = <a onClick={e=>UpdateLikeTypes()}></a>
+  // const _createDislike = <a onClick={e=>UpdateLikeTypes()}></a> 
+  // const _updateToLike = <a onClick={e=>UpdateLikeTypes()}></a>
+  // const _updateToDislike = <a onClick={e=>UpdateLikeTypes()}></a> 
+  // const _updateToUnlike = <a onClick={e=>UpdateLikeTypes()}></a> 
+  // const _updateToUndislike = <a onClick={e=>UpdateLikeTypes()}></a> 
 
-
-//   const [createLike, { loading, error }] = useMutation<CreateLikeTypes.CreateLike, CreateLikeTypes.CreateLikeVariables>(
-//     CREATE_COMMENT,
-//     {
-//       update(cache, { data }) {
-//         const res = cache.readQuery<GetCommentsTypes.GetComments, GetCommentsTypes.GetCommentsVariables>({
-//           query: GET_COMMENTS,
-//           variables: { feedId, after },
-//         })
-//         if (data && data.createComment) {
-//           cache.writeQuery({
-//             query: GET_COMMENTS,
-//             variables: { feedId, after },
-//             data: { comments: res?.comments.concat([data.createComment]) }
-//             // data: { comments: comments.concat([comment]) },
-//             // data: { comments: [{ __typename: "Comment", id: "123", body: "hahahaha" }] },
-//           })
-//         }
-//       }
-//     }
-//   )
-
-// if (loading) return <p>Loading</p>
-// if (error) return <p>An error occurred</p>
-// return meLiked ? <a><b>liked</b></a> : <a>like</a>
-
-// return meLiked ? 
-// (
-//   <>
-//   *** 
-//   </>
-// )
-// }
+  if (loading) return <p>Loading</p>
+  if (error) return <p>An error occurred</p>
+  // if (parent.meLike) {
+  //   return (
+  //     <>
+  //       {parent.meLike.choice == 1 ?
+  //         (
+  //           <a onClick={e => {
+  //             e.preventDefault();
+  //             createLike({ variables: { data: {} } })
+  //           }}>
+  //             <b>liked</b>
+  //           </a>
+  //         )
+  //         :
+  //         (
+  //           <a onClick={e => {
+  //             e.preventDefault()
+  //             createLike({ variables: {} })
+  //           }}>
+  //             <b>liked</b>
+  //           </a>
+  //         )
+  //       }
+  //     </>
+  //   )
+  // } else {
+  //   return (<></>)
+  // }
+  return null
+}
 
 function MyLikes() {
+  console.log("component MuLikes")
   const { data, loading, error } = useQuery<MyLikesTypes.MyLikes>(
     MY_LIKES, {
     // skip: isHidden
     onCompleted(res) {
       console.log('fetched myLikes')
       console.log(res)
-    }
+    },
+    // pollInterval: 500
   })
+  // refetch()
   return null
 }
 
@@ -101,7 +130,7 @@ const CreateCommentForm: React.FC<CreateCommentFormProps> = ({ createComment, di
 }
 
 
-interface CommentsProps extends GetCommentsTypes.GetCommentsVariables {
+interface CommentsProps extends GetCommentsTypes.CommentsVariables {
   isHidden: boolean
 }
 
@@ -110,13 +139,13 @@ const CreateComment: React.FC<CommentsProps> = ({ feedId, after, isHidden }) => 
     CREATE_COMMENT,
     {
       update(cache, { data }) {
-        const res = cache.readQuery<GetCommentsTypes.GetComments, GetCommentsTypes.GetCommentsVariables>({
-          query: GET_COMMENTS,
+        const res = cache.readQuery<GetCommentsTypes.Comments, GetCommentsTypes.CommentsVariables>({
+          query: COMMENTS,
           variables: { feedId, after },
         })
         if (data && data.createComment) {
           cache.writeQuery({
-            query: GET_COMMENTS,
+            query: COMMENTS,
             variables: { feedId, after },
             data: { comments: res?.comments.concat([data.createComment]) }
             // data: { comments: comments.concat([comment]) },
@@ -142,10 +171,14 @@ const CreateComment: React.FC<CommentsProps> = ({ feedId, after, isHidden }) => 
 const Comments: React.FC<CommentsProps> = ({ feedId, after, isHidden }) => {
   const client: ApolloClient<any> = useApolloClient();
 
-  const { data, loading, error } = useQuery<GetCommentsTypes.GetComments, GetCommentsTypes.GetCommentsVariables>(
-    GET_COMMENTS, {
+  const { data, loading, error } = useQuery<GetCommentsTypes.Comments, GetCommentsTypes.CommentsVariables>(
+    COMMENTS, {
     variables: { feedId, after },
     // skip: isHidden
+    onCompleted(res) {
+      console.log("fetched comments")
+      console.log(res)
+    }
   })
 
   if (isHidden) return null
@@ -159,7 +192,10 @@ const Comments: React.FC<CommentsProps> = ({ feedId, after, isHidden }) => {
         {data.comments.map((c) =>
           <li key={c.id}>
             {c.body} <br />
-            <p>xx <a>votes</a></p>
+            <p>xx
+              
+              {/* <Like parent={c} /> */}
+            </p>
           </li>
         )}
       </ul>
@@ -169,7 +205,7 @@ const Comments: React.FC<CommentsProps> = ({ feedId, after, isHidden }) => {
 }
 
 interface FeedProps {
-  feed: GetFeedsTypes.GetFeeds_feeds
+  feed: GetFeedsTypes.Feeds_feeds
 }
 
 const Feed: React.FC<FeedProps> = ({ feed }) => {
@@ -192,7 +228,7 @@ const Feed: React.FC<FeedProps> = ({ feed }) => {
         __updatedAt__ __Source.com__ |
         <a onClick={() =>
           setIsHidden(!isHidden)} >
-          {stats.nComments} Comments
+          {stats?.nComments} Comments
         </a>
       </p>
       {/* {!isHidden && <Comments feedId={id} isHidden={isHidden} />} */}
@@ -201,13 +237,17 @@ const Feed: React.FC<FeedProps> = ({ feed }) => {
   )
 }
 
-
-
 export default function Feeds() {
   const after = null
-  const { data, loading, error } = useQuery<GetFeedsTypes.GetFeeds, GetFeedsTypes.GetFeedsVariables>(
-    GET_FEEDS,
-    { variables: { after } }
+  const { data, loading, error } = useQuery<GetFeedsTypes.Feeds, GetFeedsTypes.FeedsVariables>(
+    FEEDS,
+    {
+      variables: { after },
+      onCompleted(res) {
+        console.log("fetched feeds")
+        console.log(res)
+      }
+    },
   )
 
 

@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react'
 import { Router } from '@reach/router'
 import { Feeds } from './Feeds'
-import { Feed } from './Feed'
 import { Event } from './Event'
 import { Ticker } from './Ticker'
 import { FeedCreate } from './UrlToFeed'

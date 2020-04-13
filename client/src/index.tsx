@@ -10,22 +10,19 @@ import gql from 'graphql-tag';
 import Pages from './pages'
 import { PageContainer } from './components'
 // import Login from './pages/login'
-import { resolvers, typeDefs } from './resolvers'
+import { resolvers, typeDefs } from './store/resolvers'
 import Templates from './templates'
 import './index.css'
+import * as queries from './store/queries'
 
-// import Chart from './components/Chart'
-
-// Set up our apollo-client to point at the server we created
-// this can be local or a remote endpoint
 const cache = new InMemoryCache({
   dataIdFromObject: (o: any) => {
     switch (o.__typename) {
       case 'Like': {
         if (o.feedId) return `Like:Feed:${o.feedId}`
+        else if (o.commentId) return `Like:Comment:${o.commentId}`
         else if (o.postId) return `Like:Post:${o.postId}`
         else if (o.pollId) return `Like:Poll:${o.pollId}`
-        else if (o.commentId) return `Like:Comment:${o.commentId}`
         else return null
       }
       default: return defaultDataIdFromObject(o)
@@ -55,31 +52,25 @@ cache.writeData({
     myLikes: [{
       __typename: "Like",
       id: "id-id-id",
-      // feedId: "ffff",
-      // postId: "pppp",
-      // pollId: "llll",
-      // commentId: "cccc",
       feedId: "1234",
       postId: null,
       pollId: null,
       commentId: null,
       choice: 1,
       updatedAt: "12-12-2012",
+    },
+    {
+      __typename: "Like",
+      id: "id-id-id2",
+      feedId: null,
+      postId: null,
+      pollId: null,
+      commentId: "1234",
+      choice: 1,
+      updatedAt: "12-12-2012",
     }],
   },
 })
-
-const res = cache.readFragment({
-  id: "Like:Feed:1234",
-  fragment: gql`
-    fragment myTodo on Like {
-      id
-      choice
-    }
-  `,
-})
-
-console.log(res)
 
 function IsLoggedIn() {
   // const { data } = useQuery(IS_LOGGED_IN)
@@ -90,8 +81,10 @@ function IsLoggedIn() {
 
 ReactDOM.render(
   <ApolloProvider client={client}>
-    <IsLoggedIn />
-    {/* <Templates /> */}
+    {/* <IsLoggedIn /> */}
+    <Templates />
   </ApolloProvider>,
   document.getElementById('root'),
 )
+
+

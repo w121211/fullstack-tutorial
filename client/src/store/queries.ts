@@ -1,15 +1,6 @@
 import gql from 'graphql-tag';
 
-const COMMENT = gql`
-  fragment comment on Comment {
-    __typename
-    id
-    body
-    meLike @client
-  }
-`
-
-const LIKE = gql`
+export const LIKE = gql`
   fragment like on Like {
     __typename
     id
@@ -22,14 +13,36 @@ const LIKE = gql`
   }
 `
 
+export const COMMENT = gql`
+  fragment comment on Comment {
+    __typename
+    id
+    body
+    meLike @client {
+      ...like
+    }
+  }
+  ${LIKE}
+`
+
 // ----------------------------
 // Getters
 // ----------------------------
 
+export const LOGIN = gql`
+  mutation login($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
+      token
+      user {
+        id
+      }
+    }
+  }
+`
 
-export const MY_LIKES_MAP = gql`
-  query MyLikesMap {
-    myLikesMap @client
+export const IS_LOGGED_IN = gql`
+  query IsUserLoggedIn {
+    isLoggedIn @client
   }
 `
 
@@ -42,8 +55,8 @@ export const MY_LIKES = gql`
   ${LIKE}
 `
 
-export const GET_FEEDS = gql`
-  query GetFeeds($after: String) {
+export const FEEDS = gql`
+  query Feeds($after: String) {
     feeds(after: $after) {
       id
       header
@@ -67,8 +80,8 @@ export const GET_FEEDS = gql`
   }
 `
 
-export const GET_COMMENTS = gql`
-  query GetComments($feedId: ID!, $after: String) {
+export const COMMENTS = gql`
+  query Comments($feedId: ID!, $after: String) {
     comments(feedId: $feedId, after: $after) {
       ...comment
     }

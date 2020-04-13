@@ -1,21 +1,86 @@
-import React from 'react'
-import { RouteComponentProps } from "@reach/router"
-import { Radio, Card, Typography, Tag, Divider, Button, Input, Form } from 'antd'
+import gql from 'graphql-tag';
+import React from 'react';
+import { RouteComponentProps } from '@reach/router';
+import { useQuery } from '@apollo/react-hooks';
+import { useForm } from 'react-hook-form'
 
-import Chart from '../components/Chart'
+// import { LAUNCH_TILE_DATA } from './launches';
+// import { Loading, Header } from '../components';
+// import { ActionButton } from '../containers';
+// import * as LaunchDetailsTypes from './__generated__/LaunchDetails';
 
-export function Ticker(props: RouteComponentProps) {
+type FormData = {
+  id: string
+  body: string
+}
+
+// interface CreateBetFormProps {
+//   createComment: (a: { variables: CreateCommentTypes.CreateCommentVariables }) => void
+//   disabled: boolean
+// }
+
+// const CreateBetForm: React.FC<CreateCommentFormProps> = ({ createComment, disabled }) => {
+//   const { register, handleSubmit, setValue, errors } = useForm<FormData>()
+//   const onSubmit = handleSubmit(({ id, body }) => {
+//     console.log('submit...')
+//     console.log({ id, body })
+//     createComment({
+//       variables: { data: { body } }
+//     })
+//   })
+//   return (
+//     <form onSubmit={onSubmit}>
+//       <label htmlFor="body">body</label>
+//       <input name="body" placeholder="body..." defaultValue="this is a body" ref={register} />
+//       <button type="submit" disabled={disabled}>Submit</button>
+//     </form>
+//   )
+// }
+
+
+interface Props extends RouteComponentProps {
+  id?: any
+}
+
+// const Event: React.FC<Props> = ({ id }) => {
+//   const {
+//     data,
+//     loading,
+//     error
+//   } = useQuery<
+//     FeedDetailTypes.FeedDetail,
+//     FeedDetailTypes.FeedDetailVariables
+//   >(
+//     GET_FEED,
+//     { variables: { id } }
+//   )
+
+//   if (loading) return <Loading />
+//   if (error) return <p>ERROR: {error.message}</p>
+//   if (!data) return <p>Not found</p>
+
+
+//   return (
+//     <>
+//       {/* <Header> */}
+//       <FeedDetail {...data.feed} />
+//       {/* </Header> */}
+//     </>
+//   )
+// }
+
+export default function Ticker() {
   return (
     <>
-      <Typography.Title>Commodo viverra maecenas, $ASO</Typography.Title>
+      <h1>Commodo viverra maecenas, $ASO</h1>
       <p />
-      <Button type="primary">Track</Button>
+      <a type="primary">Track</a>
 
-      <Chart />
+      {/* <Chart /> */}
 
       <h3>Price Estimate</h3>
 
-      <Form name="predict">
+      {/* <Form name="predict">
         <Form.Item label="Action">
           <Radio.Group onChange={(e) => { console.log(e.target.value) }}>
             <Radio value={1}>Buy</Radio>
@@ -29,7 +94,7 @@ export function Ticker(props: RouteComponentProps) {
         <Form.Item label="Stop-loss price | Sell Price">
           <Input placeholder="70.00" />
         </Form.Item>
-      </Form>
+      </Form> */}
 
       <h4>Group Estimate [Accuracy: 61%]</h4>
       <p>Buy: 123.45</p>
@@ -39,17 +104,10 @@ export function Ticker(props: RouteComponentProps) {
       <p>Buy: 123.45</p>
       <p>Sell: 146.78</p>
 
-      <Divider />
+      <hr />
 
-      <a>
-        <b>Short </b> (___%)
-      </a>
-      ||
-      <a>
-        <b> Long</b> (___%)
-      </a>
 
-      <Card size="small">
+      {/* <Card size="small">
         <a>
           <Typography.Text strong>Ant Design, a design language for background applications, is refined by Ant UED Team</Typography.Text>
         </a>
@@ -93,7 +151,7 @@ export function Ticker(props: RouteComponentProps) {
         <Button>SUBMIT</Button>
       </Card>
       <p />
-      <Button>loading more</Button>
+      <Button>loading more</Button> */}
     </>
   )
 }
