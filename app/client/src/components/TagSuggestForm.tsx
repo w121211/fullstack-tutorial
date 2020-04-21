@@ -13,7 +13,7 @@ import React from 'react'
 
 import { useForm } from 'react-hook-form'
 
-import * as UpsertFeed from '../store/__generated__/UpsertFeed'
+// import * as UpsertFeed from '../store/__generated__/UpsertFeed'
 
 type FormData = {
   id: string
@@ -23,7 +23,8 @@ type FormData = {
 
 interface Props {
   // login: (a: { variables: LoginTypes.loginVariables }) => void
-  upsert: (a: { variables: UpsertFeed.UpsertFeedVariables }) => void
+  // upsert: (a: { variables: UpsertFeed.UpsertFeedVariables }) => void
+  upsert: any
 }
 
 const FeedForm: React.FC<Props> = ({ upsert }) => {
@@ -36,7 +37,7 @@ const FeedForm: React.FC<Props> = ({ upsert }) => {
     console.log('submit...')
     console.log({ id, header, url })
     upsert({
-      variables: { id, data: { header, url } }
+      variables: { id, data: { header, url } },
     })
   })
 
@@ -45,8 +46,11 @@ const FeedForm: React.FC<Props> = ({ upsert }) => {
       <form onSubmit={onSubmit}>
         <div>
           <label htmlFor="search">header</label>
-          <input name="search" placeholder="search..." ref={register}
-          // value="this is a header"
+          <input
+            name="search"
+            placeholder="search..."
+            ref={register}
+            // value="this is a header"
           />
         </div>
 
@@ -64,11 +68,13 @@ const FeedForm: React.FC<Props> = ({ upsert }) => {
         <button
           type="button"
           onClick={() => {
-            setValue("header", "this is a header")
-            setValue("url", "http://this.is.a.url")
+            setValue('header', 'this is a header')
+            setValue('url', 'http://this.is.a.url')
             // errors.bill
           }}
-        >Set Value</button>
+        >
+          Set Value
+        </button>
       </form>
     </div>
   )

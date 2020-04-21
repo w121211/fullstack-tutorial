@@ -1,0 +1,18 @@
+{
+  "eslint.validate": [
+    "javascript",
+    "typescript"
+  ],
+  "eslint.workingDirectories": [
+    {
+      "directory": "./app/server",
+      "changeProcessCWD": true
+    },
+    {
+      "directory": "./app/client",
+      "changeProcessCWD": true
+    }
+  ],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+}

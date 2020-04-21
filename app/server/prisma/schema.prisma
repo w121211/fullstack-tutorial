@@ -1,0 +1,295 @@
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://postgres:postgrespassword@pg/prisma?schema=public"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String         @default(cuid()) @id
+  email         String         @unique
+  password      String
+  posts         Post[]
+  postVotes     PostVote[]
+  postLikes     PostLike[]
+  comments      Comment[]
+  commentLikes  CommentLike[]
+  follows       Follow[]
+  commits       Commit[]
+  commitReviews CommitReview[]
+  profile       Profile
+  dailyProfile  DailyProfile
+  bets          Bet[]
+}
+
+model Profile {
+  id               Int    @default(autoincrement()) @id
+  user             User   @relation(fields: [userId], references: [id])
+  userId           String
+  lv               Int    @default(0)
+  exp              Int    @default(0)
+  nGotLikes        Int    @default(0)
+  nCommits         Int    @default(0)
+  nFollowedEvents  Int    @default(0)
+  nFollowedTickers Int    @default(0)
+}
+
+model DailyProfile {
+  id             Int      @default(autoincrement()) @id
+  user           User     @relation(fields: [userId], references: [id])
+  userId         String
+  nLikes         Int      @default(0)
+  nFeeds         Int      @default(0)
+  nEventFollows  Int      @default(0)
+  nTickerFollows Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+// 透過URL可以判斷是否為link
+// polls     Poll[]
+// event     Event?   @relation(references: [id])
+// ticker    Ticker?  @relation(references: [id])
+// tag       Tag?     @relation(references: [id])
+// likes     Like[]
+// tags      Tag[]         @relation(references: [id])
+// events    Event[]       @relation(references: [id])
+// tickers   Ticker[]      @relation(references: [id])
+model Post {
+  id        Int        @default(autoincrement()) @id
+  user      User       @relation(fields: [userId], references: [id])
+  userId    String
+  cat       PostCat    @default(LINK)
+  status    PostStatus @default(ACTIVE)
+  title     String
+  content   String
+  count     PostCount
+  commments Comment[]
+  likes     PostLike[]
+  votes     PostVote[]
+  symbols   Symbol[]   @relation(references: [id])
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model PostLike {
+  // id        Int      @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    Int
+  choice    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([userId, postId])
+}
+
+model PostVote {
+  // id        Int      @default(autoincrement()) @id
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    Int
+  choice    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([userId, postId])
+}
+
+model PostCount {
+  id        Int      @default(autoincrement()) @id
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    Int      @unique
+  // nViews    Int      @default(0)
+  nUps      Int      @default(0)
+  nDowns    Int      @default(0)
+  nComments Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Comment {
+  id        Int           @default(autoincrement()) @id
+  user      User          @relation(fields: [userId], references: [id])
+  userId    String
+  post      Post          @relation(fields: [postId], references: [id])
+  postId    Int
+  status    PostStatus    @default(ACTIVE)
+  content   String
+  count     CommentCount
+  likes     CommentLike[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model CommentCount {
+  id         Int      @default(autoincrement()) @id
+  comment    Comment  @relation(fields: [commentId], references: [id])
+  commentId  Int
+  nViews     Int      @default(0)
+  nVoteUps   Int      @default(0)
+  nVoteDowns Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model CommentLike {
+  // id        Int      @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  comment   Comment  @relation(fields: [commentId], references: [id])
+  commentId Int
+  choice    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([userId, commentId])
+}
+
+model Symbol {
+  id         Int          @default(autoincrement()) @id
+  slug       String       @unique
+  cat        SymbolCat
+  status     SymbolStatus @default(ACTIVE)
+  // valid      Boolean   @default(true)
+  // title      String
+  content    String
+  sysContent String
+  posts      Post[]       @relation(references: [id])
+  commits    Commit[]
+  ticks      Tick[]
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+}
+
+model Follow {
+  // id        Int      @default(autoincrement()) @id
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  symbol    Symbol   @relation(fields: [symbolId], references: [id])
+  symbolId  Int
+  // event      Event    @relation(fields: [eventId], references: [id])
+  // eventId    Int
+  followed  Boolean
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([userId, symbolId])
+}
+
+model Commit {
+  id        Int            @default(autoincrement()) @id
+  user      User           @relation(fields: [userId], references: [id])
+  userId    String
+  symbol    Symbol         @relation(fields: [symbolId], references: [id])
+  symbolId  Int
+  post      Post           @relation(fields: [postId], references: [id])
+  postId    Int
+  status    CommitStatus   @default(REVIEW)
+  action    CommitAction
+  content   String
+  count     CommitCount
+  reviews   CommitReview[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model CommitCount {
+  // id        Int      @default(autoincrement()) @id
+  commit     Commit   @relation(fields: [commitId], references: [id])
+  commitId   Int      @id
+  nAgrees    Int      @default(0)
+  nDisagrees Int      @default(0)
+  nHolds     Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model CommitReview {
+  // id        Int      @default(autoincrement()) @id
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  commit    Commit   @relation(fields: [commitId], references: [id])
+  commitId  Int
+  choice    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([userId, commitId])
+}
+
+model Tick {
+  id       Int      @default(autoincrement()) @id
+  // ticker   Ticker   @relation(fields: [tickerId], references: [id])
+  // tickerId Int
+  symbol   Symbol   @relation(fields: [symbolId], references: [id])
+  symbolId Int
+  value    Float
+  at       DateTime
+}
+
+model Bet {
+  id        Int      @default(autoincrement()) @id
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  // ticker    Ticker   @relation(fields: [tickerId], references: [id])
+  // tickerId  Int
+  symbol    Symbol   @relation(fields: [symbolId], references: [id])
+  symbolId  Int
+  content   String
+  result    String?
+  expiredAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum PostCat {
+  LINK
+  POST
+  POLL
+  COMMIT
+}
+
+enum PostStatus {
+  ACTIVE
+  DELETED
+  REPORTED
+  ARCHIVED
+}
+
+enum SymbolCat {
+  TAG
+  TICKER
+  EVENT
+  SYS_TICKER_FOLLOWERS
+}
+
+enum SymbolStatus {
+  ACTIVE
+  REPORTED
+  ARCHIVED
+  DUPLICATED
+}
+
+enum CommitStatus {
+  REVIEW
+  PASS
+  REJECT
+}
+
+enum CommitAction {
+  CREATE
+  UPDATE
+  DELETE
+  MERGE
+}
+
+enum LikeChoice {
+  UP
+  DOWN
+  NEUTRAL
+}

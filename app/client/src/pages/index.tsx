@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import { Router } from '@reach/router'
 
-import Feeds from './Feed'
+// import Feeds from './Feed'
 import FeedCreate from './FeedCreate'
 // import Launch from './launch'
 // import Launches from './launches'
@@ -14,7 +14,7 @@ export default function Pages() {
     <>
       <PageContainer>
         <Router primary={false} component={Fragment}>
-          <Pane path="/" left={<Feeds />} right={undefined} />
+          {/* <Pane path="/" left={<Feeds />} right={undefined} /> */}
           <FeedCreate path="feed/new" />
           {/* <Pane path="feeds" left={Feeds} right={Tracks} /> */}
           {/* <Feeds path="feeds" />
@@ -27,5 +27,5 @@ export default function Pages() {
         </Router>
       </PageContainer>
     </>
-  );
+  )
 }

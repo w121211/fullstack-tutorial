@@ -2,8 +2,8 @@ import gql from 'graphql-tag';
 import { Resolvers } from 'apollo-client'
 import { ApolloCache } from 'apollo-cache';
 import * as queries from './queries'
-import * as LikeTypes from './__generated__/like'
-import * as MyLikesTypes from './__generated__/MyLikes'
+import * as QT from './queryTypes'
+
 
 type ResolverFn = (
   parent: any,
@@ -26,27 +26,48 @@ export const typeDefs = gql`
     isLoggedIn: Boolean!
     cartItems: [ID!]!
   }
-
   extend type Mutation {
     addOrRemoveFromCart(id: ID!): [ID!]!
   }
-
-  extend type Launch {
-    isInCart: Boolean!
+  # extend type Launch {
+  #   isInCart: Boolean!
+  # }
+  # extend type Feed {
+  #   isClicked: Boolean!
+  # }
+  extend type Post {
+    meLike: PostLike
   }
-  
-  extend type Feed {
-    isClicked: Boolean!
-  }
-
   extend type Comment {
-    meLike: Like
+    meLike: CommentLike
   }
 `
 
 export const resolvers: AppResolvers = {
+  // Post: {
+  //   meLike: (parent, args, { cache }): LikeTypes.like | null => {
+  //     // const qres = cache.readQuery({ query: queries.GET_FEEDS })
+  //     // cache.writeQuery({
+  //     //   query: queries.GET_FEEDS,
+  //     //   variables: { after: null },
+  //     //   data: {
+  //     //     feeds: [...qres.feeds],
+  //     //   }
+  //     // })
+  //     // console.log(queryResult)
+  //     // const queryResult = cache.readQuery<MyLikesTypes.MyLikes>({ query: queries.MY_LIKES });
+  //     // console.log(queryResult)
+  //     console.log(`Like:Comment:${parent.id}`)
+  //     return cache.readFragment<LikeTypes.like>({
+  //       id: "Like:Feed:1234",
+  //       // id: `Like:Comment:${parent.id}`,
+  //       fragment: queries.LIKE,
+  //     })
+  //   },
+  // },
   Comment: {
-    meLike: (parent, args, { cache }): LikeTypes.like | null => {
+    meLike: (parent, args, { cache }): QT.commentLike | null => {
+      console.log(parent)
       // const qres = cache.readQuery({ query: queries.GET_FEEDS })
       // cache.writeQuery({
       //   query: queries.GET_FEEDS,
@@ -58,11 +79,10 @@ export const resolvers: AppResolvers = {
       // console.log(queryResult)
       // const queryResult = cache.readQuery<MyLikesTypes.MyLikes>({ query: queries.MY_LIKES });
       // console.log(queryResult)
-      console.log(`Like:Comment:${parent.id}`)
-      return cache.readFragment<LikeTypes.like>({
-        id: "Like:Feed:1234",
-        // id: `Like:Comment:${parent.id}`,
-        fragment: queries.LIKE,
+      // console.log(`Like:Comment:${parent.id}`)
+      return cache.readFragment<QT.commentLike>({
+        id: parent.id,
+        fragment: queries.COMMENT_LIKE,
       })
     },
   },
