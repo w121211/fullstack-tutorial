@@ -8,28 +8,59 @@ export const POST_LIKE = gql`
     updatedAt
   }
 `
-export const _POST = gql`
-  fragment post on Post {
+export const POST_FRAGMENT = gql`
+  fragment postFragment on Post {
+    __typename
     id
-    view
+    userId
+    cat
+    status
     title
-    content
+    contentText
+    contentPoll {
+      start
+      end
+      choices
+    }
+    contentLink {
+      url
+    }
     updatedAt
     symbols {
       id
-      slug
+      name
     }
     count {
       id
-      nViews
       nUps
       nDowns
       nComments
       updatedAt
     }
+    # mePost @client
     # meLike @client {
     #   ...postLike
     # }
+  }
+`
+export const POST_VOTE = gql`
+  fragment postVote on PostVote {
+    __typename
+    id
+    postId
+    choice
+  }
+`
+export const COMMENT = gql`
+  fragment comment on Comment {
+    __typename
+    id
+    content
+    updatedAt
+    meComment @client
+    meLike @client {
+      ...commentLike
+    }
   }
 `
 export const COMMENT_LIKE = gql`
@@ -40,36 +71,53 @@ export const COMMENT_LIKE = gql`
     updatedAt
   }
 `
-export const COMMENT = gql`
-  fragment comment on Comment {
+export const SYMBOL_FRAGMENT = gql`
+  fragment symbolFragment on Symbol {
     __typename
     id
-    view
+    name
+    cat
+    status
     content
-    updatedAt
-    # meLike @client {
-    #   ...commentLike
-    # }
+    sysContent
+    posts {
+      ...postFragment
+    }
+    # ticks: [Tick!]!
   }
+  ${POST_FRAGMENT}
 `
 
-// Query
+// ----------------------------------
 
-export const NEW_FEED = gql`
-  query newFeed($after: String) {
-    newFeed(after: $after) {
-      ...post
-    }
-    ${_POST}
+export const IS_LOGGED_IN = gql`
+  query IsUserLoggedIn {
+    isLoggedIn @client
   }
+`
+export const ME = gql`
+  query me {
+    me {
+      id
+    }
+  }
+`
+export const LATEST_POSTS = gql`
+  query latestPosts($after: String) {
+    latestPosts(after: $after) {
+      ...postFragment
+      id
+    }
+  }
+  ${POST_FRAGMENT}
 `
 export const POST = gql`
   query post($id: ID!) {
     post(id: $id) {
-      ...post
+      ...postFragment
     }
-    ${_POST}
   }
+  ${POST_FRAGMENT}
 `
 export const COMMENTS = gql`
   query comments($postId: ID!, $after: String) {
@@ -79,12 +127,6 @@ export const COMMENTS = gql`
   }
   ${COMMENT}
 `
-
-export const IS_LOGGED_IN = gql`
-  query IsUserLoggedIn {
-    isLoggedIn @client
-  }
-`
 export const MY_POST_LIKES = gql`
   query myPostLikes {
     myPostLikes {
@@ -92,6 +134,14 @@ export const MY_POST_LIKES = gql`
     }
   }
   ${POST_LIKE}
+`
+export const MY_POST_VOTES = gql`
+  query myPostVotes {
+    myPostVotes {
+      ...postVote
+    }
+  }
+  ${POST_VOTE}
 `
 export const MY_COMMENT_LIKES = gql`
   query myCommentLikes {
@@ -101,39 +151,29 @@ export const MY_COMMENT_LIKES = gql`
   }
   ${COMMENT_LIKE}
 `
-export const GET_ME = gql`
-  query GetMe {
-    me {
-      id
+export const GET_SYMBOL = gql`
+  query getSymbol($name: String!) {
+    symbol(name: $name) {
+      ...symbolFragment
     }
   }
+  ${SYMBOL_FRAGMENT}
 `
-// export const GET_EVENT = gql`
-//   query GetEvent($id: ID!) {
-//     event(id: $id) {
-//       slug
-//       header
-//       tickers {
-//         id
-//         name
-//       }
-//       # comments {
-//       #   ...CommentTile
-//       # }
-//       # stats {
-//       #   nViews
-//       #   nVoteUps
-//       #   nVoteDowns
-//       # }
-//       # isInCart @client
-//       # site
-//       # rocket {
-//       # type
-//       # }
-//       # ...LaunchTile
-//     }
-//   }
-// `
+export const FETCH_PAGE = gql`
+  query fetchPage($link: String!) {
+    fetchPage(link: $link) {
+      id
+      post {
+        ...postFragment
+      }
+      title
+      symbols
+      tags
+      events
+    }
+  }
+  ${POST_FRAGMENT}
+`
 
 // ----------------------------
 // mutation
@@ -159,39 +199,24 @@ export const LOGIN = gql`
     }
   }
 `
-export const FETCH_PAGE = gql`
-  mutation fetchPage($link: String!) {
-    fetchPage(link: $link) {
-      id
-      post {
-        id
-        title
-      }
-      title
-      symbols
-      tags
-      events
-    }
-  }
-`
 export const CREATE_POST = gql`
   mutation createPost($data: PostInput!) {
     createPost(data: $data) {
-      ...post
+      ...postFragment
     }
   }
-  ${_POST}
+  ${POST_FRAGMENT}
 `
 export const UPDATE_POST = gql`
   mutation updatePost($id: ID!, $data: PostInput!) {
     updatePost(id: $id, data: $data) {
-      ...post
+      ...postFragment
     }
   }
-  ${_POST}
+  ${POST_FRAGMENT}
 `
 export const CREATE_POST_LIKE = gql`
-  mutation createPostLike($postId: ID!, $data: LikeInput!) {
+  mutation createPostLike($postId: ID!, $data: PostLikeInput!) {
     createPostLike(postId: $postId, data: $data) {
       ...postLike
     }
@@ -199,26 +224,58 @@ export const CREATE_POST_LIKE = gql`
   ${POST_LIKE}
 `
 export const UPDATE_POST_LIKE = gql`
-  mutation updatePostLike($postId: ID!, $data: LikeInput!) {
+  mutation updatePostLike($postId: ID!, $data: PostLikeInput!) {
     updatePostLike(postId: $postId, data: $data) {
       ...postLike
     }
   }
   ${POST_LIKE}
 `
+export const CREATE_POST_VOTE = gql`
+  mutation createPostVote($postId: ID!, $data: PostVoteInput!) {
+    createPostVote(postId: $postId, data: $data) {
+      ...postVote
+    }
+  }
+  ${POST_VOTE}
+`
+export const UPDATE_POST_VOTE = gql`
+  mutation updatePostVote($postId: ID!, $data: PostVoteInput!) {
+    updatePostVote(postId: $postId, data: $data) {
+      ...postVote
+    }
+  }
+  ${POST_VOTE}
+`
 export const CREATE_COMMENT = gql`
-  mutation CreateComment($data: CommentInput!) {
-    createComment(data: $data) {
+  mutation createComment($postId: ID!, $data: CommentInput!) {
+    createComment(postId: $postId, data: $data) {
       ...comment
     }
   }
   ${COMMENT}
 `
 export const UPDATE_COMMENT = gql`
-  mutation UpdateComment($id: ID!, $data: CommentInput!) {
+  mutation updateComment($id: ID!, $data: CommentInput!) {
     updateComment(id: $id, data: $data) {
       ...comment
     }
   }
   ${COMMENT}
+`
+export const CREATE_COMMENT_LIKE = gql`
+  mutation createCommentLike($commentId: ID!, $data: CommentLikeInput!) {
+    createCommentLike(commentId: $commentId, data: $data) {
+      ...commentLike
+    }
+  }
+  ${COMMENT_LIKE}
+`
+export const UPDATE_COMMENT_LIKE = gql`
+  mutation updateCommentLike($commentId: ID!, $data: CommentLikeInput!) {
+    updateCommentLike(commentId: $commentId, data: $data) {
+      ...commentLike
+    }
+  }
+  ${COMMENT_LIKE}
 `

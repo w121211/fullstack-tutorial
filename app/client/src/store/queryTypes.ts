@@ -4,49 +4,87 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: newFeed
+// GraphQL query operation: IsUserLoggedIn
 // ====================================================
 
-export interface newFeed_newFeed_symbols {
-  __typename: "Symbol";
-  id: string;
-  slug: string;
+export interface IsUserLoggedIn {
+  isLoggedIn: boolean;
 }
 
-export interface newFeed_newFeed_count {
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: me
+// ====================================================
+
+export interface me_me {
+  __typename: "User";
+  id: string;
+}
+
+export interface me {
+  me: me_me;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: latestPosts
+// ====================================================
+
+export interface latestPosts_latestPosts_contentPoll {
+  __typename: "PostPoll";
+  start: any;
+  end: any;
+  choices: string[];
+}
+
+export interface latestPosts_latestPosts_contentLink {
+  __typename: "PostLink";
+  url: string;
+}
+
+export interface latestPosts_latestPosts_symbols {
+  __typename: "Symbol";
+  id: string;
+  name: string;
+}
+
+export interface latestPosts_latestPosts_count {
   __typename: "PostCount";
   id: string;
-  nViews: number;
   nUps: number;
   nDowns: number;
   nComments: number;
   updatedAt: any;
 }
 
-export interface newFeed_newFeed_meLike {
-  __typename: "PostLike";
-  postId: string;
-  choice: number;
-  updatedAt: any;
-}
-
-export interface newFeed_newFeed {
+export interface latestPosts_latestPosts {
   __typename: "Post";
   id: string;
-  view: View;
+  userId: string;
+  cat: PostCat;
+  status: PostStatus;
   title: string | null;
-  content: string | null;
+  contentText: string | null;
+  contentPoll: latestPosts_latestPosts_contentPoll | null;
+  contentLink: latestPosts_latestPosts_contentLink | null;
   updatedAt: any | null;
-  symbols: newFeed_newFeed_symbols[];
-  count: newFeed_newFeed_count;
-  meLike: newFeed_newFeed_meLike | null;
+  symbols: latestPosts_latestPosts_symbols[];
+  count: latestPosts_latestPosts_count;
 }
 
-export interface newFeed {
-  newFeed: newFeed_newFeed[];
+export interface latestPosts {
+  latestPosts: latestPosts_latestPosts[];
 }
 
-export interface newFeedVariables {
+export interface latestPostsVariables {
   after?: string | null;
 }
 
@@ -59,39 +97,46 @@ export interface newFeedVariables {
 // GraphQL query operation: post
 // ====================================================
 
+export interface post_post_contentPoll {
+  __typename: "PostPoll";
+  start: any;
+  end: any;
+  choices: string[];
+}
+
+export interface post_post_contentLink {
+  __typename: "PostLink";
+  url: string;
+}
+
 export interface post_post_symbols {
   __typename: "Symbol";
   id: string;
-  slug: string;
+  name: string;
 }
 
 export interface post_post_count {
   __typename: "PostCount";
   id: string;
-  nViews: number;
   nUps: number;
   nDowns: number;
   nComments: number;
   updatedAt: any;
 }
 
-export interface post_post_meLike {
-  __typename: "PostLike";
-  postId: string;
-  choice: number;
-  updatedAt: any;
-}
-
 export interface post_post {
   __typename: "Post";
   id: string;
-  view: View;
+  userId: string;
+  cat: PostCat;
+  status: PostStatus;
   title: string | null;
-  content: string | null;
+  contentText: string | null;
+  contentPoll: post_post_contentPoll | null;
+  contentLink: post_post_contentLink | null;
   updatedAt: any | null;
   symbols: post_post_symbols[];
   count: post_post_count;
-  meLike: post_post_meLike | null;
 }
 
 export interface post {
@@ -121,9 +166,9 @@ export interface comments_comments_meLike {
 export interface comments_comments {
   __typename: "Comment";
   id: string;
-  view: View;
   content: string | null;
   updatedAt: any;
+  meComment: boolean;
   meLike: comments_comments_meLike | null;
 }
 
@@ -134,19 +179,6 @@ export interface comments {
 export interface commentsVariables {
   postId: string;
   after?: string | null;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL query operation: IsUserLoggedIn
-// ====================================================
-
-export interface IsUserLoggedIn {
-  isLoggedIn: boolean;
 }
 
 /* tslint:disable */
@@ -175,6 +207,26 @@ export interface myPostLikes {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: myPostVotes
+// ====================================================
+
+export interface myPostVotes_myPostVotes {
+  __typename: "PostVote";
+  id: string;
+  postId: string;
+  choice: number;
+}
+
+export interface myPostVotes {
+  myPostVotes: myPostVotes_myPostVotes[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: myCommentLikes
 // ====================================================
 
@@ -195,16 +247,137 @@ export interface myCommentLikes {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: GetMe
+// GraphQL query operation: getSymbol
 // ====================================================
 
-export interface GetMe_me {
-  __typename: "User";
-  id: string;
+export interface getSymbol_symbol_posts_contentPoll {
+  __typename: "PostPoll";
+  start: any;
+  end: any;
+  choices: string[];
 }
 
-export interface GetMe {
-  me: GetMe_me;
+export interface getSymbol_symbol_posts_contentLink {
+  __typename: "PostLink";
+  url: string;
+}
+
+export interface getSymbol_symbol_posts_symbols {
+  __typename: "Symbol";
+  id: string;
+  name: string;
+}
+
+export interface getSymbol_symbol_posts_count {
+  __typename: "PostCount";
+  id: string;
+  nUps: number;
+  nDowns: number;
+  nComments: number;
+  updatedAt: any;
+}
+
+export interface getSymbol_symbol_posts {
+  __typename: "Post";
+  id: string;
+  userId: string;
+  cat: PostCat;
+  status: PostStatus;
+  title: string | null;
+  contentText: string | null;
+  contentPoll: getSymbol_symbol_posts_contentPoll | null;
+  contentLink: getSymbol_symbol_posts_contentLink | null;
+  updatedAt: any | null;
+  symbols: getSymbol_symbol_posts_symbols[];
+  count: getSymbol_symbol_posts_count;
+}
+
+export interface getSymbol_symbol {
+  __typename: "Symbol";
+  id: string;
+  name: string;
+  cat: SymbolCat;
+  status: SymbolStatus;
+  content: string | null;
+  sysContent: string | null;
+  posts: getSymbol_symbol_posts[];
+}
+
+export interface getSymbol {
+  symbol: getSymbol_symbol;
+}
+
+export interface getSymbolVariables {
+  name: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: fetchPage
+// ====================================================
+
+export interface fetchPage_fetchPage_post_contentPoll {
+  __typename: "PostPoll";
+  start: any;
+  end: any;
+  choices: string[];
+}
+
+export interface fetchPage_fetchPage_post_contentLink {
+  __typename: "PostLink";
+  url: string;
+}
+
+export interface fetchPage_fetchPage_post_symbols {
+  __typename: "Symbol";
+  id: string;
+  name: string;
+}
+
+export interface fetchPage_fetchPage_post_count {
+  __typename: "PostCount";
+  id: string;
+  nUps: number;
+  nDowns: number;
+  nComments: number;
+  updatedAt: any;
+}
+
+export interface fetchPage_fetchPage_post {
+  __typename: "Post";
+  id: string;
+  userId: string;
+  cat: PostCat;
+  status: PostStatus;
+  title: string | null;
+  contentText: string | null;
+  contentPoll: fetchPage_fetchPage_post_contentPoll | null;
+  contentLink: fetchPage_fetchPage_post_contentLink | null;
+  updatedAt: any | null;
+  symbols: fetchPage_fetchPage_post_symbols[];
+  count: fetchPage_fetchPage_post_count;
+}
+
+export interface fetchPage_fetchPage {
+  __typename: "Page";
+  id: string;
+  post: fetchPage_fetchPage_post | null;
+  title: string | null;
+  symbols: string[] | null;
+  tags: string[] | null;
+  events: string[] | null;
+}
+
+export interface fetchPage {
+  fetchPage: fetchPage_fetchPage;
+}
+
+export interface fetchPageVariables {
+  link: string;
 }
 
 /* tslint:disable */
@@ -271,75 +444,49 @@ export interface loginVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: fetchPage
-// ====================================================
-
-export interface fetchPage_fetchPage_post {
-  __typename: "Post";
-  id: string;
-  title: string | null;
-}
-
-export interface fetchPage_fetchPage {
-  __typename: "Page";
-  id: string;
-  post: fetchPage_fetchPage_post | null;
-  title: string | null;
-  symbols: string[] | null;
-  tags: string[] | null;
-  events: string[] | null;
-}
-
-export interface fetchPage {
-  fetchPage: fetchPage_fetchPage;
-}
-
-export interface fetchPageVariables {
-  link: string;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
 // GraphQL mutation operation: createPost
 // ====================================================
+
+export interface createPost_createPost_contentPoll {
+  __typename: "PostPoll";
+  start: any;
+  end: any;
+  choices: string[];
+}
+
+export interface createPost_createPost_contentLink {
+  __typename: "PostLink";
+  url: string;
+}
 
 export interface createPost_createPost_symbols {
   __typename: "Symbol";
   id: string;
-  slug: string;
+  name: string;
 }
 
 export interface createPost_createPost_count {
   __typename: "PostCount";
   id: string;
-  nViews: number;
   nUps: number;
   nDowns: number;
   nComments: number;
   updatedAt: any;
 }
 
-export interface createPost_createPost_meLike {
-  __typename: "PostLike";
-  postId: string;
-  choice: number;
-  updatedAt: any;
-}
-
 export interface createPost_createPost {
   __typename: "Post";
   id: string;
-  view: View;
+  userId: string;
+  cat: PostCat;
+  status: PostStatus;
   title: string | null;
-  content: string | null;
+  contentText: string | null;
+  contentPoll: createPost_createPost_contentPoll | null;
+  contentLink: createPost_createPost_contentLink | null;
   updatedAt: any | null;
   symbols: createPost_createPost_symbols[];
   count: createPost_createPost_count;
-  meLike: createPost_createPost_meLike | null;
 }
 
 export interface createPost {
@@ -359,39 +506,46 @@ export interface createPostVariables {
 // GraphQL mutation operation: updatePost
 // ====================================================
 
+export interface updatePost_updatePost_contentPoll {
+  __typename: "PostPoll";
+  start: any;
+  end: any;
+  choices: string[];
+}
+
+export interface updatePost_updatePost_contentLink {
+  __typename: "PostLink";
+  url: string;
+}
+
 export interface updatePost_updatePost_symbols {
   __typename: "Symbol";
   id: string;
-  slug: string;
+  name: string;
 }
 
 export interface updatePost_updatePost_count {
   __typename: "PostCount";
   id: string;
-  nViews: number;
   nUps: number;
   nDowns: number;
   nComments: number;
   updatedAt: any;
 }
 
-export interface updatePost_updatePost_meLike {
-  __typename: "PostLike";
-  postId: string;
-  choice: number;
-  updatedAt: any;
-}
-
 export interface updatePost_updatePost {
   __typename: "Post";
   id: string;
-  view: View;
+  userId: string;
+  cat: PostCat;
+  status: PostStatus;
   title: string | null;
-  content: string | null;
+  contentText: string | null;
+  contentPoll: updatePost_updatePost_contentPoll | null;
+  contentLink: updatePost_updatePost_contentLink | null;
   updatedAt: any | null;
   symbols: updatePost_updatePost_symbols[];
   count: updatePost_updatePost_count;
-  meLike: updatePost_updatePost_meLike | null;
 }
 
 export interface updatePost {
@@ -425,7 +579,7 @@ export interface createPostLike {
 
 export interface createPostLikeVariables {
   postId: string;
-  data: LikeInput;
+  data: PostLikeInput;
 }
 
 /* tslint:disable */
@@ -450,7 +604,7 @@ export interface updatePostLike {
 
 export interface updatePostLikeVariables {
   postId: string;
-  data: LikeInput;
+  data: PostLikeInput;
 }
 
 /* tslint:disable */
@@ -459,30 +613,81 @@ export interface updatePostLikeVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: CreateComment
+// GraphQL mutation operation: createPostVote
 // ====================================================
 
-export interface CreateComment_createComment_meLike {
+export interface createPostVote_createPostVote {
+  __typename: "PostVote";
+  id: string;
+  postId: string;
+  choice: number;
+}
+
+export interface createPostVote {
+  createPostVote: createPostVote_createPostVote;
+}
+
+export interface createPostVoteVariables {
+  postId: string;
+  data: PostVoteInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: updatePostVote
+// ====================================================
+
+export interface updatePostVote_updatePostVote {
+  __typename: "PostVote";
+  id: string;
+  postId: string;
+  choice: number;
+}
+
+export interface updatePostVote {
+  updatePostVote: updatePostVote_updatePostVote;
+}
+
+export interface updatePostVoteVariables {
+  postId: string;
+  data: PostVoteInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: createComment
+// ====================================================
+
+export interface createComment_createComment_meLike {
   __typename: "CommentLike";
   commentId: string;
   choice: number;
   updatedAt: any;
 }
 
-export interface CreateComment_createComment {
+export interface createComment_createComment {
   __typename: "Comment";
   id: string;
-  view: View;
   content: string | null;
   updatedAt: any;
-  meLike: CreateComment_createComment_meLike | null;
+  meComment: boolean;
+  meLike: createComment_createComment_meLike | null;
 }
 
-export interface CreateComment {
-  createComment: CreateComment_createComment;
+export interface createComment {
+  createComment: createComment_createComment;
 }
 
-export interface CreateCommentVariables {
+export interface createCommentVariables {
+  postId: string;
   data: CommentInput;
 }
 
@@ -492,32 +697,82 @@ export interface CreateCommentVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: UpdateComment
+// GraphQL mutation operation: updateComment
 // ====================================================
 
-export interface UpdateComment_updateComment_meLike {
+export interface updateComment_updateComment_meLike {
   __typename: "CommentLike";
   commentId: string;
   choice: number;
   updatedAt: any;
 }
 
-export interface UpdateComment_updateComment {
+export interface updateComment_updateComment {
   __typename: "Comment";
   id: string;
-  view: View;
   content: string | null;
   updatedAt: any;
-  meLike: UpdateComment_updateComment_meLike | null;
+  meComment: boolean;
+  meLike: updateComment_updateComment_meLike | null;
 }
 
-export interface UpdateComment {
-  updateComment: UpdateComment_updateComment;
+export interface updateComment {
+  updateComment: updateComment_updateComment;
 }
 
-export interface UpdateCommentVariables {
+export interface updateCommentVariables {
   id: string;
   data: CommentInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: createCommentLike
+// ====================================================
+
+export interface createCommentLike_createCommentLike {
+  __typename: "CommentLike";
+  commentId: string;
+  choice: number;
+  updatedAt: any;
+}
+
+export interface createCommentLike {
+  createCommentLike: createCommentLike_createCommentLike;
+}
+
+export interface createCommentLikeVariables {
+  commentId: string;
+  data: CommentLikeInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: updateCommentLike
+// ====================================================
+
+export interface updateCommentLike_updateCommentLike {
+  __typename: "CommentLike";
+  commentId: string;
+  choice: number;
+  updatedAt: any;
+}
+
+export interface updateCommentLike {
+  updateCommentLike: updateCommentLike_updateCommentLike;
+}
+
+export interface updateCommentLikeVariables {
+  commentId: string;
+  data: CommentLikeInput;
 }
 
 /* tslint:disable */
@@ -542,42 +797,90 @@ export interface postLike {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL fragment: post
+// GraphQL fragment: postFragment
 // ====================================================
 
-export interface post_symbols {
-  __typename: "Symbol";
-  id: string;
-  slug: string;
+export interface postFragment_contentPoll {
+  __typename: "PostPoll";
+  start: any;
+  end: any;
+  choices: string[];
 }
 
-export interface post_count {
+export interface postFragment_contentLink {
+  __typename: "PostLink";
+  url: string;
+}
+
+export interface postFragment_symbols {
+  __typename: "Symbol";
+  id: string;
+  name: string;
+}
+
+export interface postFragment_count {
   __typename: "PostCount";
   id: string;
-  nViews: number;
   nUps: number;
   nDowns: number;
   nComments: number;
   updatedAt: any;
 }
 
-export interface post_meLike {
-  __typename: "PostLike";
+export interface postFragment {
+  __typename: "Post";
+  id: string;
+  userId: string;
+  cat: PostCat;
+  status: PostStatus;
+  title: string | null;
+  contentText: string | null;
+  contentPoll: postFragment_contentPoll | null;
+  contentLink: postFragment_contentLink | null;
+  updatedAt: any | null;
+  symbols: postFragment_symbols[];
+  count: postFragment_count;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: postVote
+// ====================================================
+
+export interface postVote {
+  __typename: "PostVote";
+  id: string;
   postId: string;
+  choice: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: comment
+// ====================================================
+
+export interface comment_meLike {
+  __typename: "CommentLike";
+  commentId: string;
   choice: number;
   updatedAt: any;
 }
 
-export interface post {
-  __typename: "Post";
+export interface comment {
+  __typename: "Comment";
   id: string;
-  view: View;
-  title: string | null;
   content: string | null;
-  updatedAt: any | null;
-  symbols: post_symbols[];
-  count: post_count;
-  meLike: post_meLike | null;
+  updatedAt: any;
+  meComment: boolean;
+  meLike: comment_meLike | null;
 }
 
 /* tslint:disable */
@@ -602,23 +905,60 @@ export interface commentLike {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL fragment: comment
+// GraphQL fragment: symbolFragment
 // ====================================================
 
-export interface comment_meLike {
-  __typename: "CommentLike";
-  commentId: string;
-  choice: number;
+export interface symbolFragment_posts_contentPoll {
+  __typename: "PostPoll";
+  start: any;
+  end: any;
+  choices: string[];
+}
+
+export interface symbolFragment_posts_contentLink {
+  __typename: "PostLink";
+  url: string;
+}
+
+export interface symbolFragment_posts_symbols {
+  __typename: "Symbol";
+  id: string;
+  name: string;
+}
+
+export interface symbolFragment_posts_count {
+  __typename: "PostCount";
+  id: string;
+  nUps: number;
+  nDowns: number;
+  nComments: number;
   updatedAt: any;
 }
 
-export interface comment {
-  __typename: "Comment";
+export interface symbolFragment_posts {
+  __typename: "Post";
   id: string;
-  view: View;
+  userId: string;
+  cat: PostCat;
+  status: PostStatus;
+  title: string | null;
+  contentText: string | null;
+  contentPoll: symbolFragment_posts_contentPoll | null;
+  contentLink: symbolFragment_posts_contentLink | null;
+  updatedAt: any | null;
+  symbols: symbolFragment_posts_symbols[];
+  count: symbolFragment_posts_count;
+}
+
+export interface symbolFragment {
+  __typename: "Symbol";
+  id: string;
+  name: string;
+  cat: SymbolCat;
+  status: SymbolStatus;
   content: string | null;
-  updatedAt: any;
-  meLike: comment_meLike | null;
+  sysContent: string | null;
+  posts: symbolFragment_posts[];
 }
 
 /* tslint:disable */
@@ -630,28 +970,69 @@ export interface comment {
 // START Enums and Input Objects
 //==============================================================
 
-export enum View {
+export enum PostCat {
+  COMMIT = "COMMIT",
+  LINK = "LINK",
+  POLL = "POLL",
+  POST = "POST",
+}
+
+export enum PostStatus {
+  ACTIVE = "ACTIVE",
+  ARCHIVED = "ARCHIVED",
   DELETED = "DELETED",
-  LOCKED = "LOCKED",
-  PUBLIC = "PUBLIC",
+  REPORTED = "REPORTED",
+}
+
+export enum SymbolCat {
+  EVENT = "EVENT",
+  SYS_TICKER_FOLLOWERS = "SYS_TICKER_FOLLOWERS",
+  TAG = "TAG",
+  TICKER = "TICKER",
+}
+
+export enum SymbolStatus {
+  ACTIVE = "ACTIVE",
+  ARCHIVED = "ARCHIVED",
+  DUPLICATED = "DUPLICATED",
   REPORTED = "REPORTED",
 }
 
 export interface CommentInput {
-  view?: View | null;
+  status?: PostStatus | null;
   content: string;
 }
 
-export interface LikeInput {
+export interface CommentLikeInput {
   choice: number;
 }
 
 export interface PostInput {
-  view?: View | null;
+  cat: PostCat;
+  status?: PostStatus | null;
   title?: string | null;
-  content?: string | null;
-  createdAt?: any | null;
-  updatedAt?: any | null;
+  contentText?: string | null;
+  contentPoll?: PostPollInput | null;
+  contentLink?: PostLinkInput | null;
+  symbols: string[];
+}
+
+export interface PostLikeInput {
+  choice: number;
+}
+
+export interface PostLinkInput {
+  url: string;
+}
+
+export interface PostPollInput {
+  start: any;
+  end: any;
+  choices: string[];
+}
+
+export interface PostVoteInput {
+  choice: number;
 }
 
 //==============================================================

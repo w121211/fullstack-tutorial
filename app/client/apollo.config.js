@@ -1,6 +1,6 @@
 module.exports = {
   client: {
-    name: 'Tusbane[web]',
+    // name: 'Tusbane[web]',
     // service: 'space-explorer',
     service: {
       name: 'tsubane',

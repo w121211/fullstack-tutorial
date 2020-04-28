@@ -8,7 +8,7 @@ import { APP_SECRET } from './server'
 export const resolvers: GraphQLResolverMap<Context> = {
   DateTime: GraphQLDateTime, // custom scalar
   Query: {
-    newPosts: (parent, { after = null }, { prisma }) => {
+    latestPosts: (parent, { after = null }, { prisma }) => {
       return prisma.post.findMany({
         first: 20,
         include: { count: true },
@@ -28,13 +28,15 @@ export const resolvers: GraphQLResolverMap<Context> = {
     comments: (parent, { postId, after }, { prisma }) => {
       return prisma.comment.findMany({ where: { postId }, first: 20 })
     },
-    symbol: (parent, { id, slug }, { prisma }) => {
-      return prisma.symbol.findOne({ where: { id, slug } })
+    symbol: (parent, { id, name }, { prisma }) => {
+      return prisma.symbol.findOne({ where: { id, name } })
     },
     ticks: (parent, { symbolId, after }, ctx) => {
+
       return ctx.prisma.tick.findMany({ where: { symbolId }, first: 50 })
     },
     me: (parent, args, { prisma, req }) => {
+      // throw Error("what ever error")
       return prisma.user.findOne({ where: { id: req.userId } })
     },
     myPostLikes: (parent, args, { prisma, req }) => {
@@ -42,6 +44,11 @@ export const resolvers: GraphQLResolverMap<Context> = {
     },
     myFollows: (parent, args, { prisma, req }) => {
       return prisma.follow.findMany({ where: { userId: req.userId, followed: true }, first: 50 })
+    },
+    fetchPage: (parent, { link }, { prisma, req }) => {
+      // grpc call to nlp-app
+      // return prisma.comment.create({ userId: req.userId, ...data })
+      return null
     },
     // myCommitReviews: (parent, args, { prisma, req }) => {
     //   const userId = req.userId
@@ -87,11 +94,6 @@ export const resolvers: GraphQLResolverMap<Context> = {
     logout: (parent, { email, password }, { prisma, res }) => {
       res.clearCookie('token')
       return true
-    },
-    fetchPage: (parent, { link }, { prisma, req }) => {
-      // grpc call to nlp-app
-      // return prisma.comment.create({ userId: req.userId, ...data })
-      return null
     },
     createPost: (parent, { data }, { prisma, req }) => {
       return prisma.comment.create({ userId: req.userId, ...data })

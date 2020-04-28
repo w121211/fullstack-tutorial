@@ -1,21 +1,20 @@
 import gql from 'graphql-tag';
 import { Resolvers } from 'apollo-client'
 import { ApolloCache } from 'apollo-cache';
+import Cookies from 'js-cookie'
 import * as queries from './queries'
 import * as QT from './queryTypes'
 
 
-type ResolverFn = (
-  parent: any,
-  args: any,
-  { cache }: { cache: ApolloCache<any> }
-) => any
+type ResolverFn = (parent: any, args: any, { cache }: { cache: ApolloCache<any> }) => any
 
 interface ResolverMap {
   [field: string]: ResolverFn
 }
 
 interface AppResolvers extends Resolvers {
+  Query: ResolverMap
+  Post: ResolverMap
   Comment: ResolverMap
   // Launch: ResolverMap
   // Mutation: ResolverMap
@@ -36,54 +35,62 @@ export const typeDefs = gql`
   #   isClicked: Boolean!
   # }
   extend type Post {
+    mePost: Boolean!
     meLike: PostLike
   }
   extend type Comment {
+    meComment: Boolean!
     meLike: CommentLike
   }
 `
 
 export const resolvers: AppResolvers = {
-  // Post: {
-  //   meLike: (parent, args, { cache }): LikeTypes.like | null => {
-  //     // const qres = cache.readQuery({ query: queries.GET_FEEDS })
-  //     // cache.writeQuery({
-  //     //   query: queries.GET_FEEDS,
-  //     //   variables: { after: null },
-  //     //   data: {
-  //     //     feeds: [...qres.feeds],
-  //     //   }
-  //     // })
-  //     // console.log(queryResult)
-  //     // const queryResult = cache.readQuery<MyLikesTypes.MyLikes>({ query: queries.MY_LIKES });
-  //     // console.log(queryResult)
-  //     console.log(`Like:Comment:${parent.id}`)
-  //     return cache.readFragment<LikeTypes.like>({
-  //       id: "Like:Feed:1234",
-  //       // id: `Like:Comment:${parent.id}`,
-  //       fragment: queries.LIKE,
-  //     })
-  //   },
-  // },
+  Query: {
+    isLoggedIn: (parent, args, { cache }): boolean => {
+      return Cookies.get('userId') ? true : false
+    }
+  },
+  Post: {
+    mePost: ({ id }, args, { cache }): boolean => {
+      const data = cache.readQuery<QT.me>({ query: queries.ME })
+      return (data?.me?.id === id) ? true : false
+      // try {
+      //   const data = cache.readQuery<QT.me>({ query: queries.ME })
+      //   return (data?.me?.id === id) ? true : false
+      // } catch (err) {
+      //   console.log(err)
+      // }
+      // return false
+    },
+    meLike: ({ id }, args, { cache }): QT.postLike | null => {
+      console.log("resolver: melike")
+      try {
+        const data = cache.readQuery<QT.myPostLikes>({ query: queries.MY_POST_LIKES })
+        return data?.myPostLikes.find((x) => x.postId === id) || null
+      } catch (err) {
+        // console.log(err)
+      }
+      return null
+    },
+  },
   Comment: {
-    meLike: (parent, args, { cache }): QT.commentLike | null => {
-      console.log(parent)
-      // const qres = cache.readQuery({ query: queries.GET_FEEDS })
-      // cache.writeQuery({
-      //   query: queries.GET_FEEDS,
-      //   variables: { after: null },
-      //   data: {
-      //     feeds: [...qres.feeds],
-      //   }
-      // })
-      // console.log(queryResult)
-      // const queryResult = cache.readQuery<MyLikesTypes.MyLikes>({ query: queries.MY_LIKES });
-      // console.log(queryResult)
-      // console.log(`Like:Comment:${parent.id}`)
-      return cache.readFragment<QT.commentLike>({
-        id: parent.id,
-        fragment: queries.COMMENT_LIKE,
-      })
+    meComment: ({ id }, args, { cache }): boolean => {
+      try {
+        const data = cache.readQuery<QT.me>({ query: queries.ME })
+        return (data?.me?.id === id) ? true : false
+      } catch (err) {
+        console.log(err)
+      }
+      return false
+    },
+    meLike: ({ id }, args, { cache }): QT.commentLike | null => {
+      try {
+        const data = cache.readQuery<QT.myCommentLikes>({ query: queries.MY_COMMENT_LIKES })
+        return data?.myCommentLikes.find((x) => x.commentId === id) || null
+      } catch (err) {
+        console.log(err)
+      }
+      return null
     },
   },
   // Feed: {
@@ -117,4 +124,6 @@ export const resolvers: AppResolvers = {
   //     return [];
   //   },
   // },
-};
+}
+
+// const a = <LoggedIn><PostLike /></LoggedIn>

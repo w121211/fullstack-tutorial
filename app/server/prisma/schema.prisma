@@ -75,7 +75,7 @@ model Post {
 }
 
 model PostLike {
-  // id        Int      @default(autoincrement())
+  id        Int      @default(autoincrement()) @id
   user      User     @relation(fields: [userId], references: [id])
   userId    String
   post      Post     @relation(fields: [postId], references: [id])
@@ -84,11 +84,11 @@ model PostLike {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@id([userId, postId])
+  @@unique([userId, postId])
 }
 
 model PostVote {
-  // id        Int      @default(autoincrement()) @id
+  id        Int      @default(autoincrement()) @id
   user      User     @relation(fields: [userId], references: [id])
   userId    String
   post      Post     @relation(fields: [postId], references: [id])
@@ -97,7 +97,7 @@ model PostVote {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@id([userId, postId])
+  @@unique([userId, postId])
 }
 
 model PostCount {
@@ -108,6 +108,7 @@ model PostCount {
   nUps      Int      @default(0)
   nDowns    Int      @default(0)
   nComments Int      @default(0)
+  poll      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -127,18 +128,18 @@ model Comment {
 }
 
 model CommentCount {
-  id         Int      @default(autoincrement()) @id
-  comment    Comment  @relation(fields: [commentId], references: [id])
-  commentId  Int
-  nViews     Int      @default(0)
-  nVoteUps   Int      @default(0)
-  nVoteDowns Int      @default(0)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id        Int      @default(autoincrement()) @id
+  comment   Comment  @relation(fields: [commentId], references: [id])
+  commentId Int      @unique
+  // nViews    Int      @default(0)
+  nUps      Int      @default(0)
+  nDowns    Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model CommentLike {
-  // id        Int      @default(autoincrement())
+  id        Int      @default(autoincrement()) @id
   user      User     @relation(fields: [userId], references: [id])
   userId    String
   comment   Comment  @relation(fields: [commentId], references: [id])
@@ -147,12 +148,12 @@ model CommentLike {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@id([userId, commentId])
+  @@unique([userId, commentId])
 }
 
 model Symbol {
   id         Int          @default(autoincrement()) @id
-  slug       String       @unique
+  name       String       @unique
   cat        SymbolCat
   status     SymbolStatus @default(ACTIVE)
   // valid      Boolean   @default(true)
@@ -167,18 +168,16 @@ model Symbol {
 }
 
 model Follow {
-  // id        Int      @default(autoincrement()) @id
+  id        Int      @default(autoincrement()) @id
   user      User     @relation(fields: [userId], references: [id])
   userId    String
   symbol    Symbol   @relation(fields: [symbolId], references: [id])
   symbolId  Int
-  // event      Event    @relation(fields: [eventId], references: [id])
-  // eventId    Int
   followed  Boolean
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@id([userId, symbolId])
+  @@unique([userId, symbolId])
 }
 
 model Commit {
@@ -192,25 +191,24 @@ model Commit {
   status    CommitStatus   @default(REVIEW)
   action    CommitAction
   content   String
-  count     CommitCount
+  // count     CommitCount
   reviews   CommitReview[]
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt
 }
 
-model CommitCount {
-  // id        Int      @default(autoincrement()) @id
-  commit     Commit   @relation(fields: [commitId], references: [id])
-  commitId   Int      @id
-  nAgrees    Int      @default(0)
-  nDisagrees Int      @default(0)
-  nHolds     Int      @default(0)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-}
-
+// model CommitCount {
+// id         Int      @default(autoincrement()) @id
+// commit     Commit   @relation(fields: [commitId], references: [id])
+// commitId   Int      @unique
+// nAgrees    Int      @default(0)
+// nDisagrees Int      @default(0)
+// nHolds     Int      @default(0)
+// createdAt  DateTime @default(now())
+// updatedAt  DateTime @updatedAt
+// }
 model CommitReview {
-  // id        Int      @default(autoincrement()) @id
+  id        Int      @default(autoincrement()) @id
   user      User     @relation(fields: [userId], references: [id])
   userId    String
   commit    Commit   @relation(fields: [commitId], references: [id])
@@ -219,7 +217,7 @@ model CommitReview {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@id([userId, commitId])
+  @@unique([userId, commitId])
 }
 
 model Tick {

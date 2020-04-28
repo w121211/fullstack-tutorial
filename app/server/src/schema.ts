@@ -2,14 +2,14 @@ import gql from 'graphql-tag'
 
 export const typeDefs = gql`
   type Query {
-    newPosts(after: String): [Post!]!
+    latestPosts(after: String): [Post!]!
     risingPosts(after: String): [Post!]!
     trendPosts(after: String): [Post!]!
     post(id: ID!): Post!
 
     comments(postId: ID!, after: String): [Comment!]!
 
-    symbol(id: ID!, slug: String!): Symbol!
+    symbol(name: String!): Symbol!
     ticks(symbolId: ID!, after: String): [Tick!]!
     # event(id: ID!): Event!
     # ticker(id: ID, name: String): Ticker!
@@ -19,15 +19,18 @@ export const typeDefs = gql`
     eventHints(input: String): [String!]!
 
     me: User!
-    myPosts: [ID!]!
+    # me: User  # 使用client-cache的情況會有undefined的可能
+    # myPosts: [ID!]!  # 目前post有userId可分辨
     myPostLikes(after: String): [PostLike!]!
     myPostVotes(after: String): [PostVote!]!
-    myComments(after: String): [ID!]!
+    # myComments(after: String): [ID!]!
     myCommentLikes(after: String): [CommentLike!]!
     myFollows: [Follow!]!
     myCommits(after: String): [ID!]!
     myCommitReviews(after: String): [CommitReview!]!
-    myWaitedCommitReviews: [CommitReview!]!
+    # myWaitedCommitReviews: [CommitReview!]!
+
+    fetchPage(link: String!): Page!
 
     ### upcoming ###
     # myBets: [Bet!]!
@@ -43,19 +46,19 @@ export const typeDefs = gql`
     login(email: String!, password: String!): AuthPayload!
     logout: Boolean!
 
-    fetchPage(link: String!): Page!
-
     createPost(data: PostInput!): Post!
     updatePost(id: ID!, data: PostInput!): Post!
-    createPostLike(postId: ID!, data: LikeInput!): PostLike!
-    updatePostLike(postId: ID!, data: LikeInput!): PostLike!
-    createPostVote(postId: ID!, data: VoteInput!): PostVote!
-    updatePostVote(postId: ID!, data: VoteInput!): PostVote!
+    createPostLike(postId: ID!, data: PostLikeInput!): PostLike!
+    updatePostLike(postId: ID!, data: PostLikeInput!): PostLike!
+    createPostVote(postId: ID!, data: PostVoteInput!): PostVote!
+    
+    # 允許更新postVote？
+    updatePostVote(postId: ID!, data: PostVoteInput!): PostVote!
 
-    createComment(data: CommentInput!): Comment!
+    createComment(postId: ID!, data: CommentInput!): Comment!
     updateComment(id: ID!, data: CommentInput!): Comment!
-    createCommentLike(commentId: ID!, data: LikeInput!): CommentLike!
-    updateCommentLike(commentId: ID!, data: LikeInput!): CommentLike!
+    createCommentLike(commentId: ID!, data: CommentLikeInput!): CommentLike!
+    updateCommentLike(commentId: ID!, data: CommentLikeInput!): CommentLike!
 
     createCommit(data: CommitInput!): Commit!
     updateCommit(id: ID!, data: CommitInput!): Commit!
@@ -101,78 +104,100 @@ export const typeDefs = gql`
 
   type Post {
     id: ID!
-    userId: ID
-    view: View!
+    userId: ID!
+    cat: PostCat!
+    status: PostStatus!
     title: String
-    content: String
+    # content: String
+    contentText: String
+    contentPoll: PostPoll
+    contentLink: PostLink
     symbols: [Symbol!]!
     count: PostCount!
-    voteCount: PostVoteCount
     createdAt: DateTime
     updatedAt: DateTime
+  }
+
+  type PostPoll {
+    start: DateTime!
+    end: DateTime!
+    choices: [String!]!
+  }
+
+  type PostLink {
+    url: String!
   }
 
   input PostInput {
-    view: View
+    cat: PostCat!
+    status: PostStatus
     title: String
-    content: String
-    createdAt: DateTime
-    updatedAt: DateTime
+    contentText: String
+    contentPoll: PostPollInput
+    contentLink: PostLinkInput
+    symbols: [ID!]!
+  }
+
+  input PostPollInput {
+    start: DateTime!
+    end: DateTime!
+    choices: [String!]!
+  }
+
+  input PostLinkInput {
+    url: String!
   }
 
   type PostLike {
+    id: ID!
     postId: ID!
     choice: Int!
     createdAt: DateTime!
     updatedAt: DateTime!
   }
 
-  input LikeInput {
+  input PostLikeInput {
     choice: Int!
   }
 
   type PostVote {
-    postId: Int!
+    id: ID!
+    postId: ID!
     choice: Int!
     createdAt: DateTime!
     updatedAt: DateTime!
   }
 
-  input VoteInput {
+  input PostVoteInput {
     choice: Int!
   }
 
   type PostCount {
     id: ID!
-    nViews: Int!
+    # nViews: Int!
     nUps: Int!
     nDowns: Int!
     nComments: Int!
     updatedAt: DateTime!
   }
 
-  type PostVoteCount {
-    id: ID!
-    result: String!
-    updatedAt: DateTime!
-  }
-
   type Comment {
     id: ID!
-    view: View!
+    userId: ID!
+    status: PostStatus!
     content: String
     createdAt: DateTime!
     updatedAt: DateTime!
   }
 
   input CommentInput {
-    view: View
+    status: PostStatus
     content: String!
   }
 
   type CommentCount {
     id: ID!
-    nViews: Int!
+    # nViews: Int!
     nUps: Int!
     nDowns: Int!
     updatedAt: DateTime!
@@ -185,15 +210,20 @@ export const typeDefs = gql`
     updatedAt: DateTime!
   }
 
+  input CommentLikeInput {
+    choice: Int!
+  }
+
   type Symbol {
     id: ID!
-    slug: String!
-    valid: Boolean!
-    title: String
+    name: String!
+    cat: SymbolCat!
+    status: SymbolStatus!
     content: String
+    sysContent: String
     posts: [Post!]!
     ticks: [Tick!]!
-    commits: [ID!]!
+    # commits: [ID!]!
   }
 
   type Follow {
@@ -212,8 +242,9 @@ export const typeDefs = gql`
   type Commit {
     id: ID!
     symbolId: ID!
+    status: CommitStatus!
     action: CommitAction!
-    diff: String
+    content: String!
     post: Post
     reviews: [CommitReview]
     createdAt: DateTime
@@ -221,22 +252,23 @@ export const typeDefs = gql`
   }
 
   input CommitInput {
+    symbolId: ID
     action: CommitAction!
-    postContent: String!
+    content: String!
+    # postContent: String!
     # post: String!
   }
 
   type CommitReview {
     id: ID!
-    user: User
-    commit: Commit
-    choice: Int
+    userId: ID!
+    choice: Int!
     createdAt: DateTime
     updatedAt: DateTime
   }
 
   input CommitReviewInput {
-    commit: ID!
+    commitId: ID!
     choice: Int!
   }
 
@@ -247,41 +279,52 @@ export const typeDefs = gql`
     at: DateTime!
   }
 
-  enum TrackState {
-    TRACKING
-    UNTRACKING
-  }
+  enum PostCat {
+  LINK
+  POST
+  POLL
+  COMMIT
+}
 
-  enum FeedType {
-    WEBPAGE
-    POST
-  }
+enum PostStatus {
+  ACTIVE
+  DELETED
+  REPORTED
+  ARCHIVED
+}
 
-  enum TagType {
-    TICKER
-    TICKER_GROUP
-    KEYWORD
-  }
+enum SymbolCat {
+  TAG
+  TICKER
+  EVENT
+  SYS_TICKER_FOLLOWERS
+}
 
-  enum Taggable {
-    FEED
-    EVENT
-    POST
-  }
+enum SymbolStatus {
+  ACTIVE
+  REPORTED
+  ARCHIVED
+  DUPLICATED
+}
 
-  enum CommitAction {
-    CREATE
-    UPDATE
-    DELETE
-    MERGE
-  }
+enum CommitStatus {
+  REVIEW
+  PASS
+  REJECT
+}
 
-  enum View {
-    PUBLIC
-    DELETED
-    REPORTED
-    LOCKED
-  }
+enum CommitAction {
+  CREATE
+  UPDATE
+  DELETE
+  MERGE
+}
+
+enum LikeChoice {
+  UP
+  DOWN
+  NEUTRAL
+}
 
   scalar DateTime
 `

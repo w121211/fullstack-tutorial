@@ -104,9 +104,9 @@ const server = new ApolloServer({
       "request.credentials": "include"  // for cookies
     }
   },
-  // mocks: true,
-  // mocks,
-  debug: true,
+  mocks,
+  // debug: true,
+  debug: false,
   // plugins: [ logError],
   formatError: (err) => {
     console.error(err)

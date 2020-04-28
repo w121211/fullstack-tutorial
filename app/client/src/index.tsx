@@ -9,16 +9,20 @@ import {
 } from 'apollo-cache-inmemory'
 import { HttpLink } from 'apollo-link-http'
 import { ApolloProvider, useQuery } from '@apollo/react-hooks'
-import gql from 'graphql-tag'
 
+import { Router } from '@reach/router'
 import Pages from './pages'
 import { PageContainer } from './components'
 // import Login from './pages/login'
 import { resolvers, typeDefs } from './store/resolvers'
 import Templates from './templates'
-import './index.css'
+// import './index.css'
 import * as queries from './store/queries'
-import { Post } from './components/Post'
+import * as QT from './store/queryTypes'
+import { PostCreate } from './components/PostCreate'
+import { PostLike } from './components/PostLike'
+import { SignupForm, LoginForm } from './components/SignupForm'
+import { Feed } from './pages/Feed'
 
 const cache = new InMemoryCache({
   dataIdFromObject: (o: any) => {
@@ -52,9 +56,12 @@ const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
 
 cache.writeData({
   data: {
-    isLoggedIn: !!localStorage.getItem('token'),
+    // me: null,
+    // isLoggedIn: !!localStorage.getItem('token'),
+    // isLoggedIn: false,
     cartItems: [],
     isClicked: false,
+    // myPostLikes: [],
     myLikes: [
       {
         __typename: 'Like',
@@ -80,13 +87,20 @@ cache.writeData({
   },
 })
 
-async function IsLoggedIn() {
-  const { data } = await useQuery(queries.GET_ME, {
-    onCompleted: (res) => {
-      console.log(res)
+function IsLoggedIn(props: any) {
+  // useQuery<QT.me>(queries.ME)
+  // useQuery<QT.myPostLikes>(queries.MY_POST_LIKES)
+  // useQuery<QT.myCommentLikes>(queries.MY_COMMENT_LIKES)
+  const { data } = useQuery(queries.ME, {
+    onCompleted: (data) => {
+      console.log(data)
     },
+    onError: (err) => {
+      // console.error(err)
+      // cache.writeData({ data: { isLoggedIn: false } })
+    },
+    // errorPolicy: 'all',
   })
-  console.log(data)
 
   // const { data: data2 } = useQuery(queries.COMMENTS, {
   //   variables: {
@@ -102,15 +116,26 @@ async function IsLoggedIn() {
   // return data.isLoggedIn ? <Pages /> : <Login />
   // return <Pages />
   // return <PageContainer />
+  return <>{props.children}</>
 }
-
-IsLoggedIn()
 
 ReactDOM.render(
   <ApolloProvider client={client}>
-    {/* <IsLoggedIn /> */}
+    {/* <Router>
+      <SignupForm path="/" />
+      <LoginForm path="/login" />
+    </Router> */}
+    {/* <Parent /> */}
+    <Feed />
+    {/* <PostLike postId={"12345"}  /> */}
+
+    {/* <IsLoggedIn> */}
+    {/* <PostCreate /> */}
+    {/* <PostLike postId={"1"} meLike={null} /> */}
+    {/* </IsLoggedIn> */}
+
     {/* <Templates /> */}
-    {/* <Post /> */}
+    {/* <Posts /> */}
   </ApolloProvider>,
   document.getElementById('root'),
 )

@@ -1,43 +1,67 @@
-import gql from 'graphql-tag';
 import React from 'react';
 import { RouteComponentProps } from '@reach/router';
 import { useQuery } from '@apollo/react-hooks';
 
-// import { LAUNCH_TILE_DATA } from './launches';
-// import { Loading, Header } from '../components';
-// import { ActionButton } from '../containers';
-// import * as LaunchDetailsTypes from './__generated__/LaunchDetails';
-
+import * as queries from '../store/queries'
+import * as QT from '../store/queryTypes'
 
 interface Props extends RouteComponentProps {
-  id?: any
+  name: string
 }
 
-// const Event: React.FC<Props> = ({ id }) => {
-//   const {
-//     data,
-//     loading,
-//     error
-//   } = useQuery<
-//     FeedDetailTypes.FeedDetail,
-//     FeedDetailTypes.FeedDetailVariables
-//   >(
-//     GET_FEED,
-//     { variables: { id } }
-//   )
+export const Event: React.FC<Props> = ({ name }) => {
+  useQuery<QT.myPostLikes>(queries.MY_POST_LIKES)
+  useQuery<QT.myCommentLikes>(queries.MY_COMMENT_LIKES)
+  useQuery<QT.myPostVotes>(queries.MY_POST_VOTES)
+  const { data: meData } = useQuery<QT.me>(queries.ME)
 
-//   if (loading) return <Loading />
-//   if (error) return <p>ERROR: {error.message}</p>
-//   if (!data) return <p>Not found</p>
+  const { data, loading, error } = useQuery<QT.getSymbol, QT.getSymbolVariables>(
+    queries.LATEST_POSTS, {
+    fetchPolicy: "cache-and-network",
+    onCompleted() {
+      console.log('latestPosts completed')
+    }
+  })
 
 
-//   return (
-//     <>
-//       {/* <Header> */}
-//       <FeedDetail {...data.feed} />
-//       {/* </Header> */}
-//     </>
-//   )
-// }
+  // const [showLogin, setShowLogin] = useState<boolean>(false)
 
+  if (loading) return <p>Loading...</p>
+  if (error) return <p>ERROR: {error.message}</p>
+  if (!data) return <p>No feeds</p>
+
+  // const after = '1234'
+  // const more = null
+  //   ? <button onClick={() => fetchMore({
+  //     variables: { after },
+  //     updateQuery: (prev, { fetchMoreResult }) => {
+  //       if (!fetchMoreResult) return prev
+  //       return {
+  //         ...prev,
+  //         latestPosts: [...prev.latestPosts, ...fetchMoreResult.latestPosts]
+  //       }
+  //     }
+  //   })}>Load more</button>
+  //   : <button onClick={() => setShowLogin(true)}>Load more</button>
+
+  const header = null
+  const chart = null
+  const posts = null
+
+  return (
+    <>
+      {/* {showLogin ? <button>Login</button> : null} */}
+      {/* {
+        data?.latestPosts && data?.latestPosts.map(x =>
+          <Post
+            key={x.id}
+            post={x}
+            me={meData?.me}
+            toLogin={() => setShowLogin(true)} />
+        )
+      }
+      {more} */}
+    </>
+  )
+}
 export default Event
