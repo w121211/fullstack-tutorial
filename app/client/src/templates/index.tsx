@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import { Router } from '@reach/router'
-import { Feeds } from './Feeds'
+import { Board } from './Board'
 import { Event } from './Event'
 import { Ticker } from './Ticker'
 import { FeedCreate } from './UrlToFeed'
@@ -9,19 +9,31 @@ import { CommitEvent } from './CommitEvent'
 import { CommitEventReview } from './CommitEventReview'
 import { Post } from './Post'
 import { Me } from './Me'
+import { Pane, PageContainer } from './Container'
+import { Signup } from './Signup'
 
 export default function Templates() {
+  const signup = <Signup />
+  const post = <Post />
+
   return (
-    <Router primary={false} component={Fragment}>
-      <Feeds path="/" />
-      <FeedCreate path="submit" />
-      {/* <Post path="post" /> */}
-      <Event path="event" />
-      <Ticker path="ticker" />
-      <TrackingEvents path="tracking/events" />
-      <CommitEvent path="commit/event" />
-      <CommitEventReview path="review/event" />
-      <Me path="me" />
-    </Router>
-  );
+    <PageContainer>
+      <Router primary={false} component={Fragment}>
+        <Pane path="/" left={post} right={null} />
+        {/* <Container></Container> */}
+        {/* <Container path="/" /> */}
+        {/* <Login path="login/" /> */}
+        <Board path="board" />
+        <FeedCreate path="submit" />
+        {/* <Post path="post" /> */}
+        <Event path="event" />
+        <Ticker path="ticker" />
+        <TrackingEvents path="tracking/events" />
+        <CommitEvent path="commit/event" />
+        <CommitEventReview path="review/event" />
+        <Me path="me" />
+        <Signup path="signup" />
+      </Router>
+    </PageContainer>
+  )
 }

@@ -80,13 +80,60 @@ export const SYMBOL_FRAGMENT = gql`
     status
     content
     sysContent
-    posts {
-      ...postFragment
-    }
     # ticks: [Tick!]!
   }
-  ${POST_FRAGMENT}
 `
+export const COMMIT_REVIEW = gql`
+  fragment commitReview on CommitReview {
+    __typename
+    id
+    userId
+    choice
+    createdAt
+    updatedAt
+  }
+`
+export const COMMIT_DETAIL = gql`
+  fragment commitDetail on Commit {
+    __typename
+    id
+    symbolId
+    status
+    action
+    content
+    post { 
+      ...postFragment 
+    }
+    reviews {
+      ...commitReview
+    }
+    createdAt
+    updatedAt
+  }
+  ${POST_FRAGMENT}
+  ${COMMIT_REVIEW}
+`
+export const COMMIT_TILE = gql`
+  fragment commitTile on Commit {
+    __typename
+    id
+    symbolId
+    status
+    action
+    createdAt
+    updatedAt
+  }
+`
+export const FOLLOW = gql`
+  fragment follow on Follow {
+    __typename
+    id
+    symbolId
+    followed
+    updatedAt
+  }
+`
+
 
 // ----------------------------------
 
@@ -159,20 +206,51 @@ export const GET_SYMBOL = gql`
   }
   ${SYMBOL_FRAGMENT}
 `
+export const COMMITS = gql`
+  query commits($symbolId: ID!, $after: String) {
+    commits(symbolId: $symbolId, after: $after) {
+      ...commitTile
+    }
+  }
+  ${COMMIT_TILE}
+`
+export const COMMIT = gql`
+  query commit($id: ID!) {
+    commit(id: $id) {
+      ...commitDetail
+    }
+  }
+  ${COMMIT_DETAIL}
+`
+export const MY_FOLLOWS = gql`
+  query myFollows {
+    myFollows {
+      ...follow
+    }
+  }
+  ${FOLLOW}
+`
+
+
+
+
+
 export const FETCH_PAGE = gql`
   query fetchPage($link: String!) {
     fetchPage(link: $link) {
       id
-      post {
-        ...postFragment
+      createdPostId
+      suggestTitle
+      suggestTags
+      suggestEvents
+      suggestTickers
+      # null if not created
+      createdEvent {
+        ...symbolFragment
       }
-      title
-      symbols
-      tags
-      events
     }
   }
-  ${POST_FRAGMENT}
+  ${SYMBOL_FRAGMENT}
 `
 
 // ----------------------------
@@ -278,4 +356,52 @@ export const UPDATE_COMMENT_LIKE = gql`
     }
   }
   ${COMMENT_LIKE}
+`
+export const CREATE_FOLLOW = gql`
+  mutation createFollow($symbolId: ID!, $data: FollowInput!) {
+    createFollow(symbolId: $symbolId, data: $data) {
+      ...follow
+    }
+  }
+  ${FOLLOW}
+`
+export const UPDATE_FOLLOW = gql`
+  mutation updateFollow($symbolId: ID!, $data: FollowInput!) {
+    updateFollow(symbolId: $symbolId, data: $data) {
+      ...follow
+    }
+  }
+  ${FOLLOW}
+`
+export const CREATE_COMMIT = gql`
+  mutation createCommit($data: CommitInput!) {
+    createFollow(data: $data) {
+      ...commitTile
+    }
+  }
+  ${COMMIT_TILE}
+`
+export const UPDATE_COMMIT = gql`
+  mutation updateCommit($id: ID!, $data: CommitInput!) {
+    updateCommit(id: $id, data: $data) {
+      ...commitTile
+    }
+  }
+  ${COMMIT_TILE}
+`
+export const APPLY_COMMIT_REVIEW = gql`
+  mutation applyCommitReview($commitId: ID!) {
+    applyCommitReview(commitId: $commitId) {
+      ...commitReview
+    }
+  }
+  ${COMMIT_REVIEW}
+`
+export const UPDATE_COMMIT_REVIEW = gql`
+  mutation updateCommitReview($id: ID!, $data: CommitReviewInput!) {
+    updateCommit(id: $id, data: $data) {
+      ...commitReview
+    }
+  }
+  ${COMMIT_REVIEW}
 `

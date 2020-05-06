@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from '@reach/router'
-import {
-  useQuery,
-  useMutation,
-} from '@apollo/react-hooks'
+import { useQuery, useMutation, } from '@apollo/react-hooks'
+import { Space } from 'antd'
 
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
@@ -17,16 +15,23 @@ function CommentEditForm() {
 
 interface CommentProps {
   comment: QT.comments_comments
+  i: number
 }
 
-const Comment: React.FC<CommentProps> = ({ comment }) => {
-  const edit = comment.meComment ? <button>edit</button> : null
+const Comment: React.FC<CommentProps> = ({ comment, i }) => {
+  const edit = comment.meComment ? <a>edit</a> : null
   return (
     <>
-      <p>{comment.content}</p>
-      <br />
-      <CommentLike commentId={comment.id} meLike={comment.meLike} />
-      {edit}
+      {comment.content}
+      <span style={{ float: "right" }}>
+        <Space direction="horizontal">
+          <a>#{i}</a>
+          {/* &nbsp; */}
+          <CommentLike commentId={comment.id} meLike={comment.meLike} />
+          {/* <a>like</a> <a>dislike</a> #1 */}
+          {edit}
+        </Space>
+      </span>
     </>
   )
 }
@@ -46,12 +51,14 @@ export const Comments: React.FC<Props> = ({ postId, after }) => {
   return (
     <>
       {/* <CreateComment feedId={feedId} after={after} isHidden={isHidden} /> */}
-      <ul>
-        {data.comments.map((x) => (
-          <Comment key={x.id} comment={x} />
+      <p>
+        {data.comments.map((x, i) => (
+          <Comment key={x.id} comment={x} i={i} />
         ))}
-      </ul>
-      <CommentForm postId={postId} />
+        {/* * Ant Design, a design language for background applications, is refined by Ant UED Team
+              <span style={{ float: "right" }}><a>like</a> <a>dislike</a> #1</span> */}
+      </p>
+      {/* <CommentForm postId={postId} /> */}
     </>
   )
 }

@@ -1,5 +1,5 @@
-/* @import '~antd/dist/antd.css'; */
-@import '~antd/dist/antd.dark.css';
+@import '~antd/dist/antd.css';
+/* @import '~antd/dist/antd.dark.css'; */
 
 /* #components-layout-demo-fixed .logo {
     width: 120px;
@@ -9,6 +9,21 @@
     float: left;
   } */
 
-/* .site-layout .site-layout-background {
+.site-layout .site-layout-background {
     background: #fff;
-} */
+}
+
+.link-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+
+.link-button:hover,
+.link-button:focus {
+text-decoration: none;
+}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useApolloClient, useMutation } from '@apollo/react-hooks';
 
-import { LoginForm } from '../components';
+// import { LoginForm } from '../components';
 import ApolloClient from 'apollo-client';
 // import * as Types from './__generated__/login';
 import { LOGIN } from '../store/queries'
@@ -23,7 +23,8 @@ export default function Login() {
   );
 
   if (loading) return <p>loading</p>
-  if (error) return <p>An error occurred</p>;
+  if (error) return <p>An error occurred</p>
 
-  return <LoginForm login={login} />;
+  // return <LoginForm login={login} />;
+  return null
 }

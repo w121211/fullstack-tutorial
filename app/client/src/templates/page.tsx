@@ -37,12 +37,12 @@ function Header() {
 export function PageContainer(props: any) {
   return (
     <Layout>
-      {/* <Header /> */}
+      <Header />
       {/* <Layout.Content className="site-layout" style={{ padding: '0 50px', marginTop: 64, maxWidth: 800 }}> */}
-      {/* <Layout.Content className="site-layout" style={{ maxWidth: 800 }}> */}
-      <Layout.Content>
+      <Layout.Content className="site-layout" style={{ maxWidth: 800 }}>
         {props.children}
       </Layout.Content>
+      <Layout.Footer>Footer</Layout.Footer>
     </Layout>
   )
 }

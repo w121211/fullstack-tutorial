@@ -5,6 +5,7 @@ export const typeDefs = gql`
     latestPosts(after: String): [Post!]!
     risingPosts(after: String): [Post!]!
     trendPosts(after: String): [Post!]!
+    symbolPosts(symbolId: ID, after: String): [Post!]!
     post(id: ID!): Post!
 
     comments(postId: ID!, after: String): [Comment!]!
@@ -13,11 +14,9 @@ export const typeDefs = gql`
     ticks(symbolId: ID!, after: String): [Tick!]!
     # event(id: ID!): Event!
     # ticker(id: ID, name: String): Ticker!
-
-    tagHints(input: String): [String!]!
-    tickerHints(input: String): [String!]!
-    eventHints(input: String): [String!]!
-
+    commit(id: ID!): Commit!
+    commits(symbolId: ID!, after: String): [Commit!]!
+    
     me: User!
     # me: User  # 使用client-cache的情況會有undefined的可能
     # myPosts: [ID!]!  # 目前post有userId可分辨
@@ -30,7 +29,10 @@ export const typeDefs = gql`
     myCommitReviews(after: String): [CommitReview!]!
     # myWaitedCommitReviews: [CommitReview!]!
 
-    fetchPage(link: String!): Page!
+    fetchPage(url: String!): Page!
+    tagHints(term: String): [String!]!
+    tickerHints(term: String): [String!]!
+    eventHints(term: String): [String!]!
 
     ### upcoming ###
     # myBets: [Bet!]!
@@ -51,7 +53,6 @@ export const typeDefs = gql`
     createPostLike(postId: ID!, data: PostLikeInput!): PostLike!
     updatePostLike(postId: ID!, data: PostLikeInput!): PostLike!
     createPostVote(postId: ID!, data: PostVoteInput!): PostVote!
-    
     # 允許更新postVote？
     updatePostVote(postId: ID!, data: PostVoteInput!): PostVote!
 
@@ -83,11 +84,22 @@ export const typeDefs = gql`
 
   type Page {
     id: ID!
-    post: Post # null if not existed
-    title: String
-    symbols: [String!]
-    tags: [String!]
-    events: [String!]
+    # null if not existed
+    createdPostId: ID
+    # symbols: [String!]
+    suggestTitle: String
+    suggestTags: [String!]!
+    suggestEvents: [String!]!
+    suggestTickers: [String!]!
+    # null if not created
+    createdEvent: Symbol
+  }
+
+  type EventContent {
+    tags: [String!]!
+    tickers: [String!]!
+    events: [String!]!
+    equalEvents: [String!]!
   }
 
   type AuthPayload {
@@ -135,7 +147,7 @@ export const typeDefs = gql`
     contentText: String
     contentPoll: PostPollInput
     contentLink: PostLinkInput
-    symbols: [ID!]!
+    symbolIds: [ID!]!
   }
 
   input PostPollInput {
@@ -221,14 +233,15 @@ export const typeDefs = gql`
     status: SymbolStatus!
     content: String
     sysContent: String
-    posts: [Post!]!
+    # posts: [Post!]!
     ticks: [Tick!]!
     # commits: [ID!]!
   }
 
   type Follow {
     id: ID!
-    symbol: Symbol!
+    # symbol: Symbol!
+    symbolId: ID!
     followed: Boolean!
     # createdAt: DateTime!
     updatedAt: DateTime!
@@ -245,8 +258,9 @@ export const typeDefs = gql`
     status: CommitStatus!
     action: CommitAction!
     content: String!
-    post: Post
-    reviews: [CommitReview]
+    post: Post!
+    # TODO:洩漏問題？
+    reviews: [CommitReview!]!
     createdAt: DateTime
     updatedAt: DateTime
   }
@@ -268,7 +282,7 @@ export const typeDefs = gql`
   }
 
   input CommitReviewInput {
-    commitId: ID!
+    # commitId: ID!
     choice: Int!
   }
 

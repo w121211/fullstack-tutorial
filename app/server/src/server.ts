@@ -1,4 +1,3 @@
-
 import express from 'express'
 import cookieParser from 'cookie-parser'
 import { verify } from 'jsonwebtoken'
@@ -27,10 +26,10 @@ interface Token {
 
 export const APP_SECRET = 'appsecret321'
 
-// Reference: https://github.com/maticzav/graphql-shield/blob/master/examples/with-graphql-nexus/src/lib/middlewares/authorization.js
+// ref: https://github.com/maticzav/graphql-shield/blob/master/examples/with-graphql-nexus/src/lib/middlewares/authorization.js
 function authorization(): express.RequestHandler {
   return function (req, res, next) {
-    // console.log(req.cookies)
+    console.log(req.cookies)
     const { token } = req.cookies
     if (!token) return next()
     try {
@@ -104,7 +103,7 @@ const server = new ApolloServer({
       "request.credentials": "include"  // for cookies
     }
   },
-  mocks,
+  // mocks,
   // debug: true,
   debug: false,
   // plugins: [ logError],
@@ -114,8 +113,15 @@ const server = new ApolloServer({
   },
 })
 
-server.applyMiddleware({ app, path: '/' })
-// server.applyMiddleware({ app })   
+
+// allow CORS (dev only)
+server.applyMiddleware({
+  app, cors: {
+    origin: 'http://localhost:3010',
+    credentials: true,
+  }
+})
+// server.applyMiddleware({ app, path: '/' })
 
 // module.exports = { app };
 // export { app }

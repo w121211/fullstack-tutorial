@@ -5,3 +5,5 @@ src/generated/
 *.db
 aadr.us.txt
 migrations/
+package-lock.lock
+seed.json

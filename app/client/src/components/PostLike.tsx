@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { useQuery, useMutation } from '@apollo/react-hooks'
+import { Space } from 'antd'
+import { UpCircleFilled, UpCircleOutlined, DownCircleFilled, DownCircleOutlined } from '@ant-design/icons';
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 
@@ -101,13 +103,25 @@ export const PostLike: React.FC<PostLikeProps> = ({ postId }) => {
   }
 
   return (
-    <>
-      <button onClick={likeFn}>
-        {liked ? 'liked' : 'like'}
-      </button>
-      <button onClick={dislikeFn}>
-        {disliked ? 'disliked' : 'dislike'}
-      </button>
-    </>
+    <Space>
+
+      {
+        liked
+          ? <UpCircleFilled onClick={likeFn} />
+          : <UpCircleOutlined onClick={likeFn} />
+      }
+      {
+        disliked
+          ? <DownCircleFilled onClick={likeFn} />
+          : <DownCircleOutlined onClick={likeFn} />
+      }
+
+      {/* <a onClick={likeFn}>
+        {liked ? <b>up</b> : <UpCircleOutlined />}
+      </a>
+      <a onClick={dislikeFn}>
+        {disliked ? <b>down</b> : 'down'}
+      </a> */}
+    </Space>
   )
 }

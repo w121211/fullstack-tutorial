@@ -76,12 +76,13 @@ export const CommentLike: React.FC<Props> = ({ commentId, meLike }) => {
 
   return (
     <>
-      <button onClick={like}>
+      <a onClick={like}>
         {liked ? 'liked' : 'like'}
-      </button>
-      <button onClick={dislike}>
+      </a>
+      &nbsp;
+      <a onClick={dislike}>
         {disliked ? 'disliked' : 'dislike'}
-      </button>
+      </a>
     </>
   )
 }

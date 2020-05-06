@@ -12,16 +12,13 @@ import { ApolloProvider, useQuery } from '@apollo/react-hooks'
 
 import { Router } from '@reach/router'
 import Pages from './pages'
-import { PageContainer } from './components'
 // import Login from './pages/login'
 import { resolvers, typeDefs } from './store/resolvers'
 import Templates from './templates'
-// import './index.css'
+import './index.css'
 import * as queries from './store/queries'
 import * as QT from './store/queryTypes'
-import { PostCreate } from './components/PostCreate'
-import { PostLike } from './components/PostLike'
-import { SignupForm, LoginForm } from './components/SignupForm'
+// import { PostCreate } from './components/PostForm'
 import { Feed } from './pages/Feed'
 
 const cache = new InMemoryCache({
@@ -44,11 +41,13 @@ const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
   cache,
   link: new HttpLink({
     uri: 'http://localhost:4000/graphql',
+    // uri: 'http://localhost:4000',
     headers: {
       authorization: localStorage.getItem('token'),
       'client-name': 'Tsubane[web]',
       'client-version': '0.1',
     },
+    credentials: 'include',
   }),
   resolvers,
   typeDefs,
@@ -126,7 +125,7 @@ ReactDOM.render(
       <LoginForm path="/login" />
     </Router> */}
     {/* <Parent /> */}
-    <Feed />
+    {/* <Feed /> */}
     {/* <PostLike postId={"12345"}  /> */}
 
     {/* <IsLoggedIn> */}
@@ -135,7 +134,7 @@ ReactDOM.render(
     {/* </IsLoggedIn> */}
 
     {/* <Templates /> */}
-    {/* <Posts /> */}
+    <Feed />
   </ApolloProvider>,
   document.getElementById('root'),
 )

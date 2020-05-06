@@ -2,36 +2,88 @@ import React, { useState, Fragment } from 'react'
 import { useQuery, useLazyQuery, useMutation } from '@apollo/react-hooks'
 import { Link, Router, RouteComponentProps } from '@reach/router'
 import { useForm } from 'react-hook-form'
+import { AutoComplete } from 'antd'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 
+const mockVal = (str: string, repeat: number = 1) => {
+  return {
+    value: str.repeat(repeat),
+  };
+};
 
-interface LinkPostProps {
-  page?: QT.fetchPage_fetchPage
+function SymbolSearchForm() {
+  const [value, setValue] = useState('');
+  const [options, setOptions] = useState<{ value: string }[]>([]);
+  const onSearch = (searchText: string) => {
+    setOptions(
+      !searchText ? [] : [mockVal(searchText), mockVal(searchText, 2), mockVal(searchText, 3)],
+    );
+  };
+  const onSelect = (data: string) => {
+    console.log('onSelect', data);
+  };
+  const onChange = (data: string) => {
+    setValue(data);
+  };
+  return (
+    <div>
+      <AutoComplete
+        options={options}
+        style={{ width: 200 }}
+        onSelect={onSelect}
+        onSearch={onSearch}
+        placeholder="input here"
+      />
+      <br />
+      <br />
+      <AutoComplete
+        value={value}
+        options={options}
+        style={{ width: 200 }}
+        onSelect={onSelect}
+        onSearch={onSearch}
+        onChange={onChange}
+        placeholder="control mode"
+      />
+    </div>
+  );
 }
 
-export const LinkPostForm: React.FC<LinkPostProps> = ({ page }) => {
+interface LinkPostProps {
+  page: QT.fetchPage_fetchPage
+}
+
+const LinkPostForm: React.FC<LinkPostProps> = ({ page }) => {
+  // const {
+  //   createdPost,
+  //   suggestTitle,
+  //   suggestTags,
+  //   suggestEvents,
+  //   suggestTickers,
+  //   createdEvent } = page
   const [createPost, { data, loading, error }] = useMutation<QT.createPost, QT.createPostVariables>(
     queries.CREATE_POST
   )
   const { register, handleSubmit, setValue, errors } = useForm({
     defaultValues: {
-      // title: page?.title,
-      title: "some tiltle goes here",
-      content: "some content goes here",
+      title: page.suggestTitle,
+      tags: page.suggestTags,
+      events: page.suggestEvents,
+      tickers: page.suggestTickers,
+      text: "some comments goes here",
     }
   })
   const onSubmit = (data: any) => {
-    createPost({
-      variables: {
-        data: {
-          cat: QT.PostCat.LINK,
-          title: data.title,
-          // content: data.content,
-          symbols: [],
-        }
-      }
-    })
+    // createPost({
+    //   variables: {
+    //     data: {
+    //       cat: QT.PostCat.LINK,
+    //       title: page.title,
+    //       // symbols: page.symbols,
+    //     }
+    //   }
+    // })
   }
 
   if (loading) return <p>Loading...</p>
@@ -86,8 +138,14 @@ function FetchPageForm() {
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>ERROR: {error.message}</p>
+  if (!data) return <p>Fetch page failed</p>
   // if (data?.fetchPage.post) return <Link to={`/post/${data.fetchPage.post.id}`}>Post Existed (Redirect)</Link>
-  if (data?.fetchPage) return <LinkPostForm page={data.fetchPage} />
+  if (data.fetchPage.createdPostId) return (
+    <p>
+      URL has been created: <Link to={`/post/${data.fetchPage.createdPostId}`}>post</Link>
+    </p>
+  )
+  if (data.fetchPage) return <LinkPostForm page={data.fetchPage} />
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -109,11 +167,17 @@ function FetchPageForm() {
   )
 }
 
-function PostForm({ cat }: { cat: QT.PostCat }) {
+
+interface PostFormProps {
+  cat: QT.PostCat
+}
+
+export const PostForm: React.FC<PostFormProps> = ({ cat }) => {
   switch (cat) {
     case QT.PostCat.LINK:
-      // return <LinkPostForm />
-      return <h1>LINK</h1>
+      return <FetchPageForm />
+    // return <LinkPostForm />
+    // return <h1>LINK</h1>
     case QT.PostCat.POST:
       // return <LinkPostForm />
       return <h1>POST</h1>
@@ -121,28 +185,5 @@ function PostForm({ cat }: { cat: QT.PostCat }) {
   return null
 }
 
-interface PostCreateEntryProps extends RouteComponentProps { }
-// export function PostCreateEntry() {
-export const PostCreateEntry: React.FC<PostCreateEntryProps> = () => {
-  const [cat, setCat] = useState<QT.PostCat>(QT.PostCat.LINK)
-  return (
-    <>
-      <button onClick={() => { setCat(QT.PostCat.LINK) }}>LINK</button>
-      <button onClick={() => { setCat(QT.PostCat.POST) }}>POST</button>
-      <PostForm cat={cat} />
-      {/* <LinkPostForm /> */}
-      <FetchPageForm />
-    </>
-  )
-}
 
-export function PostCreate() {
-  return <FetchPageForm />
-  // return (
-  //   <Router primary={false} component={Fragment}>
-  //     <PostForm path="post/new" />
-  //     {/* <FetchPostForm path="post/new/fetch" /> */}
-  //     <LinkPostForm path="post/new/link" />
-  //   </Router>
-  // )
-}
+

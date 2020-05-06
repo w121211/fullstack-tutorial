@@ -10,7 +10,7 @@ interface Props extends RouteComponentProps {
   name: string
 }
 
-export const Event: React.FC<Props> = ({ name }) => {
+export const Commits: React.FC<Props> = ({ name }) => {
   useQuery<QT.myPostLikes>(queries.MY_POST_LIKES)
   useQuery<QT.myCommentLikes>(queries.MY_COMMENT_LIKES)
   useQuery<QT.myPostVotes>(queries.MY_POST_VOTES)
@@ -53,10 +53,8 @@ export const Event: React.FC<Props> = ({ name }) => {
   const commits = null
   const createCommit = null
   const parentEvent = null
-  const tickers = ["$$風電"]
-  const tags = []
-  const synonyms = []  // resolve
-  // const redirect = ""
+  const relatedTickers = null
+  const relatedTags = null
   // const follow = <button onClick={}></button>
 
   return (

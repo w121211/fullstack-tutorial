@@ -8,6 +8,8 @@ const prisma = new PrismaClient({
 })
 
 async function main() {
+  console.log('seeding')
+
   await prisma.raw('TRUNCATE "User", "Symbol" CASCADE;')
 
   // create a user, ie signup
@@ -32,7 +34,7 @@ async function main() {
   // auto create tickers, tags (without commits)
   const ticker1 = await prisma.symbol.create({
     data: {
-      slug: "$AADR",
+      name: "$AADR",
       content: JSON.stringify({ title: "Ticker", tags: ["#tag1", "tag2"], events: ["a-event", "b-event"] }),
       sysContent: JSON.stringify({ docId: "1234abcd" }),
       cat: SymbolCat.TICKER
@@ -40,7 +42,7 @@ async function main() {
   })
   const tag1 = await prisma.symbol.create({
     data: {
-      slug: "#Tag",
+      name: "#Tag",
       content: JSON.stringify({ title: "Ticker", tags: ["#tag1", "tag2"], events: ["a-event", "b-event"] }),
       sysContent: JSON.stringify({}),
       cat: SymbolCat.TAG
@@ -52,8 +54,10 @@ async function main() {
     where: { id: user1.id },
     include: { profile: true }
   })
-  if (userWithProfile?.profile.nFollowedEvents < 10) {
-    await prisma.follow.create({
+  // if (userWithProfile?.profile?.nFollowedEvents && userWithProfile.profile.nFollowedEvents < 10) {
+  if (userWithProfile?.profile?.nFollowedEvents !== undefined
+    && userWithProfile?.profile?.nFollowedEvents < 10) {
+    const f = await prisma.follow.create({
       data: {
         user: { connect: { id: user1.id } },
         symbol: { connect: { id: ticker1.id } },
@@ -86,7 +90,7 @@ async function main() {
   }
   const event1 = await prisma.symbol.create({
     data: {
-      slug: "!event-1",
+      name: "!event-1",
       content: JSON.stringify(_eventContent),
       sysContent: JSON.stringify({
         clusterId: "3847192",
@@ -109,12 +113,12 @@ async function main() {
           count: { create: {} },
         }
       },
-      count: { create: {} }
+      // count: { create: {} }
     }
   })
 
   // apply a commit-review
-  if (userWithProfile.profile.lv > 2) {
+  if (userWithProfile?.profile?.lv && userWithProfile.profile.lv > 2) {
     await prisma.commitReview.create({
       data: {
         user: { connect: { id: user1.id } },
@@ -132,25 +136,25 @@ async function main() {
       choice: 1,
     }
   })
-  let commitCount1 = await prisma.commitCount.findOne({
-    where: { commitId: commit1.id }
-  })
-  if (commitCount1) {
-    commitCount1 = await prisma.commitCount.update({
-      data: {
-        nAgrees: commitCount1.nAgrees + 1
-      },
-      where: { commitId: commit1.id }
-    })
-    if (commitCount1?.nAgrees > 10) {
-      await prisma.commit.update({
-        data: {
-          status: CommitStatus.PASS
-        },
-        where: { id: commit1.id }
-      })
-    }
-  }
+  // let commitCount1 = await prisma.commitCount.findOne({
+  //   where: { commitId: commit1.id }
+  // })
+  // if (commitCount1) {
+  //   commitCount1 = await prisma.commitCount.update({
+  //     data: {
+  //       nAgrees: commitCount1.nAgrees + 1
+  //     },
+  //     where: { commitId: commit1.id }
+  //   })
+  //   if (commitCount1?.nAgrees > 10) {
+  //     await prisma.commit.update({
+  //       data: {
+  //         status: CommitStatus.PASS
+  //       },
+  //       where: { id: commit1.id }
+  //     })
+  //   }
+  // }
 
   // create a post
   const post1 = await prisma.post.create({
@@ -183,6 +187,25 @@ async function main() {
       }
     }
   })
+  const j = JSON.parse(readFileSync('./prisma/seed.json', 'utf8'));
+  for (let d of j.items.data) {
+    await prisma.post.create({
+      data: {
+        title: d.title,
+        content: JSON.stringify({ text: d.summary }),
+        user: { connect: { id: user1.id } },
+        count: { create: {} },
+        symbols: {
+          connect: [
+            { id: ticker1.id },
+            { id: tag1.id },
+            { id: event1.id },
+          ]
+        }
+      }
+    })
+  }
+
 
   // like a post, and update post-count
   const postLike1 = await prisma.postLike.create({
@@ -294,3 +317,8 @@ main()
   .finally(async () => {
     await prisma.disconnect()
   })
+
+
+// var obj = JSON.parse(readFileSync('./prisma/headline.json', 'utf8'));
+// console.log(obj.items.data[0])
+

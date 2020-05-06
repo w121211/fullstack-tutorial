@@ -250,48 +250,6 @@ export interface myCommentLikes {
 // GraphQL query operation: getSymbol
 // ====================================================
 
-export interface getSymbol_symbol_posts_contentPoll {
-  __typename: "PostPoll";
-  start: any;
-  end: any;
-  choices: string[];
-}
-
-export interface getSymbol_symbol_posts_contentLink {
-  __typename: "PostLink";
-  url: string;
-}
-
-export interface getSymbol_symbol_posts_symbols {
-  __typename: "Symbol";
-  id: string;
-  name: string;
-}
-
-export interface getSymbol_symbol_posts_count {
-  __typename: "PostCount";
-  id: string;
-  nUps: number;
-  nDowns: number;
-  nComments: number;
-  updatedAt: any;
-}
-
-export interface getSymbol_symbol_posts {
-  __typename: "Post";
-  id: string;
-  userId: string;
-  cat: PostCat;
-  status: PostStatus;
-  title: string | null;
-  contentText: string | null;
-  contentPoll: getSymbol_symbol_posts_contentPoll | null;
-  contentLink: getSymbol_symbol_posts_contentLink | null;
-  updatedAt: any | null;
-  symbols: getSymbol_symbol_posts_symbols[];
-  count: getSymbol_symbol_posts_count;
-}
-
 export interface getSymbol_symbol {
   __typename: "Symbol";
   id: string;
@@ -300,7 +258,6 @@ export interface getSymbol_symbol {
   status: SymbolStatus;
   content: string | null;
   sysContent: string | null;
-  posts: getSymbol_symbol_posts[];
 }
 
 export interface getSymbol {
@@ -317,28 +274,56 @@ export interface getSymbolVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: fetchPage
+// GraphQL query operation: commits
 // ====================================================
 
-export interface fetchPage_fetchPage_post_contentPoll {
+export interface commits_commits {
+  __typename: "Commit";
+  id: string;
+  symbolId: string;
+  status: CommitStatus;
+  action: CommitAction;
+  createdAt: any | null;
+  updatedAt: any | null;
+}
+
+export interface commits {
+  commits: commits_commits[];
+}
+
+export interface commitsVariables {
+  symbolId: string;
+  after?: string | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: commit
+// ====================================================
+
+export interface commit_commit_post_contentPoll {
   __typename: "PostPoll";
   start: any;
   end: any;
   choices: string[];
 }
 
-export interface fetchPage_fetchPage_post_contentLink {
+export interface commit_commit_post_contentLink {
   __typename: "PostLink";
   url: string;
 }
 
-export interface fetchPage_fetchPage_post_symbols {
+export interface commit_commit_post_symbols {
   __typename: "Symbol";
   id: string;
   name: string;
 }
 
-export interface fetchPage_fetchPage_post_count {
+export interface commit_commit_post_count {
   __typename: "PostCount";
   id: string;
   nUps: number;
@@ -347,7 +332,7 @@ export interface fetchPage_fetchPage_post_count {
   updatedAt: any;
 }
 
-export interface fetchPage_fetchPage_post {
+export interface commit_commit_post {
   __typename: "Post";
   id: string;
   userId: string;
@@ -355,21 +340,92 @@ export interface fetchPage_fetchPage_post {
   status: PostStatus;
   title: string | null;
   contentText: string | null;
-  contentPoll: fetchPage_fetchPage_post_contentPoll | null;
-  contentLink: fetchPage_fetchPage_post_contentLink | null;
+  contentPoll: commit_commit_post_contentPoll | null;
+  contentLink: commit_commit_post_contentLink | null;
   updatedAt: any | null;
-  symbols: fetchPage_fetchPage_post_symbols[];
-  count: fetchPage_fetchPage_post_count;
+  symbols: commit_commit_post_symbols[];
+  count: commit_commit_post_count;
+}
+
+export interface commit_commit_reviews {
+  __typename: "CommitReview";
+  id: string;
+  userId: string;
+  choice: number;
+  createdAt: any | null;
+  updatedAt: any | null;
+}
+
+export interface commit_commit {
+  __typename: "Commit";
+  id: string;
+  symbolId: string;
+  status: CommitStatus;
+  action: CommitAction;
+  content: string;
+  post: commit_commit_post;
+  reviews: commit_commit_reviews[];
+  createdAt: any | null;
+  updatedAt: any | null;
+}
+
+export interface commit {
+  commit: commit_commit;
+}
+
+export interface commitVariables {
+  id: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: myFollows
+// ====================================================
+
+export interface myFollows_myFollows {
+  __typename: "Follow";
+  id: string;
+  symbolId: string;
+  followed: boolean;
+  updatedAt: any;
+}
+
+export interface myFollows {
+  myFollows: myFollows_myFollows[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: fetchPage
+// ====================================================
+
+export interface fetchPage_fetchPage_createdEvent {
+  __typename: "Symbol";
+  id: string;
+  name: string;
+  cat: SymbolCat;
+  status: SymbolStatus;
+  content: string | null;
+  sysContent: string | null;
 }
 
 export interface fetchPage_fetchPage {
   __typename: "Page";
   id: string;
-  post: fetchPage_fetchPage_post | null;
-  title: string | null;
-  symbols: string[] | null;
-  tags: string[] | null;
-  events: string[] | null;
+  createdPostId: string | null;
+  suggestTitle: string | null;
+  suggestTags: string[];
+  suggestEvents: string[];
+  suggestTickers: string[];
+  createdEvent: fetchPage_fetchPage_createdEvent | null;
 }
 
 export interface fetchPage {
@@ -781,6 +837,155 @@ export interface updateCommentLikeVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: createFollow
+// ====================================================
+
+export interface createFollow_createFollow {
+  __typename: "Follow";
+  id: string;
+  symbolId: string;
+  followed: boolean;
+  updatedAt: any;
+}
+
+export interface createFollow {
+  createFollow: createFollow_createFollow;
+}
+
+export interface createFollowVariables {
+  symbolId: string;
+  data: FollowInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: updateFollow
+// ====================================================
+
+export interface updateFollow_updateFollow {
+  __typename: "Follow";
+  id: string;
+  symbolId: string;
+  followed: boolean;
+  updatedAt: any;
+}
+
+export interface updateFollow {
+  updateFollow: updateFollow_updateFollow;
+}
+
+export interface updateFollowVariables {
+  symbolId: string;
+  data: FollowInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: createCommit
+// ====================================================
+
+export interface createCommit_createFollow {
+  __typename: "Follow";
+}
+
+export interface createCommit {
+  createFollow: createCommit_createFollow;
+}
+
+export interface createCommitVariables {
+  data: CommitInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: updateCommit
+// ====================================================
+
+export interface updateCommit_updateCommit {
+  __typename: "Commit";
+  id: string;
+  symbolId: string;
+  status: CommitStatus;
+  action: CommitAction;
+  createdAt: any | null;
+  updatedAt: any | null;
+}
+
+export interface updateCommit {
+  updateCommit: updateCommit_updateCommit;
+}
+
+export interface updateCommitVariables {
+  id: string;
+  data: CommitInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: applyCommitReview
+// ====================================================
+
+export interface applyCommitReview_applyCommitReview {
+  __typename: "CommitReview";
+  id: string;
+  userId: string;
+  choice: number;
+  createdAt: any | null;
+  updatedAt: any | null;
+}
+
+export interface applyCommitReview {
+  applyCommitReview: applyCommitReview_applyCommitReview;
+}
+
+export interface applyCommitReviewVariables {
+  commitId: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: updateCommitReview
+// ====================================================
+
+export interface updateCommitReview_updateCommit {
+  __typename: "Commit";
+}
+
+export interface updateCommitReview {
+  updateCommit: updateCommitReview_updateCommit;
+}
+
+export interface updateCommitReviewVariables {
+  id: string;
+  data: CommitReviewInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: postLike
 // ====================================================
 
@@ -908,48 +1113,6 @@ export interface commentLike {
 // GraphQL fragment: symbolFragment
 // ====================================================
 
-export interface symbolFragment_posts_contentPoll {
-  __typename: "PostPoll";
-  start: any;
-  end: any;
-  choices: string[];
-}
-
-export interface symbolFragment_posts_contentLink {
-  __typename: "PostLink";
-  url: string;
-}
-
-export interface symbolFragment_posts_symbols {
-  __typename: "Symbol";
-  id: string;
-  name: string;
-}
-
-export interface symbolFragment_posts_count {
-  __typename: "PostCount";
-  id: string;
-  nUps: number;
-  nDowns: number;
-  nComments: number;
-  updatedAt: any;
-}
-
-export interface symbolFragment_posts {
-  __typename: "Post";
-  id: string;
-  userId: string;
-  cat: PostCat;
-  status: PostStatus;
-  title: string | null;
-  contentText: string | null;
-  contentPoll: symbolFragment_posts_contentPoll | null;
-  contentLink: symbolFragment_posts_contentLink | null;
-  updatedAt: any | null;
-  symbols: symbolFragment_posts_symbols[];
-  count: symbolFragment_posts_count;
-}
-
 export interface symbolFragment {
   __typename: "Symbol";
   id: string;
@@ -958,7 +1121,133 @@ export interface symbolFragment {
   status: SymbolStatus;
   content: string | null;
   sysContent: string | null;
-  posts: symbolFragment_posts[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: commitReview
+// ====================================================
+
+export interface commitReview {
+  __typename: "CommitReview";
+  id: string;
+  userId: string;
+  choice: number;
+  createdAt: any | null;
+  updatedAt: any | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: commitDetail
+// ====================================================
+
+export interface commitDetail_post_contentPoll {
+  __typename: "PostPoll";
+  start: any;
+  end: any;
+  choices: string[];
+}
+
+export interface commitDetail_post_contentLink {
+  __typename: "PostLink";
+  url: string;
+}
+
+export interface commitDetail_post_symbols {
+  __typename: "Symbol";
+  id: string;
+  name: string;
+}
+
+export interface commitDetail_post_count {
+  __typename: "PostCount";
+  id: string;
+  nUps: number;
+  nDowns: number;
+  nComments: number;
+  updatedAt: any;
+}
+
+export interface commitDetail_post {
+  __typename: "Post";
+  id: string;
+  userId: string;
+  cat: PostCat;
+  status: PostStatus;
+  title: string | null;
+  contentText: string | null;
+  contentPoll: commitDetail_post_contentPoll | null;
+  contentLink: commitDetail_post_contentLink | null;
+  updatedAt: any | null;
+  symbols: commitDetail_post_symbols[];
+  count: commitDetail_post_count;
+}
+
+export interface commitDetail_reviews {
+  __typename: "CommitReview";
+  id: string;
+  userId: string;
+  choice: number;
+  createdAt: any | null;
+  updatedAt: any | null;
+}
+
+export interface commitDetail {
+  __typename: "Commit";
+  id: string;
+  symbolId: string;
+  status: CommitStatus;
+  action: CommitAction;
+  content: string;
+  post: commitDetail_post;
+  reviews: commitDetail_reviews[];
+  createdAt: any | null;
+  updatedAt: any | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: commitTile
+// ====================================================
+
+export interface commitTile {
+  __typename: "Commit";
+  id: string;
+  symbolId: string;
+  status: CommitStatus;
+  action: CommitAction;
+  createdAt: any | null;
+  updatedAt: any | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: follow
+// ====================================================
+
+export interface follow {
+  __typename: "Follow";
+  id: string;
+  symbolId: string;
+  followed: boolean;
+  updatedAt: any;
 }
 
 /* tslint:disable */
@@ -969,6 +1258,19 @@ export interface symbolFragment {
 //==============================================================
 // START Enums and Input Objects
 //==============================================================
+
+export enum CommitAction {
+  CREATE = "CREATE",
+  DELETE = "DELETE",
+  MERGE = "MERGE",
+  UPDATE = "UPDATE",
+}
+
+export enum CommitStatus {
+  PASS = "PASS",
+  REJECT = "REJECT",
+  REVIEW = "REVIEW",
+}
 
 export enum PostCat {
   COMMIT = "COMMIT",
@@ -1005,6 +1307,21 @@ export interface CommentInput {
 
 export interface CommentLikeInput {
   choice: number;
+}
+
+export interface CommitInput {
+  symbolId?: string | null;
+  action: CommitAction;
+  content: string;
+}
+
+export interface CommitReviewInput {
+  choice: number;
+}
+
+export interface FollowInput {
+  symbolId: string;
+  followed: boolean;
 }
 
 export interface PostInput {
