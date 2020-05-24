@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/react-hooks';
 
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
-import { Post } from '../components/Post'
+import { PostTile } from '../components/Post'
 
 interface Props extends RouteComponentProps {
   name: string
@@ -42,7 +42,7 @@ export const Commits: React.FC<Props> = ({ name }) => {
   const status = <p>{getSymbol.data?.symbol.status}</p>
   const chart = null
   const posts = getPosts.data?.latestPosts.map(
-    x => <Post
+    x => <PostTile
       key={x.id}
       post={x}
       me={getMe.data?.me}

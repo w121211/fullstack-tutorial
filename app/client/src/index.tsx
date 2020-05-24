@@ -18,8 +18,6 @@ import Templates from './templates'
 import './index.css'
 import * as queries from './store/queries'
 import * as QT from './store/queryTypes'
-// import { PostCreate } from './components/PostForm'
-import { Feed } from './pages/Feed'
 
 const cache = new InMemoryCache({
   dataIdFromObject: (o: any) => {
@@ -125,16 +123,16 @@ ReactDOM.render(
       <LoginForm path="/login" />
     </Router> */}
     {/* <Parent /> */}
-    {/* <Feed /> */}
     {/* <PostLike postId={"12345"}  /> */}
 
     {/* <IsLoggedIn> */}
-    {/* <PostCreate /> */}
     {/* <PostLike postId={"1"} meLike={null} /> */}
     {/* </IsLoggedIn> */}
 
     {/* <Templates /> */}
-    <Feed />
+    {/* <PostCreate /> */}
+    {/* <Feed /> */}
+    <Pages />
   </ApolloProvider>,
   document.getElementById('root'),
 )

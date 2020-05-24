@@ -1,88 +1,47 @@
 import React from 'react'
-import { useMutation, } from '@apollo/react-hooks'
+import { LikeOutlined, DislikeOutlined, LikeFilled, DislikeFilled } from '@ant-design/icons'
 
-import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 
-interface Props {
+interface CommentLikeProps {
   commentId: string
-  // myPostLikes: QT.myPostLikes_myPostLikes[]
-  meLike: QT.commentLike | null
+  meLike?: QT.commentLike
+  createCommentLike: (a: { variables: QT.createCommentLikeVariables }) => void
+  updateCommentLike: (a: { variables: QT.updateCommentLikeVariables }) => void
 }
 
-export const CommentLike: React.FC<Props> = ({ commentId, meLike }) => {
-  const [createCommentLike] = useMutation<QT.createCommentLike, QT.createCommentLikeVariables>(
-    queries.CREATE_COMMENT_LIKE, {
-    update(cache, { data }) {
-      const res = cache.readQuery<QT.myCommentLikes>({
-        query: queries.MY_COMMENT_LIKES,
-      })
-      if (data?.createCommentLike && res?.myCommentLikes) {
-        cache.writeQuery<QT.myCommentLikes>({
-          query: queries.MY_COMMENT_LIKES,
-          data: {
-            myCommentLikes: res?.myCommentLikes.concat([data?.createCommentLike]),
-          },
-        })
-      }
-    },
-  })
-  const [updateCommentLike] = useMutation<QT.updateCommentLike, QT.updateCommentLikeVariables>(
-    queries.UPDATE_COMMENT_LIKE, {
-    update(cache, { data }) {
-      const res = cache.readQuery<QT.myCommentLikes>({
-        query: queries.MY_COMMENT_LIKES,
-      })
-      if (data?.updateCommentLike && res?.myCommentLikes) {
-        cache.writeQuery<QT.myCommentLikes>({
-          query: queries.MY_POST_LIKES,
-          data: {
-            myCommentLikes: res.myCommentLikes.map((x) =>
-              x.commentId === data.updateCommentLike.commentId ? data.updateCommentLike : x
-            ),
-          },
-        })
-      }
-    },
-  })
-
-  let like
+export const CommentLike: React.FC<CommentLikeProps> = ({ commentId, meLike, createCommentLike, updateCommentLike }) => {
+  let onClick
   let liked = false
-  if (meLike && meLike.choice !== 1) {
-    like = (e: any) =>
-      updateCommentLike({ variables: { commentId, data: { choice: 1 } } })
-  } else if (meLike && meLike.choice === 1) {
-    like = (e: any) =>
-      updateCommentLike({ variables: { commentId, data: { choice: 0 } } })
+  if (meLike && meLike.choice !== QT.LikeChoice.UP) {
+    onClick = (e: any) =>
+      updateCommentLike({ variables: { id: meLike.id, data: { choice: QT.LikeChoice.UP } } })
+  } else if (meLike && meLike.choice === QT.LikeChoice.UP) {
+    onClick = (e: any) =>
+      updateCommentLike({ variables: { id: meLike.id, data: { choice: QT.LikeChoice.NEUTRAL } } })
     liked = true
   } else {
-    like = (e: any) =>
-      createCommentLike({ variables: { commentId, data: { choice: 1 } } })
+    onClick = (e: any) =>
+      createCommentLike({ variables: { commentId, data: { choice: QT.LikeChoice.UP } } })
   }
+  if (liked) return <LikeFilled onClick={onClick} />
+  else return <LikeOutlined onClick={onClick} />
+}
 
-  let dislike
+export const CommentDislike: React.FC<CommentLikeProps> = ({ commentId, meLike, createCommentLike, updateCommentLike }) => {
+  let onClick
   let disliked = false
-  if (meLike && meLike.choice !== 2) {
-    dislike = (e: any) =>
-      updateCommentLike({ variables: { commentId, data: { choice: 2 } } })
-  } else if (meLike && meLike.choice === 2) {
-    dislike = (e: any) =>
-      updateCommentLike({ variables: { commentId, data: { choice: 0 } } })
+  if (meLike && meLike.choice !== QT.LikeChoice.DOWN) {
+    onClick = (e: any) =>
+      updateCommentLike({ variables: { id: meLike.id, data: { choice: QT.LikeChoice.DOWN } } })
+  } else if (meLike && meLike.choice === QT.LikeChoice.DOWN) {
+    onClick = (e: any) =>
+      updateCommentLike({ variables: { id: meLike.id, data: { choice: QT.LikeChoice.NEUTRAL } } })
     disliked = true
   } else {
-    dislike = (e: any) =>
-      createCommentLike({ variables: { commentId, data: { choice: 2 } } })
+    onClick = (e: any) =>
+      createCommentLike({ variables: { commentId, data: { choice: QT.LikeChoice.DOWN } } })
   }
-
-  return (
-    <>
-      <a onClick={like}>
-        {liked ? 'liked' : 'like'}
-      </a>
-      &nbsp;
-      <a onClick={dislike}>
-        {disliked ? 'disliked' : 'dislike'}
-      </a>
-    </>
-  )
+  if (disliked) return <DislikeFilled onClick={onClick} />
+  else return <DislikeOutlined onClick={onClick} />
 }

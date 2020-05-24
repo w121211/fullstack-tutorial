@@ -1,7 +1,6 @@
 import React, { useState, Fragment } from 'react'
 import { useQuery, useLazyQuery, useMutation } from '@apollo/react-hooks'
 import { Link, Router, RouteComponentProps } from '@reach/router'
-import { useForm } from 'react-hook-form'
 import { AutoComplete } from 'antd'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
@@ -65,26 +64,26 @@ const LinkPostForm: React.FC<LinkPostProps> = ({ page }) => {
   const [createPost, { data, loading, error }] = useMutation<QT.createPost, QT.createPostVariables>(
     queries.CREATE_POST
   )
-  const { register, handleSubmit, setValue, errors } = useForm({
-    defaultValues: {
-      title: page.suggestTitle,
-      tags: page.suggestTags,
-      events: page.suggestEvents,
-      tickers: page.suggestTickers,
-      text: "some comments goes here",
-    }
-  })
-  const onSubmit = (data: any) => {
-    // createPost({
-    //   variables: {
-    //     data: {
-    //       cat: QT.PostCat.LINK,
-    //       title: page.title,
-    //       // symbols: page.symbols,
-    //     }
-    //   }
-    // })
-  }
+  // const { register, handleSubmit, setValue, errors } = useForm({
+  //   defaultValues: {
+  //     title: page.suggestTitle,
+  //     tags: page.suggestTags,
+  //     events: page.suggestEvents,
+  //     tickers: page.suggestTickers,
+  //     text: "some comments goes here",
+  //   }
+  // })
+  // const onSubmit = (data: any) => {
+  //   // createPost({
+  //   //   variables: {
+  //   //     data: {
+  //   //       cat: QT.PostCat.LINK,
+  //   //       title: page.title,
+  //   //       // symbols: page.symbols,
+  //   //     }
+  //   //   }
+  //   // })
+  // }
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>ERROR: {error.message}</p>
@@ -94,7 +93,7 @@ const LinkPostForm: React.FC<LinkPostProps> = ({ page }) => {
     <>
       <h1>Page fetched, create a new link-post</h1>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      {/* <form onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label htmlFor="title">title</label>
           <input
@@ -117,7 +116,7 @@ const LinkPostForm: React.FC<LinkPostProps> = ({ page }) => {
           Submit
       </button>
 
-      </form>
+      </form> */}
     </>
   )
 }
@@ -126,15 +125,15 @@ function FetchPageForm() {
   const [fetchPage, { data, loading, error }] = useLazyQuery<QT.fetchPage, QT.fetchPageVariables>(
     queries.FETCH_PAGE,
   )
-  const { register, handleSubmit, setValue, errors } = useForm({
-    defaultValues: {
-      link: "http://some.url"
-    }
-  })
-  const onSubmit = (data: any) => {
-    console.log(data)
-    fetchPage({ variables: { link: data.link } })
-  }
+  // const { register, handleSubmit, setValue, errors } = useForm({
+  //   defaultValues: {
+  //     link: "http://some.url"
+  //   }
+  // })
+  // const onSubmit = (data: any) => {
+  //   console.log(data)
+  //   fetchPage({ variables: { url: data.link } })
+  // }
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>ERROR: {error.message}</p>
@@ -147,23 +146,23 @@ function FetchPageForm() {
   )
   if (data.fetchPage) return <LinkPostForm page={data.fetchPage} />
 
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+  return (<></>
+    // <form onSubmit={handleSubmit(onSubmit)}>
 
-      <div>
-        <label htmlFor="link">link</label>
-        <input
-          name="link"
-          placeholder="http://"
-          ref={register}
-        />
-      </div>
+    //   <div>
+    //     <label htmlFor="link">link</label>
+    //     <input
+    //       name="link"
+    //       placeholder="http://"
+    //       ref={register}
+    //     />
+    //   </div>
 
-      <button type="submit">
-        Submit
-    </button>
+    //   <button type="submit">
+    //     Submit
+    // </button>
 
-    </form>
+    // </form>
   )
 }
 
@@ -173,15 +172,6 @@ interface PostFormProps {
 }
 
 export const PostForm: React.FC<PostFormProps> = ({ cat }) => {
-  switch (cat) {
-    case QT.PostCat.LINK:
-      return <FetchPageForm />
-    // return <LinkPostForm />
-    // return <h1>LINK</h1>
-    case QT.PostCat.POST:
-      // return <LinkPostForm />
-      return <h1>POST</h1>
-  }
   return null
 }
 

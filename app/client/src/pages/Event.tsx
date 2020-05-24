@@ -4,25 +4,43 @@ import { useQuery } from '@apollo/react-hooks';
 
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
-import { Post } from '../components/Post'
+import { PostTile } from '../components/Post'
 
-interface Props extends RouteComponentProps {
+import { Login } from './Feed'
+
+interface EventProps {
   name: string
 }
 
-export const Event: React.FC<Props> = ({ name }) => {
+const _eventContent = {
+  status: "ALIVE",  // ALIVE, END
+  cat: "", // NEWS, COMPANY, SIGNAL
+  start: Date.now(),
+  end: null,
+  // title: "Some event name?",
+  tags: ["#tag1", "tag2"],
+  events: ["a-event", "b-event"],
+  shotedAt: Date.now(),
+}
+
+const Event: React.FC<EventProps> = ({ name }) => {
   useQuery<QT.myPostLikes>(queries.MY_POST_LIKES)
   useQuery<QT.myCommentLikes>(queries.MY_COMMENT_LIKES)
   useQuery<QT.myPostVotes>(queries.MY_POST_VOTES)
   const getMe = useQuery<QT.me>(queries.ME)
-  const getSymbol = useQuery<QT.getSymbol, QT.getSymbolVariables>(
-    queries.LATEST_POSTS, { fetchPolicy: "cache-and-network" })
   const getPosts = useQuery<QT.latestPosts, QT.latestPostsVariables>(
     queries.LATEST_POSTS, { fetchPolicy: "cache-and-network", })
   // const [showLogin, setShowLogin] = useState<boolean>(false)
+  const getSymbol = useQuery<QT.getSymbol, QT.getSymbolVariables>(
+    queries.GET_SYMBOL, {
+    variables: { name },
+    fetchPolicy: "cache-and-network"
+  })
 
   if (getSymbol.loading) return <p>Loading...</p>
-  if (getSymbol.error) return <p>ERROR: {getSymbol.error.message}</p>
+  // if (getSymbol.error) return <p>ERROR: {getSymbol.error.message}</p>
+  if (getSymbol.error) return <p>Event {name} is not found</p>
+  if (getSymbol.data) console.log(getSymbol.data)
 
   // const after = '1234'
   // const more = null
@@ -42,7 +60,7 @@ export const Event: React.FC<Props> = ({ name }) => {
   const status = <p>{getSymbol.data?.symbol.status}</p>
   const chart = null
   const posts = getPosts.data?.latestPosts.map(
-    x => <Post
+    x => <PostTile
       key={x.id}
       post={x}
       me={getMe.data?.me}
@@ -61,6 +79,7 @@ export const Event: React.FC<Props> = ({ name }) => {
 
   return (
     <>
+      <Login />
       {/* {showLogin ? <button>Login</button> : null} */}
       {header}
       {chart}
@@ -69,4 +88,13 @@ export const Event: React.FC<Props> = ({ name }) => {
     </>
   )
 }
-export default Event
+
+
+interface Props extends RouteComponentProps {
+  name?: string
+}
+
+export const EventPage: React.FC<Props> = ({ name }) => {
+  if (name === undefined) return <Event name="404" />
+  return <Event name={name} />
+}

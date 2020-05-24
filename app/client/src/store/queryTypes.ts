@@ -156,20 +156,11 @@ export interface postVariables {
 // GraphQL query operation: comments
 // ====================================================
 
-export interface comments_comments_meLike {
-  __typename: "CommentLike";
-  commentId: string;
-  choice: number;
-  updatedAt: any;
-}
-
 export interface comments_comments {
   __typename: "Comment";
   id: string;
   content: string | null;
   updatedAt: any;
-  meComment: boolean;
-  meLike: comments_comments_meLike | null;
 }
 
 export interface comments {
@@ -192,8 +183,9 @@ export interface commentsVariables {
 
 export interface myPostLikes_myPostLikes {
   __typename: "PostLike";
+  id: string;
   postId: string;
-  choice: number;
+  choice: LikeChoice;
   updatedAt: any;
 }
 
@@ -232,8 +224,9 @@ export interface myPostVotes {
 
 export interface myCommentLikes_myCommentLikes {
   __typename: "CommentLike";
+  id: string;
   commentId: string;
-  choice: number;
+  choice: LikeChoice;
   updatedAt: any;
 }
 
@@ -433,7 +426,7 @@ export interface fetchPage {
 }
 
 export interface fetchPageVariables {
-  link: string;
+  url: string;
 }
 
 /* tslint:disable */
@@ -622,11 +615,27 @@ export interface updatePostVariables {
 // GraphQL mutation operation: createPostLike
 // ====================================================
 
-export interface createPostLike_createPostLike {
+export interface createPostLike_createPostLike_like {
   __typename: "PostLike";
+  id: string;
   postId: string;
-  choice: number;
+  choice: LikeChoice;
   updatedAt: any;
+}
+
+export interface createPostLike_createPostLike_count {
+  __typename: "PostCount";
+  id: string;
+  nUps: number;
+  nDowns: number;
+  nComments: number;
+  updatedAt: any;
+}
+
+export interface createPostLike_createPostLike {
+  __typename: "PostLikeResonse";
+  like: createPostLike_createPostLike_like;
+  count: createPostLike_createPostLike_count;
 }
 
 export interface createPostLike {
@@ -635,7 +644,7 @@ export interface createPostLike {
 
 export interface createPostLikeVariables {
   postId: string;
-  data: PostLikeInput;
+  data: LikeInput;
 }
 
 /* tslint:disable */
@@ -647,11 +656,27 @@ export interface createPostLikeVariables {
 // GraphQL mutation operation: updatePostLike
 // ====================================================
 
-export interface updatePostLike_updatePostLike {
+export interface updatePostLike_updatePostLike_like {
   __typename: "PostLike";
+  id: string;
   postId: string;
-  choice: number;
+  choice: LikeChoice;
   updatedAt: any;
+}
+
+export interface updatePostLike_updatePostLike_count {
+  __typename: "PostCount";
+  id: string;
+  nUps: number;
+  nDowns: number;
+  nComments: number;
+  updatedAt: any;
+}
+
+export interface updatePostLike_updatePostLike {
+  __typename: "PostLikeResonse";
+  like: updatePostLike_updatePostLike_like;
+  count: updatePostLike_updatePostLike_count;
 }
 
 export interface updatePostLike {
@@ -659,8 +684,8 @@ export interface updatePostLike {
 }
 
 export interface updatePostLikeVariables {
-  postId: string;
-  data: PostLikeInput;
+  id: string;
+  data: LikeInput;
 }
 
 /* tslint:disable */
@@ -722,20 +747,11 @@ export interface updatePostVoteVariables {
 // GraphQL mutation operation: createComment
 // ====================================================
 
-export interface createComment_createComment_meLike {
-  __typename: "CommentLike";
-  commentId: string;
-  choice: number;
-  updatedAt: any;
-}
-
 export interface createComment_createComment {
   __typename: "Comment";
   id: string;
   content: string | null;
   updatedAt: any;
-  meComment: boolean;
-  meLike: createComment_createComment_meLike | null;
 }
 
 export interface createComment {
@@ -756,20 +772,11 @@ export interface createCommentVariables {
 // GraphQL mutation operation: updateComment
 // ====================================================
 
-export interface updateComment_updateComment_meLike {
-  __typename: "CommentLike";
-  commentId: string;
-  choice: number;
-  updatedAt: any;
-}
-
 export interface updateComment_updateComment {
   __typename: "Comment";
   id: string;
   content: string | null;
   updatedAt: any;
-  meComment: boolean;
-  meLike: updateComment_updateComment_meLike | null;
 }
 
 export interface updateComment {
@@ -792,8 +799,9 @@ export interface updateCommentVariables {
 
 export interface createCommentLike_createCommentLike {
   __typename: "CommentLike";
+  id: string;
   commentId: string;
-  choice: number;
+  choice: LikeChoice;
   updatedAt: any;
 }
 
@@ -803,7 +811,7 @@ export interface createCommentLike {
 
 export interface createCommentLikeVariables {
   commentId: string;
-  data: CommentLikeInput;
+  data: LikeInput;
 }
 
 /* tslint:disable */
@@ -817,8 +825,9 @@ export interface createCommentLikeVariables {
 
 export interface updateCommentLike_updateCommentLike {
   __typename: "CommentLike";
+  id: string;
   commentId: string;
-  choice: number;
+  choice: LikeChoice;
   updatedAt: any;
 }
 
@@ -827,8 +836,8 @@ export interface updateCommentLike {
 }
 
 export interface updateCommentLikeVariables {
-  commentId: string;
-  data: CommentLikeInput;
+  id: string;
+  data: LikeInput;
 }
 
 /* tslint:disable */
@@ -892,12 +901,18 @@ export interface updateFollowVariables {
 // GraphQL mutation operation: createCommit
 // ====================================================
 
-export interface createCommit_createFollow {
-  __typename: "Follow";
+export interface createCommit_createCommit {
+  __typename: "Commit";
+  id: string;
+  symbolId: string;
+  status: CommitStatus;
+  action: CommitAction;
+  createdAt: any | null;
+  updatedAt: any | null;
 }
 
 export interface createCommit {
-  createFollow: createCommit_createFollow;
+  createCommit: createCommit_createCommit;
 }
 
 export interface createCommitVariables {
@@ -967,12 +982,17 @@ export interface applyCommitReviewVariables {
 // GraphQL mutation operation: updateCommitReview
 // ====================================================
 
-export interface updateCommitReview_updateCommit {
-  __typename: "Commit";
+export interface updateCommitReview_updateCommitReview {
+  __typename: "CommitReview";
+  id: string;
+  userId: string;
+  choice: number;
+  createdAt: any | null;
+  updatedAt: any | null;
 }
 
 export interface updateCommitReview {
-  updateCommit: updateCommitReview_updateCommit;
+  updateCommitReview: updateCommitReview_updateCommitReview;
 }
 
 export interface updateCommitReviewVariables {
@@ -991,8 +1011,27 @@ export interface updateCommitReviewVariables {
 
 export interface postLike {
   __typename: "PostLike";
+  id: string;
   postId: string;
-  choice: number;
+  choice: LikeChoice;
+  updatedAt: any;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: postCount
+// ====================================================
+
+export interface postCount {
+  __typename: "PostCount";
+  id: string;
+  nUps: number;
+  nDowns: number;
+  nComments: number;
   updatedAt: any;
 }
 
@@ -1072,20 +1111,11 @@ export interface postVote {
 // GraphQL fragment: comment
 // ====================================================
 
-export interface comment_meLike {
-  __typename: "CommentLike";
-  commentId: string;
-  choice: number;
-  updatedAt: any;
-}
-
 export interface comment {
   __typename: "Comment";
   id: string;
   content: string | null;
   updatedAt: any;
-  meComment: boolean;
-  meLike: comment_meLike | null;
 }
 
 /* tslint:disable */
@@ -1099,8 +1129,9 @@ export interface comment {
 
 export interface commentLike {
   __typename: "CommentLike";
+  id: string;
   commentId: string;
-  choice: number;
+  choice: LikeChoice;
   updatedAt: any;
 }
 
@@ -1272,11 +1303,18 @@ export enum CommitStatus {
   REVIEW = "REVIEW",
 }
 
+export enum LikeChoice {
+  DOWN = "DOWN",
+  NEUTRAL = "NEUTRAL",
+  UP = "UP",
+}
+
 export enum PostCat {
+  ASK = "ASK",
   COMMIT = "COMMIT",
+  IDEA = "IDEA",
   LINK = "LINK",
   POLL = "POLL",
-  POST = "POST",
 }
 
 export enum PostStatus {
@@ -1305,10 +1343,6 @@ export interface CommentInput {
   content: string;
 }
 
-export interface CommentLikeInput {
-  choice: number;
-}
-
 export interface CommitInput {
   symbolId?: string | null;
   action: CommitAction;
@@ -1324,6 +1358,10 @@ export interface FollowInput {
   followed: boolean;
 }
 
+export interface LikeInput {
+  choice: LikeChoice;
+}
+
 export interface PostInput {
   cat: PostCat;
   status?: PostStatus | null;
@@ -1331,11 +1369,7 @@ export interface PostInput {
   contentText?: string | null;
   contentPoll?: PostPollInput | null;
   contentLink?: PostLinkInput | null;
-  symbols: string[];
-}
-
-export interface PostLikeInput {
-  choice: number;
+  symbolIds: string[];
 }
 
 export interface PostLinkInput {

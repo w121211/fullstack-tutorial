@@ -1,127 +1,519 @@
 import React from 'react'
 import { RouteComponentProps } from "@reach/router"
-import { Input, Card, Divider, Row, Col, Typography, Tag, Button, List, Space, Form } from 'antd'
-import { UpOutlined, DownOutlined } from '@ant-design/icons'
+import { Radio, Input, Card, Divider, Row, Col, Typography, Tag, Button, List, Space, Form, Comment, Progress } from 'antd'
+import { UpOutlined, DownOutlined, LikeOutlined, DislikeOutlined, MessageOutlined, CoffeeOutlined } from '@ant-design/icons'
 
 // const layout = {
 //   labelCol: { span: 8 },
 //   wrapperCol: { span: 16 },
 // }
 
+const comments = [
+  (<p>
+    We supply a series of design principles, practical patterns and high quality design
+    resources (Sketch and Axure), to help people create their product prototypes beautifully
+    and efficiently
+  </p>),
+  (<p>
+    We supply a series of design principles, practical patterns and high quality design
+    resources (Sketch and Axure), to help people create their product prototypes beautifully
+    and efficiently
+  </p>),
+  (<p>
+    We supply a series of design principles, practical patterns and high quality design
+    resources (Sketch and Axure), to help people create their product prototypes beautifully
+    and efficiently
+  </p>)
+]
+
 export function Board(props: RouteComponentProps) {
+  const [form] = Form.useForm();
   return (
     <Row justify="center">
-      <Col span={10}>
-        {/* <p>
-              <Button type="primary" size="large">Post Feed</Button>
-            </p> */}
-        <br />
-        <p>
-          Feeds |
-              <a>Invited reviews (3+)</a>  |
-              <a>@auto-cnbc</a> |
-              <a>@auto-reuters</a> |
-            </p>
+      <Col span={10} >
 
         <Space direction="vertical">
-          <Card size="small">
-            <p>
-              <b>Ant Design, a design language for background applications, is refined by Ant UED Team</b>
-            &nbsp;&nbsp;&nbsp;Ant Design, a design language for background applications, is refined by Ant UED Team
-            &nbsp;&nbsp;&nbsp;
-            <br /><a>!event-aaa-bbb</a>, <a>$ABC</a>, <a>$OPQ</a>
-            </p>
-            <UpOutlined />
-            <DownOutlined />
-          </Card>
-          <Card size="small">
-            <a>
-              <Typography.Text strong>
-                Ant Design, a design language for background applications, is refined by Ant UED Team
-                </Typography.Text>
-            </a>&nbsp;
-              <Tag>event-aaa-bbb</Tag>
-            <Tag>$ABC</Tag>
-            <Tag>$OPQ</Tag>
 
-            {/* <Typography.Text type="secondary">17:32 Source.com</Typography.Text> */}
+          <div>
             <br />
-            <Button shape="circle" icon={<UpOutlined />} />
-            <Button shape="circle" icon={<DownOutlined />} />
-            {/* <Typography.Text underline>Comments [打開後才顯示]</Typography.Text> */}
+            <Space size={13}>
+              <Tag color="#108ee9"><a>Feeds</a></Tag>
+              <a>Reviews(3+)</a>
+              <a><Typography.Text>@auto-cnbc</Typography.Text></a>
+              <a><Typography.Text>@auto-reuters</Typography.Text></a>
+            </Space>
+          </div>
+
+          <Card>
+            <ul>
+              <li>AAA 38%</li>
+              <li>BBB 38%</li>
+              <li><Typography.Text mark>[CCC]</Typography.Text> 38%</li>
+            </ul>
+
+            BBB 42%<br />
+            CCC 12%<br />
+          </Card>
+
+          <Comment
+            style={{ background: "white" }}
+            actions={[
+              <span key="comment-basic-like">
+                {/* <Tooltip title="Like">
+                    {createElement(action === 'liked' ? LikeFilled : LikeOutlined, {
+                      onClick: like,
+                    })}
+                  </Tooltip> */}
+                <LikeOutlined />
+                <span className="comment-action">{123}</span>
+              </span>,
+              <span key="comment-basic-dislike">
+                {/* <Tooltip title="Dislike">
+                    {React.createElement(action === 'disliked' ? DislikeFilled : DislikeOutlined, {
+                      onClick: dislike,
+                    })}
+                  </Tooltip> */}
+                <DislikeOutlined />
+                <span>{123}</span>
+              </span>,
+              <span key="msg">
+                <CoffeeOutlined />123
+                </span>,
+              <span key="domain">source.com</span>,
+              <span key="time">15:32</span>
+            ]}
+            content={
+              <>
+                <p>
+                  <Tag><a>!event-aaa-bbb</a></Tag>
+                  <Tag>$ABC</Tag>
+                  <Tag>$OPQ</Tag>
+                  <br />
+                  <a><b>Ant Design, a design language for background applications, is refined by Ant UED Team</b></a>
+                &nbsp;&nbsp;&nbsp;
+                <br />
+                  {/* Ant Design, a design language for background applications, is refined by Ant UED Team... */}
+
+                </p>
+
+                <Form
+                  size="small"
+                  layout="inline"
+                  name="validate_other"
+                // labelCol={{ span: 8 }}
+                // wrapperCol={{ span: 16 }}
+                // {...formItemLayout}
+                // onFinish={onFinish}
+                // initialValues={{
+                //   ['input-number']: 3,
+                //   ['checkbox-group']: ['A', 'B'],
+                //   rate: 3.5,
+                // }}
+                >
+                  <Form.Item
+                    name="radio-group"
+                  // label="Radio.Group"
+                  >
+                    <Radio.Group value={"a"}>
+                      <Radio value="a">item 1</Radio>: 14 votes (12%) <br />
+                      <Radio value="b">item 2</Radio><br />
+                      <Radio value="c">item 3</Radio><br />
+                    </Radio.Group>
+                  </Form.Item>
+                  <Form.Item
+                  // wrapperCol={{ offset: 8, span: 16 }}
+                  >
+                    <Button type="primary" htmlType="submit">
+                      Vote
+                        </Button>
+                  </Form.Item>
+                </Form>
+              </>
+            }
+          />
+
+
+
+          <Comment
+            style={{ background: "white" }}
+            actions={[
+              <span key="comment-basic-like">
+                {/* <Tooltip title="Like">
+                    {createElement(action === 'liked' ? LikeFilled : LikeOutlined, {
+                      onClick: like,
+                    })}
+                  </Tooltip> */}
+                <LikeOutlined />
+                <span className="comment-action">{123}</span>
+              </span>,
+              <span key="comment-basic-dislike">
+                {/* <Tooltip title="Dislike">
+                    {React.createElement(action === 'disliked' ? DislikeFilled : DislikeOutlined, {
+                      onClick: dislike,
+                    })}
+                  </Tooltip> */}
+                <DislikeOutlined />
+                <span>{123}</span>
+              </span>,
+              <span key="msg">
+                <CoffeeOutlined />123
+                </span>,
+              <span key="domain">source.com</span>,
+              <span key="time">15:32</span>
+            ]}
+            content={
+              <p>
+                <Tag><a>!event-aaa-bbb</a></Tag>
+                <Tag>$ABC</Tag>
+                <Tag>$OPQ</Tag>
+                <br />
+                <a><b>Ant Design, a design language for background applications, is refined by Ant UED Team</b></a>
+            &nbsp;&nbsp;&nbsp;
+            <br />
+            Ant Design, a design language for background applications, is refined by Ant UED Team...
+            <a>expand</a>
+              </p>
+            }
+          >
             <List
-              size="small"
+              // size="small"
               // className="demo-loadmore-list"
               // loading={initLoading}
-              itemLayout="horizontal"
+              // itemLayout="horizontal"
               // loadMore={loadMore}
-              dataSource={[1, 2, 3, 4]}
+              dataSource={comments}
               renderItem={item => (
-                <List.Item
+                <Comment
                   actions={[
-                    <a key="list-loadmore-edit">123 liked</a>,
-                    <a key="list-loadmore-more">dislike</a>
+                    <span key="comment-basic-like">
+                      {/* <Tooltip title="Like">
+                        {createElement(action === 'liked' ? LikeFilled : LikeOutlined, {
+                          onClick: like,
+                        })}
+                      </Tooltip> */}
+                      <LikeOutlined />
+                      <span className="comment-action">{123}</span>
+                    </span>,
+                    <span key="comment-basic-dislike">
+                      {/* <Tooltip title="Dislike">
+                        {React.createElement(action === 'disliked' ? DislikeFilled : DislikeOutlined, {
+                          onClick: dislike,
+                        })}
+                      </Tooltip> */}
+                      <DislikeOutlined />
+                      <span className="comment-action">{123}</span>
+                    </span>,
                   ]}
-                >
-                  {/* <div style={{ marginLeft: -20 }}>#1</div> */}
-                  <div>
-                    Ant Design, a design language for background applications, is refined by Ant UED Team
-                    {/* <a>like</a> <a>dislike</a> */}
-                  </div>
-                </List.Item>
+                  author={"@anonymous"}
+                  // avatar={
+                  //   <Avatar
+                  //     src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                  //     alt="Han Solo"
+                  //   />
+                  // }
+                  content={item}
+                // datetime={
+                //   <Tooltip title={moment().format('YYYY-MM-DD HH:mm:ss')}>
+                //   <span>{moment().fromNow()}</span>
+                // </Tooltip>
+                // }
+                />
+
               )}
             />
-            <Typography.Paragraph>
-              * Ant Design, a design language for background applications, is refined by Ant UED Team
-              <span style={{ float: "right" }}><a>like</a> <a>dislike</a> #1</span>
-              <br />
-              * Ant Design, a design , is refined by Ant UED Team
-              <span style={{ float: "right" }}><a>like</a> <a>dislike</a> #1</span>
-              <br />
-              Ant Design, a design language for background applications, is refined by Ant UED Team
-              <span style={{ float: "right" }}><a>like</a> <a>dislike</a> #1</span>
-              <br />
-              Ant Design, a design language for background applications, is refined by Ant UED Team
-              <span style={{ float: "right" }}><a>like</a> <a>dislike</a> #1</span>
-              <br />
-              Ant Design, a design language for background applications, is refined by Ant UED Team
-              <br /><a><b>#1</b></a> <a>like</a> <a>dislike</a>
-              <br />
-              Ant Design, a design language for background applications, is refined by Ant UED Team
-              <br /><a><b>#1</b></a> <a>like</a> <a>dislike</a>
-              <br />
-              Ant Design, a design language for background applications, is refined by Ant UED Team
-              <br /><a><b>#1</b></a> <a>like</a> <a>dislike</a>
-              <br />
-              Ant Design, a design language for background applications, is refined by Ant UED Team
-              <br /><a><b>#1</b></a> <a>like</a> <a>dislike</a>
+          </Comment>
+
+          <Comment
+            style={{ background: "white" }}
+            actions={[
+              <span key="comment-basic-like">
+                {/* <Tooltip title="Like">
+                    {createElement(action === 'liked' ? LikeFilled : LikeOutlined, {
+                      onClick: like,
+                    })}
+                  </Tooltip> */}
+                <LikeOutlined />
+                <span className="comment-action">{123}</span>
+              </span>,
+              <span key="comment-basic-dislike">
+                {/* <Tooltip title="Dislike">
+                    {React.createElement(action === 'disliked' ? DislikeFilled : DislikeOutlined, {
+                      onClick: dislike,
+                    })}
+                  </Tooltip> */}
+                <DislikeOutlined />
+                <span>{123}</span>
+              </span>,
+              <span key="msg">
+                <CoffeeOutlined />123
+                </span>,
+              <span key="domain">source.com</span>,
+              <span key="time">15:32</span>
+            ]}
+            content={
+              <p>
+                <Tag><a>!event-aaa-bbb</a></Tag>
+                <Tag>$ABC</Tag>
+                <Tag>$OPQ</Tag>
+                <br />
+                <a><b>Ant Design, a design language for background applications, is refined by Ant UED Team</b></a>
+            &nbsp;&nbsp;&nbsp;
+            <br />
+            Ant Design, a design language for background applications, is refined by Ant UED Team...
+            <a>expand</a>
+              </p>
+            }
+          />
+        </Space>
+
+        <br />
 
 
 
-              {/* <div style={{ align: "right" }}><a>like</a> <a>dislike</a></div> */}
+        <Card size="small">
+          <Comment
+            actions={[
+              <span key="comment-basic-like">
+                {/* <Tooltip title="Like">
+                    {createElement(action === 'liked' ? LikeFilled : LikeOutlined, {
+                      onClick: like,
+                    })}
+                  </Tooltip> */}
+                <LikeOutlined />
+                <span className="comment-action">{123}</span>
+              </span>,
+              <span key="comment-basic-dislike">
+                {/* <Tooltip title="Dislike">
+                    {React.createElement(action === 'disliked' ? DislikeFilled : DislikeOutlined, {
+                      onClick: dislike,
+                    })}
+                  </Tooltip> */}
+                <DislikeOutlined />
+                <span>{123}</span>
+              </span>,
+              <span key="msg">
+                <CoffeeOutlined />123
+                </span>,
+              <span key="domain">source.com</span>,
+              <span key="time">15:32</span>
+            ]}
+            content={
+              <p>
+                <Tag><a>!event-aaa-bbb</a></Tag>
+                <Tag>$ABC</Tag>
+                <Tag>$OPQ</Tag>
+                <br />
+                <a><b>Ant Design, a design language for background applications, is refined by Ant UED Team</b></a>
+            &nbsp;&nbsp;&nbsp;
+            <br />
+            Ant Design, a design language for background applications, is refined by Ant UED Team...
+            <a>expand</a>
+                <br />
+                <Typography.Text type="secondary">17:32, Source.com, 23 comments  </Typography.Text>
+              </p>
+            }
+          />
 
-              <br />
-              <a><b>#1</b></a> Ant Design, a design language for background applications, is refined by Ant UED Team
-              <br />
-              <a>like</a> <a>dislike</a>
-              <br />
-              <a><b>#1</b></a> Ant Design, a design language for background applications, is refined by Ant UED Team
-              <br />
-              <a>like</a> <a>dislike</a>
-              <br />
-            </Typography.Paragraph>
-            <p>Ant Design, a design language for background applications, is refined by Ant UED Team</p>
-            <p>Ant Design, a design language for background applications, is refined by Ant UED Team</p>
 
-            {/* <a>23 more</a> */}
+          {/* <div style={{ marginTop: 5 }}>
+              <Typography.Text type="secondary">17:32, Source.com, 23 comments  </Typography.Text>
+            </div> */}
+
+          <List
+            // size="small"
+            // className="demo-loadmore-list"
+            // loading={initLoading}
+            // itemLayout="horizontal"
+            // loadMore={loadMore}
+            dataSource={comments}
+            renderItem={item => (
+              <Comment
+                actions={[
+                  <span key="comment-basic-like">
+                    {/* <Tooltip title="Like">
+                        {createElement(action === 'liked' ? LikeFilled : LikeOutlined, {
+                          onClick: like,
+                        })}
+                      </Tooltip> */}
+                    <LikeOutlined />
+                    <span className="comment-action">{123}</span>
+                  </span>,
+                  <span key="comment-basic-dislike">
+                    {/* <Tooltip title="Dislike">
+                        {React.createElement(action === 'disliked' ? DislikeFilled : DislikeOutlined, {
+                          onClick: dislike,
+                        })}
+                      </Tooltip> */}
+                    <DislikeOutlined />
+                    <span className="comment-action">{123}</span>
+                  </span>,
+                ]}
+                author={"@anonymous"}
+                // avatar={
+                //   <Avatar
+                //     src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                //     alt="Han Solo"
+                //   />
+                // }
+                content={item}
+              // datetime={
+              //   <Tooltip title={moment().format('YYYY-MM-DD HH:mm:ss')}>
+              //   <span>{moment().fromNow()}</span>
+              // </Tooltip>
+              // }
+              />
+
+            )}
+          />
+          <Comment
+            content={
+              (<div>
+                <Form.Item>
+                  {/* <TextArea rows={4} onChange={onChange} value={value} /> */}
+                  <Input />
+                </Form.Item>
+                <Form.Item>
+                  <Button
+                    htmlType="submit"
+                    // loading={submitting}
+                    // onClick={onSubmit}
+                    type="primary">
+                    Add Comment
+              </Button>
+                </Form.Item>
+              </div>
+              )
+            }
+          />
+        </Card>
 
 
-            <Form
+
+        <List
+          header={
+            <div style={{ textAlign: "center" }}><Button type="primary">Trending</Button></div>
+          }
+          // size="small"
+          // className="demo-loadmore-list"
+          // loading={initLoading}
+          // itemLayout="horizontal"
+          // loadMore={loadMore}
+          // bordered
+          style={{ background: "white" }}
+          dataSource={[1, 2, 3, 4]}
+          renderItem={item => (
+            <List.Item >
+              {/* <List.Item.Meta
+                  // avatar={<p>123</p>}
+                  title={<Typography.Text type="secondary" strong>#1</Typography.Text>}
+                // description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                /> */}
+              <Row>
+                <Col offset={1} span={1}><Typography.Title level={4} type="secondary">{item}</Typography.Title></Col>
+                <Col offset={1} span={21} >Ant Design, a design language for background applications, is refined by Ant UED Team</Col>
+              </Row>
+            </List.Item>
+          )}
+        />
+
+
+
+
+        <Card size="small">
+          {/* <a>
+              <b>Ant Design, a design language for background applications, is refined by Ant UED Team</b>
+            </a> &nbsp;
+              <Tag>event-aaa-bbb</Tag>
+            <Tag>$ABC</Tag>
+            <Tag>$OPQ</Tag> */}
+          <a><b>Ant Design, a design language for background applications, is refined by Ant UED Team</b></a>
+            &nbsp;&nbsp;&nbsp;Ant Design, a design language for background applications, is refined by Ant UED Team
+            <Tag>!event-aaa-bbb</Tag>
+          <Tag>$ABC</Tag>
+          <Tag>$OPQ</Tag>
+          <div style={{ marginTop: 5 }}>
+            <Typography.Text type="secondary">17:32, Source.com, <a style={{ color: "inherit" }}>23 comments</a>  </Typography.Text>
+          </div>
+          {/* <Divider /> */}
+          <List
+            size="small"
+            // className="demo-loadmore-list"
+            // loading={initLoading}
+            itemLayout="horizontal"
+            // loadMore={loadMore}
+            dataSource={[1, 2, 3, 4]}
+            renderItem={item => (
+              <List.Item
+              // actions={[
+              //   <a key="list-loadmore-edit">+1</a>,
+              //   <a key="list-loadmore-more">-1</a>
+              // ]}
+              >
+                <div>
+                  Ant Design, a design language for background applications, is refined by Ant UED Team
+                  &nbsp;&nbsp;&nbsp;&nbsp;
+                    <Typography.Text type="secondary">
+                    <a style={{ color: "inherit" }}>+1</a>
+                    &nbsp;&nbsp;
+                      <a style={{ color: "inherit" }}>-1</a>
+                  </Typography.Text>
+                  {/* <a>like</a> <a>dislike</a> */}
+                  {/* <br />
+                    <span style={{ float: "right" }}>
+                      <Typography.Text type="secondary">
+                        <a style={{ color: "inherit" }}>+1</a>&nbsp;&nbsp;
+                      <a style={{ color: "inherit" }}>-1</a>
+                      </Typography.Text>
+                    </span> */}
+                </div>
+              </List.Item>
+            )}
+          />
+          {/* <a>23 more</a> */}
+          <Row>
+            <Col offset={1} span={22}>
+              <Form form={form} name="horizontal_login" onFinish={() => { }}>
+                <Form.Item
+                  name="username"
+                  rules={[{ required: true, message: 'Please input your username!' }]}
+                >
+                  <Input placeholder="comment..." />
+                </Form.Item>
+                {/* <Form.Item
+                name="password"
+                rules={[{ required: true, message: 'Please input your password!' }]}
+              >
+                <Input
+                  prefix={<LockOutlined className="site-form-item-icon" />}
+                  type="password"
+                  placeholder="Password"
+                />
+              </Form.Item> */}
+                {/* <Form.Item shouldUpdate={true}>
+                {() => (
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                  // disabled={
+                  //   !form.isFieldsTouched(true) ||
+                  //   form.getFieldsError().filter(({ errors }) => errors.length).length
+                  // }
+                  >
+                    Log in
+                  </Button>
+                )}
+              </Form.Item> */}
+              </Form>
+            </Col>
+          </Row>
+
+
+          {/* <Form
               // {...layout}
+              layout="inline"
               name="basic"
               initialValues={{ remember: true }}
               size="small"
-              layout="inline"
             // onFinish={onFinish}
             // onFinishFailed={onFinishFailed}
             >
@@ -140,9 +532,10 @@ export function Board(props: RouteComponentProps) {
                   </Button>
               </Form.Item>
 
-            </Form>
-          </Card>
-        </Space>
+            </Form> */}
+        </Card>
+
+
         <br />
         <Card size="small">
           <Typography.Text strong>
@@ -190,7 +583,6 @@ export function Board(props: RouteComponentProps) {
           <Tag>$ABC</Tag>
           <Tag>$OPQ</Tag>
 
-          {/* <Typography.Text type="secondary">17:32 Source.com</Typography.Text> */}
           <br />
           <Button shape="circle" icon={<UpOutlined />} />
           <Button shape="circle" icon={<DownOutlined />} />
@@ -256,6 +648,7 @@ export function Board(props: RouteComponentProps) {
         <p />
         <Button>loading more</Button>
       </Col>
+
       <Col offset={1} span={4}>
         <p />
         <Button>Post</Button>
@@ -284,6 +677,6 @@ export function Board(props: RouteComponentProps) {
         />
 
       </Col>
-    </Row>
+    </Row >
   )
 }

@@ -1,5 +1,103 @@
 import { readFileSync } from 'fs'
-import { PrismaClient, PostCat, SymbolCat, CommitAction, CommitStatus, PostStatus } from '@prisma/client'
+import { PrismaClient, PostCat, SymbolCat, CommitAction, CommitStatus, PostStatus, LikeChoice } from '@prisma/client'
+
+const post = {
+  title: "some title goes here",
+  content: {
+    text: `if it is a link-post, then here can be some thought,
+    or it can be a post-post, and http://aaa.com, #tag, $AAA, !event will auto recognize
+    if it is a commit-post/poll-post, here is words describe the commit/poll
+    here should allow author to add some [image]s, put this feature on the list
+    `,
+    poll: {
+      start: "2000-01-01",  // 不准變更
+      end: "2000-01-10", // 不准變更
+      choices: ["choice a", "choice b", "choice c"], // 不准變更
+      // _start: "2000-01-01",
+      // _end: "2000-01-10",
+      // _result: {},
+    },
+    link: {
+      urL: "http://url.com",
+      domain: "some domain",
+      published_at: "2001-01-01 03:50",
+    }
+  },
+}
+const postCoutnt = {
+  // nViews    Int      @default(0)
+  nUps: 10,
+  nDowns: 30,
+  nComments: 21,
+  poll: [3, 4, 18],
+}
+const bet = {
+
+}
+
+
+const polls = [
+  '[每日任務]預測今天的大盤走勢，你已連續___天完成任務',
+  '正在竄升的趨勢',
+  '近期竄升股',
+  '本日熱門話題',
+  'coming IPO',
+  'coming events',
+  '"電動車"正夯，你覺得哪個電動車概念股最有成長潛力？',
+  '美股還有__小時__分鐘開盤，已有____人預測本日走勢，你已連續___天完成任務',
+  '你覺得自己善於哪些領域？',
+  '點選你熟悉的股票',
+]
+
+const keywordBlacklist = []
+
+const event = {
+  name: "!COVID-19",
+  synonyms: ["corono-virus"],
+  startAt: new Date(2010, 1, 1),
+  endAt: null,
+  slug: "!some-event-name",
+  trend: "RISING",  // NEW, RISING
+  tags: ["#rising"],
+  // 事件熱度
+  heatTicks: [
+    [new Date(2010, 1, 1), 10],
+    [new Date(2010, 1, 2), 13],
+    [new Date(2010, 1, 3), 15],
+  ],
+  // 追蹤人數變化
+  followedTicks: [
+    [new Date(2010, 1, 1), 10],
+    [new Date(2010, 1, 2), 13],
+    [new Date(2010, 1, 3), 15],
+  ],
+  impacts: [
+    {
+      cat: "THEME",
+      content: "#theme-aaa",
+      direction: "UP",  // UP, DOWN
+      volume: 0.2,
+      curReact: "",
+      status: "", // OVERREACT, REACTED, UNDERREACT, NOTREACT
+      createdAt: new Date(2010, 1, 1),
+      potentialProfit: [0.1, 0.5],
+    },
+    {
+      cat: "COMPANY_SHORT_TERM",
+      content: "$",
+      react: "",
+      createdAt: new Date(2010, 1, 1),
+      potentialProfit: [0, 0],
+    },
+  ],
+  similarEvents: ["!SARS", "!MERS"]
+}
+const eventAutoCreated = {
+  name: "!WIDJOWS1238SIDJ"
+}
+const tag = {
+  name: "#",
+}
 
 
 const prisma = new PrismaClient({
@@ -210,7 +308,7 @@ async function main() {
   // like a post, and update post-count
   const postLike1 = await prisma.postLike.create({
     data: {
-      choice: 1,
+      choice: LikeChoice.UP,
       user: { connect: { id: user1.id } },
       post: { connect: { id: post1.id } },
     }
@@ -239,7 +337,7 @@ async function main() {
     // like a comment, and update comment-count
     const commentLike1 = await prisma.commentLike.create({
       data: {
-        choice: 1,
+        choice: LikeChoice.UP,
         user: { connect: { id: user1.id } },
         comment: { connect: { id: comment1.id } },
       }
@@ -254,6 +352,18 @@ async function main() {
       })
     }
   }
+
+  for (let d of j.items.data) {
+    await prisma.comment.create({
+      data: {
+        content: d.title,
+        user: { connect: { id: user1.id } },
+        post: { connect: { id: post1.id } },
+        count: { create: {} }
+      }
+    })
+  }
+
 
   // create a poll-post
   const pollPost = await prisma.post.create({

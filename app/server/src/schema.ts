@@ -50,22 +50,22 @@ export const typeDefs = gql`
 
     createPost(data: PostInput!): Post!
     updatePost(id: ID!, data: PostInput!): Post!
-    createPostLike(postId: ID!, data: PostLikeInput!): PostLike!
-    updatePostLike(postId: ID!, data: PostLikeInput!): PostLike!
+    createPostLike(postId: ID!, data: LikeInput!): PostLikeResonse!
+    updatePostLike(id: ID!, data: LikeInput!): PostLikeResonse!
     createPostVote(postId: ID!, data: PostVoteInput!): PostVote!
     # 允許更新postVote？
     updatePostVote(postId: ID!, data: PostVoteInput!): PostVote!
 
     createComment(postId: ID!, data: CommentInput!): Comment!
     updateComment(id: ID!, data: CommentInput!): Comment!
-    createCommentLike(commentId: ID!, data: CommentLikeInput!): CommentLike!
-    updateCommentLike(commentId: ID!, data: CommentLikeInput!): CommentLike!
+    createCommentLike(commentId: ID!, data: LikeInput!): CommentLike!
+    updateCommentLike(id: ID!, data: LikeInput!): CommentLike!
 
     createCommit(data: CommitInput!): Commit!
     updateCommit(id: ID!, data: CommitInput!): Commit!
     # applyCommitReview(commitId: ID!): ApplyCommitReviewResult!
     applyCommitReview(commitId: ID!): CommitReview!
-    updateCommitReview(commitId: ID!, data: CommitReviewInput!): CommitReview!
+    updateCommitReview(id: ID!, data: CommitReviewInput!): CommitReview!
 
     createFollow(symbolId: ID!, data: FollowInput!): Follow!
     updateFollow(symbolId: ID!, data: FollowInput!): Follow!
@@ -163,13 +163,18 @@ export const typeDefs = gql`
   type PostLike {
     id: ID!
     postId: ID!
-    choice: Int!
+    choice: LikeChoice!
     createdAt: DateTime!
     updatedAt: DateTime!
   }
 
-  input PostLikeInput {
-    choice: Int!
+  type PostLikeResonse {
+    like: PostLike!
+    count: PostCount!
+  }
+
+  input LikeInput {
+    choice: LikeChoice!
   }
 
   type PostVote {
@@ -216,14 +221,11 @@ export const typeDefs = gql`
   }
 
   type CommentLike {
+    id: ID!
     commentId: ID!
-    choice: Int!
+    choice: LikeChoice!
     createdAt: DateTime!
     updatedAt: DateTime!
-  }
-
-  input CommentLikeInput {
-    choice: Int!
   }
 
   type Symbol {
@@ -294,51 +296,52 @@ export const typeDefs = gql`
   }
 
   enum PostCat {
-  LINK
-  POST
-  POLL
-  COMMIT
-}
+    LINK
+    IDEA
+    ASK
+    POLL
+    COMMIT
+  }
 
-enum PostStatus {
-  ACTIVE
-  DELETED
-  REPORTED
-  ARCHIVED
-}
+  enum PostStatus {
+    ACTIVE
+    DELETED
+    REPORTED
+    ARCHIVED
+  }
 
-enum SymbolCat {
-  TAG
-  TICKER
-  EVENT
-  SYS_TICKER_FOLLOWERS
-}
+  enum SymbolCat {
+    TAG
+    TICKER
+    EVENT
+    SYS_TICKER_FOLLOWERS
+  }
 
-enum SymbolStatus {
-  ACTIVE
-  REPORTED
-  ARCHIVED
-  DUPLICATED
-}
+  enum SymbolStatus {
+    ACTIVE
+    REPORTED
+    ARCHIVED
+    DUPLICATED
+  }
 
-enum CommitStatus {
-  REVIEW
-  PASS
-  REJECT
-}
+  enum CommitStatus {
+    REVIEW
+    PASS
+    REJECT
+  }
 
-enum CommitAction {
-  CREATE
-  UPDATE
-  DELETE
-  MERGE
-}
+  enum CommitAction {
+    CREATE
+    UPDATE
+    DELETE
+    MERGE
+  }
 
-enum LikeChoice {
-  UP
-  DOWN
-  NEUTRAL
-}
+  enum LikeChoice {
+    UP
+    DOWN
+    NEUTRAL
+  }
 
   scalar DateTime
 `

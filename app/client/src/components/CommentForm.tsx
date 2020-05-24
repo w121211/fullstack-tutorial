@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { useMutation, } from '@apollo/react-hooks'
-import { useForm } from 'react-hook-form'
 
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
@@ -47,38 +46,39 @@ export const CommentForm: React.FC<Props> = ({ postId }) => {
   //     }
   //   },
   // })
+  return null
 
-  const { register, handleSubmit, setValue, errors } = useForm({
-    defaultValues: {
-      content: "this is a content"
-    }
-  })
-  const onSubmit = handleSubmit(({ content }) => {
-    console.log('submit...')
-    createComment({
-      variables: {
-        postId,
-        data: { content }
-      }
-    })
-  })
-  return (
-    <form onSubmit={onSubmit}>
+  // const { register, handleSubmit, setValue, errors } = useForm({
+  //   defaultValues: {
+  //     content: "this is a content"
+  //   }
+  // })
+  // const onSubmit = handleSubmit(({ content }) => {
+  //   console.log('submit...')
+  //   createComment({
+  //     variables: {
+  //       postId,
+  //       data: { content }
+  //     }
+  //   })
+  // })
+  // return (
+  //   <form onSubmit={onSubmit}>
 
-      <div>
-        <label htmlFor="content">content</label>
-        <input
-          name="content"
-          placeholder="body..."
-          ref={register}
-        />
-      </div>
+  //     <div>
+  //       <label htmlFor="content">content</label>
+  //       <input
+  //         name="content"
+  //         placeholder="body..."
+  //         ref={register}
+  //       />
+  //     </div>
 
-      <button type="submit">
-        Submit
-      </button>
+  //     <button type="submit">
+  //       Submit
+  //     </button>
 
-    </form>
-  )
+  //   </form>
+  // )
 }
 

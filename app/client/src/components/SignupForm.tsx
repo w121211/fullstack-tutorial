@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useMutation, useQuery, useLazyQuery } from '@apollo/react-hooks'
-import { useForm } from 'react-hook-form'
 
 import { navigate } from "@reach/router"
 import * as queries from '../store/queries'
@@ -25,52 +24,53 @@ export function SignupForm(props: any) {
     },
     errorPolicy: "all",
   })
-  const { register, handleSubmit } = useForm({
-    defaultValues: {
-      email: "aaa@aaa.com",
-      password: "aaa",
-    }
-  })
-  const onSubmit = (data: any) => {
-    signup({
-      variables: {
-        email: data.email,
-        password: data.password
-      }
-    })
-  }
+  // const { register, handleSubmit } = useForm({
+  //   defaultValues: {
+  //     email: "aaa@aaa.com",
+  //     password: "aaa",
+  //   }
+  // })
+  // const onSubmit = (data: any) => {
+  //   signup({
+  //     variables: {
+  //       email: data.email,
+  //       password: data.password
+  //     }
+  //   })
+  // }
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>ERROR: {error.message}</p>
   // if (data?.createPost.id) return <Link to={`/post/${data.createPost.id}`}>Post Created</Link>
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <h1>signup</h1>
+  return null
+  // return (
+  //   <form onSubmit={handleSubmit(onSubmit)}>
+  //     <h1>signup</h1>
 
-      <div>
-        <label htmlFor="email">email</label>
-        <input
-          name="email"
-          // placeholder="body..."
-          ref={register}
-        />
-      </div>
+  //     <div>
+  //       <label htmlFor="email">email</label>
+  //       <input
+  //         name="email"
+  //         // placeholder="body..."
+  //         ref={register}
+  //       />
+  //     </div>
 
-      <div>
-        <label htmlFor="password">password</label>
-        <input
-          name="password"
-          // placeholder="body..."
-          ref={register}
-        />
-      </div>
+  //     <div>
+  //       <label htmlFor="password">password</label>
+  //       <input
+  //         name="password"
+  //         // placeholder="body..."
+  //         ref={register}
+  //       />
+  //     </div>
 
-      <button type="submit">
-        Submit
-      </button>
+  //     <button type="submit">
+  //       Submit
+  //     </button>
 
-    </form>
-  )
+  //   </form>
+  // )
 }
 
 
@@ -88,51 +88,53 @@ export function LoginForm(props: any) {
       // navigate(-1)
     },
   })
-  const { register, handleSubmit } = useForm({
-    defaultValues: {
-      email: "aaa@aaa.com",
-      password: "aaa",
-    }
-  })
-  const onSubmit = (data: any) => {
-    login({
-      variables: {
-        email: data.email,
-        password: data.password
-      }
-    })
-  }
+  // const { register, handleSubmit } = useForm({
+  //   defaultValues: {
+  //     email: "aaa@aaa.com",
+  //     password: "aaa",
+  //   }
+  // })
+  // const onSubmit = (data: any) => {
+  //   login({
+  //     variables: {
+  //       email: data.email,
+  //       password: data.password
+  //     }
+  //   })
+  // }
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>ERROR: {error.message}</p>
   // if (data?.createPost.id) return <Link to={`/post/${data.createPost.id}`}>Post Created</Link>
 
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <h1>login</h1>
+  return null
 
-      <div>
-        <label htmlFor="email">email</label>
-        <input
-          name="email"
-          // placeholder="body..."
-          ref={register}
-        />
-      </div>
+  // return (
+  //   <form onSubmit={handleSubmit(onSubmit)}>
+  //     <h1>login</h1>
 
-      <div>
-        <label htmlFor="password">password</label>
-        <input
-          name="password"
-          // placeholder="body..."
-          ref={register}
-        />
-      </div>
+  //     <div>
+  //       <label htmlFor="email">email</label>
+  //       <input
+  //         name="email"
+  //         // placeholder="body..."
+  //         ref={register}
+  //       />
+  //     </div>
 
-      <button type="submit">
-        Submit
-      </button>
+  //     <div>
+  //       <label htmlFor="password">password</label>
+  //       <input
+  //         name="password"
+  //         // placeholder="body..."
+  //         ref={register}
+  //       />
+  //     </div>
 
-    </form>
-  )
+  //     <button type="submit">
+  //       Submit
+  //     </button>
+
+  //   </form>
+  // )
 }

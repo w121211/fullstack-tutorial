@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/react-hooks';
 
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
-import { Post } from './Post'
+import { PostTile } from './Post'
 
 
 interface Props {
@@ -55,7 +55,7 @@ export const CommitDetail: React.FC<Props> = ({ commit }) => {
       {result}
       {/* {showCreateReview ? <CommitReviewForm /> : null} */}
       <p>{content}</p>
-      <Post post={post} toLogin={() => { }} />
+      <PostTile post={post} toLogin={() => { }} />
     </>
   )
 }

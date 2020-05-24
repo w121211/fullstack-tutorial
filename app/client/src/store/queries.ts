@@ -3,8 +3,19 @@ import gql from 'graphql-tag'
 export const POST_LIKE = gql`
   fragment postLike on PostLike {
     __typename
+    id
     postId
     choice
+    updatedAt
+  }
+`
+export const POST_COUNT = gql`
+  fragment postCount on PostCount {
+    __typename
+    id
+    nUps
+    nDowns
+    nComments
     updatedAt
   }
 `
@@ -31,17 +42,14 @@ export const POST_FRAGMENT = gql`
       name
     }
     count {
-      id
-      nUps
-      nDowns
-      nComments
-      updatedAt
+      ...postCount
     }
     # mePost @client
     # meLike @client {
     #   ...postLike
     # }
   }
+  ${POST_COUNT}
 `
 export const POST_VOTE = gql`
   fragment postVote on PostVote {
@@ -57,15 +65,16 @@ export const COMMENT = gql`
     id
     content
     updatedAt
-    meComment @client
-    meLike @client {
-      ...commentLike
-    }
+    # meComment @client
+    # meLike @client {
+    #   ...commentLike
+    # }
   }
 `
 export const COMMENT_LIKE = gql`
   fragment commentLike on CommentLike {
     __typename
+    id
     commentId
     choice
     updatedAt
@@ -235,9 +244,10 @@ export const MY_FOLLOWS = gql`
 
 
 
+
 export const FETCH_PAGE = gql`
-  query fetchPage($link: String!) {
-    fetchPage(link: $link) {
+  query fetchPage($url: String!) {
+    fetchPage(url: $url) {
       id
       createdPostId
       suggestTitle
@@ -294,20 +304,32 @@ export const UPDATE_POST = gql`
   ${POST_FRAGMENT}
 `
 export const CREATE_POST_LIKE = gql`
-  mutation createPostLike($postId: ID!, $data: PostLikeInput!) {
+  mutation createPostLike($postId: ID!, $data: LikeInput!) {
     createPostLike(postId: $postId, data: $data) {
-      ...postLike
+      like {
+        ...postLike
+      }
+      count {
+        ...postCount
+      }
     }
   }
   ${POST_LIKE}
+  ${POST_COUNT}
 `
 export const UPDATE_POST_LIKE = gql`
-  mutation updatePostLike($postId: ID!, $data: PostLikeInput!) {
-    updatePostLike(postId: $postId, data: $data) {
-      ...postLike
+  mutation updatePostLike($id: ID!, $data: LikeInput!) {
+    updatePostLike(id: $id, data: $data) {
+      like {
+        ...postLike
+      }
+      count {
+        ...postCount
+      }
     }
   }
   ${POST_LIKE}
+  ${POST_COUNT}
 `
 export const CREATE_POST_VOTE = gql`
   mutation createPostVote($postId: ID!, $data: PostVoteInput!) {
@@ -342,7 +364,7 @@ export const UPDATE_COMMENT = gql`
   ${COMMENT}
 `
 export const CREATE_COMMENT_LIKE = gql`
-  mutation createCommentLike($commentId: ID!, $data: CommentLikeInput!) {
+  mutation createCommentLike($commentId: ID!, $data: LikeInput!) {
     createCommentLike(commentId: $commentId, data: $data) {
       ...commentLike
     }
@@ -350,8 +372,8 @@ export const CREATE_COMMENT_LIKE = gql`
   ${COMMENT_LIKE}
 `
 export const UPDATE_COMMENT_LIKE = gql`
-  mutation updateCommentLike($commentId: ID!, $data: CommentLikeInput!) {
-    updateCommentLike(commentId: $commentId, data: $data) {
+  mutation updateCommentLike($id: ID!, $data: LikeInput!) {
+    updateCommentLike(id: $id, data: $data) {
       ...commentLike
     }
   }
@@ -375,7 +397,7 @@ export const UPDATE_FOLLOW = gql`
 `
 export const CREATE_COMMIT = gql`
   mutation createCommit($data: CommitInput!) {
-    createFollow(data: $data) {
+    createCommit(data: $data) {
       ...commitTile
     }
   }
@@ -399,7 +421,7 @@ export const APPLY_COMMIT_REVIEW = gql`
 `
 export const UPDATE_COMMIT_REVIEW = gql`
   mutation updateCommitReview($id: ID!, $data: CommitReviewInput!) {
-    updateCommit(id: $id, data: $data) {
+    updateCommitReview(id: $id, data: $data) {
       ...commitReview
     }
   }

@@ -1,75 +1,15 @@
-import gql from 'graphql-tag';
-import React from 'react';
-import { RouteComponentProps } from '@reach/router';
-import { useQuery } from '@apollo/react-hooks';
-import { useForm } from 'react-hook-form'
-
-// import { LAUNCH_TILE_DATA } from './launches';
-// import { Loading, Header } from '../components';
-// import { ActionButton } from '../containers';
-// import * as LaunchDetailsTypes from './__generated__/LaunchDetails';
-
-type FormData = {
-  id: string
-  body: string
-}
-
-// interface CreateBetFormProps {
-//   createComment: (a: { variables: CreateCommentTypes.CreateCommentVariables }) => void
-//   disabled: boolean
-// }
-
-// const CreateBetForm: React.FC<CreateCommentFormProps> = ({ createComment, disabled }) => {
-//   const { register, handleSubmit, setValue, errors } = useForm<FormData>()
-//   const onSubmit = handleSubmit(({ id, body }) => {
-//     console.log('submit...')
-//     console.log({ id, body })
-//     createComment({
-//       variables: { data: { body } }
-//     })
-//   })
-//   return (
-//     <form onSubmit={onSubmit}>
-//       <label htmlFor="body">body</label>
-//       <input name="body" placeholder="body..." defaultValue="this is a body" ref={register} />
-//       <button type="submit" disabled={disabled}>Submit</button>
-//     </form>
-//   )
-// }
-
+import React from 'react'
+import { RouteComponentProps } from '@reach/router'
+import { useQuery } from '@apollo/react-hooks'
+import { Chart } from '../components/Chart'
 
 interface Props extends RouteComponentProps {
   id?: any
 }
+// export default function Ticker() {
+export const Ticker: React.FC<Props> = ({ id }) => {
+  return <Chart />
 
-// const Event: React.FC<Props> = ({ id }) => {
-//   const {
-//     data,
-//     loading,
-//     error
-//   } = useQuery<
-//     FeedDetailTypes.FeedDetail,
-//     FeedDetailTypes.FeedDetailVariables
-//   >(
-//     GET_FEED,
-//     { variables: { id } }
-//   )
-
-//   if (loading) return <Loading />
-//   if (error) return <p>ERROR: {error.message}</p>
-//   if (!data) return <p>Not found</p>
-
-
-//   return (
-//     <>
-//       {/* <Header> */}
-//       <FeedDetail {...data.feed} />
-//       {/* </Header> */}
-//     </>
-//   )
-// }
-
-export default function Ticker() {
   return (
     <>
       <h1>Commodo viverra maecenas, $ASO</h1>

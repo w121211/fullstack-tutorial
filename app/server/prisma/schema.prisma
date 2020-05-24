@@ -48,15 +48,6 @@ model DailyProfile {
   updatedAt      DateTime @updatedAt
 }
 
-// 透過URL可以判斷是否為link
-// polls     Poll[]
-// event     Event?   @relation(references: [id])
-// ticker    Ticker?  @relation(references: [id])
-// tag       Tag?     @relation(references: [id])
-// likes     Like[]
-// tags      Tag[]         @relation(references: [id])
-// events    Event[]       @relation(references: [id])
-// tickers   Ticker[]      @relation(references: [id])
 model Post {
   id        Int        @default(autoincrement()) @id
   user      User       @relation(fields: [userId], references: [id])
@@ -72,17 +63,18 @@ model Post {
   symbols   Symbol[]   @relation(references: [id])
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+  Commit    Commit[]
 }
 
 model PostLike {
-  id        Int      @default(autoincrement()) @id
-  user      User     @relation(fields: [userId], references: [id])
+  id        Int        @default(autoincrement()) @id
+  user      User       @relation(fields: [userId], references: [id])
   userId    String
-  post      Post     @relation(fields: [postId], references: [id])
+  post      Post       @relation(fields: [postId], references: [id])
   postId    Int
-  choice    Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  choice    LikeChoice
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 
   @@unique([userId, postId])
 }
@@ -94,6 +86,7 @@ model PostVote {
   post      Post     @relation(fields: [postId], references: [id])
   postId    Int
   choice    Int
+  reward    Float?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -139,14 +132,14 @@ model CommentCount {
 }
 
 model CommentLike {
-  id        Int      @default(autoincrement()) @id
-  user      User     @relation(fields: [userId], references: [id])
+  id        Int        @default(autoincrement()) @id
+  user      User       @relation(fields: [userId], references: [id])
   userId    String
-  comment   Comment  @relation(fields: [commentId], references: [id])
+  comment   Comment    @relation(fields: [commentId], references: [id])
   commentId Int
-  choice    Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  choice    LikeChoice
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 
   @@unique([userId, commentId])
 }
@@ -165,6 +158,8 @@ model Symbol {
   ticks      Tick[]
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
+  Follow     Follow[]
+  Bet        Bet[]
 }
 
 model Follow {
@@ -254,6 +249,7 @@ enum PostCat {
 
 enum PostStatus {
   ACTIVE
+  ACTIVE_LOCK
   DELETED
   REPORTED
   ARCHIVED

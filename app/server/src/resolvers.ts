@@ -2,10 +2,10 @@ import { compare, hash } from 'bcryptjs'
 import { sign } from 'jsonwebtoken'
 import { GraphQLResolverMap } from 'apollo-graphql'
 import { GraphQLDateTime } from 'graphql-iso-date'
+import _ from 'lodash'
+import { Post, PostCat, PostStatus, LikeChoice } from '@prisma/client'
 import { Context } from './context'
 import { APP_SECRET } from './server'
-
-import { Post, PostCat, PostStatus } from '@prisma/client'
 
 
 interface PostInput {
@@ -34,26 +34,29 @@ function mapPostInput(post: PostInput) {
   return { ...post, content }
 }
 
-function mapPost(post: Post) {
+function parsePostContent(post: Post) {
+  console.log(post)
   const content = JSON.parse(post.content)
   delete post.content
   return {
     ...post,
     contentText: content.text,
     contentLink: content.link,
-    contentPoll: content.poll,
+    // contentPoll: content.poll,
   }
 }
+
 
 export const resolvers: GraphQLResolverMap<Context> = {
   DateTime: GraphQLDateTime, // custom scalar
   Query: {
     latestPosts: async (parent, { after = null }, { prisma }) => {
       const posts = await prisma.post.findMany({
-        first: 20,
+        first: 40,
         include: { count: true, symbols: true },
       })
-      return posts.map(p => mapPost(p))
+      // return _.shuffle(posts).map(p => parsePostContent(p))
+      return posts.map(p => parsePostContent(p))
     },
     risingPosts: (parent, args, ctx) => {
       return []
@@ -74,8 +77,8 @@ export const resolvers: GraphQLResolverMap<Context> = {
     comments: (parent, { postId, after }, { prisma }) => {
       return prisma.comment.findMany({ where: { postId: parseInt(postId) }, first: 20 })
     },
-    symbol: (parent, { id, name }, { prisma }) => {
-      return prisma.symbol.findOne({ where: { id, name } })
+    symbol: (parent, { name }, { prisma }) => {
+      return prisma.symbol.findOne({ where: { name } })
     },
     ticks: (parent, { symbolId, after }, ctx) => {
       return ctx.prisma.tick.findMany({ where: { symbolId }, first: 50 })
@@ -168,87 +171,152 @@ export const resolvers: GraphQLResolverMap<Context> = {
       return prisma.post.update({ userId: req.userId, ...data })
     },
     createPostLike: async (parent, { postId, data }, { prisma, req }) => {
-      const postLike = await prisma.postLike.create({
+      const like = await prisma.postLike.create({
         data: {
           choice: data.choice,
           user: { connect: { id: req.userId } },
           post: { connect: { id: parseInt(postId) } },
         }
       })
-      let postCount = await prisma.postCount.findOne({
-        where: { postId: postLike.postId }
-      })
-      if (postCount) {
-        postCount = await prisma.postCount.update({
-          data: { nUps: postCount.nUps + 1 },
-          where: { postId: postCount.postId }
-        })
-      }
-      return postLike
+      let count = await prisma.postCount.findOne({ where: { postId: like.postId } })
+      if (count === null) throw new Error('Something went wrong')
 
-      // const count = await prisma.postCount.findOne({ where: { postId } })
-      // if (count) {
-      //   let nUps = count.nUps, nDowns = count.nDowns
-      //   if (data.choice === 0) nUps += 1
-      //   if (data.choice === 1) nDowns += 1
-      //   prisma.postCount.update({
-      //     data: { nUps, nDowns },
-      //     where: { postId }
-      //   })
-      //   return prisma.postLike.create({
-      //     data: {
-      //       choice: data.choice,
-      //       user: { connect: { id: req.userId } },
-      //       post: { connect: { id: postId } },
-      //     }
-      //   })
-      // }
-      // return null
-    },
-    updatePostLike: async (parent, { postId, data }, { prisma, req }) => {
-      const count = await prisma.postCount.findOne({ where: { postId } })
-      if (count) {
-        let nUps = count.nUps, nDowns = count.nDowns
-        if (data.choice === 0) {
-          nUps += 1
-          nDowns -= 1
-        }
-        if (data.choice === 1) nDowns += 1
-        prisma.postCount.update({
-          data: { nUps, nDowns },
-          where: { postId }
-        })
-        return prisma.postLike.create({
-          data: {
-            choice: data.choice,
-            user: { connect: { id: req.userId } },
-            post: { connect: { id: postId } },
-          }
-        })
+      let dUps = 0, dDowns = 0
+      switch (like.choice) {
+        case LikeChoice.DOWN:
+          dDowns += 1
+          break
+        case LikeChoice.UP:
+          dUps += 1
+          break
       }
-      return null
+      prisma.postCount.update({
+        data: {
+          nUps: count.nUps + dUps,
+          nDowns: count.nDowns + dDowns,
+        },
+        where: { postId: like.postId }
+      })
+      return { like, count }
+    },
+    updatePostLike: async (parent, { id, data }, { prisma, req }) => {
+      const oldLike = await prisma.postLike.findOne({
+        where: { id: parseInt(id) }
+      })
+      if (oldLike === null || data.choice === oldLike.choice)
+        throw new Error('No matched data')
+
+      const like = await prisma.postLike.update({
+        data: { choice: data.choice },
+        where: { id: oldLike.id }
+      })
+      let count = await prisma.postCount.findOne({
+        where: { postId: like.postId }
+      })
+      if (count === null) throw new Error('Something went wrong')
+
+      let dUps = 0, dDowns = 0
+      switch (oldLike.choice) {
+        case LikeChoice.DOWN:
+          dDowns -= 1
+          break
+        case LikeChoice.UP:
+          dUps -= 1
+          break
+      }
+      switch (like.choice) {
+        case LikeChoice.DOWN:
+          dDowns += 1
+          break
+        case LikeChoice.UP:
+          dUps += 1
+          break
+      }
+      count = await prisma.postCount.update({
+        data: {
+          nUps: count.nUps + dUps,
+          nDowns: count.nDowns + dDowns,
+        },
+        where: { postId: like.postId }
+      })
+
+      return { like, count }
     },
     createPostVote: (parent, { postId, data }, { prisma, req }) => {
-      return prisma.postVote.create({ userId: req.userId, ...data })
+      return prisma.postVote.create({
+        data: {
+          user: { connect: { id: req.userId } },
+          post: { connect: { id: parseInt(postId) } },
+          choice: data.choice,
+        }
+      })
     },
     updatePostVote: (parent, { postId, data }, { prisma, req }) => {
       return prisma.postVote.update({ userId: req.userId, ...data })
     },
-    createComment: (parent, { data }, { prisma, req }) => {
-      return prisma.comment.create({ userId: req.userId, ...data })
+    createComment: async (parent, { postId, data }, { prisma, req }) => {
+      const post = await prisma.post.findOne({
+        where: { id: parseInt(postId) },
+        include: { count: true }
+      })
+      if (post === null) throw new Error("cannot find post")
+      if (post.status !== PostStatus.ACTIVE) throw new Error("post is not active")
+      prisma.postCount.update({
+        data: { nComments: post.count.nComments + 1 },
+        where: { postId: post.id }
+      })
+      return prisma.comment.create({
+        data: {
+          content: data.content,
+          user: { connect: { id: req.userId } },
+          post: { connect: { id: post.id } },
+          count: { create: {} }
+        }
+      })
     },
     updateComment: (parent, { id, data }, { prisma, req }) => {
-      return prisma.comment.update({ data, where: { id: Number(id) } })
+      return prisma.comment.update({
+        data: { content: data.cotent },
+        where: { id: parseInt(id) }
+      })
     },
-    createCommentLike: (parent, { postId, data }, { prisma, req }) => {
-      return prisma.comment.create({ userId: req.userId, ...data })
+    createCommentLike: async (parent, { commentId, data }, { prisma, req }) => {
+      const like = await prisma.commentLike.create({
+        data: {
+          choice: data.choice,
+          user: { connect: { id: req.userId } },
+          comment: { connect: { id: parseInt(commentId) } },
+        }
+      })
+      let count = await prisma.commentCount.findOne({
+        where: { commentId: like.commentId }
+      })
+      if (count) {
+        await prisma.commentCount.update({
+          data: { nUps: count.nUps + 1 },
+          where: { commentId: like.commentId }
+        })
+      }
+      return like
     },
-    updateCommentLike: (parent, { postId, data }, { prisma, req }) => {
-      return prisma.comment.create({ userId: req.userId, ...data })
+    updateCommentLike: async (parent, { id, data }, { prisma, req }) => {
+      const like = await prisma.commentLike.update({
+        data: { choice: data.choice },
+        where: { id: parseInt(id) }
+      })
+      let count = await prisma.commentCount.findOne({
+        where: { commentId: like.commentId }
+      })
+      if (count) {
+        await prisma.commentCount.update({
+          data: { nUps: count.nUps + 1 },
+          where: { commentId: like.commentId }
+        })
+      }
+      return like
     },
     createCommit: (parent, { data }, { prisma, req }) => {
       // invite random reviewers by creating commitReview
-
       return prisma.comment.create({ userId: req.userId, ...data })
     },
     updateCommit: (parent, { id, data }, { prisma, req }) => {

@@ -15,6 +15,7 @@ import { Signup } from './Signup'
 export default function Templates() {
   const signup = <Signup />
   const post = <Post />
+  const form = <FeedCreate />
 
   return (
     <PageContainer>
@@ -24,7 +25,7 @@ export default function Templates() {
         {/* <Container path="/" /> */}
         {/* <Login path="login/" /> */}
         <Board path="board" />
-        <FeedCreate path="submit" />
+        <Pane path="form" left={form} right={null} />
         {/* <Post path="post" /> */}
         <Event path="event" />
         <Ticker path="ticker" />

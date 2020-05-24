@@ -1,7 +1,6 @@
 import React, { useState, Fragment } from 'react'
 import { useQuery, useLazyQuery, useMutation } from '@apollo/react-hooks'
 import { Link, Router, RouteComponentProps } from '@reach/router'
-import { useForm } from 'react-hook-form'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 
@@ -17,13 +16,13 @@ export const CommitReviewtForm: React.FC<CommitReviewtFormProps> = ({ review }) 
   const [updateCommitReview, { data, loading, error }] = useMutation<QT.updateCommitReview, QT.updateCommitReviewVariables>(
     queries.UPDATE_COMMIT_REVIEW
   )
-  const { register, handleSubmit, setValue, errors } = useForm({
-    defaultValues: {
-      // title: page?.title,
-      choice: 1,
-      content: "some content goes here",
-    }
-  })
+  // const { register, handleSubmit, setValue, errors } = useForm({
+  //   defaultValues: {
+  //     // title: page?.title,
+  //     choice: 1,
+  //     content: "some content goes here",
+  //   }
+  // })
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>ERROR: {error.message}</p>
@@ -40,21 +39,23 @@ export const CommitReviewtForm: React.FC<CommitReviewtFormProps> = ({ review }) 
     })
   }
 
-  return (
-    <>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <label htmlFor="choice">choice</label>
-          <input
-            name="choice"
-            placeholder="choice..."
-            ref={register}
-          />
-        </div>
+  return null
 
-        <button type="submit">Submit</button>
+  // return (
+  //   <>
+  //     <form onSubmit={handleSubmit(onSubmit)}>
+  //       <div>
+  //         <label htmlFor="choice">choice</label>
+  //         <input
+  //           name="choice"
+  //           placeholder="choice..."
+  //           ref={register}
+  //         />
+  //       </div>
 
-      </form>
-    </>
-  )
+  //       <button type="submit">Submit</button>
+
+  //     </form>
+  //   </>
+  // )
 }

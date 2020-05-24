@@ -2,7 +2,7 @@ import React from 'react'
 import { RouteComponentProps } from "@reach/router"
 import { Radio, Divider, Form, Input, Button, Checkbox, Layout, Typography, Tag } from 'antd'
 
-export function FeedCreate(props: RouteComponentProps) {
+export function FeedCreate() {
   const radioStyle = {
     display: 'block',
     // height: '30px',

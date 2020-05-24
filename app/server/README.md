@@ -1,24 +1,46 @@
 # Pages
 
-Feed（資訊流）：like/unlike、導流至event/ticker、link/post/signal、comments
-* 尋找投資機會
-* 感受市場
+Board（資訊流）：尋找投資機會、感受市場
+* post-tiles {symbols, count, }: idea, poll, robo{調查}, quiz
+  * 最新發表時間序、trending-button
+* trending-button / list
+* post-expand
+  * like/dislike
+  * text
+  * poll
+  * comments, comment-like/dislike, create-comment
+* filters {#、@、*}
+  * 最新發表時間序、trending-button
+  * \#｀
 
-Event（資訊彙整、深入分析）：關注度/熱度、tickers、tags、feeds、posts/polls（世界線/分析）、follow/unfollow、歷史events、
+Create Post: 
+* cat: 問題、想法、投票
+* title, text, symbols
+* poll: choices｀
+
+Single Post View:
+...
+
+\*Event（資訊彙整、深入分析）：關注度/熱度、tickers、tags、feeds、posts/polls（世界線/分析）、follow/unfollow、歷史events、
 * 確認投資機會 -> 尋找投資標的 -> 判斷投資策略、進場時機/價位
 * 一個事件可能有多個投資標的，因此需要有綜覽比較，ie透過ticker-group
 
-Ticker（標的資訊）：價格、所屬的ticker-groups＆排名、經營/公司資訊、歷史價格&factor、群眾/機器預測、訊號
+$Ticker（標的資訊）：價格、所屬的ticker-groups＆排名、經營/公司資訊、歷史價格&factor、群眾/機器預測、訊號
 * 判斷進場時機/價位
 * 預測走勢
 
 Ticker-group：tickers的比較、
 
-Tag（資訊彙整）：events, feeds
+#Tag（資訊彙整）：events, feeds
 * 類似wiki功能
 * hash-tag: 熱度、
 * ticker
 * event-trend：熱度
+
+@User：用於了解信用值、判斷價值基礎
+* 原則匿名，可公開（for宣傳）
+
+
 
 ticker可以包在tag裡嗎？
 對於ticker：price, 相關的ticker,

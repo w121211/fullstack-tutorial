@@ -1,8 +1,5 @@
 import React, { useState } from 'react'
-import { useQuery, useMutation } from '@apollo/react-hooks'
-import { Space } from 'antd'
-import { UpCircleFilled, UpCircleOutlined, DownCircleFilled, DownCircleOutlined } from '@ant-design/icons';
-import * as queries from '../store/queries'
+import { LikeOutlined, DislikeOutlined, LikeFilled, DislikeFilled } from '@ant-design/icons'
 import * as QT from '../store/queryTypes'
 
 interface DummyPostLikeProps {
@@ -27,101 +24,54 @@ export const DummyPostLike: React.FC<DummyPostLikeProps> = ({ action }) => {
 
 interface PostLikeProps {
   postId: string
+  meLike?: QT.postLike
+  createPostLike: (a: { variables: QT.createPostLikeVariables }) => void
+  updatePostLike: (a: { variables: QT.updatePostLikeVariables }) => void
+  count: QT.post_post_count
 }
 
-export const PostLike: React.FC<PostLikeProps> = ({ postId }) => {
-  const { data } = useQuery<QT.myPostLikes>(
-    queries.MY_POST_LIKES, {
-    fetchPolicy: "cache-only"
-  })
-  const [createPostLike] = useMutation<QT.createPostLike, QT.createPostLikeVariables>(
-    queries.CREATE_POST_LIKE, {
-    update(cache, { data }) {
-      console.log("createPostLike")
-      const res = cache.readQuery<QT.myPostLikes>({
-        query: queries.MY_POST_LIKES,
-      })
-      if (data?.createPostLike && res?.myPostLikes) {
-        // data?.createPostLike.postId = postId
-        // const fake = { ...data?.createPostLike, postId, choice: 1 }
-        cache.writeQuery<QT.myPostLikes>({
-          query: queries.MY_POST_LIKES,
-          data: {
-            myPostLikes: res?.myPostLikes.concat([data?.createPostLike]),
-            // myPostLikes: res?.myPostLikes.concat([fake]),
-          },
-        })
-      }
-    },
-  })
-  const [updatePostLike] = useMutation<QT.updatePostLike, QT.updatePostLikeVariables>(
-    queries.UPDATE_POST_LIKE, {
-    refetchQueries: [],
-    update(cache, { data }) {
-      console.log("updatePostLike")
-      const res = cache.readQuery<QT.myPostLikes>({
-        query: queries.MY_POST_LIKES,
-      })
-      if (data?.updatePostLike && res?.myPostLikes) {
-        cache.writeQuery<QT.myPostLikes>({
-          query: queries.MY_POST_LIKES,
-          data: {
-            myPostLikes: res.myPostLikes.map((x) =>
-              x.postId === data.updatePostLike.postId ? data.updatePostLike : x,
-            ),
-          },
-        })
-      }
-    },
-  })
 
-  const meLike = data?.myPostLikes.find((x) => x.postId === postId)
-
-  let likeFn, liked = false
-  if (meLike && meLike.choice !== 1) {
-    likeFn = (e: any) =>
-      updatePostLike({ variables: { postId, data: { choice: 1 } } })
-  } else if (meLike && meLike.choice === 1) {
-    likeFn = (e: any) =>
-      updatePostLike({ variables: { postId, data: { choice: 0 } } })
+export const PostLike: React.FC<PostLikeProps> = ({ postId, meLike, createPostLike, updatePostLike, count }) => {
+  let onClick
+  let liked = false
+  if (meLike && meLike.choice !== QT.LikeChoice.UP) {
+    onClick = (e: any) =>
+      updatePostLike({ variables: { id: meLike.id, data: { choice: QT.LikeChoice.UP } } })
+  } else if (meLike && meLike.choice === QT.LikeChoice.UP) {
+    onClick = (e: any) =>
+      updatePostLike({ variables: { id: meLike.id, data: { choice: QT.LikeChoice.NEUTRAL } } })
     liked = true
   } else {
-    likeFn = (e: any) =>
-      createPostLike({ variables: { postId, data: { choice: 1 } } })
+    onClick = (e: any) =>
+      createPostLike({ variables: { postId, data: { choice: QT.LikeChoice.UP } } })
   }
-  let dislikeFn, disliked = false
-  if (meLike && meLike.choice !== 2) {
-    dislikeFn = (e: any) =>
-      updatePostLike({ variables: { postId, data: { choice: 2 } } })
-  } else if (meLike && meLike.choice === 2) {
-    dislikeFn = (e: any) =>
-      updatePostLike({ variables: { postId, data: { choice: 0 } } })
+  return (
+    <span onClick={onClick}>
+      {liked ? <LikeFilled /> : <LikeOutlined />}
+      {count.nUps}
+    </span>
+  )
+
+}
+
+export const PostDislike: React.FC<PostLikeProps> = ({ postId, meLike, createPostLike, updatePostLike, count }) => {
+  let onClick
+  let disliked = false
+  if (meLike && meLike.choice !== QT.LikeChoice.DOWN) {
+    onClick = (e: any) =>
+      updatePostLike({ variables: { id: meLike.id, data: { choice: QT.LikeChoice.DOWN } } })
+  } else if (meLike && meLike.choice === QT.LikeChoice.DOWN) {
+    onClick = (e: any) =>
+      updatePostLike({ variables: { id: meLike.id, data: { choice: QT.LikeChoice.NEUTRAL } } })
     disliked = true
   } else {
-    dislikeFn = (e: any) =>
-      createPostLike({ variables: { postId, data: { choice: 2 } } })
+    onClick = (e: any) =>
+      createPostLike({ variables: { postId, data: { choice: QT.LikeChoice.DOWN } } })
   }
-
   return (
-    <Space>
-
-      {
-        liked
-          ? <UpCircleFilled onClick={likeFn} />
-          : <UpCircleOutlined onClick={likeFn} />
-      }
-      {
-        disliked
-          ? <DownCircleFilled onClick={likeFn} />
-          : <DownCircleOutlined onClick={likeFn} />
-      }
-
-      {/* <a onClick={likeFn}>
-        {liked ? <b>up</b> : <UpCircleOutlined />}
-      </a>
-      <a onClick={dislikeFn}>
-        {disliked ? <b>down</b> : 'down'}
-      </a> */}
-    </Space>
+    <span onClick={onClick}>
+      {disliked ? <LikeFilled /> : <LikeOutlined />}
+      {count.nDowns}
+    </span>
   )
 }
