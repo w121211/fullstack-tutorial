@@ -38,31 +38,44 @@ export interface me {
 // GraphQL query operation: latestPosts
 // ====================================================
 
-export interface latestPosts_latestPosts_contentPoll {
-  __typename: "PostPoll";
-  start: any;
-  end: any;
-  choices: string[];
-}
-
-export interface latestPosts_latestPosts_contentLink {
-  __typename: "PostLink";
-  url: string;
-}
-
 export interface latestPosts_latestPosts_symbols {
   __typename: "Symbol";
   id: string;
   name: string;
 }
 
+export interface latestPosts_latestPosts_count_poll {
+  __typename: "PollCount";
+  nVotes: number[];
+  nJudgements: (number | null)[] | null;
+  judgeStartedAt: any | null;
+  judgeEndedAt: any | null;
+  verdictValid: boolean | null;
+  verdictChoice: number | null;
+}
+
 export interface latestPosts_latestPosts_count {
   __typename: "PostCount";
   id: string;
+  nViews: number;
   nUps: number;
   nDowns: number;
   nComments: number;
   updatedAt: any;
+  poll: latestPosts_latestPosts_count_poll | null;
+}
+
+export interface latestPosts_latestPosts_poll {
+  __typename: "Poll";
+  id: string;
+  status: PollStatus;
+  start: any;
+  end: any;
+  choices: string[];
+  nDays: number;
+  minVotes: number;
+  nDaysJudge: number;
+  minJudgments: number;
 }
 
 export interface latestPosts_latestPosts {
@@ -71,13 +84,12 @@ export interface latestPosts_latestPosts {
   userId: string;
   cat: PostCat;
   status: PostStatus;
-  title: string | null;
-  contentText: string | null;
-  contentPoll: latestPosts_latestPosts_contentPoll | null;
-  contentLink: latestPosts_latestPosts_contentLink | null;
+  title: string;
+  text: string;
   updatedAt: any | null;
   symbols: latestPosts_latestPosts_symbols[];
   count: latestPosts_latestPosts_count;
+  poll: latestPosts_latestPosts_poll | null;
 }
 
 export interface latestPosts {
@@ -97,31 +109,44 @@ export interface latestPostsVariables {
 // GraphQL query operation: post
 // ====================================================
 
-export interface post_post_contentPoll {
-  __typename: "PostPoll";
-  start: any;
-  end: any;
-  choices: string[];
-}
-
-export interface post_post_contentLink {
-  __typename: "PostLink";
-  url: string;
-}
-
 export interface post_post_symbols {
   __typename: "Symbol";
   id: string;
   name: string;
 }
 
+export interface post_post_count_poll {
+  __typename: "PollCount";
+  nVotes: number[];
+  nJudgements: (number | null)[] | null;
+  judgeStartedAt: any | null;
+  judgeEndedAt: any | null;
+  verdictValid: boolean | null;
+  verdictChoice: number | null;
+}
+
 export interface post_post_count {
   __typename: "PostCount";
   id: string;
+  nViews: number;
   nUps: number;
   nDowns: number;
   nComments: number;
   updatedAt: any;
+  poll: post_post_count_poll | null;
+}
+
+export interface post_post_poll {
+  __typename: "Poll";
+  id: string;
+  status: PollStatus;
+  start: any;
+  end: any;
+  choices: string[];
+  nDays: number;
+  minVotes: number;
+  nDaysJudge: number;
+  minJudgments: number;
 }
 
 export interface post_post {
@@ -130,13 +155,12 @@ export interface post_post {
   userId: string;
   cat: PostCat;
   status: PostStatus;
-  title: string | null;
-  contentText: string | null;
-  contentPoll: post_post_contentPoll | null;
-  contentLink: post_post_contentLink | null;
+  title: string;
+  text: string;
   updatedAt: any | null;
   symbols: post_post_symbols[];
   count: post_post_count;
+  poll: post_post_poll | null;
 }
 
 export interface post {
@@ -199,18 +223,18 @@ export interface myPostLikes {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: myPostVotes
+// GraphQL query operation: myPollVotes
 // ====================================================
 
-export interface myPostVotes_myPostVotes {
-  __typename: "PostVote";
+export interface myPollVotes_myPollVotes {
+  __typename: "PollVote";
   id: string;
-  postId: string;
+  pollId: string;
   choice: number;
 }
 
-export interface myPostVotes {
-  myPostVotes: myPostVotes_myPostVotes[];
+export interface myPollVotes {
+  myPollVotes: myPollVotes_myPollVotes[];
 }
 
 /* tslint:disable */
@@ -298,31 +322,44 @@ export interface commitsVariables {
 // GraphQL query operation: commit
 // ====================================================
 
-export interface commit_commit_post_contentPoll {
-  __typename: "PostPoll";
-  start: any;
-  end: any;
-  choices: string[];
-}
-
-export interface commit_commit_post_contentLink {
-  __typename: "PostLink";
-  url: string;
-}
-
 export interface commit_commit_post_symbols {
   __typename: "Symbol";
   id: string;
   name: string;
 }
 
+export interface commit_commit_post_count_poll {
+  __typename: "PollCount";
+  nVotes: number[];
+  nJudgements: (number | null)[] | null;
+  judgeStartedAt: any | null;
+  judgeEndedAt: any | null;
+  verdictValid: boolean | null;
+  verdictChoice: number | null;
+}
+
 export interface commit_commit_post_count {
   __typename: "PostCount";
   id: string;
+  nViews: number;
   nUps: number;
   nDowns: number;
   nComments: number;
   updatedAt: any;
+  poll: commit_commit_post_count_poll | null;
+}
+
+export interface commit_commit_post_poll {
+  __typename: "Poll";
+  id: string;
+  status: PollStatus;
+  start: any;
+  end: any;
+  choices: string[];
+  nDays: number;
+  minVotes: number;
+  nDaysJudge: number;
+  minJudgments: number;
 }
 
 export interface commit_commit_post {
@@ -331,13 +368,12 @@ export interface commit_commit_post {
   userId: string;
   cat: PostCat;
   status: PostStatus;
-  title: string | null;
-  contentText: string | null;
-  contentPoll: commit_commit_post_contentPoll | null;
-  contentLink: commit_commit_post_contentLink | null;
+  title: string;
+  text: string;
   updatedAt: any | null;
   symbols: commit_commit_post_symbols[];
   count: commit_commit_post_count;
+  poll: commit_commit_post_poll | null;
 }
 
 export interface commit_commit_reviews {
@@ -496,31 +532,44 @@ export interface loginVariables {
 // GraphQL mutation operation: createPost
 // ====================================================
 
-export interface createPost_createPost_contentPoll {
-  __typename: "PostPoll";
-  start: any;
-  end: any;
-  choices: string[];
-}
-
-export interface createPost_createPost_contentLink {
-  __typename: "PostLink";
-  url: string;
-}
-
 export interface createPost_createPost_symbols {
   __typename: "Symbol";
   id: string;
   name: string;
 }
 
+export interface createPost_createPost_count_poll {
+  __typename: "PollCount";
+  nVotes: number[];
+  nJudgements: (number | null)[] | null;
+  judgeStartedAt: any | null;
+  judgeEndedAt: any | null;
+  verdictValid: boolean | null;
+  verdictChoice: number | null;
+}
+
 export interface createPost_createPost_count {
   __typename: "PostCount";
   id: string;
+  nViews: number;
   nUps: number;
   nDowns: number;
   nComments: number;
   updatedAt: any;
+  poll: createPost_createPost_count_poll | null;
+}
+
+export interface createPost_createPost_poll {
+  __typename: "Poll";
+  id: string;
+  status: PollStatus;
+  start: any;
+  end: any;
+  choices: string[];
+  nDays: number;
+  minVotes: number;
+  nDaysJudge: number;
+  minJudgments: number;
 }
 
 export interface createPost_createPost {
@@ -529,13 +578,12 @@ export interface createPost_createPost {
   userId: string;
   cat: PostCat;
   status: PostStatus;
-  title: string | null;
-  contentText: string | null;
-  contentPoll: createPost_createPost_contentPoll | null;
-  contentLink: createPost_createPost_contentLink | null;
+  title: string;
+  text: string;
   updatedAt: any | null;
   symbols: createPost_createPost_symbols[];
   count: createPost_createPost_count;
+  poll: createPost_createPost_poll | null;
 }
 
 export interface createPost {
@@ -555,31 +603,44 @@ export interface createPostVariables {
 // GraphQL mutation operation: updatePost
 // ====================================================
 
-export interface updatePost_updatePost_contentPoll {
-  __typename: "PostPoll";
-  start: any;
-  end: any;
-  choices: string[];
-}
-
-export interface updatePost_updatePost_contentLink {
-  __typename: "PostLink";
-  url: string;
-}
-
 export interface updatePost_updatePost_symbols {
   __typename: "Symbol";
   id: string;
   name: string;
 }
 
+export interface updatePost_updatePost_count_poll {
+  __typename: "PollCount";
+  nVotes: number[];
+  nJudgements: (number | null)[] | null;
+  judgeStartedAt: any | null;
+  judgeEndedAt: any | null;
+  verdictValid: boolean | null;
+  verdictChoice: number | null;
+}
+
 export interface updatePost_updatePost_count {
   __typename: "PostCount";
   id: string;
+  nViews: number;
   nUps: number;
   nDowns: number;
   nComments: number;
   updatedAt: any;
+  poll: updatePost_updatePost_count_poll | null;
+}
+
+export interface updatePost_updatePost_poll {
+  __typename: "Poll";
+  id: string;
+  status: PollStatus;
+  start: any;
+  end: any;
+  choices: string[];
+  nDays: number;
+  minVotes: number;
+  nDaysJudge: number;
+  minJudgments: number;
 }
 
 export interface updatePost_updatePost {
@@ -588,13 +649,12 @@ export interface updatePost_updatePost {
   userId: string;
   cat: PostCat;
   status: PostStatus;
-  title: string | null;
-  contentText: string | null;
-  contentPoll: updatePost_updatePost_contentPoll | null;
-  contentLink: updatePost_updatePost_contentLink | null;
+  title: string;
+  text: string;
   updatedAt: any | null;
   symbols: updatePost_updatePost_symbols[];
   count: updatePost_updatePost_count;
+  poll: updatePost_updatePost_poll | null;
 }
 
 export interface updatePost {
@@ -623,13 +683,25 @@ export interface createPostLike_createPostLike_like {
   updatedAt: any;
 }
 
+export interface createPostLike_createPostLike_count_poll {
+  __typename: "PollCount";
+  nVotes: number[];
+  nJudgements: (number | null)[] | null;
+  judgeStartedAt: any | null;
+  judgeEndedAt: any | null;
+  verdictValid: boolean | null;
+  verdictChoice: number | null;
+}
+
 export interface createPostLike_createPostLike_count {
   __typename: "PostCount";
   id: string;
+  nViews: number;
   nUps: number;
   nDowns: number;
   nComments: number;
   updatedAt: any;
+  poll: createPostLike_createPostLike_count_poll | null;
 }
 
 export interface createPostLike_createPostLike {
@@ -664,13 +736,25 @@ export interface updatePostLike_updatePostLike_like {
   updatedAt: any;
 }
 
+export interface updatePostLike_updatePostLike_count_poll {
+  __typename: "PollCount";
+  nVotes: number[];
+  nJudgements: (number | null)[] | null;
+  judgeStartedAt: any | null;
+  judgeEndedAt: any | null;
+  verdictValid: boolean | null;
+  verdictChoice: number | null;
+}
+
 export interface updatePostLike_updatePostLike_count {
   __typename: "PostCount";
   id: string;
+  nViews: number;
   nUps: number;
   nDowns: number;
   nComments: number;
   updatedAt: any;
+  poll: updatePostLike_updatePostLike_count_poll | null;
 }
 
 export interface updatePostLike_updatePostLike {
@@ -694,48 +778,23 @@ export interface updatePostLikeVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: createPostVote
+// GraphQL mutation operation: createPollVote
 // ====================================================
 
-export interface createPostVote_createPostVote {
-  __typename: "PostVote";
+export interface createPollVote_createPollVote {
+  __typename: "PollVote";
   id: string;
-  postId: string;
+  pollId: string;
   choice: number;
 }
 
-export interface createPostVote {
-  createPostVote: createPostVote_createPostVote;
+export interface createPollVote {
+  createPollVote: createPollVote_createPollVote;
 }
 
-export interface createPostVoteVariables {
-  postId: string;
-  data: PostVoteInput;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL mutation operation: updatePostVote
-// ====================================================
-
-export interface updatePostVote_updatePostVote {
-  __typename: "PostVote";
-  id: string;
-  postId: string;
-  choice: number;
-}
-
-export interface updatePostVote {
-  updatePostVote: updatePostVote_updatePostVote;
-}
-
-export interface updatePostVoteVariables {
-  postId: string;
-  data: PostVoteInput;
+export interface createPollVoteVariables {
+  pollId: string;
+  data: PollVoteInput;
 }
 
 /* tslint:disable */
@@ -1026,13 +1085,25 @@ export interface postLike {
 // GraphQL fragment: postCount
 // ====================================================
 
+export interface postCount_poll {
+  __typename: "PollCount";
+  nVotes: number[];
+  nJudgements: (number | null)[] | null;
+  judgeStartedAt: any | null;
+  judgeEndedAt: any | null;
+  verdictValid: boolean | null;
+  verdictChoice: number | null;
+}
+
 export interface postCount {
   __typename: "PostCount";
   id: string;
+  nViews: number;
   nUps: number;
   nDowns: number;
   nComments: number;
   updatedAt: any;
+  poll: postCount_poll | null;
 }
 
 /* tslint:disable */
@@ -1044,31 +1115,44 @@ export interface postCount {
 // GraphQL fragment: postFragment
 // ====================================================
 
-export interface postFragment_contentPoll {
-  __typename: "PostPoll";
-  start: any;
-  end: any;
-  choices: string[];
-}
-
-export interface postFragment_contentLink {
-  __typename: "PostLink";
-  url: string;
-}
-
 export interface postFragment_symbols {
   __typename: "Symbol";
   id: string;
   name: string;
 }
 
+export interface postFragment_count_poll {
+  __typename: "PollCount";
+  nVotes: number[];
+  nJudgements: (number | null)[] | null;
+  judgeStartedAt: any | null;
+  judgeEndedAt: any | null;
+  verdictValid: boolean | null;
+  verdictChoice: number | null;
+}
+
 export interface postFragment_count {
   __typename: "PostCount";
   id: string;
+  nViews: number;
   nUps: number;
   nDowns: number;
   nComments: number;
   updatedAt: any;
+  poll: postFragment_count_poll | null;
+}
+
+export interface postFragment_poll {
+  __typename: "Poll";
+  id: string;
+  status: PollStatus;
+  start: any;
+  end: any;
+  choices: string[];
+  nDays: number;
+  minVotes: number;
+  nDaysJudge: number;
+  minJudgments: number;
 }
 
 export interface postFragment {
@@ -1077,13 +1161,12 @@ export interface postFragment {
   userId: string;
   cat: PostCat;
   status: PostStatus;
-  title: string | null;
-  contentText: string | null;
-  contentPoll: postFragment_contentPoll | null;
-  contentLink: postFragment_contentLink | null;
+  title: string;
+  text: string;
   updatedAt: any | null;
   symbols: postFragment_symbols[];
   count: postFragment_count;
+  poll: postFragment_poll | null;
 }
 
 /* tslint:disable */
@@ -1092,13 +1175,13 @@ export interface postFragment {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL fragment: postVote
+// GraphQL fragment: pollVote
 // ====================================================
 
-export interface postVote {
-  __typename: "PostVote";
+export interface pollVote {
+  __typename: "PollVote";
   id: string;
-  postId: string;
+  pollId: string;
   choice: number;
 }
 
@@ -1181,31 +1264,44 @@ export interface commitReview {
 // GraphQL fragment: commitDetail
 // ====================================================
 
-export interface commitDetail_post_contentPoll {
-  __typename: "PostPoll";
-  start: any;
-  end: any;
-  choices: string[];
-}
-
-export interface commitDetail_post_contentLink {
-  __typename: "PostLink";
-  url: string;
-}
-
 export interface commitDetail_post_symbols {
   __typename: "Symbol";
   id: string;
   name: string;
 }
 
+export interface commitDetail_post_count_poll {
+  __typename: "PollCount";
+  nVotes: number[];
+  nJudgements: (number | null)[] | null;
+  judgeStartedAt: any | null;
+  judgeEndedAt: any | null;
+  verdictValid: boolean | null;
+  verdictChoice: number | null;
+}
+
 export interface commitDetail_post_count {
   __typename: "PostCount";
   id: string;
+  nViews: number;
   nUps: number;
   nDowns: number;
   nComments: number;
   updatedAt: any;
+  poll: commitDetail_post_count_poll | null;
+}
+
+export interface commitDetail_post_poll {
+  __typename: "Poll";
+  id: string;
+  status: PollStatus;
+  start: any;
+  end: any;
+  choices: string[];
+  nDays: number;
+  minVotes: number;
+  nDaysJudge: number;
+  minJudgments: number;
 }
 
 export interface commitDetail_post {
@@ -1214,13 +1310,12 @@ export interface commitDetail_post {
   userId: string;
   cat: PostCat;
   status: PostStatus;
-  title: string | null;
-  contentText: string | null;
-  contentPoll: commitDetail_post_contentPoll | null;
-  contentLink: commitDetail_post_contentLink | null;
+  title: string;
+  text: string;
   updatedAt: any | null;
   symbols: commitDetail_post_symbols[];
   count: commitDetail_post_count;
+  poll: commitDetail_post_poll | null;
 }
 
 export interface commitDetail_reviews {
@@ -1309,6 +1404,13 @@ export enum LikeChoice {
   UP = "UP",
 }
 
+export enum PollStatus {
+  CLOSE_FAIL = "CLOSE_FAIL",
+  CLOSE_SUCCESS = "CLOSE_SUCCESS",
+  JUDGE = "JUDGE",
+  OPEN = "OPEN",
+}
+
 export enum PostCat {
   ASK = "ASK",
   COMMIT = "COMMIT",
@@ -1321,6 +1423,7 @@ export enum PostStatus {
   ACTIVE = "ACTIVE",
   ARCHIVED = "ARCHIVED",
   DELETED = "DELETED",
+  LOCK = "LOCK",
   REPORTED = "REPORTED",
 }
 
@@ -1362,28 +1465,22 @@ export interface LikeInput {
   choice: LikeChoice;
 }
 
+export interface PollInput {
+  choices: string[];
+  nDays: number;
+}
+
+export interface PollVoteInput {
+  choice: number;
+}
+
 export interface PostInput {
   cat: PostCat;
   status?: PostStatus | null;
   title?: string | null;
-  contentText?: string | null;
-  contentPoll?: PostPollInput | null;
-  contentLink?: PostLinkInput | null;
   symbolIds: string[];
-}
-
-export interface PostLinkInput {
-  url: string;
-}
-
-export interface PostPollInput {
-  start: any;
-  end: any;
-  choices: string[];
-}
-
-export interface PostVoteInput {
-  choice: number;
+  text?: string | null;
+  poll?: PollInput | null;
 }
 
 //==============================================================

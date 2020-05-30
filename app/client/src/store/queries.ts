@@ -13,10 +13,19 @@ export const POST_COUNT = gql`
   fragment postCount on PostCount {
     __typename
     id
+    nViews
     nUps
     nDowns
     nComments
     updatedAt
+    poll {
+      nVotes
+      nJudgements
+      judgeStartedAt
+      judgeEndedAt
+      verdictValid
+      verdictChoice
+    }
   }
 `
 export const POST_FRAGMENT = gql`
@@ -27,15 +36,7 @@ export const POST_FRAGMENT = gql`
     cat
     status
     title
-    contentText
-    contentPoll {
-      start
-      end
-      choices
-    }
-    contentLink {
-      url
-    }
+    text
     updatedAt
     symbols {
       id
@@ -44,6 +45,17 @@ export const POST_FRAGMENT = gql`
     count {
       ...postCount
     }
+    poll {
+      id
+      status
+      start
+      end
+      choices
+      nDays
+      minVotes
+      nDaysJudge
+      minJudgments
+    }
     # mePost @client
     # meLike @client {
     #   ...postLike
@@ -51,11 +63,11 @@ export const POST_FRAGMENT = gql`
   }
   ${POST_COUNT}
 `
-export const POST_VOTE = gql`
-  fragment postVote on PostVote {
+export const POLL_VOTE = gql`
+  fragment pollVote on PollVote {
     __typename
     id
-    postId
+    pollId
     choice
   }
 `
@@ -191,13 +203,13 @@ export const MY_POST_LIKES = gql`
   }
   ${POST_LIKE}
 `
-export const MY_POST_VOTES = gql`
-  query myPostVotes {
-    myPostVotes {
-      ...postVote
+export const MY_POLL_VOTES = gql`
+  query myPollVotes {
+    myPollVotes {
+      ...pollVote
     }
   }
-  ${POST_VOTE}
+  ${POLL_VOTE}
 `
 export const MY_COMMENT_LIKES = gql`
   query myCommentLikes {
@@ -331,22 +343,22 @@ export const UPDATE_POST_LIKE = gql`
   ${POST_LIKE}
   ${POST_COUNT}
 `
-export const CREATE_POST_VOTE = gql`
-  mutation createPostVote($postId: ID!, $data: PostVoteInput!) {
-    createPostVote(postId: $postId, data: $data) {
-      ...postVote
+export const CREATE_POLL_VOTE = gql`
+  mutation createPollVote($pollId: ID!, $data: PollVoteInput!) {
+    createPollVote(pollId: $pollId, data: $data) {
+      ...pollVote
     }
   }
-  ${POST_VOTE}
+  ${POLL_VOTE}
 `
-export const UPDATE_POST_VOTE = gql`
-  mutation updatePostVote($postId: ID!, $data: PostVoteInput!) {
-    updatePostVote(postId: $postId, data: $data) {
-      ...postVote
-    }
-  }
-  ${POST_VOTE}
-`
+// export const UPDATE_POLL_VOTE = gql`
+//   mutation updatePostVote($postId: ID!, $data: PostVoteInput!) {
+//     updatePostVote(postId: $postId, data: $data) {
+//       ...postVote
+//     }
+//   }
+//   ${POST_VOTE}
+// `
 export const CREATE_COMMENT = gql`
   mutation createComment($postId: ID!, $data: CommentInput!) {
     createComment(postId: $postId, data: $data) {

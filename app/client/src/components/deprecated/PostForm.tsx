@@ -2,8 +2,8 @@ import React, { useState, Fragment } from 'react'
 import { useQuery, useLazyQuery, useMutation } from '@apollo/react-hooks'
 import { Link, Router, RouteComponentProps } from '@reach/router'
 import { AutoComplete } from 'antd'
-import * as queries from '../store/queries'
-import * as QT from '../store/queryTypes'
+import * as queries from '../../store/queries'
+import * as QT from '../../store/queryTypes'
 
 const mockVal = (str: string, repeat: number = 1) => {
   return {

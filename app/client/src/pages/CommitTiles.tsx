@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/react-hooks';
 
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
-import { PostTile } from '../components/Post'
+import { PostTile } from '../components/postTile'
 
 interface Props extends RouteComponentProps {
   name: string
@@ -13,7 +13,6 @@ interface Props extends RouteComponentProps {
 export const Commits: React.FC<Props> = ({ name }) => {
   useQuery<QT.myPostLikes>(queries.MY_POST_LIKES)
   useQuery<QT.myCommentLikes>(queries.MY_COMMENT_LIKES)
-  useQuery<QT.myPostVotes>(queries.MY_POST_VOTES)
   const getMe = useQuery<QT.me>(queries.ME)
   const getSymbol = useQuery<QT.getSymbol, QT.getSymbolVariables>(
     queries.LATEST_POSTS, { fetchPolicy: "cache-and-network" })

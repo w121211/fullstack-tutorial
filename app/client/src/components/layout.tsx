@@ -1,0 +1,93 @@
+import React from 'react'
+import { Link, RouteComponentProps } from "@reach/router"
+import { Row, Col, Layout, Button, Space, Typography } from 'antd'
+import * as QT from '../store/queryTypes'
+
+
+interface PageContainerProps extends RouteComponentProps {
+  isLoggedIn: boolean
+}
+
+export const PageContainer: React.FC<PageContainerProps> = ({ isLoggedIn, children }) => {
+  return (
+    <Layout>
+      {/* <Layout.Header style={{ zIndex: 1, width: '100%' }}> */}
+      <Layout.Header>
+        <Link to="/" style={{ color: "white" }}>HOME</Link>
+
+        {/* <div style={{ float: 'left' }}>
+          <Input.Search
+            placeholder="ticker or company name"
+            onSearch={value => console.log(value)}
+            style={{ width: 200 }}
+          />
+        </div> */}
+
+        <div style={{ float: 'right' }}>
+          <Space direction="horizontal" size="large">
+            <Typography.Text style={{ color: 'white' }}>
+              Karma 47
+          </Typography.Text>
+            {/* <Typography.Text style={{ color: 'white' }}>
+              Votes 5/10
+          </Typography.Text> */}
+            {
+              isLoggedIn
+                ? null
+                : <Button type="primary" shape="round">
+                  <Link to="login">LOGIN</Link>
+                </Button>
+            }
+            {/* <Button shape="round">SIGN UP</Button> */}
+          </Space>
+        </div>
+
+        {/* <Menu
+          theme="dark"
+          mode="horizontal"
+          // defaultSelectedKeys={['2']}
+          style={{ lineHeight: '64px' }}
+        >
+          <Menu.Item key="2">nav 2</Menu.Item>
+          <Menu.Item key="1">Me</Menu.Item>
+        </Menu> */}
+
+      </Layout.Header>
+
+      {/* <Layout.Content className="site-layout" style={{ padding: '0 50px', marginTop: 64, maxWidth: 800 }}> */}
+      {/* <Layout.Content className="site-layout" style={{ maxWidth: 800 }}> */}
+      <Layout.Content>
+        {children}
+      </Layout.Content>
+
+      <Layout.Footer style={{ textAlign: 'center' }}>
+        任何問題、意見交流請至<a href="aaa">連結</a>
+      </Layout.Footer>
+
+    </Layout>
+  )
+}
+
+interface PaneProps extends RouteComponentProps {
+  left: React.ReactNode
+  right?: React.ReactNode
+}
+
+export const Pane: React.FC<PaneProps> = ({ left, right }) => {
+  return (
+    <Row justify="center">
+
+      {
+        right ? (
+          <>
+            <Col span={10}>{left}</Col>
+            <Col span={4}>{right}</Col>
+          </>
+        ) : <Col span={10}>{left}</Col>
+      }
+
+      {/* <Col span={17}>{left}</Col> */}
+      {/* <Col span={5}>{right}</Col> */}
+    </Row>
+  )
+}

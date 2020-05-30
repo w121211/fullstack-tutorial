@@ -12,7 +12,8 @@ model User {
   email         String         @unique
   password      String
   posts         Post[]
-  postVotes     PostVote[]
+  votes         PollVote[]
+  judgments     PollJudgment[]
   postLikes     PostLike[]
   comments      Comment[]
   commentLikes  CommentLike[]
@@ -22,6 +23,7 @@ model User {
   profile       Profile
   dailyProfile  DailyProfile
   bets          Bet[]
+  polls         Poll[]
 }
 
 model Profile {
@@ -55,15 +57,15 @@ model Post {
   cat       PostCat    @default(LINK)
   status    PostStatus @default(ACTIVE)
   title     String
-  content   String
+  text      String
   count     PostCount
   commments Comment[]
   likes     PostLike[]
-  votes     PostVote[]
   symbols   Symbol[]   @relation(references: [id])
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  Commit    Commit[]
+  commit    Commit?
+  poll      Poll?
 }
 
 model PostLike {
@@ -79,31 +81,78 @@ model PostLike {
   @@unique([userId, postId])
 }
 
-model PostVote {
+model Poll {
+  id           Int            @default(autoincrement()) @id
+  user         User           @relation(fields: [userId], references: [id])
+  userId       String
+  post         Post           @relation(fields: [postId], references: [id])
+  postId       Int            @unique
+  status       PollStatus     @default(OPEN)
+  choices      String[]
+  start        DateTime
+  end          DateTime
+  nDays        Int
+  minVotes     Int            @default(30)
+  nDaysJudge   Int            @default(5)
+  minJudgments Int            @default(5)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  votes        PollVote[]
+  judgments    PollJudgment[]
+}
+
+model PollVote {
   id        Int      @default(autoincrement()) @id
   user      User     @relation(fields: [userId], references: [id])
   userId    String
-  post      Post     @relation(fields: [postId], references: [id])
-  postId    Int
+  poll      Poll     @relation(fields: [pollId], references: [id])
+  pollId    Int
   choice    Int
   reward    Float?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([userId, postId])
+  @@unique([userId, pollId])
+}
+
+model PollJudgment {
+  id        Int      @default(autoincrement()) @id
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  poll      Poll     @relation(fields: [pollId], references: [id])
+  pollId    Int
+  comment   Comment  @relation(fields: [commentId], references: [id])
+  commentId Int      @unique
+  choice    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, pollId])
 }
 
 model PostCount {
-  id        Int      @default(autoincrement()) @id
-  post      Post     @relation(fields: [postId], references: [id])
-  postId    Int      @unique
-  // nViews    Int      @default(0)
-  nUps      Int      @default(0)
-  nDowns    Int      @default(0)
-  nComments Int      @default(0)
-  poll      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        Int        @default(autoincrement()) @id
+  post      Post       @relation(fields: [postId], references: [id])
+  postId    Int        @unique
+  nViews    Int        @default(0)
+  nUps      Int        @default(0)
+  nDowns    Int        @default(0)
+  nComments Int        @default(0)
+  poll      PollCount?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model PollCount {
+  id             Int       @default(autoincrement()) @id
+  count          PostCount @relation(fields: [countId], references: [id])
+  countId        Int       @unique
+  nVotes         Int[]
+  nJudgments     Int[]
+  judgeStartedAt DateTime?
+  judgeEndedAt   DateTime?
+  verdictValid   Boolean?
+  verdictChoice  Int?
 }
 
 model Comment {
@@ -118,6 +167,7 @@ model Comment {
   likes     CommentLike[]
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
+  judgment  PollJudgment?
 }
 
 model CommentCount {
@@ -158,8 +208,8 @@ model Symbol {
   ticks      Tick[]
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
-  Follow     Follow[]
-  Bet        Bet[]
+  follows    Follow[]
+  bets       Bet[]
 }
 
 model Follow {
@@ -185,7 +235,7 @@ model Commit {
   postId    Int
   status    CommitStatus   @default(REVIEW)
   action    CommitAction
-  content   String
+  body      String
   // count     CommitCount
   reviews   CommitReview[]
   createdAt DateTime       @default(now())
@@ -217,8 +267,6 @@ model CommitReview {
 
 model Tick {
   id       Int      @default(autoincrement()) @id
-  // ticker   Ticker   @relation(fields: [tickerId], references: [id])
-  // tickerId Int
   symbol   Symbol   @relation(fields: [symbolId], references: [id])
   symbolId Int
   value    Float
@@ -229,11 +277,9 @@ model Bet {
   id        Int      @default(autoincrement()) @id
   user      User     @relation(fields: [userId], references: [id])
   userId    String
-  // ticker    Ticker   @relation(fields: [tickerId], references: [id])
-  // tickerId  Int
   symbol    Symbol   @relation(fields: [symbolId], references: [id])
   symbolId  Int
-  content   String
+  body      String
   result    String?
   expiredAt DateTime
   createdAt DateTime @default(now())
@@ -241,18 +287,27 @@ model Bet {
 }
 
 enum PostCat {
-  LINK
-  POST
+  IDEA
+  ASK
   POLL
+  LINK
   COMMIT
 }
 
+// LOCK: 可以留言，但post無法編輯
 enum PostStatus {
   ACTIVE
-  ACTIVE_LOCK
+  LOCK
   DELETED
   REPORTED
   ARCHIVED
+}
+
+enum PollStatus {
+  OPEN
+  JUDGE
+  CLOSE_SUCCESS
+  CLOSE_FAIL
 }
 
 enum SymbolCat {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import * as queries from '../store/queries'
-import * as QT from '../store/queryTypes'
+import * as queries from '../../store/queries'
+import * as QT from '../../store/queryTypes'
 
 interface DummyPostLikeProps {
   // setShowLogin: React.Dispatch<React.SetStateAction<boolean>>

@@ -1,14 +1,14 @@
 import React, { useState, Dispatch, SetStateAction } from 'react'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { Link } from '@reach/router'
-import { Badge, Input, Card, Divider, Row, Col, Typography, Tag, Button, List, Space, Form, Comment, Radio } from 'antd'
+import { Spin, Input, Card, Divider, Row, Col, Typography, Tag, Button, List, Space, Form, Comment, Radio } from 'antd'
 import { RadioChangeEvent } from 'antd/lib/radio'
 import { CoffeeOutlined, VerticalAlignTopOutlined } from '@ant-design/icons'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
-import { PostLike, PostDislike } from './PostLike'
-import { PostPoll } from './PostPoll'
-import { Comments } from './Comments'
+import { PostLike, PostDislike } from './postLike'
+import { PostPoll } from './poll'
+import { Comments } from './commentList'
 
 
 interface PostTileProps {
@@ -17,7 +17,7 @@ interface PostTileProps {
   // updatePostLike: (variables: QT.updatePostLikeVariables) => void
   // comments: React.StatelessComponent
   me?: QT.me_me
-  toLogin: () => void
+  toLogin?: () => void
   // setShowLogin: Dispatch<SetStateAction<boolean>>
 }
 
@@ -82,24 +82,17 @@ export const PostTile: React.FC<PostTileProps> = ({ post, me, toLogin }) => {
     ? <a onClick={() => setCollapsed(false)}>expand</a>
     : <a onClick={() => setCollapsed(true)}>collapse</a>
 
-  const contentPoll = {
-    __typename: "PostPoll" as const,
-    start: "2000-01-01",  // 不准變更
-    end: "2000-01-10", // 不准變更
-    choices: ["choice a", "choice b", "choice c"], // 不准變更
-    // status: "",
-    // _start: "2000-01-01",
-    // _end: "2000-01-10",
-    // _result: {},
-  }
 
-  const comments = collapsed ? null : <Comments postId={post.id} toAddCommentCountByOne={toAddCommentCountByOne} />
   const meLike = myPostLikes.data?.myPostLikes.find(x => x.postId === post.id)
 
-  const onClickTitleLink = () => { }
+  function onClickTitleLink() { }
+
+  console.log('-------')
+  console.log(post.poll)
+  console.log(post.count)
 
   return (
-    <Card size="small" style={{ width: 500 }}>
+    <Card size="small">
       <Typography.Paragraph>
         {/* <Badge dot><b>預測Luckin Coffee($LK))的未來走勢</b></Badge> */}
         {/* <b>{post.title}</b> */}
@@ -114,46 +107,53 @@ export const PostTile: React.FC<PostTileProps> = ({ post, me, toLogin }) => {
             : <Typography.Text strong>{post.title}</Typography.Text>}
         </a>
 
-        <br />
         {
           post.symbols.length > 0 ? (
-            <small>
+            <>
+              <br />
               <Space>
                 {post.symbols.map((x, i) => (
                   <Link key={i} to={`/symbol/${x.name}`}>
-                    <Typography.Text>{x.name}</Typography.Text>
+                    <i>
+                      <Typography.Text type="secondary">{x.name}</Typography.Text>
+                    </i>
                   </Link>
                 ))}
               </Space>
-            </small>
+            </>
           ) : null
         }
+
+        {
+          (post.poll && post.count.poll) ? (
+            <>
+              <br />
+              <PostPoll
+                pollId={post.poll.id}
+                me={me}
+                // toLogin={toLogin}
+                poll={post.poll}
+                count={post.count.poll}
+              />
+            </>
+          ) : null
+        }
+
+        {/* <br /> */}
+        {/* {
+          post.text.length > 50 ?
+            `${post.text.substring(0, 50)}...` :
+            post.text
+        }
+        <Button type="link">展開</Button> */}
+
+
       </Typography.Paragraph>
 
-      <Typography.Paragraph>
-        <PostPoll
-          postId={post.id}
-          // poll={contentPoll}
-          // count={post.count}
-          me={me}
-          toLogin={toLogin}
-        />
-      </Typography.Paragraph>
 
-      {/* {!collapsed && contentPoll ?
-        <Typography.Paragraph>
-          <PostPoll
-            postId={post.id}
-            // poll={contentPoll}
-            // count={post.count}
-            me={me}
-            toLogin={toLogin}
-          />
-        </Typography.Paragraph>
-        : null
-      } */}
 
-      {collapsed ? null : <Typography.Paragraph>{post.contentText}</Typography.Paragraph>}
+      {/* {collapsed ? null : <Typography.Paragraph>{post.text}</Typography.Paragraph>} */}
+      {/* <Typography.Paragraph>{post.text}</Typography.Paragraph> */}
 
       <div style={{ textAlign: "right" }}>
         <small>
@@ -183,8 +183,73 @@ export const PostTile: React.FC<PostTileProps> = ({ post, me, toLogin }) => {
         </small>
       </div>
 
-      {collapsed ? null : comments}
+      {
+        collapsed ? null :
+          <Comments postId={post.id} toAddCommentCountByOne={toAddCommentCountByOne} />
+      }
 
     </Card >
   )
+}
+
+interface PostListProps {
+  me?: QT.me_me
+  toLogin?: () => void
+}
+
+export const PostList: React.FC<PostListProps> = ({ me, toLogin }) => {
+  useQuery<QT.myPostLikes>(queries.MY_POST_LIKES)
+  useQuery<QT.myPollVotes>(queries.MY_POLL_VOTES)
+  useQuery<QT.myCommentLikes>(queries.MY_COMMENT_LIKES)
+  const { data, loading, error, fetchMore } = useQuery<QT.latestPosts, QT.latestPostsVariables>(
+    queries.LATEST_POSTS, {
+    fetchPolicy: "cache-and-network",
+    onCompleted() {
+      console.log('latestPosts completed')
+    }
+  })
+
+  if (error) return <p>Something goes wrong...</p>
+  // if (loading || !data) return null
+  // if (loading) return <p>loading</p>
+  if (!data) return null
+
+  const after = data.latestPosts[data.latestPosts.length - 1].id
+
+  function onClickMore() {
+    fetchMore({
+      variables: { after },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return prev
+        return {
+          ...prev,
+          latestPosts: [...prev.latestPosts, ...fetchMoreResult.latestPosts]
+        }
+      }
+    })
+  }
+
+  return (
+    <Space direction="vertical" style={{ width: "100%" }}>
+      {
+        data?.latestPosts && data?.latestPosts.map(x =>
+          <PostTile
+            key={x.id}
+            post={x}
+            me={me}
+            toLogin={toLogin}
+          />
+        )
+      }
+      {/* <Divider>2010-5-1</Divider> */}
+      <div style={{ textAlign: "center" }}>
+        {
+          loading ?
+            <Spin /> :
+            <Button type="primary" onClick={onClickMore}>載入更多</Button>
+        }
+      </div>
+    </Space>
+  )
+
 }

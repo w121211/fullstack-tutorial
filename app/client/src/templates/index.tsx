@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import { Router } from '@reach/router'
-import { Board } from './Board'
+import { Board } from './Board2'
 import { Event } from './Event'
 import { Ticker } from './Ticker'
 import { FeedCreate } from './UrlToFeed'

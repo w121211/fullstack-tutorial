@@ -5,9 +5,8 @@ import { Badge, Button, Card, Divider, Layout, Row, Col, Space, List, Typography
 import { CoffeeOutlined, VerticalAlignTopOutlined } from '@ant-design/icons'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
-import { PostTile } from '../components/Post'
+import { PostTile } from '../components/postTile'
 import { Chart, Chart2 } from '../components/Chart'
-
 
 // function Login({ me }: { me: QueryResult<QT.me> }) {
 export function Login() {
@@ -78,7 +77,6 @@ interface Props extends RouteComponentProps { }
 export const Feed: React.FC<Props> = () => {
   useQuery<QT.myPostLikes>(queries.MY_POST_LIKES)
   useQuery<QT.myCommentLikes>(queries.MY_COMMENT_LIKES)
-  useQuery<QT.myPostVotes>(queries.MY_POST_VOTES)
   const me = useQuery<QT.me>(queries.ME)
   const { data, loading, error, fetchMore } = useQuery<QT.latestPosts, QT.latestPostsVariables>(
     queries.LATEST_POSTS, {

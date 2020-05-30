@@ -21,7 +21,7 @@ export const typeDefs = gql`
     # me: User  # 使用client-cache的情況會有undefined的可能
     # myPosts: [ID!]!  # 目前post有userId可分辨
     myPostLikes(after: String): [PostLike!]!
-    myPostVotes(after: String): [PostVote!]!
+    myPollVotes(after: String): [PollVote!]!
     # myComments(after: String): [ID!]!
     myCommentLikes(after: String): [CommentLike!]!
     myFollows: [Follow!]!
@@ -52,9 +52,9 @@ export const typeDefs = gql`
     updatePost(id: ID!, data: PostInput!): Post!
     createPostLike(postId: ID!, data: LikeInput!): PostLikeResonse!
     updatePostLike(id: ID!, data: LikeInput!): PostLikeResonse!
-    createPostVote(postId: ID!, data: PostVoteInput!): PostVote!
+    createPollVote(pollId: ID!, data: PollVoteInput!): PollVote!
     # 允許更新postVote？
-    updatePostVote(postId: ID!, data: PostVoteInput!): PostVote!
+    # updatePollVote(pollId: ID!, data: VoteInput!): PollVote!
 
     createComment(postId: ID!, data: CommentInput!): Comment!
     updateComment(id: ID!, data: CommentInput!): Comment!
@@ -114,51 +114,54 @@ export const typeDefs = gql`
     # trips: [Launch]!
   }
 
+  type Poll {
+    id: ID!
+    status: PollStatus!
+    start: DateTime!
+    end: DateTime!
+    choices: [String!]!
+    nDays: Int!
+    minVotes: Int!
+    nDaysJudge: Int!
+    minJudgments: Int!
+  }
+
+    # type PostLink {
+  #   url: String!
+  # }
+
   type Post {
     id: ID!
     userId: ID!
     cat: PostCat!
     status: PostStatus!
-    title: String
-    # content: String
-    contentText: String
-    contentPoll: PostPoll
-    contentLink: PostLink
+    title: String!
+    text: String!
+    poll: Poll
+    # link: Link
     symbols: [Symbol!]!
     count: PostCount!
     createdAt: DateTime
     updatedAt: DateTime
   }
 
-  type PostPoll {
-    start: DateTime!
-    end: DateTime!
-    choices: [String!]!
-  }
-
-  type PostLink {
-    url: String!
-  }
-
   input PostInput {
     cat: PostCat!
     status: PostStatus
     title: String
-    contentText: String
-    contentPoll: PostPollInput
-    contentLink: PostLinkInput
     symbolIds: [ID!]!
+    text: String
+    poll: PollInput
   }
 
-  input PostPollInput {
-    start: DateTime!
-    end: DateTime!
+  input PollInput {
     choices: [String!]!
+    nDays: Int!
   }
 
-  input PostLinkInput {
-    url: String!
-  }
+  # input PostLinkInput {
+  #   url: String!
+  # }
 
   type PostLike {
     id: ID!
@@ -177,25 +180,49 @@ export const typeDefs = gql`
     choice: LikeChoice!
   }
 
-  type PostVote {
+  type PollVote {
     id: ID!
-    postId: ID!
+    pollId: ID!
     choice: Int!
     createdAt: DateTime!
     updatedAt: DateTime!
   }
 
-  input PostVoteInput {
+  type PollJudgment {
+    id: ID!
+    pollId: ID!
+    choice: Int!
+    comment: Comment!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+  }
+
+  input PollVoteInput {
+    choice: Int!
+  }
+
+  input PollJudgmentInput {
     choice: Int!
   }
 
   type PostCount {
     id: ID!
-    # nViews: Int!
+    nViews: Int!
     nUps: Int!
     nDowns: Int!
     nComments: Int!
     updatedAt: DateTime!
+    poll: PollCount
+  }
+
+  type PollCount {
+    nVotes: [Int!]!,
+    nJudgements: [Int],
+    judgeStartedAt: DateTime,
+    judgeEndedAt: DateTime,
+    verdictValid: Boolean,
+    verdictChoice: Int,
+    # failedMsg: String,
   }
 
   type Comment {
@@ -296,15 +323,16 @@ export const typeDefs = gql`
   }
 
   enum PostCat {
-    LINK
     IDEA
     ASK
     POLL
+    LINK
     COMMIT
   }
 
   enum PostStatus {
     ACTIVE
+    LOCK
     DELETED
     REPORTED
     ARCHIVED
@@ -341,6 +369,13 @@ export const typeDefs = gql`
     UP
     DOWN
     NEUTRAL
+  }
+
+  enum PollStatus {
+    OPEN
+    JUDGE
+    CLOSE_SUCCESS
+    CLOSE_FAIL
   }
 
   scalar DateTime

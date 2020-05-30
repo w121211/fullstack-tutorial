@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useMutation, useQuery, useLazyQuery } from '@apollo/react-hooks'
 
 import { navigate } from "@reach/router"
-import * as queries from '../store/queries'
-import * as QT from '../store/queryTypes'
+import * as queries from '../../store/queries'
+import * as QT from '../../store/queryTypes'
 
 interface Props {
   postId: string

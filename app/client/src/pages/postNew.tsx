@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
-import { RouteComponentProps, useLocation } from '@reach/router';
-import { useQuery } from '@apollo/react-hooks';
-import { Alert, AutoComplete, Form, Input, Button, Layout, Row, Col, Card, Typography, Radio, Popover } from 'antd'
+import dayjs from 'dayjs'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
+import React, { useState } from 'react'
+import { RouteComponentProps, navigate, Link } from '@reach/router'
+import { InvariantError } from 'ts-invariant'
+import { useQuery, useMutation } from '@apollo/react-hooks'
+import { Alert, AutoComplete, Form, Input, Button, Layout, Row, Col, Card, Typography, Radio, Popover, Space } from 'antd'
 import { FormInstance } from 'antd/lib/form'
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 // import { Post } from '../components/PostForm'
+
+dayjs.extend(localizedFormat)
 
 function PopoverSymbol({ symbol, removeSymbol }: { symbol: string, removeSymbol: (a: string) => void }) {
   const [visible, setVisible] = useState<boolean>(false)
@@ -112,35 +117,36 @@ const layoutWithoutLabel = {
 const placeholdersByCat = {
   [QT.PostCat.POLL]: {
     cat: QT.PostCat.POLL,
-    title: "這是一個預測",
-    content: "主文從第這裏開始...",
-    symbols: [],
+    title: "台達電斥9.65億元 收購加拿大圖控軟體公司Trihedral",
+    text: "電源大廠台達電 (2308-TW) 今 (30) 日宣布，擬透過子公司 Delta Electronics (Netherlands) B.V.，斥約 4500 萬加幣(約新台幣 9.65 億元)，收購加拿大 SCADA 圖控與工業物聯網軟體公司 Trihedral Engineering Limited，深入佈局自動化、人工智能及資料分析等領域。",
+    symbols: ["$AAA", "$BBB"],
     choices: ["AAA", "BBB", "CCC"],
+    nDays: 7,
   },
   [QT.PostCat.ASK]: {
     cat: QT.PostCat.ASK,
-    title: "這是一個提問",
-    content: "主文從第這裏開始...",
-    symbols: [],
+    title: "台達電斥9.65億元 收購加拿大圖控軟體公司Trihedral",
+    text: "電源大廠台達電 (2308-TW) 今 (30) 日宣布，擬透過子公司 Delta Electronics (Netherlands) B.V.，斥約 4500 萬加幣(約新台幣 9.65 億元)，收購加拿大 SCADA 圖控與工業物聯網軟體公司 Trihedral Engineering Limited，深入佈局自動化、人工智能及資料分析等領域。",
+    symbols: ["$AAA", "$BBB"],
     choices: [],
   },
   [QT.PostCat.IDEA]: {
     cat: QT.PostCat.IDEA,
-    title: "這是一個想法",
-    content: "主文從第這裏開始...",
-    symbols: [],
+    title: "台達電斥9.65億元 收購加拿大圖控軟體公司Trihedral",
+    text: "主文從第這裏開始...",
+    symbols: ["$AAA", "$BBB"],
     choices: [],
   },
   [QT.PostCat.COMMIT]: {
     cat: QT.PostCat.IDEA,
     title: "這是一個想法",
-    content: "主文從第這裏開始...",
+    text: "主文從第這裏開始...",
     symbols: [],
   },
   [QT.PostCat.LINK]: {
     cat: QT.PostCat.IDEA,
     title: "這是一個想法",
-    content: "主文從第這裏開始...",
+    text: "主文從第這裏開始...",
     symbols: [],
   }
 }
@@ -148,12 +154,51 @@ const placeholdersByCat = {
 
 function PostForm({ form }: { form: FormInstance }) {
   const [cat, setCat] = useState<QT.PostCat>(form.getFieldValue("cat") || QT.PostCat.ASK)
-  // const cat = (form.getFieldValue("cat") || QT.PostCat.ASK) as QT.PostCat
-  // console.log(form.getFieldValue("cat"))
-  console.log(cat)
+  const [createPost] = useMutation<QT.createPost, QT.createPostVariables>(
+    queries.CREATE_POST, {
+    update(cache, { data }) {
+      console.log(typeof data?.createPost.poll?.start)
+      console.log(data?.createPost)
+
+      try {
+        const res = cache.readQuery<QT.latestPosts>({ query: queries.LATEST_POSTS })
+        if (data?.createPost && res?.latestPosts) {
+          cache.writeQuery<QT.latestPosts>({
+            query: queries.LATEST_POSTS,
+            data: {
+              latestPosts: res.latestPosts.concat([data.createPost]),
+            },
+          })
+          // setCount(data.createPostLike.count)
+        }
+      } catch (e) {
+        if (e instanceof InvariantError) { }
+        else {
+          console.error(e)
+        }
+      }
+
+      // navigate("/")
+    },
+  })
 
   function onFinish(values: any) {
     console.log('Success:', values)
+    createPost({
+      variables: {
+        data: {
+          cat: values.cat,
+          title: values.title,
+          symbolIds: values.symbols,
+          text: values.text,
+          poll: values.cat === QT.PostCat.POLL ?
+            {
+              nDays: values.nDays,
+              choices: values.choices,
+            } : undefined
+        }
+      }
+    })
   }
   function onFinishFailed(errorInfo: any) {
     console.log('Failed:', errorInfo);
@@ -172,7 +217,7 @@ function PostForm({ form }: { form: FormInstance }) {
         {...layout}
         label="類別"
         name="cat"
-        rules={[{ required: true, message: 'Please input your username!' }]}
+        rules={[{ required: true, message: '請選擇類別' }]}
       >
         <Radio.Group onChange={(e) => {
           setCat(e.target.value)
@@ -185,22 +230,11 @@ function PostForm({ form }: { form: FormInstance }) {
         </Radio.Group>
       </Form.Item>
 
-      {/* <Typography.Paragraph>
-        建議的預測類別：
-        <ul>
-          <li>趨勢預測，例如：</li>
-        </ul>
-        不建議的預測類別：
-        <ul>
-          <li>商品價格預測（例如上漲、下跌、目標價），未來會納入</li>
-        </ul>
-      </Typography.Paragraph> */}
-
       <Form.Item
         {...layout}
         label="標題"
         name="title"
-        rules={[{ required: true, message: 'Please input your username!' }]}
+        rules={[{ required: true, message: '請輸入標題' }]}
       >
         <Input placeholder={placeholdersByCat[cat]["title"]} />
       </Form.Item>
@@ -210,8 +244,8 @@ function PostForm({ form }: { form: FormInstance }) {
           <Form.Item
             {...layout}
             label="預測期間"
-            name="pollLength"
-            rules={[{ required: true, message: 'Please input your username!' }]}
+            name="nDays"
+            rules={[{ required: true, message: '請選擇預測期間' }]}
           >
             <Radio.Group>
               <Radio value={7}>7日</Radio>
@@ -242,7 +276,7 @@ function PostForm({ form }: { form: FormInstance }) {
                       {
                         required: true,
                         whitespace: true,
-                        message: "Please input passenger's name or delete this field.",
+                        message: "請輸入選項",
                       },
                     ]}
                     noStyle
@@ -277,10 +311,14 @@ function PostForm({ form }: { form: FormInstance }) {
       <Form.Item
         {...layout}
         label="內文"
-        name="content"
-        rules={[{ required: true, message: 'Please input your username!' }]}
+        name="text"
+        rules={
+          cat !== QT.PostCat.POLL
+            ? [{ required: true, message: '請輸入內文' }]
+            : []
+        }
       >
-        <Input.TextArea rows={3} />
+        <Input.TextArea rows={3} autoSize={{ minRows: 4 }} />
       </Form.Item>
 
       <Form.Item name="symbols" label="標籤" {...layout}>
@@ -301,50 +339,79 @@ interface PreviewProps {
 
 const Preview: React.FC<PreviewProps> = ({ values }) => {
   const [showDetail, setShowDetail] = useState(false)
-  console.log(values)
 
-  if (!values.title) return null
+  let text
+  if (showDetail)
+    text = values.text
+  else if (!showDetail && values.cat === QT.PostCat.POLL)
+    text = null
+  else if (!showDetail && (values.text as string).length > 50)
+    text = (
+      <>
+        {`${values.text.substring(0, 50)}...`}
+        <Button type="link" onClick={() => { setShowDetail(true) }}>more</Button>
+      </>
+    )
+  else
+    text = values.text
+
+  const start = dayjs().startOf('d')
+
   return (
     <>
-      {/* <Button onClick={() => { console.log(form.getFieldsValue()) }}>aaa</Button> */}
       <Typography.Paragraph>
         <b>{values.title}</b>
-      </Typography.Paragraph>
 
-      {
-        values.cat === QT.PostCat.POLL ? (
-          <>
-            <Typography.Paragraph>
-              <Radio.Group>
+        {
+          (values.symbols as string[]).length > 0 && (
+            <>
+              <br />
+              <Space>
+                {(values.symbols as string[]).map((x, i) => (
+                  <a key={i} href={`/symbol/${encodeURIComponent(x)}`} target="_blank" rel="noopener noreferrer">
+                    <i>
+                      <Typography.Text type="secondary">{x}</Typography.Text>
+                    </i>
+                  </a>
+                ))}
+              </Space>
+            </>
+          )
+        }
+
+        {
+          values.cat === QT.PostCat.POLL && (
+            <>
+              <br />
+              <Radio.Group onChange={() => { setShowDetail(true) }}>
                 {
                   (values.choices as string[]).map(
                     (item, i) => <Radio key={i} value={item}>{item}</Radio>
                   )
                 }
               </Radio.Group>
-              <Button>送出</Button>
-            </Typography.Paragraph>
+              <Button type="link" onClick={() => { setShowDetail(!showDetail) }}>{values.nDays}日期預測</Button>
+              <Button shape="round">投票</Button>
 
-            <Typography.Paragraph type="secondary">
-              預測期間：2010/4/1（90日後）
               {
-                showDetail ? (
+                showDetail && (
                   <>
-                    <br />投票期間：2020/1/1 - 2020/2/1 （共80日）
-                    <br />結果判定：投票人評審小組
-                    </>
-                ) : <Button type="link" onClick={() => { setShowDetail(true) }}>詳細</Button>
+                    <Typography.Text type="secondary">
+                      <br />預測日：{start.add(values.nDays || 0, 'd').format('l')} ({values.nDays}日後)
+                      <br />投票期間：{start.format('l')} - {start.add(values.nDays - 1 || 0, 'd').format('l')}
+                      <br />判定方式：投票人評審小組
+                  </Typography.Text>
+                    <br />
+                  </>
+                )
               }
-            </Typography.Paragraph>
-          </>
-        ) : null
-      }
+            </>
+          )
+        }
 
-      <Typography.Paragraph>
-        {values.content}
+        {text && <><br />{text}</>}
+
       </Typography.Paragraph>
-
-      <i>{(values.symbols as string[]).join(" ")}</i>
     </>
   )
 }
@@ -356,73 +423,35 @@ export const PostCreate: React.FC<Props> = () => {
   const [showForm, setShowForm] = useState<boolean>(true)
 
   return (
-    <Layout>
-      <Layout.Content className="site-layout">
-        <Row justify="center">
-          <Col span={20}>
-            <h1>New Post</h1>
+    <>
+      {/* <Typography.Title level={2}><i>新增 Post</i></Typography.Title> */}
 
-            {
-              showForm
-                ? (
-                  <div>
-                    <Button type="link"><Typography.Text strong>編輯</Typography.Text></Button>
-                    <Button type="link" onClick={() => { setShowForm(false) }}>預覽</Button>
-                  </div>
-                )
-                : (
-                  <div>
-                    <Button type="link" onClick={() => { setShowForm(true) }}>編輯</Button>
-                    <Button type="link"><Typography.Text strong>預覽</Typography.Text></Button>
-                  </div>
-                )
-            }
+      {
+        showForm
+          ? (
+            <div>
+              <Button type="link"><Typography.Text strong>編輯</Typography.Text></Button>
+              <Button type="link" onClick={() => { setShowForm(false) }}>預覽</Button>
+            </div>
+          )
+          : (
+            <div>
+              <Button type="link" onClick={() => { setShowForm(true) }}>編輯</Button>
+              <Button type="link"><Typography.Text strong>預覽</Typography.Text></Button>
+            </div>
+          )
+      }
 
-            {
-              showForm
-                ? <Card>
-                  <PostForm form={form} />
-                </Card>
-                : <Card>
-                  <Preview values={form.getFieldsValue()} />
-                </Card>
-            }
+      {
+        showForm
+          ? <Card style={{ width: "100%" }}>
+            <PostForm form={form} />
+          </Card>
+          : <Card style={{ width: "100%" }}>
+            <Preview values={form.getFieldsValue()} />
+          </Card>
+      }
 
-          </Col>
-        </Row>
-      </Layout.Content>
-      <Layout.Footer />
-    </Layout>
+    </>
   )
-
-  // return (
-  //   <>
-  //     <PostForm form={form} />
-  //     {/* <Preview form={form} /> */}
-  //   </>
-  // )
-  // // const location = useLocation()
-  // // const sp = new URLSearchParams(window.location.search)
-  // // const cat = sp.get("cat")
-  // // const [cat, setCat] = useState<string>(sp.get("cat") || QT.PostCat.LINK)
-  // // if (!(cat in QT.PostCat)) setCat(QT.PostCat.LINK)
-  // // const cat = (!(sp.get("cat") || "" in QT.PostCat)) 
-  // // Object.values(QT.PostCat).includes(null)
-
-  // const [cat, setCat] = useState<QT.PostCat>(QT.PostCat.LINK)
-  // const { data: meData } = useQuery<QT.me>(queries.ME)
-  // const [showLogin, setShowLogin] = useState<boolean>(false)
-
-  // switch (cat) {
-  //   case QT.PostCat.LINK:
-  //     // return <PostForm />
-  //     return null
-  //   case QT.PostCat.POST:
-  //     return <></>
-  //   case QT.PostCat.POLL:
-  //     return <></>
-  //   case QT.PostCat.COMMIT:
-  //     return <></>
-  // }
-
 }

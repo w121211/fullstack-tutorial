@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { useQuery } from '@apollo/react-hooks'
 import { Link } from '@reach/router'
 
-import * as queries from '../store/queries'
-import * as QT from '../store/queryTypes'
+import * as queries from '../../store/queries'
+import * as QT from '../../store/queryTypes'
 // import { Posts } from './Posts'
 
 

@@ -1,27 +1,31 @@
+import _ from 'lodash'
+import dayjs from 'dayjs'
 import { compare, hash } from 'bcryptjs'
-import { sign } from 'jsonwebtoken'
+import { sign, JsonWebTokenError } from 'jsonwebtoken'
 import { GraphQLResolverMap } from 'apollo-graphql'
 import { GraphQLDateTime } from 'graphql-iso-date'
-import _ from 'lodash'
-import { Post, PostCat, PostStatus, LikeChoice } from '@prisma/client'
+import { PostCount, Post, PostCat, PostStatus, LikeChoice, PrismaClient } from '@prisma/client'
 import { Context } from './context'
 import { APP_SECRET } from './server'
 
-
-interface PostInput {
-  cat: PostCat
-  status: PostStatus
-  title: String
-  contentText: String
-  contentPoll: { start: Date, end: Date, choices: string[] }
-  contentLink: { url: string }
-  symbolIds: string
+async function scanPolls(prisma: PrismaClient) {
+  // 確認poll是否到期: ->judge, ->verdict
+  const polls = await prisma.post.findMany({
+    where: {
+      cat: PostCat.POLL,
+    }
+  })
+  for (let p of polls) {
+    // parse
+    // if (p.)
+  }
 }
 
-function mapPostInput(post: PostInput) {
+function mapPostInput(post: ST.PostInput) {
   let content
   switch (post.cat) {
-    case PostCat.POST:
+    case PostCat.IDEA:
+    case PostCat.ASK:
       content = { text: post.contentText }
       break
     case PostCat.LINK:
@@ -34,29 +38,52 @@ function mapPostInput(post: PostInput) {
   return { ...post, content }
 }
 
-function parsePostContent(post: Post) {
-  console.log(post)
-  const content = JSON.parse(post.content)
-  delete post.content
+function parsePostCount(count: PostCount): ST.PostCount {
+  if (!count.poll)
+    return {
+      ...count,
+      id: count.id.toString(),
+      poll: undefined,
+    }
+  const poll = JSON.parse(count.poll) as ST.PollCount
+  delete count.poll
   return {
-    ...post,
-    contentText: content.text,
-    contentLink: content.link,
-    // contentPoll: content.poll,
+    ...count,
+    id: count.id.toString(),
+    poll,
   }
 }
 
+function parsePost(post: Post & { count: PostCount, symbols: Symbol[] }) {
+  const body = JSON.parse(post.body)
+  console.log(body)
+  delete post.body
+  return {
+    ...post,
+    bodyText: body.bodyText,
+    bodyPoll: body.bodyPoll,
+    bodyLink: body.bodyLink,
+    count: parsePostCount(post.count)
+  }
+}
 
 export const resolvers: GraphQLResolverMap<Context> = {
   DateTime: GraphQLDateTime, // custom scalar
   Query: {
-    latestPosts: async (parent, { after = null }, { prisma }) => {
+    latestPosts: async (parent, { after }, { prisma }) => {
       const posts = await prisma.post.findMany({
-        first: 40,
-        include: { count: true, symbols: true },
+        first: 10,
+        orderBy: { createdAt: "desc" },
+        include: {
+          count: { include: { poll: true } },
+          symbols: true,
+          poll: true
+        },
+        after: after ? { id: parseInt(after) } : undefined,
       })
+      return _.shuffle(posts)
       // return _.shuffle(posts).map(p => parsePostContent(p))
-      return posts.map(p => parsePostContent(p))
+      // return posts.map(p => parsePost(p))
     },
     risingPosts: (parent, args, ctx) => {
       return []
@@ -96,8 +123,8 @@ export const resolvers: GraphQLResolverMap<Context> = {
     myPostLikes: (parent, { after }, { prisma, req }) => {
       return prisma.postLike.findMany({ where: { userId: req.userId }, first: 50 })
     },
-    myPostVotes: (parent, { after }, { prisma, req }) => {
-      return prisma.postVote.findMany({ where: { userId: req.userId }, first: 50 })
+    myPollVotes: (parent, { after }, { prisma, req }) => {
+      return prisma.pollVote.findMany({ where: { userId: req.userId }, first: 50 })
     },
     myCommentLikes: (parent, { after }, { prisma, req }) => {
       return prisma.commentLike.findMany({ where: { userId: req.userId }, first: 50 })
@@ -164,8 +191,48 @@ export const resolvers: GraphQLResolverMap<Context> = {
       res.clearCookie('token')
       return true
     },
-    createPost: (parent, { data }, { prisma, req }) => {
-      return prisma.post.create({ userId: req.userId, ...data })
+    createPost: async (parent, { data }, { prisma, req }) => {
+      console.log(data)
+      const temp = {
+        cat: data.cat,
+        title: data.title || "",
+        text: data.text || "",
+        user: { connect: { id: req.userId } },
+        symbols: { connect: (data.symbolIds as string[]).map(x => ({ name: x })) },
+        count: { create: {} },
+      }
+
+      if (data.cat !== PostCat.POLL)
+        return prisma.post.create({
+          data: { ...temp },
+          include: { count: true, symbols: true, poll: true },
+        })
+
+      const start = dayjs().startOf('d')
+      const end = start.add(data.poll.nDays, 'd')
+
+      return prisma.post.create({
+        data: {
+          ...temp,
+          count: {
+            create: { poll: { create: {} } }
+          },
+          poll: {
+            create: {
+              start: start.toDate(),
+              end: end.toDate(),
+              nDays: data.poll.nDays,
+              choices: { set: data.poll.choices },
+              user: { connect: { id: req.userId } },
+            }
+          }
+        },
+        include: {
+          count: { include: { poll: true } },
+          symbols: true,
+          poll: true
+        },
+      })
     },
     updatePost: (parent, { id, data }, { prisma, req }) => {
       return prisma.post.update({ userId: req.userId, ...data })
@@ -242,25 +309,27 @@ export const resolvers: GraphQLResolverMap<Context> = {
 
       return { like, count }
     },
-    createPostVote: (parent, { postId, data }, { prisma, req }) => {
-      return prisma.postVote.create({
+    createPollVote: (parent, { pollId, data }, { prisma, req }) => {
+      return prisma.pollVote.create({
         data: {
           user: { connect: { id: req.userId } },
-          post: { connect: { id: parseInt(postId) } },
+          poll: { connect: { id: parseInt(pollId) } },
           choice: data.choice,
         }
       })
     },
-    updatePostVote: (parent, { postId, data }, { prisma, req }) => {
-      return prisma.postVote.update({ userId: req.userId, ...data })
-    },
+    // updatePollVote: (parent, { pollId, data }, { prisma, req }) => {
+    //   return prisma.pollVote.update({ userId: req.userId, ...data })
+    // },
     createComment: async (parent, { postId, data }, { prisma, req }) => {
       const post = await prisma.post.findOne({
         where: { id: parseInt(postId) },
         include: { count: true }
       })
-      if (post === null) throw new Error("cannot find post")
-      if (post.status !== PostStatus.ACTIVE) throw new Error("post is not active")
+      if (post === null)
+        throw new Error("cannot find post")
+      // if (post.status !== PostStatus.ACTIVE)
+      //   throw new Error("post is not active")
       prisma.postCount.update({
         data: { nComments: post.count.nComments + 1 },
         where: { postId: post.id }
@@ -281,6 +350,8 @@ export const resolvers: GraphQLResolverMap<Context> = {
       })
     },
     createCommentLike: async (parent, { commentId, data }, { prisma, req }) => {
+      console.log(data, commentId)
+      console.log(req.userId)
       const like = await prisma.commentLike.create({
         data: {
           choice: data.choice,

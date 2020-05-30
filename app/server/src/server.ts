@@ -29,7 +29,7 @@ export const APP_SECRET = 'appsecret321'
 // ref: https://github.com/maticzav/graphql-shield/blob/master/examples/with-graphql-nexus/src/lib/middlewares/authorization.js
 function authorization(): express.RequestHandler {
   return function (req, res, next) {
-    console.log(req.cookies)
+    // console.log(req.cookies)
     const { token } = req.cookies
     if (!token) return next()
     try {
@@ -104,8 +104,8 @@ const server = new ApolloServer({
     }
   },
   // mocks,
-  // debug: true,
-  debug: false,
+  debug: true,
+  // debug: false,
   // plugins: [ logError],
   formatError: (err) => {
     console.error(err)

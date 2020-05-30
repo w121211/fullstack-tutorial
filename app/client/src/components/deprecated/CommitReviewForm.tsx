@@ -1,8 +1,8 @@
 import React, { useState, Fragment } from 'react'
 import { useQuery, useLazyQuery, useMutation } from '@apollo/react-hooks'
 import { Link, Router, RouteComponentProps } from '@reach/router'
-import * as queries from '../store/queries'
-import * as QT from '../store/queryTypes'
+import * as queries from '../../store/queries'
+import * as QT from '../../store/queryTypes'
 
 
 interface CommitReviewtFormProps {

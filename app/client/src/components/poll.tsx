@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { MutationResult } from '@apollo/react-common'
-import { Button, Tooltip, Form, Radio, Spin, Input } from 'antd'
+import { Button, Tooltip, Form, Radio, Spin, Input, Typography } from 'antd'
 import { RadioChangeEvent } from 'antd/lib/radio'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
@@ -19,23 +19,23 @@ import * as QT from '../store/queryTypes'
  */
 
 interface FormProps {
-  postId: string
+  pollId: string
   choices: React.ReactNode
 }
 
-const PollVoteForm: React.FC<FormProps> = ({ postId, choices }) => {
-  const [createPostVote, { loading }] = useMutation<QT.createPostVote, QT.createPostVoteVariables>(
-    queries.CREATE_POST_VOTE, {
+const PollVoteForm: React.FC<FormProps> = ({ pollId, choices }) => {
+  const [createPollVote, { loading }] = useMutation<QT.createPollVote, QT.createPollVoteVariables>(
+    queries.CREATE_POLL_VOTE, {
     update(cache, { data }) {
-      const res = cache.readQuery<QT.myPostVotes>({
-        query: queries.MY_POST_VOTES,
+      const res = cache.readQuery<QT.myPollVotes>({
+        query: queries.MY_POLL_VOTES,
       })
-      if (data?.createPostVote && res?.myPostVotes) {
+      if (data?.createPollVote && res?.myPollVotes) {
         // const fake = { ...data?.createPostLike, postId, choice: 1 }
-        cache.writeQuery<QT.myPostVotes>({
-          query: queries.MY_POST_VOTES,
+        cache.writeQuery<QT.myPollVotes>({
+          query: queries.MY_POLL_VOTES,
           data: {
-            myPostVotes: res?.myPostVotes.concat([data?.createPostVote]),
+            myPollVotes: res?.myPollVotes.concat([data?.createPollVote]),
             // myPostLikes: res?.myPostLikes.concat([fake]),
           },
         })
@@ -46,9 +46,9 @@ const PollVoteForm: React.FC<FormProps> = ({ postId, choices }) => {
 
   function onFinish(values: any) {
     console.log(values)
-    createPostVote({
+    createPollVote({
       variables: {
-        postId,
+        pollId,
         data: { choice: values.choice }
       }
     })
@@ -92,19 +92,19 @@ const PollVoteForm: React.FC<FormProps> = ({ postId, choices }) => {
   )
 }
 
-const PollJudgeForm: React.FC<FormProps> = ({ postId, choices }) => {
-  const [createPostVote, { loading }] = useMutation<QT.createPostVote, QT.createPostVoteVariables>(
-    queries.CREATE_POST_VOTE, {
+const PollJudgeForm: React.FC<FormProps> = ({ pollId, choices }) => {
+  const [createPostVote, { loading }] = useMutation<QT.createPollVote, QT.createPollVoteVariables>(
+    queries.CREATE_POLL_VOTE, {
     update(cache, { data }) {
-      const res = cache.readQuery<QT.myPostVotes>({
-        query: queries.MY_POST_VOTES,
+      const res = cache.readQuery<QT.myPollVotes>({
+        query: queries.MY_POLL_VOTES,
       })
-      if (data?.createPostVote && res?.myPostVotes) {
+      if (data?.createPollVote && res?.myPollVotes) {
         // const fake = { ...data?.createPostLike, postId, choice: 1 }
-        cache.writeQuery<QT.myPostVotes>({
-          query: queries.MY_POST_VOTES,
+        cache.writeQuery<QT.myPollVotes>({
+          query: queries.MY_POLL_VOTES,
           data: {
-            myPostVotes: res?.myPostVotes.concat([data?.createPostVote]),
+            myPollVotes: res?.myPollVotes.concat([data?.createPollVote]),
             // myPostLikes: res?.myPostLikes.concat([fake]),
           },
         })
@@ -121,7 +121,7 @@ const PollJudgeForm: React.FC<FormProps> = ({ postId, choices }) => {
     console.log(values)
     createPostVote({
       variables: {
-        postId,
+        pollId,
         data: { choice: values.choice }
       }
     })
@@ -161,87 +161,35 @@ const PollJudgeForm: React.FC<FormProps> = ({ postId, choices }) => {
   )
 }
 
-
-enum PollState {
-  OPEN,
-  JUDGE,
-  CLOSE,
-}
-
-const _postContent = {
-  text: `if it is a link-post, then here can be some thought,
-  or it can be a post-post, and http://aaa.com, #tag, $AAA, !event will auto recognize
-  if it is a commit-post/poll-post, here is words describe the commit/poll
-  here should allow author to add some [image]s, put this feature on the list
-  `,
-  poll: {
-    // state: PollState.OPEN,
-    // state: PollState.CLOSE,
-    state: PollState.JUDGE,
-    start: "2000-01-01",  // 不准變更
-    end: "2000-01-10", // 不准變更
-    choices: ["choice a", "choice b", "choice c"], // 不准變更
-    // _start: "2000-01-01",
-    // _end: "2000-01-10",
-    // _result: {},
-    minVotes: 100, // 最低門檻
-    judgeMinVotes: 10,
-    judgeNDays: 5, // in days
-  },
-  link: {
-    urL: "http://url.com",
-    text: 'this is a header',
-    domain: "some domain",
-    publishedAt: "2001-01-01 03:50",
-  },
-}
-
-const _pollCount = {
-  // [choice1, choice2, ...]
-  nVotes: [10, 29, 38],
-  reports: [
-    {
-      createdAt: new Date(2000, 1, 1)
-    },
-  ],
-  verdict: {
-    startedAt: new Date(2000, 1, 1),
-    endedAt: new Date(2000, 1, 2),  // null for not ended
-    valid: true,  // null for not judged
-    // [choice1, choice2, ..., nAbandoned]
-    nVotes: [10, 29, 38, 1],
-    choice: 2,
-    failedMsg: "",
-  }
-}
-
-
 interface PostPollProps {
   me?: QT.me_me
-  toLogin: () => void
-  postId: string
-  // poll: QT.post_post_contentPoll
-  // count: QT.post_post_count
+  toLogin?: () => void
+  pollId: string
+  poll: QT.post_post_poll
+  count: QT.post_post_count_poll
 }
 
-export const PostPoll: React.FC<PostPollProps> = ({ postId, me, toLogin }) => {
-  const poll = _postContent.poll
-  const count = _pollCount
-  const meJudge = {
-    __typename: "PollJudge",
-    id: "1234",
-    postId: "2234",
-    choice: null
-  }
-
+export const PostPoll: React.FC<PostPollProps> = ({ me, toLogin, poll, count }) => {
+  // const poll = _postContent.poll
+  // const meJudgement = {
+  //   __typename: "PollJudge",
+  //   id: "1234",
+  //   postId: "2234",
+  //   choice: null
+  // }
+  const meJudgment = undefined
 
   const [showMeta, setShowMeta] = useState<boolean>(false)
   const [showResult, setShowResult] = useState<boolean>(false)
-  const { data } = useQuery<QT.myPostVotes>(
-    queries.MY_POST_VOTES, {
+  const myVotes = useQuery<QT.myPollVotes>(
+    queries.MY_POLL_VOTES, {
     fetchPolicy: "cache-only"
   })
-  const meVote = data?.myPostVotes.find((x) => x.postId === postId)
+  // const { data } = useQuery<QT.myPostVotes>(
+  //   queries.MY_POST_VOTES, {
+  //   fetchPolicy: "cache-only"
+  // })
+  const meVote = myVotes.data?.myPollVotes.find((x) => x.pollId === poll.id)
 
   function choice(i: number, text: string, count: number) {
     if (!me) return <Radio key={i} value={i} onClick={toLogin}>{text}</Radio>
@@ -264,28 +212,29 @@ export const PostPoll: React.FC<PostPollProps> = ({ postId, me, toLogin }) => {
   const meVoteMsg = meVote ? "你已經投票" : null
 
   let main
-  if (poll.state === PollState.CLOSE && !count.verdict.valid) {
+  if (poll.status === QT.PollStatus.CLOSE_FAIL) {
     main = <>
-      投票已結束，因{count.verdict.failedMsg}原因判定為無效投票
+      {/* 投票已結束，因{count.verdict?.failedMsg}原因判定為無效投票 */}
+      投票已結束，經...判定為無效投票
       {meVoteMsg}
       {choices}
     </>
 
-  } else if (poll.state === PollState.CLOSE && meVote) {
+  } else if (poll.status === QT.PollStatus.CLOSE_SUCCESS && meVote && count.verdictChoice) {
     main = <>
-      投票已結束，你的選擇為：{poll.choices[meVote.choice]}，判定結果為：{poll.choices[count.verdict.choice]}
+      投票已結束，你的選擇為：{poll.choices[meVote.choice]}，判定結果為：{poll.choices[count.verdictChoice]}
       {/* 你預測成功，贏過71%的預測者，獲得獎勵： */}
       {choices}
     </>
 
-  } else if (poll.state === PollState.CLOSE && showResult) {
+  } else if (poll.status === QT.PollStatus.CLOSE_SUCCESS && showResult && count.verdictChoice) {
     main = <>
-      投票已結束，判定結果為：{poll.choices[count.verdict.choice]}<br />
+      投票已結束，判定結果為：{poll.choices[count.verdictChoice]}<br />
       {meVoteMsg}
       {choices}
     </>
 
-  } else if (poll.state === PollState.CLOSE) {
+  } else if (poll.status === QT.PollStatus.CLOSE_SUCCESS) {
     main = <>
       投票已結束
       <Tooltip title="耗費10點karma">
@@ -295,48 +244,70 @@ export const PostPoll: React.FC<PostPollProps> = ({ postId, me, toLogin }) => {
       {choices}
     </>
 
-  } else if (poll.state === PollState.JUDGE && meJudge) {
+  } else if (poll.status === QT.PollStatus.JUDGE && meJudgment) {
     main = (
       <>
         投票已結束，你被邀請加入評審團，請評斷實際的結果：
-        <PollJudgeForm postId={postId} choices={judgeChoices} />
+        <PollJudgeForm pollId={poll.id} choices={judgeChoices} />
       </>
     )
 
-  } else if (poll.state === PollState.JUDGE) {
-    main = <>投票已結束，判定結果中{choices}</>
+  } else if (poll.status === QT.PollStatus.JUDGE) {
+    main = <>
+      {choices}
+      <Typography.Text type="secondary">
+        投票已結束，判定結果中
+      </Typography.Text>
+      {meVote || showResult ? null : (
+        <Tooltip title="耗費10點karma">
+          <Button size="small" type="link" onClick={() => { setShowResult(true) }}>查看投票數</Button>
+        </Tooltip>
+      )}
 
-  } else if (poll.state === PollState.OPEN && meVote) {
-    main = choices
+    </>
 
-  } else if (poll.state === PollState.OPEN && me) {
+  } else if (poll.status === QT.PollStatus.OPEN && meVote) {
+    main = <>
+      {choices}
+      <Typography.Text type="secondary">
+        你已經投票
+      </Typography.Text>
+    </>
+
+  } else if (poll.status === QT.PollStatus.OPEN && me) {
     main = (
       <PollVoteForm
-        postId={postId}
+        pollId={poll.id}
         choices={choices}
       />
     )
 
-  } else if (poll.state === PollState.OPEN) {
+  } else if (poll.status === QT.PollStatus.OPEN) {
     main = <>
       {meVoteMsg}
       {choices}
     </>
 
-  } else { throw new Error("不應該有漏掉的case") }
+  } else {
+    throw new Error("不應該有漏掉的case")
+  }
 
   return (
     <>
       {main}
-      {showMeta ? (
-        <ul>
-          <li>半年期預測</li>
-          <li>投票期間：2020/1/1 - 2020/2/1（1個月）</li>
-          <li>結果判定：2020/8/1</li>
-          <li>判定方式：隨選一組投票人決定</li>
-          <li>當前預測價值：???</li>
-        </ul>
-      ) : <Button type="link" onClick={() => { setShowMeta(true) }}>詳細</Button>}
+      <Button type="link" onClick={() => { setShowMeta(!showMeta) }}>半年期預測</Button>
+      {
+        showMeta ? (
+          <Typography.Text type="secondary">
+            <ul>
+              <li>結果判定：2020/8/1</li>
+              <li>投票期間：2020/1/1 - 2020/2/1（5個月）</li>
+              <li>判定方式：隨選一組投票人決定</li>
+              <li>當前預測價值：???</li>
+            </ul>
+          </Typography.Text>
+        ) : null
+      }
     </>
   )
 }

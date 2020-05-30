@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { Link } from '@reach/router'
 import { useQuery, useMutation, } from '@apollo/react-hooks'
-import { Card, Typography, List, Form, Button, Input, Comment, Space } from 'antd'
+import { Card, Typography, Form, Button, Input, Space } from 'antd'
 
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
-import { CommentLike, CommentDislike } from './CommentLike'
+import { CommentLike, CommentDislike } from './commentLike'
 
 
 interface Props extends QT.commentsVariables {
@@ -88,10 +88,10 @@ export const Comments: React.FC<Props> = ({ postId, after, toAddCommentCountByOn
 
   return (
     <Card bordered={false}>
-      {data.comments.map(c => {
+      {data.comments.map((c, i) => {
         myCommentLikes.data?.myCommentLikes.find((x) => x.commentId === c.id)
         return (
-          <Typography.Paragraph>
+          <Typography.Paragraph key={i}>
             <Typography.Text type="secondary">@anonymous, 5-15</Typography.Text>
             <br />
             {c.content}
@@ -99,10 +99,10 @@ export const Comments: React.FC<Props> = ({ postId, after, toAddCommentCountByOn
             <small>
               <Space>
                 <span>
-                  <CommentLike commentId={"123"} createCommentLike={createCommentLike} updateCommentLike={updateCommentLike} />
+                  <CommentLike commentId={c.id} createCommentLike={createCommentLike} updateCommentLike={updateCommentLike} />
                 </span>
                 <span>
-                  <CommentDislike commentId={"456"} createCommentLike={createCommentLike} updateCommentLike={updateCommentLike} />
+                  <CommentDislike commentId={c.id} createCommentLike={createCommentLike} updateCommentLike={updateCommentLike} />
                 </span>
               </Space>
             </small>

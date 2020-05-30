@@ -1,56 +1,157 @@
 import { readFileSync } from 'fs'
-import { PrismaClient, PostCat, SymbolCat, CommitAction, CommitStatus, PostStatus, LikeChoice } from '@prisma/client'
+import { PrismaClient, PostCat, SymbolCat, CommitAction, PostStatus, LikeChoice, PollStatus } from '@prisma/client'
+import * as ST from '../src/schemaTypes'
 
-const post = {
-  title: "some title goes here",
-  content: {
-    text: `if it is a link-post, then here can be some thought,
-    or it can be a post-post, and http://aaa.com, #tag, $AAA, !event will auto recognize
-    if it is a commit-post/poll-post, here is words describe the commit/poll
-    here should allow author to add some [image]s, put this feature on the list
-    `,
-    poll: {
-      start: "2000-01-01",  // 不准變更
-      end: "2000-01-10", // 不准變更
-      choices: ["choice a", "choice b", "choice c"], // 不准變更
-      // _start: "2000-01-01",
-      // _end: "2000-01-10",
-      // _result: {},
-    },
-    link: {
-      urL: "http://url.com",
-      domain: "some domain",
-      published_at: "2001-01-01 03:50",
-    }
-  },
+const _eventContent = {
+  status: "ALIVE",  // ALIVE, END
+  cat: "", // NEWS, COMPANY, SIGNAL
+  start: Date.now(),
+  end: null,
+  // title: "Some event name?",
+  tags: ["#tag1", "tag2"],
+  events: ["a-event", "b-event"],
+  shotedAt: Date.now(),
 }
-const postCoutnt = {
-  // nViews    Int      @default(0)
+
+const keywordBlacklist = []
+const _users = [
+  {
+    email: 'aaa@aaa.com',
+    password: 'aaa',
+  },
+  {
+    email: 'bbb@bbb.com',
+    password: 'bbb',
+  }
+]
+const _count = {
+  nViews: 90,
   nUps: 10,
   nDowns: 30,
   nComments: 21,
-  poll: [3, 4, 18],
+  poll: undefined,
 }
-const bet = {
-
-}
-
-
-const polls = [
-  '[每日任務]預測今天的大盤走勢，你已連續___天完成任務',
-  '正在竄升的趨勢',
-  '近期竄升股',
-  '本日熱門話題',
-  'coming IPO',
-  'coming events',
-  '"電動車"正夯，你覺得哪個電動車概念股最有成長潛力？',
-  '美股還有__小時__分鐘開盤，已有____人預測本日走勢，你已連續___天完成任務',
-  '你覺得自己善於哪些領域？',
-  '點選你熟悉的股票',
+const _posts = [
+  {
+    cat: PostCat.IDEA,
+    status: PostStatus.ACTIVE,
+    title: "狂印錢的未來",
+    text: "",
+    count: _count,
+  },
+  {
+    cat: PostCat.ASK,
+    status: PostStatus.ACTIVE,
+    title: "油價大跌，有哪些股票可以趁機買入？",
+    text: "",
+    count: _count
+  },
+  {
+    cat: PostCat.LINK,
+    status: PostStatus.ACTIVE,
+    title: "某篇新聞報導",
+    text: "",
+    // link: {
+    //   url: "http://url.com",
+    //   domain: "some domain",
+    //   published_at: "2001-01-01 03:50",
+    // }
+    count: _count
+  },
+  {
+    cat: PostCat.POLL,
+    status: PostStatus.LOCK,
+    title: "Luckin Coffee會下市嗎？",
+    text: "",
+    poll: {
+      status: PollStatus.OPEN,
+      start: new Date(200, 1, 1),
+      end: new Date(2000, 2, 1),
+      choices: ["choice a", "choice b", "choice c"],
+      // forecastNDays: 30,
+      // minVotes: 100, // 最低門檻
+      // judgeMinVotes: 10,
+      // judgeNDays: 5, // 審查期間
+      votes: [
+        { userId: _users[0].email, choice: 1 },
+        { userId: _users[1].email, choice: 2 },
+      ]
+    },
+    count: {
+      ..._count,
+      poll: {
+        nVotes: [10, 29, 38],
+        judge: undefined,
+        verdict: undefined, // undefined for not judged
+        // reports: [  { createdAt: new Date(2000, 1, 1) }],
+      },
+    }
+  },
+  {
+    cat: PostCat.POLL,
+    status: PostStatus.LOCK,
+    title: "Luckin Coffee會下市嗎？",
+    text: "",
+    poll: {
+      status: PollStatus.JUDGE,
+      start: new Date(200, 1, 1),
+      end: new Date(2000, 2, 1),
+      choices: ["choice a", "choice b", "choice c"],
+      nDays: 7,
+      minVotes: 30,
+      nDaysJudge: 5,
+      minJudgements: 5,
+      votes: [
+        { userId: _users[0].email, choice: 1, comment: { body: "連結[aaa.com]", status: PostStatus.LOCK } },
+        { userId: _users[1].email, choice: 2, comment: { body: "連結[aaa.com]", status: PostStatus.LOCK } },
+      ],
+      judgments: [
+        { userId: _users[0].email, choice: 1 },
+        { userId: _users[1].email, choice: 2 },
+      ]
+    },
+    count: {
+      ..._count,
+      poll: {
+        nVotes: [10, 29, 38],
+        nJudgments: [10, 29, 38, 1], // [choice1, choice2, ..., nAbandoned]
+        judgeStartedAt: new Date(2000, 1, 1),
+        judgeEndedAt: undefined,
+        verdictValid: undefined,
+        verdictChoice: undefined,
+      }
+    }
+  },
+  {
+    title: "3月21日是這次股市崩盤的最低點了嗎？",
+    cat: PostCat.POLL,
+    status: PostStatus.LOCK,
+    body: {
+      text: "",
+      poll: {
+        status: PollStatus.CLOSE_SUCCESS,
+        start: new Date(200, 1, 1),
+        end: new Date(2000, 2, 1),
+        choices: ["choice a", "choice b", "choice c"],
+        minVotes: 100, // 最低門檻
+        judgeMinVotes: 10,
+        judgeNDays: 5, // in days
+      },
+      // link: {},
+    },
+    count: {
+      ..._count,
+      poll: {
+        nVotes: [10, 29, 38],
+        nJudgments: [10, 29, 38, 1], // [choice1, choice2, ..., nAbandoned]
+        judgeStartedAt: new Date(2000, 1, 1),
+        judgeEndedAt: new Date(2000, 1, 2),
+        verdictValid: true,
+        verdictChoice: 2,
+      },
+    },
+  }
 ]
-
-const keywordBlacklist = []
-
 const event = {
   name: "!COVID-19",
   synonyms: ["corono-virus"],
@@ -99,6 +200,7 @@ const tag = {
   name: "#",
 }
 
+// ----------------------------------------------
 
 const prisma = new PrismaClient({
   errorFormat: "pretty",
@@ -111,7 +213,6 @@ async function main() {
   await prisma.raw('TRUNCATE "User", "Symbol" CASCADE;')
 
   // create a user, ie signup
-
   const user1 = await prisma.user.create({
     data: {
       email: 'aaa@aaa.com',
@@ -201,13 +302,13 @@ async function main() {
       user: { connect: { id: user1.id } },
       symbol: { connect: { id: event1.id } },
       action: CommitAction.CREATE,
-      content: JSON.stringify(_eventContent),
+      body: JSON.stringify(_eventContent),
       post: {
         create: {
           user: { connect: { id: user1.id } },
           cat: PostCat.COMMIT,
           title: "Create event !event-1",
-          content: JSON.stringify({ content: "this is a commit post" }),
+          text: "",
           count: { create: {} },
         }
       },
@@ -258,7 +359,7 @@ async function main() {
   const post1 = await prisma.post.create({
     data: {
       title: "feed header 1",
-      content: JSON.stringify({ content: "this is post 1" }),
+      text: "this is post 1",
       user: { connect: { id: user1.id } },
       count: { create: {} },
       symbols: {
@@ -273,7 +374,7 @@ async function main() {
   await prisma.post.create({
     data: {
       title: "feed header 2",
-      content: JSON.stringify({ content: "this is post 2" }),
+      text: "this is post 2",
       user: { connect: { id: user1.id } },
       count: { create: {} },
       symbols: {
@@ -290,7 +391,7 @@ async function main() {
     await prisma.post.create({
       data: {
         title: d.title,
-        content: JSON.stringify({ text: d.summary }),
+        text: d.summary,
         user: { connect: { id: user1.id } },
         count: { create: {} },
         symbols: {
@@ -303,7 +404,6 @@ async function main() {
       }
     })
   }
-
 
   // like a post, and update post-count
   const postLike1 = await prisma.postLike.create({
@@ -364,45 +464,6 @@ async function main() {
     })
   }
 
-
-  // create a poll-post
-  const pollPost = await prisma.post.create({
-    data: {
-      title: "feed header 1",
-      content: JSON.stringify({
-        text: "this is a poll-post",
-        poll: {
-          start: "2000-01-01",  // 不准變更
-          end: "2000-01-10", // 不准變更
-          choices: ["choice a", "choice b", "choice c"], // 不准變更
-        },
-      }),
-      user: { connect: { id: user1.id } },
-      count: { create: {} },
-    }
-  })
-
-  // create a post-vote, check poll is available first
-  await prisma.postVote.create({
-    data: {
-      user: { connect: { id: user1.id } },
-      post: { connect: { id: pollPost.id } },
-      choice: 2,
-    }
-  })
-
-  // make some queries
-  const postsOfTicker1 = await prisma.symbol.findOne({
-    where: { id: ticker1.id },
-    select: {
-      posts: {
-        select: { id: true },
-        first: 1,
-      }
-    }
-  })
-  console.log(postsOfTicker1)
-
   // const ticks = readFileSync('./prisma/aadr.us.txt', 'utf-8').split('\r\n')
   // for (let i = 1; i < ticks.length; i++) {
 
@@ -418,6 +479,67 @@ async function main() {
 
   // console.log({ user1, user2 })
   // console.log(ticker1, tick)
+
+  for (let p of _posts) {
+    const _post = await prisma.post.create({
+      data: {
+        cat: p.cat,
+        status: p.status,
+        title: p.title,
+        text: p.text || "",
+        user: { connect: { id: user1.id } },
+        count: {
+          create: {
+            nViews: p.count.nViews,
+            nUps: p.count.nUps,
+            nDowns: p.count.nDowns,
+            nComments: p.count.nComments,
+            poll: { create: {} }
+          }
+        },
+      }
+    })
+    if (p.poll) {
+      const _poll = await prisma.poll.create({
+        data: {
+          status: p.poll.status,
+          start: p.poll.start,
+          end: p.poll.end,
+          choices: { set: p.poll.choices },
+          nDays: 1,
+          user: { connect: { id: user1.id } },
+          post: { connect: { id: _post.id } },
+        }
+      })
+      for (let v of p.poll.votes) {
+        prisma.pollVote.create({
+          data: {
+            choice: v.choice,
+            user: { connect: { id: v.userId } },
+            poll: { connect: { id: _poll.id } },
+          }
+        })
+      }
+      for (let j of p.poll.judgments || []) {
+        prisma.pollJudgment.create({
+          data: {
+            choice: j.choice,
+            user: { connect: { id: j.userId } },
+            poll: { connect: { id: _poll.id } },
+            comment: {
+              create: {
+                content: "judgment comment",
+                user: { connect: { id: j.userId } },
+                post: { connect: { id: _post.id } },
+                count: { create: {} }
+              }
+            },
+          }
+        })
+      }
+
+    }
+  }
 }
 
 main()
@@ -432,3 +554,17 @@ main()
 // var obj = JSON.parse(readFileSync('./prisma/headline.json', 'utf8'));
 // console.log(obj.items.data[0])
 
+
+async function query() {
+  // make some queries
+  const postsOfTicker1 = await prisma.symbol.findOne({
+    where: { id: 1234 },
+    select: {
+      posts: {
+        select: { id: true },
+        first: 1,
+      }
+    }
+  })
+  console.log(postsOfTicker1)
+}
