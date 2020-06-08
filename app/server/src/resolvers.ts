@@ -21,67 +21,88 @@ async function scanPolls(prisma: PrismaClient) {
   }
 }
 
-function mapPostInput(post: ST.PostInput) {
-  let content
-  switch (post.cat) {
-    case PostCat.IDEA:
-    case PostCat.ASK:
-      content = { text: post.contentText }
-      break
-    case PostCat.LINK:
-      content = {
-        text: post.contentText,
-        link: post.contentLink,
-      }
-      break
-  }
-  return { ...post, content }
-}
+// function mapPostInput(post: ST.PostInput) {
+//   let content
+//   switch (post.cat) {
+//     case PostCat.IDEA:
+//     case PostCat.ASK:
+//       content = { text: post.contentText }
+//       break
+//     case PostCat.LINK:
+//       content = {
+//         text: post.contentText,
+//         link: post.contentLink,
+//       }
+//       break
+//   }
+//   return { ...post, content }
+// }
 
-function parsePostCount(count: PostCount): ST.PostCount {
-  if (!count.poll)
-    return {
-      ...count,
-      id: count.id.toString(),
-      poll: undefined,
-    }
-  const poll = JSON.parse(count.poll) as ST.PollCount
-  delete count.poll
-  return {
-    ...count,
-    id: count.id.toString(),
-    poll,
-  }
-}
+// function parsePostCount(count: PostCount): ST.PostCount {
+//   if (!count.poll)
+//     return {
+//       ...count,
+//       id: count.id.toString(),
+//       poll: undefined,
+//     }
+//   const poll = JSON.parse(count.poll) as ST.PollCount
+//   delete count.poll
+//   return {
+//     ...count,
+//     id: count.id.toString(),
+//     poll,
+//   }
+// }
 
-function parsePost(post: Post & { count: PostCount, symbols: Symbol[] }) {
-  const body = JSON.parse(post.body)
-  console.log(body)
-  delete post.body
-  return {
-    ...post,
-    bodyText: body.bodyText,
-    bodyPoll: body.bodyPoll,
-    bodyLink: body.bodyLink,
-    count: parsePostCount(post.count)
-  }
-}
+// function parsePost(post: Post & { count: PostCount, symbols: Symbol[] }) {
+//   const body = JSON.parse(post.body)
+//   console.log(body)
+//   delete post.body
+//   return {
+//     ...post,
+//     bodyText: body.bodyText,
+//     bodyPoll: body.bodyPoll,
+//     bodyLink: body.bodyLink,
+//     count: parsePostCount(post.count)
+//   }
+// }
 
 export const resolvers: GraphQLResolverMap<Context> = {
   DateTime: GraphQLDateTime, // custom scalar
   Query: {
     latestPosts: async (parent, { after }, { prisma }) => {
+
+      // TODO: post-children應該要經過「挑選」，只挑重要的出來
       const posts = await prisma.post.findMany({
-        first: 10,
+        first: 30,
         orderBy: { createdAt: "desc" },
         include: {
-          count: { include: { poll: true } },
           symbols: true,
-          poll: true
+          poll: true,
+          count: {
+            include: {
+              poll: true
+            }
+          },
+          parent: {
+            select: {
+              id: true,
+              cat: true,
+              title: true,
+            }
+          },
+          children: {
+            select: {
+              id: true,
+              cat: true,
+              title: true,
+            }
+          }
         },
         after: after ? { id: parseInt(after) } : undefined,
       })
-      return _.shuffle(posts)
+      return posts
+      // return _.shuffle(posts)
       // return _.shuffle(posts).map(p => parsePostContent(p))
       // return posts.map(p => parsePost(p))
     },
@@ -191,8 +212,8 @@ export const resolvers: GraphQLResolverMap<Context> = {
       res.clearCookie('token')
       return true
     },
-    createPost: async (parent, { data }, { prisma, req }) => {
-      console.log(data)
+    createPost: async (parent, { data, parentId }, { prisma, req }) => {
+      console.log(data, parentId)
       const temp = {
         cat: data.cat,
         title: data.title || "",
@@ -200,12 +221,17 @@ export const resolvers: GraphQLResolverMap<Context> = {
         user: { connect: { id: req.userId } },
         symbols: { connect: (data.symbolIds as string[]).map(x => ({ name: x })) },
         count: { create: {} },
+        parent: parentId ? { connect: { id: parseInt(parentId) } } : undefined
       }
-
       if (data.cat !== PostCat.POLL)
         return prisma.post.create({
           data: { ...temp },
-          include: { count: true, symbols: true, poll: true },
+          include: {
+            count: true,
+            symbols: true,
+            poll: true,
+            parent: { select: { id: true, title: true } },
+          },
         })
 
       const start = dayjs().startOf('d')
@@ -228,9 +254,11 @@ export const resolvers: GraphQLResolverMap<Context> = {
           }
         },
         include: {
-          count: { include: { poll: true } },
           symbols: true,
-          poll: true
+          poll: true,
+          count: { include: { poll: true } },
+          parent: { select: { id: true, title: true } },
+          // children: { select: { id: true, title: true } },
         },
       })
     },

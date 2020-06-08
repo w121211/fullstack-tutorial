@@ -273,8 +273,8 @@ export interface getSymbol_symbol {
   name: string;
   cat: SymbolCat;
   status: SymbolStatus;
-  content: string | null;
-  sysContent: string | null;
+  body: string | null;
+  sys: string | null;
 }
 
 export interface getSymbol {
@@ -442,8 +442,8 @@ export interface fetchPage_fetchPage_createdEvent {
   name: string;
   cat: SymbolCat;
   status: SymbolStatus;
-  content: string | null;
-  sysContent: string | null;
+  body: string | null;
+  sys: string | null;
 }
 
 export interface fetchPage_fetchPage {
@@ -592,6 +592,7 @@ export interface createPost {
 
 export interface createPostVariables {
   data: PostInput;
+  parentId?: string | null;
 }
 
 /* tslint:disable */
@@ -1233,8 +1234,8 @@ export interface symbolFragment {
   name: string;
   cat: SymbolCat;
   status: SymbolStatus;
-  content: string | null;
-  sysContent: string | null;
+  body: string | null;
+  sys: string | null;
 }
 
 /* tslint:disable */
@@ -1417,6 +1418,7 @@ export enum PostCat {
   IDEA = "IDEA",
   LINK = "LINK",
   POLL = "POLL",
+  REPLY = "REPLY",
 }
 
 export enum PostStatus {

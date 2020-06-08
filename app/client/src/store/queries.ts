@@ -56,6 +56,16 @@ export const POST_FRAGMENT = gql`
       nDaysJudge
       minJudgments
     }
+    parent {
+      id
+      cat
+      title
+    }
+    children {
+      id
+      cat
+      title
+    }
     # mePost @client
     # meLike @client {
     #   ...postLike
@@ -99,8 +109,8 @@ export const SYMBOL_FRAGMENT = gql`
     name
     cat
     status
-    content
-    sysContent
+    body
+    sys
     # ticks: [Tick!]!
   }
 `
@@ -300,8 +310,8 @@ export const LOGIN = gql`
   }
 `
 export const CREATE_POST = gql`
-  mutation createPost($data: PostInput!) {
-    createPost(data: $data) {
+  mutation createPost($data: PostInput!, $parentId: ID) {
+    createPost(data: $data,  parentId: $parentId) {
       ...postFragment
     }
   }

@@ -1,6 +1,5 @@
 import { readFileSync } from 'fs'
 import { PrismaClient, PostCat, SymbolCat, CommitAction, PostStatus, LikeChoice, PollStatus } from '@prisma/client'
-import * as ST from '../src/schemaTypes'
 
 const _eventContent = {
   status: "ALIVE",  // ALIVE, END
@@ -31,6 +30,13 @@ const _count = {
   nComments: 21,
   poll: undefined,
 }
+const SYMBOLS = [
+  { name: "#ask", cat: SymbolCat.TAG },
+  { name: "#reply", cat: SymbolCat.TAG },
+  { name: "#idea", cat: SymbolCat.TAG },
+  { name: "#poll", cat: SymbolCat.TAG },
+  { name: "#link", cat: SymbolCat.TAG },
+]
 const _posts = [
   {
     cat: PostCat.IDEA,
@@ -234,16 +240,16 @@ async function main() {
   const ticker1 = await prisma.symbol.create({
     data: {
       name: "$AADR",
-      content: JSON.stringify({ title: "Ticker", tags: ["#tag1", "tag2"], events: ["a-event", "b-event"] }),
-      sysContent: JSON.stringify({ docId: "1234abcd" }),
+      body: JSON.stringify({ title: "Ticker", tags: ["#tag1", "tag2"], events: ["a-event", "b-event"] }),
+      sys: JSON.stringify({ docId: "1234abcd" }),
       cat: SymbolCat.TICKER
     }
   })
   const tag1 = await prisma.symbol.create({
     data: {
       name: "#Tag",
-      content: JSON.stringify({ title: "Ticker", tags: ["#tag1", "tag2"], events: ["a-event", "b-event"] }),
-      sysContent: JSON.stringify({}),
+      body: JSON.stringify({ title: "Ticker", tags: ["#tag1", "tag2"], events: ["a-event", "b-event"] }),
+      sys: JSON.stringify({}),
       cat: SymbolCat.TAG
     }
   })
@@ -290,10 +296,8 @@ async function main() {
   const event1 = await prisma.symbol.create({
     data: {
       name: "!event-1",
-      content: JSON.stringify(_eventContent),
-      sysContent: JSON.stringify({
-        clusterId: "3847192",
-      }),
+      body: JSON.stringify(_eventContent),
+      sys: JSON.stringify({ clusterId: "3847192", }),
       cat: SymbolCat.EVENT
     }
   })
@@ -386,24 +390,25 @@ async function main() {
       }
     }
   })
-  const j = JSON.parse(readFileSync('./prisma/seed.json', 'utf8'));
-  for (let d of j.items.data) {
-    await prisma.post.create({
-      data: {
-        title: d.title,
-        text: d.summary,
-        user: { connect: { id: user1.id } },
-        count: { create: {} },
-        symbols: {
-          connect: [
-            { id: ticker1.id },
-            { id: tag1.id },
-            { id: event1.id },
-          ]
-        }
-      }
-    })
-  }
+
+  // const j = JSON.parse(readFileSync('./prisma/seed.json', 'utf8'));
+  // for (let d of j.items.data) {
+  //   await prisma.post.create({
+  //     data: {
+  //       title: d.title,
+  //       text: d.summary,
+  //       user: { connect: { id: user1.id } },
+  //       count: { create: {} },
+  //       symbols: {
+  //         connect: [
+  //           { id: ticker1.id },
+  //           { id: tag1.id },
+  //           { id: event1.id },
+  //         ]
+  //       }
+  //     }
+  //   })
+  // }
 
   // like a post, and update post-count
   const postLike1 = await prisma.postLike.create({
@@ -453,32 +458,25 @@ async function main() {
     }
   }
 
-  for (let d of j.items.data) {
-    await prisma.comment.create({
-      data: {
-        content: d.title,
-        user: { connect: { id: user1.id } },
-        post: { connect: { id: post1.id } },
-        count: { create: {} }
-      }
-    })
-  }
-
-  // const ticks = readFileSync('./prisma/aadr.us.txt', 'utf-8').split('\r\n')
-  // for (let i = 1; i < ticks.length; i++) {
-
-  //   const d = ticks[i].split(',')
-  //   await prisma.tick.create({
+  // for (let d of j.items.data) {
+  //   await prisma.comment.create({
   //     data: {
-  //       ticker: { connect: { id: ticker1.id } },
-  //       value: parseFloat(d[4]),
-  //       at: new Date(d[0])
+  //       content: d.title,
+  //       user: { connect: { id: user1.id } },
+  //       post: { connect: { id: post1.id } },
+  //       count: { create: {} }
   //     }
   //   })
   // }
 
-  // console.log({ user1, user2 })
-  // console.log(ticker1, tick)
+  for (let d of SYMBOLS) {
+    await prisma.symbol.create({
+      data: {
+        name: d.name,
+        cat: d.cat,
+      }
+    })
+  }
 
   for (let p of _posts) {
     const _post = await prisma.post.create({
@@ -540,6 +538,23 @@ async function main() {
 
     }
   }
+
+
+  // const ticks = readFileSync('./prisma/aadr.us.txt', 'utf-8').split('\r\n')
+  // for (let i = 1; i < ticks.length; i++) {
+
+  //   const d = ticks[i].split(',')
+  //   await prisma.tick.create({
+  //     data: {
+  //       ticker: { connect: { id: ticker1.id } },
+  //       value: parseFloat(d[4]),
+  //       at: new Date(d[0])
+  //     }
+  //   })
+  // }
+
+  // console.log({ user1, user2 })
+  // console.log(ticker1, tick)
 }
 
 main()

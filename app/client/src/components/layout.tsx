@@ -13,7 +13,7 @@ export const PageContainer: React.FC<PageContainerProps> = ({ isLoggedIn, childr
     <Layout>
       {/* <Layout.Header style={{ zIndex: 1, width: '100%' }}> */}
       <Layout.Header>
-        <Link to="/" style={{ color: "white" }}>HOME</Link>
+        <Link to="/board" style={{ color: "white" }}>HOME</Link>
 
         {/* <div style={{ float: 'left' }}>
           <Input.Search
@@ -71,23 +71,19 @@ export const PageContainer: React.FC<PageContainerProps> = ({ isLoggedIn, childr
 interface PaneProps extends RouteComponentProps {
   left: React.ReactNode
   right?: React.ReactNode
+  leftSpan?: number
 }
 
-export const Pane: React.FC<PaneProps> = ({ left, right }) => {
+export const Pane: React.FC<PaneProps> = ({ left, right, leftSpan = 10 }) => {
+  if (right) return (
+    <Row justify="center">
+      <Col span={leftSpan}>{left}</Col>
+      <Col span={4} offset={1}>{right}</Col>
+    </Row>
+  )
   return (
     <Row justify="center">
-
-      {
-        right ? (
-          <>
-            <Col span={10}>{left}</Col>
-            <Col span={4}>{right}</Col>
-          </>
-        ) : <Col span={10}>{left}</Col>
-      }
-
-      {/* <Col span={17}>{left}</Col> */}
-      {/* <Col span={5}>{right}</Col> */}
+      <Col span={leftSpan}>{left}</Col>
     </Row>
   )
 }

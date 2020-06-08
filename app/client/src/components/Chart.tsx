@@ -6,15 +6,13 @@ export function Chart() {
 
     useEffect(() => {
         const chart = createChart(chartRef.current!, {
-            width: 300,
+            width: 400,
             height: 200,
             // crosshair: {
             //     mode: LightweightCharts.CrosshairMode.Normal,
             // },
         });
-
         const candleSeries = chart.addCandlestickSeries();
-
         const data = [
             { time: '2018-10-19', open: 54.62, high: 55.50, low: 54.52, close: 54.90 },
             { time: '2018-10-22', open: 55.08, high: 55.27, low: 54.61, close: 54.98 },
@@ -168,9 +166,28 @@ export function Chart() {
             { time: '2019-05-28', open: 59.21, high: 59.66, low: 59.02, close: 59.57 },
         ];
         candleSeries.setData(data);
+
+        const extraSeries = chart.addLineSeries();
+
+        extraSeries.setData([
+            { time: '2019-05-28', value: 59.57 },
+            { time: '2019-05-29', value: 59.57 },
+            { time: '2019-05-30', value: 59.57 },
+            { time: '2019-05-31', value: 59.57 },
+            { time: '2019-06-05', value: 63.57 },
+        ]);
+
     }, [])
 
-    return <div ref={chartRef} />
+
+    return (
+        <div>
+            <div style={{ position: "absolute", zIndex: 1000 }}>
+                <b>$AAA日線</b>
+            </div>
+            <div ref={chartRef} />
+        </div>
+    )
 }
 
 export function Chart2() {
@@ -184,65 +201,22 @@ export function Chart2() {
         const chart = createChart(chartRef.current!, {
             width: 400,
             height: 250,
-            layout: {
-                textColor: '#d1d4dc',
-                backgroundColor: '#000000',
-            },
-            priceScale: {
-                scaleMargins: {
-                    top: 0.3,
-                    bottom: 0.25,
-                },
-            },
-            crosshair: {
-                vertLine: {
-                    // width: 5,
-                    color: 'rgba(224, 227, 235, 0.1)',
-                    style: 0,
-                },
-                horzLine: {
-                    visible: false,
-                    labelVisible: false,
-                },
-            },
-            grid: {
-                vertLines: {
-                    color: 'rgba(42, 46, 57, 0)',
-                },
-                horzLines: {
-                    color: 'rgba(42, 46, 57, 0)',
-                },
-            },
         })
-        const lineSeries = chart.addLineSeries();
-        const areaSeries = chart.addAreaSeries({
-            topColor: 'rgba(38, 198, 218, 0.56)',
-            bottomColor: 'rgba(38, 198, 218, 0.04)',
-            lineColor: 'rgba(38, 198, 218, 1)',
-            lineWidth: 2,
-            // crossHairMarkerVisible: false,
-        })
-        areaSeries.setData([
-            { time: '2019-04-11', value: 80.01 },
-            { time: '2019-04-12', value: 96.63 },
-            { time: '2019-04-13', value: 76.64 },
-            { time: '2019-04-14', value: 81.89 },
-            { time: '2019-04-15', value: 74.43 },
-            { time: '2019-04-16', value: 80.01 },
-            { time: '2019-04-17', value: 96.63 },
-            { time: '2019-04-18', value: 76.64 },
-            { time: '2019-04-19', value: 81.89 },
-            { time: '2019-04-20', value: 74.43 },
-            { time: '2019-04-21', value: 80.01 },
-            { time: '2019-04-22', value: 96.63 },
-            { time: '2019-04-23', value: 76.64 },
-            { time: '2019-04-24', value: 81.89 },
-            { time: '2019-04-25', value: 74.43 },
-            { time: '2019-04-26', value: 80.01 },
-            { time: '2019-04-27', value: 96.63 },
-            { time: '2019-04-28', value: 76.64 },
-            { time: '2019-04-29', value: 81.89 },
-            { time: '2019-04-30', value: 74.43 },
+        const s1 = chart.addLineSeries();
+        s1.setData([
+            { time: '2019-04-11', value: 5 },
+            { time: '2019-04-12', value: 6 },
+            { time: '2019-04-13', value: 8 },
+            { time: '2019-04-14', value: 10 },
+        ])
+
+        const s2 = chart.addLineSeries();
+        s2.setData([
+            { time: '2019-04-11', value: 39 },
+            { time: '2019-04-12', value: 38 },
+            { time: '2019-04-13', value: 41 },
+            { time: '2019-04-14', value: 38 },
+            { time: '2019-04-15', value: 37 },
         ]);
     }, []);
 

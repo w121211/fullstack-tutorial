@@ -3,6 +3,7 @@ import gql from 'graphql-tag'
 export const typeDefs = gql`
   type Query {
     latestPosts(after: String): [Post!]!
+    _latestPosts(after: String, symbolId: ID): [Post!]!
     risingPosts(after: String): [Post!]!
     trendPosts(after: String): [Post!]!
     symbolPosts(symbolId: ID, after: String): [Post!]!
@@ -48,7 +49,7 @@ export const typeDefs = gql`
     login(email: String!, password: String!): AuthPayload!
     logout: Boolean!
 
-    createPost(data: PostInput!): Post!
+    createPost(data: PostInput!, parentId: ID): Post!
     updatePost(id: ID!, data: PostInput!): Post!
     createPostLike(postId: ID!, data: LikeInput!): PostLikeResonse!
     updatePostLike(id: ID!, data: LikeInput!): PostLikeResonse!
@@ -130,6 +131,8 @@ export const typeDefs = gql`
   #   url: String!
   # }
 
+  
+
   type Post {
     id: ID!
     userId: ID!
@@ -143,6 +146,14 @@ export const typeDefs = gql`
     count: PostCount!
     createdAt: DateTime
     updatedAt: DateTime
+    parent: PostPeek
+    children: [PostPeek]
+  }
+
+  type PostPeek {
+    id: ID!
+    cat: PostCat
+    title: String
   }
 
   input PostInput {
@@ -260,8 +271,8 @@ export const typeDefs = gql`
     name: String!
     cat: SymbolCat!
     status: SymbolStatus!
-    content: String
-    sysContent: String
+    body: String
+    sys: String
     # posts: [Post!]!
     ticks: [Tick!]!
     # commits: [ID!]!
@@ -328,6 +339,7 @@ export const typeDefs = gql`
     POLL
     LINK
     COMMIT
+    REPLY
   }
 
   enum PostStatus {

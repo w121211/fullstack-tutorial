@@ -6,7 +6,8 @@ import * as QT from '../store/queryTypes'
 import { PageContainer, Pane } from '../components/layout'
 import { Board, BoardRightPane } from './board'
 import { SymbolPage } from './symbol'
-import { PostCreate } from './postNew'
+import { PostCreatePage } from './postCreate'
+import { PostSinglePage } from './postSingle'
 import { ProtectedRoute, Login, AutoLogin } from './login'
 
 
@@ -27,34 +28,24 @@ export function Pages() {
       <AutoLogin />
       <Router primary={false} component={Fragment}>
 
-        <PageContainer path="/" isLoggedIn={isLoggedIn}>
-          {/* <Feed default /> */}
+        <ProtectedRoute path="submit" isLoggedIn={isLoggedIn} as={<PostCreatePage />} />
+        <PostSinglePage path="post/:id" />
 
-          <ProtectedRoute
-            as={<Pane left={<PostCreate />} />}
-            isLoggedIn={isLoggedIn}
-            path="post/new"
-          />
+        <PageContainer path="/" isLoggedIn={isLoggedIn}>
 
           <SymbolPage path="symbol/:name" />
 
           {/* <ProtectedRoute as={Feed} isLoggedIn={isLoggedIn} default /> */}
-          <Pane left={<Board me={data?.me} />} right={<BoardRightPane />} default />
+          <Pane left={<Board me={data?.me} />} right={<BoardRightPane />} path="board" />
           {/* <Pane left={<Board me={data?.me} />} right={<BoardRightPane />} default /> */}
+          {/* <Login path="login" /> */}
 
-          <Login path="login" />
+          <NotFound default />
 
         </PageContainer>
 
-
-        <NotFound default />
-
         {/* <Pane path="/" left={<Feeds />} right={undefined} /> */}
-
-
-
         {/* <EventPage path="event/:name" /> */}
-
         {/* <CommitCreate path="commit/new" /> */}
         {/* <Ticker path="ticker" /> */}
         {/* <Pane path="feeds" left={Feeds} right={Tracks} /> */}

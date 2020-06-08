@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { RouteComponentProps } from '@reach/router';
+import { RouteComponentProps, Link } from '@reach/router';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { Badge, Button, Card, Divider, Layout, Row, Col, Space, List, Typography, Radio } from 'antd'
 import { CoffeeOutlined, VerticalAlignTopOutlined } from '@ant-design/icons'
@@ -7,42 +7,6 @@ import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 import { PostTile, PostList } from '../components/postTile'
 import { Pane } from '../components/layout'
-
-// function Login({ me }: { me: QueryResult<QT.me> }) {
-export function Login() {
-  // console.log(typeof refetch)
-  const me = useQuery<QT.me>(queries.ME)
-  const [login, { data, loading }] = useMutation<QT.login, QT.loginVariables>(
-    queries.LOGIN,
-    {
-      onCompleted() {
-        me.refetch()
-      }
-    }
-  )
-  if (loading) return null
-  if (!data) {
-    login({
-      variables: {
-        email: "ccc@ccc.com",
-        password: "ccc"
-      }
-    })
-    console.log('logging')
-    // me.refetch()
-  } else {
-    console.log(data)
-    // me.refetch()
-  }
-
-  if (me.data) {
-    console.log(me.data)
-  } else {
-    console.log('no me data')
-  }
-
-  return <></>
-}
 
 function TrendingList() {
   const [showList, setShowList] = useState<boolean>(false)
@@ -79,6 +43,8 @@ interface Props {
 export const Board: React.FC<Props> = ({ me }) => {
   return (
     <Space direction="vertical" style={{ width: "100%" }}>
+      <Link to="/post/new" state={{ fromFeed: true }}>LINK</Link>
+
       <div />
       <Space direction="horizontal" size="large">
         <span><Badge color="blue" dot>#IPO</Badge></span>

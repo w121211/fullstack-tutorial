@@ -1,45 +1,42 @@
 import React from 'react'
 import { RouteComponentProps, Redirect, Link } from '@reach/router'
 import { useQuery } from '@apollo/react-hooks'
-import { Badge, Button, Card, Radio, Space, List, Typography, Result, Divider } from 'antd'
-import { LinkOutlined, ExportOutlined, SwapLeftOutlined, QuestionCircleOutlined, InfoCircleOutlined, SwapRightOutlined } from '@ant-design/icons'
+import { Row, Col, Badge, Button, Card, Radio, Space, List, Typography, Layout, Divider, Drawer, Modal } from 'antd'
+import { LinkOutlined, ExportOutlined, SwapLeftOutlined, QuestionCircleOutlined, ArrowLeftOutlined, SwapRightOutlined } from '@ant-design/icons'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 import { Pane } from '../components/layout'
 import { PostTile } from '../components/postTile'
-import { Chart, Chart2 } from '../components/Chart'
+import { Chart } from '../components/Chart'
 
 // %24AADR
 
-interface SymbolProps {
-  name: string
+interface PostSingleProps {
+  id: string
 }
 
-const Symbol: React.FC<SymbolProps> = ({ name }) => {
-  console.log(name)
+const PostSingle: React.FC<PostSingleProps> = ({ id }) => {
   useQuery<QT.myPostLikes>(queries.MY_POST_LIKES)
   useQuery<QT.myCommentLikes>(queries.MY_COMMENT_LIKES)
   useQuery<QT.myPollVotes>(queries.MY_POLL_VOTES)
   const getMe = useQuery<QT.me>(queries.ME)
   const getPosts = useQuery<QT.latestPosts, QT.latestPostsVariables>(
-    queries.LATEST_POSTS,
-    // { fetchPolicy: "cache-and-network", }
-  )
+    queries.LATEST_POSTS, { fetchPolicy: "cache-and-network", })
   // const [showLogin, setShowLogin] = useState<boolean>(false)
-  const getSymbol = useQuery<QT.getSymbol, QT.getSymbolVariables>(
-    queries.GET_SYMBOL, {
-    variables: { name },
-    // fetchPolicy: "cache-and-network"
-  })
+  // const getSymbol = useQuery<QT.getSymbol, QT.getSymbolVariables>(
+  //   queries.GET_SYMBOL, {
+  //   variables: { name },
+  //   fetchPolicy: "cache-and-network"
+  // })
 
-  if (getSymbol.loading) return null
-  // if (getSymbol.error) return <p>ERROR: {getSymbol.error.message}</p>
-  if (getSymbol.error) return <Result
-    title="Oops..."
-    subTitle={<><i>{name}</i> is not existed</>}
-  />
-  if (getSymbol.data) console.log(getSymbol.data)
-  if (!getSymbol.data) return <p>No data...</p>
+  // if (getSymbol.loading) return <p>Loading...</p>
+  // // if (getSymbol.error) return <p>ERROR: {getSymbol.error.message}</p>
+  // if (getSymbol.error) return <Result
+  //   title="Oops..."
+  //   subTitle={<><i>{name}</i> is not existed</>}
+  // />
+  // if (getSymbol.data) console.log(getSymbol.data)
+  // if (!getSymbol.data) return <p>No data...</p>
 
   // const after = '1234'
   // const more = null
@@ -55,7 +52,7 @@ const Symbol: React.FC<SymbolProps> = ({ name }) => {
   //   })}>Load more</button>
   //   : <button onClick={() => setShowLogin(true)}>Load more</button>
 
-  const status = <p>{getSymbol.data?.symbol.status}</p>
+  // const status = <p>{getSymbol.data?.symbol.status}</p>
   const chart = null
   const commits = null
   const createCommit = null
@@ -89,99 +86,63 @@ const Symbol: React.FC<SymbolProps> = ({ name }) => {
   )
 
   return (
-    <Space direction="vertical" style={{ width: "100%" }}>
-      {/* {showLogin ? <button>Login</button> : null} */}
-      <Typography>
-        <Typography.Title level={2}>
-          <Space size="large">
-            <i>{getSymbol.data.symbol.name}</i>
-            <Button type="primary">追蹤</Button>
-          </Space>
-        </Typography.Title>
-        <Typography.Paragraph>
-          咖啡相關、咖啡類股、咖啡產業
-        </Typography.Paragraph>
-      </Typography>
-
-      {/* <Chart /> */}
-
-      <Divider>Pins</Divider>
-
+    <Space direction="vertical">
+      {/* <Modal
+        // title="Basic Modal"
+        // visible={this.state.visible}
+        visible={true}
+        style={{ top: 20 }}
+        // onOk={this.handleOk}
+        // onCancel={this.handleCancel}
+        footer={null}
+      >
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+      </Modal> */}
       <Card>
         <Typography.Paragraph>
-          <Space>
-            <Typography.Text strong>$AADR-30日走勢預測</Typography.Text>
-            <i><Typography.Text type="secondary">$AADR</Typography.Text></i>
-            <i><Typography.Text type="secondary">預測</Typography.Text></i>
-          </Space>
-          {footer}
-          {/* <Radio.Group>
-            <Radio value={1}>大跌（-10%以上）</Radio>
-            <Radio value={1}>小跌（-10% ~ -3%）</Radio>
-            <Radio value={1}>平盤（-3% ~ 3%）</Radio>
-            <Radio value={1}>小漲（+3 ~ +10%)</Radio>
-            <Radio value={1}>大漲（+10%以上）</Radio>
-          </Radio.Group>
-          <Button type="link">7日期預測</Button>
-          <Button shape="round">投票</Button> */}
-
-          {/* <br />
-          <br />
-          <Chart /> */}
-          {/* 這裡需要寫點東西嗎？ */}
-          {/* <br />
-          <br />
-          - 過去1週變動(+3.5%)
-          <br />
-          - 過去10週平均變動(+2.4%, ) */}
-        </Typography.Paragraph>
-      </Card>
-
-
-      <Divider>Latest</Divider>
-
-      <Card>
-        <Typography.Paragraph>
-          <Typography.Text strong>
-            <Link to="/post/123">〈友訊經營權之爭〉股東常會確定不延期 公司派決議維持6/15召開</Link>
-          </Typography.Text>
+          <Typography.Text strong>〈友訊經營權之爭〉股東常會確定不延期 公司派決議維持6/15召開 </Typography.Text>
           <Space>
             <i><Typography.Text type="secondary">#友訊經營權之爭#</Typography.Text></i>
             <i><Typography.Text type="secondary">$2332-TW</Typography.Text></i>
             <i><Typography.Text type="secondary">#情報</Typography.Text></i>
           </Space>
         </Typography.Paragraph>
+        <Typography.Paragraph>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</Typography.Paragraph>
         {footer}
 
-        <Card type="inner" bordered={false}>
+        {/* <Card
+          bordered={false}
+        >
           <List
             bordered
             size="small"
             dataSource={[
               "this is some comment",
-              "this is some comment2",
-              "this is some comment3 this is some comment3 this is some comment3",
+              "this is some comment2 - @anonymous",
+              "this is some comment3 this is some comment3 this is some comment3 - @anonymous",
+
             ]}
             renderItem={item => (
               <List.Item>
                 <span>{item}</span>
-                <Space style={{ textAlign: "right" }}>
-                  <small>@anonymous</small>
-                  <small>like</small>
-                  <small>dislike</small>
-                </Space>
+                <span style={{ textAlign: "center" }}>
+                  <small>@anonymous like dislike</small>
+                </span>
+
               </List.Item>
             )}
           />
-          <a>...more</a>
-        </Card>
+        </Card> */}
 
+        <Divider />
         <Typography.Paragraph>
-          <SwapRightOutlined /> 經營權之爭將怎麼影響友訊？<br />
-          <SwapRightOutlined /> 經營權之爭將怎麼影響友訊？<br />
-          <a>...更多</a> 或 建立一個<a>Spin</a>
+          還沒有任何spins，建立一個 <Link to="/">Spin</Link>
         </Typography.Paragraph>
       </Card>
+
+      <Typography.Title level={3}>Replies</Typography.Title>
 
       <Card>
         <Typography.Paragraph>
@@ -278,6 +239,8 @@ const Symbol: React.FC<SymbolProps> = ({ name }) => {
       </Card>
 
 
+
+
       <Card>
         <Typography.Paragraph>
           <Typography.Text strong>距離美市開盤還有：1小時18分OO秒，預測本日的S&amp;P走勢</Typography.Text>
@@ -310,6 +273,7 @@ const Symbol: React.FC<SymbolProps> = ({ name }) => {
             <Radio value={1}>大漲（+10%以上）</Radio>
           </Radio.Group>
           <br />
+
         </Typography.Paragraph>
         {footer}
       </Card>
@@ -356,7 +320,6 @@ const Symbol: React.FC<SymbolProps> = ({ name }) => {
         {footer}
       </Card>
 
-
       <Card>
         <Typography.Paragraph>
           <b>預測$AADR一週後走勢</b>
@@ -377,7 +340,37 @@ const Symbol: React.FC<SymbolProps> = ({ name }) => {
           <Button type="link">7日期預測</Button>
           <Button shape="round">投票</Button>
 
-          <Chart2 />
+          {/* <br />
+          <br />
+          <Chart /> */}
+          {/* 這裡需要寫點東西嗎？ */}
+          <br />
+          <br />
+          - 過去1週變動(+3.5%)
+          <br />
+          - 過去10週平均變動(+2.4%, )
+        </Typography.Paragraph>
+      </Card>
+
+      <Card>
+        <Typography.Paragraph>
+          <b>預測$AADR一週後走勢</b>
+          <br />
+          <Space>
+            <i><Typography.Text type="secondary">$AADR</Typography.Text></i>
+            <i><Typography.Text type="secondary">預測</Typography.Text></i>
+          </Space>
+
+          <br />
+          <Radio.Group>
+            <Radio value={1}>大跌（-10%以上）</Radio>
+            <Radio value={1}>小跌（-10% ~ -3%）</Radio>
+            <Radio value={1}>平盤（-3% ~ 3%）</Radio>
+            <Radio value={1}>小漲（+3 ~ +10%)</Radio>
+            <Radio value={1}>大漲（+10%以上）</Radio>
+          </Radio.Group>
+          <Button type="link">7日期預測</Button>
+          <Button shape="round">投票</Button>
 
           {/* <br />
           <br />
@@ -405,32 +398,33 @@ const Symbol: React.FC<SymbolProps> = ({ name }) => {
   )
 }
 
-interface SymbolPageProps extends RouteComponentProps<{ name: string }> { }
+interface PostSinglePageProps extends RouteComponentProps<{ id: string }> { }
 
-export const SymbolPage: React.FC<SymbolPageProps> = ({ name }) => {
-  if (!name)
+export const PostSinglePage: React.FC<PostSinglePageProps> = ({ id }) => {
+  if (!id)
     return <Redirect to="/" />
 
   // return <Symbol name={decodeURIComponent(name)} />
-  const right = (
-    <Space direction="vertical" style={{ width: "100%", marginTop: 30 }}>
-      <Card size="small">
-        <Typography.Text strong>相關的tags</Typography.Text>
-        <Typography.Paragraph>
-          <a>#AAA AAA </a><br />
-          <a>#AAA</a><br />
-          <a>#AAA</a><br />
-        </Typography.Paragraph>
-      </Card>
-      <Card size="small">
-        <Typography.Paragraph>
-          關聯tags<br />
-          <a>#AAA AAA </a><br />
-          <a>#AAA</a><br />
-          <a>#AAA</a><br />
-        </Typography.Paragraph>
-      </Card>
-    </Space>
+  return (
+    <Layout>
+      <Layout.Content>
+        <Row justify="center" style={{ marginTop: 10 }}>
+          <Col span={10}>
+            <Typography.Title level={2}><ArrowLeftOutlined /></Typography.Title>
+          </Col>
+          <Col span={4}>
+          </Col>
+        </Row>
+        <Pane
+          left={<PostSingle id={decodeURIComponent(id)} />}
+          right={(
+            <div style={{ marginLeft: 30 }}>
+              <Button type="primary" size="large">Reply</Button>
+            </div>
+          )}
+        />
+      </Layout.Content>
+    </Layout>
+
   )
-  return <Pane left={<Symbol name={decodeURIComponent(name)} />} right={right} />
 }

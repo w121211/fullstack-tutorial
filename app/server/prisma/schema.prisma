@@ -66,6 +66,10 @@ model Post {
   updatedAt DateTime   @updatedAt
   commit    Commit?
   poll      Poll?
+  parentId  Int?
+  parent    Post?      @relation("ParentChildren", fields: [parentId], references: [id])
+  children  Post[]     @relation("ParentChildren")
+
 }
 
 model PostLike {
@@ -195,21 +199,19 @@ model CommentLike {
 }
 
 model Symbol {
-  id         Int          @default(autoincrement()) @id
-  name       String       @unique
-  cat        SymbolCat
-  status     SymbolStatus @default(ACTIVE)
-  // valid      Boolean   @default(true)
-  // title      String
-  content    String
-  sysContent String
-  posts      Post[]       @relation(references: [id])
-  commits    Commit[]
-  ticks      Tick[]
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  follows    Follow[]
-  bets       Bet[]
+  id        Int          @default(autoincrement()) @id
+  name      String       @unique
+  cat       SymbolCat
+  status    SymbolStatus @default(ACTIVE)
+  body      String?
+  sys       String?
+  posts     Post[]       @relation(references: [id])
+  commits   Commit[]
+  ticks     Tick[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  follows   Follow[]
+  bets      Bet[]
 }
 
 model Follow {
@@ -292,6 +294,7 @@ enum PostCat {
   POLL
   LINK
   COMMIT
+  REPLY
 }
 
 // LOCK: 可以留言，但post無法編輯

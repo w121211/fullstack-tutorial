@@ -167,9 +167,11 @@ interface PostPollProps {
   pollId: string
   poll: QT.post_post_poll
   count: QT.post_post_count_poll
+  showDetail: boolean
+  setShowDetail: (a: boolean) => void
 }
 
-export const PostPoll: React.FC<PostPollProps> = ({ me, toLogin, poll, count }) => {
+export const PostPoll: React.FC<PostPollProps> = ({ me, toLogin, poll, count, showDetail, setShowDetail }) => {
   // const poll = _postContent.poll
   // const meJudgement = {
   //   __typename: "PollJudge",
@@ -179,7 +181,7 @@ export const PostPoll: React.FC<PostPollProps> = ({ me, toLogin, poll, count }) 
   // }
   const meJudgment = undefined
 
-  const [showMeta, setShowMeta] = useState<boolean>(false)
+  // const [collapsed, setCollapsed] = useState<boolean>(true)
   const [showResult, setShowResult] = useState<boolean>(false)
   const myVotes = useQuery<QT.myPollVotes>(
     queries.MY_POLL_VOTES, {
@@ -193,10 +195,10 @@ export const PostPoll: React.FC<PostPollProps> = ({ me, toLogin, poll, count }) 
 
   function choice(i: number, text: string, count: number) {
     if (!me) return <Radio key={i} value={i} onClick={toLogin}>{text}</Radio>
-    if (meVote && meVote.choice === i) return <Radio key={i} value={i} checked><b>{text} [{count}]</b></Radio>
-    if (meVote && meVote.choice !== i) return <Radio key={i}>{text} [{count}]</Radio>
-    if (showResult) return <Radio key={i} value={i}>{text} [{count}]</Radio>
-    return <Radio key={i} value={i}>{text}</Radio>
+    if (meVote && meVote.choice === i) return <Radio key={i} value={i} checked onClick={() => { setShowDetail(true) }}><b>{text} [{count}]</b></Radio>
+    if (meVote && meVote.choice !== i) return <Radio key={i} onClick={() => { setShowDetail(true) }}>{text} [{count}]</Radio>
+    // if (showResult) return <Radio key={i} value={i}>{text} [{count}]</Radio>
+    return <Radio key={i} value={i} onClick={() => { setShowDetail(true) }}>{text}</Radio>
   }
   const choices = (
     <Radio.Group>
@@ -209,14 +211,13 @@ export const PostPoll: React.FC<PostPollProps> = ({ me, toLogin, poll, count }) 
       <Radio key={poll.choices.length} value={-1}>無法判定</Radio>
     </Radio.Group>
   )
-  const meVoteMsg = meVote ? "你已經投票" : null
 
   let main
   if (poll.status === QT.PollStatus.CLOSE_FAIL) {
     main = <>
       {/* 投票已結束，因{count.verdict?.failedMsg}原因判定為無效投票 */}
       投票已結束，經...判定為無效投票
-      {meVoteMsg}
+      <Typography.Text type="secondary">你已經投票</Typography.Text>
       {choices}
     </>
 
@@ -230,7 +231,7 @@ export const PostPoll: React.FC<PostPollProps> = ({ me, toLogin, poll, count }) 
   } else if (poll.status === QT.PollStatus.CLOSE_SUCCESS && showResult && count.verdictChoice) {
     main = <>
       投票已結束，判定結果為：{poll.choices[count.verdictChoice]}<br />
-      {meVoteMsg}
+      <Typography.Text type="secondary">你已經投票</Typography.Text>
       {choices}
     </>
 
@@ -254,6 +255,7 @@ export const PostPoll: React.FC<PostPollProps> = ({ me, toLogin, poll, count }) 
 
   } else if (poll.status === QT.PollStatus.JUDGE) {
     main = <>
+      <br />
       {choices}
       <Typography.Text type="secondary">
         投票已結束，判定結果中
@@ -268,45 +270,44 @@ export const PostPoll: React.FC<PostPollProps> = ({ me, toLogin, poll, count }) 
 
   } else if (poll.status === QT.PollStatus.OPEN && meVote) {
     main = <>
+      <br />
       {choices}
-      <Typography.Text type="secondary">
-        你已經投票
-      </Typography.Text>
+      <Typography.Text type="secondary">你已經投票</Typography.Text>
+      <Button size="small" type="link" onClick={() => { setShowResult(true) }}>查看投票數</Button>
     </>
 
   } else if (poll.status === QT.PollStatus.OPEN && me) {
-    main = (
-      <PollVoteForm
-        pollId={poll.id}
-        choices={choices}
-      />
-    )
+    main = <PollVoteForm pollId={poll.id} choices={choices} />
 
   } else if (poll.status === QT.PollStatus.OPEN) {
-    main = <>
-      {meVoteMsg}
-      {choices}
-    </>
+    main = choices
 
   } else {
     throw new Error("不應該有漏掉的case")
   }
 
+  // if (!showDetail) return main
   return (
     <>
+      {/* 
+      半年期預測
+      <ul>
+        <li>結果判定：2020/8/1</li>
+        <li>投票期間：2020/1/1 - 2020/2/1（5個月）</li>
+        <li>判定方式：隨選一組投票人決定</li>
+        <li>當前預測價值：???</li>
+      </ul> */}
       {main}
-      <Button type="link" onClick={() => { setShowMeta(!showMeta) }}>半年期預測</Button>
       {
-        showMeta ? (
-          <Typography.Text type="secondary">
-            <ul>
-              <li>結果判定：2020/8/1</li>
-              <li>投票期間：2020/1/1 - 2020/2/1（5個月）</li>
-              <li>判定方式：隨選一組投票人決定</li>
-              <li>當前預測價值：???</li>
-            </ul>
-          </Typography.Text>
-        ) : null
+        showDetail &&
+        <Typography.Text type="secondary">
+          <ul>
+            <li>結果判定：2020/8/1</li>
+            <li>投票期間：2020/1/1 - 2020/2/1（5個月）</li>
+            <li>判定方式：隨選一組投票人決定</li>
+            <li>當前預測價值：???</li>
+          </ul>
+        </Typography.Text>
       }
     </>
   )

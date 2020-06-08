@@ -20,7 +20,7 @@ export const Event: React.FC<EventProps> = ({ symbol }) => {
         {symbol.name}
       </h1>
       <p>
-        {symbol.content}
+        {symbol.body}
       </p>
       {/* <Posts posts={symbol.posts} /> */}
     </>

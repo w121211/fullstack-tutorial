@@ -11,6 +11,11 @@ import { PostPoll } from './poll'
 import { Comments } from './commentList'
 
 
+function PostTileExtra({ post }: { post: QT.post_post }) {
+  if (post.cat === QT.PostCat.POLL) return null
+
+}
+
 interface PostTileProps {
   post: QT.post_post
   // createPostLike: (variables: QT.createPostLikeVariables) => void
@@ -63,97 +68,61 @@ export const PostTile: React.FC<PostTileProps> = ({ post, me, toLogin }) => {
     },
   })
   const [viewed, setViewed] = useState<boolean>(false)
-  const [collapsed, setCollapsed] = useState<boolean>(true)
   const [commentCount, setCommentCount] = useState<number>(post.count.nComments)
+  const [showComments, setShowComments] = useState<boolean>(false)
+  const [showDetail, setShowDetail] = useState<boolean>(false)
 
-  const toCollpase = () => setCollapsed(!collapsed)
-  const toAddCommentCountByOne = () => setCommentCount(commentCount + 1)
+  function toAddCommentCountByOne() { setCommentCount(commentCount + 1) }
 
-  // const comments = <Comments postId={post.id} />
-  // const symbols = post.symbols?.map(x =>
-  //   <Tag key={x.id}>
-  //     <Link to={`/symbol/${x.name}`}>{x.name}</Link>
-  //   </Tag>
-  // )
   const edit = me?.id === post.userId
     ? <Link to={`/post/${post.id}?update`}>edit</Link>
     : null
-  const expand = collapsed
-    ? <a onClick={() => setCollapsed(false)}>expand</a>
-    : <a onClick={() => setCollapsed(true)}>collapse</a>
-
-
   const meLike = myPostLikes.data?.myPostLikes.find(x => x.postId === post.id)
 
-  function onClickTitleLink() { }
-
-  console.log('-------')
-  console.log(post.poll)
-  console.log(post.count)
-
   return (
-    <Card size="small">
+    <Card>
       <Typography.Paragraph>
-        {/* <Badge dot><b>預測Luckin Coffee($LK))的未來走勢</b></Badge> */}
-        {/* <b>{post.title}</b> */}
+
         <a target="_blank" rel="noopener noreferrer" href="https://github.com/ant-design"
           onClick={() => {
             setViewed(true)
-            console.log("post viewd")
-            console.log(post.title)
+            setShowDetail(!showDetail)
           }}
         >
-          {viewed ? <Typography.Text>{post.title}</Typography.Text>
-            : <Typography.Text strong>{post.title}</Typography.Text>}
+          {/* <Badge dot><b>預測Luckin Coffee($LK))的未來走勢</b></Badge> */}
+          {viewed ? <Typography.Text>{post.title}&nbsp;</Typography.Text>
+            : <Typography.Text strong>{post.title}&nbsp;</Typography.Text>}
         </a>
 
-        {
-          post.symbols.length > 0 ? (
-            <>
-              <br />
-              <Space>
-                {post.symbols.map((x, i) => (
-                  <Link key={i} to={`/symbol/${x.name}`}>
-                    <i>
-                      <Typography.Text type="secondary">{x.name}</Typography.Text>
-                    </i>
-                  </Link>
-                ))}
-              </Space>
-            </>
-          ) : null
-        }
+        <Space>
+          {
+            post.symbols.map((x, i) => (
+              <Link key={i} to={`/symbol/${x.name}`}>
+                <i><Typography.Text type="secondary">{x.name}</Typography.Text></i>
+              </Link>
+            ))
+          }
+        </Space>
 
         {
-          (post.poll && post.count.poll) ? (
-            <>
-              <br />
-              <PostPoll
-                pollId={post.poll.id}
-                me={me}
-                // toLogin={toLogin}
-                poll={post.poll}
-                count={post.count.poll}
-              />
-            </>
-          ) : null
+          (post.poll && post.count.poll) &&
+          <PostPoll
+            pollId={post.poll.id}
+            me={me}
+            // toLogin={toLogin}
+            poll={post.poll}
+            count={post.count.poll}
+            showDetail={showDetail}
+            setShowDetail={setShowDetail}
+          />
         }
-
-        {/* <br /> */}
-        {/* {
-          post.text.length > 50 ?
-            `${post.text.substring(0, 50)}...` :
-            post.text
-        }
-        <Button type="link">展開</Button> */}
-
 
       </Typography.Paragraph>
 
-
-
-      {/* {collapsed ? null : <Typography.Paragraph>{post.text}</Typography.Paragraph>} */}
-      {/* <Typography.Paragraph>{post.text}</Typography.Paragraph> */}
+      {
+        showDetail &&
+        <Typography.Paragraph>{post.text}</Typography.Paragraph>
+      }
 
       <div style={{ textAlign: "right" }}>
         <small>
@@ -176,7 +145,7 @@ export const PostTile: React.FC<PostTileProps> = ({ post, me, toLogin }) => {
               count={count} />
             <span
               key="comments"
-              onClick={toCollpase}>
+              onClick={() => { setShowComments(!showComments) }}>
               <CoffeeOutlined />{commentCount}
             </span>
           </Space>
@@ -184,8 +153,8 @@ export const PostTile: React.FC<PostTileProps> = ({ post, me, toLogin }) => {
       </div>
 
       {
-        collapsed ? null :
-          <Comments postId={post.id} toAddCommentCountByOne={toAddCommentCountByOne} />
+        showComments &&
+        <Comments postId={post.id} toAddCommentCountByOne={toAddCommentCountByOne} />
       }
 
     </Card >

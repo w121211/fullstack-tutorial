@@ -123,13 +123,14 @@ export const Login: React.FC<LoginProps> = () => {
 
 interface ProtectedRouteProps extends RouteComponentProps {
   // as: React.FC
-  as: React.ReactNode
+  as: React.ReactElement
   isLoggedIn: boolean
 }
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ as: Component, isLoggedIn }) => {
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ as: Component, isLoggedIn, ...rest }) => {
+
   if (isLoggedIn)
-    return <>{Component}</>
+    return <>{React.cloneElement(Component, { ...rest })}</>
   return <Redirect from="" to="/login" noThrow />
 }
 

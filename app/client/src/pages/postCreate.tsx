@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import React, { useState } from 'react'
-import { RouteComponentProps, navigate, Link } from '@reach/router'
+import { RouteComponentProps, navigate, Link, WindowLocation } from '@reach/router'
 import { InvariantError } from 'ts-invariant'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { Alert, AutoComplete, Form, Input, Button, Layout, Row, Col, Card, Typography, Radio, Popover, Space } from 'antd'
@@ -10,6 +10,7 @@ import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 // import { Post } from '../components/PostForm'
+import { PageContainer, Pane } from '../components/layout'
 
 dayjs.extend(localizedFormat)
 
@@ -127,7 +128,7 @@ const placeholdersByCat = {
     cat: QT.PostCat.ASK,
     title: "台達電斥9.65億元 收購加拿大圖控軟體公司Trihedral",
     text: "電源大廠台達電 (2308-TW) 今 (30) 日宣布，擬透過子公司 Delta Electronics (Netherlands) B.V.，斥約 4500 萬加幣(約新台幣 9.65 億元)，收購加拿大 SCADA 圖控與工業物聯網軟體公司 Trihedral Engineering Limited，深入佈局自動化、人工智能及資料分析等領域。",
-    symbols: ["$AAA", "$BBB"],
+    symbols: ["#ask"],
     choices: [],
   },
   [QT.PostCat.IDEA]: {
@@ -148,18 +149,26 @@ const placeholdersByCat = {
     title: "這是一個想法",
     text: "主文從第這裏開始...",
     symbols: [],
-  }
+  },
+  [QT.PostCat.REPLY]: {
+    cat: QT.PostCat.REPLY,
+    title: "Reply: 〈友訊經營權之爭〉股東常會確定不延期 公司派決議維持6/15召開",
+    text: "主文從第這裏開始...",
+    symbols: ["#reply"],
+  },
 }
 
+interface PostFormProps {
+  form: FormInstance
+  parent?: QT.post_post
+}
 
-function PostForm({ form }: { form: FormInstance }) {
-  const [cat, setCat] = useState<QT.PostCat>(form.getFieldValue("cat") || QT.PostCat.ASK)
+const PostForm: React.FC<PostFormProps> = ({ form, parent }) => {
   const [createPost] = useMutation<QT.createPost, QT.createPostVariables>(
     queries.CREATE_POST, {
     update(cache, { data }) {
       console.log(typeof data?.createPost.poll?.start)
       console.log(data?.createPost)
-
       try {
         const res = cache.readQuery<QT.latestPosts>({ query: queries.LATEST_POSTS })
         if (data?.createPost && res?.latestPosts) {
@@ -177,13 +186,18 @@ function PostForm({ form }: { form: FormInstance }) {
           console.error(e)
         }
       }
-
       // navigate("/")
     },
   })
+  const [cat, setCat] = useState<QT.PostCat>(form.getFieldValue("cat") || QT.PostCat.ASK)
+
+  // const isSpin = [QT.PostCat.SPIN_ASK, QT.PostCat.SPIN_IDEA, QT.PostCat.SPIN_POLL].includes(cat)
+  const isSpin = parent !== undefined && QT.PostCat.REPLY !== cat
+  const isReply = parent !== undefined && QT.PostCat.REPLY === cat
 
   function onFinish(values: any) {
-    console.log('Success:', values)
+    console.log('submit', values)
+
     createPost({
       variables: {
         data: {
@@ -196,7 +210,8 @@ function PostForm({ form }: { form: FormInstance }) {
               nDays: values.nDays,
               choices: values.choices,
             } : undefined
-        }
+        },
+        parentId: parent?.id,
       }
     })
   }
@@ -204,132 +219,167 @@ function PostForm({ form }: { form: FormInstance }) {
     console.log('Failed:', errorInfo);
   }
 
+  let root = null
+  let radio =
+    <>
+      <Radio value={QT.PostCat.ASK}>問題</Radio>
+      <Radio value={QT.PostCat.POLL}>預測</Radio>
+      <Radio value={QT.PostCat.IDEA}>想法</Radio>
+    </>
+  if (isReply) {
+    root =
+      <Typography.Paragraph>
+        <b>Reply to</b> <a>{parent?.title}</a>
+      </Typography.Paragraph>
+    radio = <Radio value={QT.PostCat.REPLY} checked>回覆</Radio>
+
+  } else if (isSpin) {
+    root =
+      <Typography.Paragraph>
+        <b>Spin from</b> <a>{parent?.title}</a>
+      </Typography.Paragraph>
+    radio =
+      <>
+        <Radio value={QT.PostCat.ASK}>問題</Radio>
+        <Radio value={QT.PostCat.POLL}>預測</Radio>
+        <Radio value={QT.PostCat.IDEA}>看法</Radio>
+      </>
+  }
+
+
   return (
-    <Form
-      form={form}
-      name="basic"
-      size="small"
-      initialValues={placeholdersByCat[cat]}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-    >
-      <Form.Item
-        {...layout}
-        label="類別"
-        name="cat"
-        rules={[{ required: true, message: '請選擇類別' }]}
+    <>
+      {root}
+
+      <Form
+        form={form}
+        name="basic"
+        size="small"
+        initialValues={placeholdersByCat[cat]}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
       >
-        <Radio.Group onChange={(e) => {
-          setCat(e.target.value)
-          form.setFieldsValue(placeholdersByCat[e.target.value as QT.PostCat])
-        }}>
-          <Radio value={QT.PostCat.ASK}>問題</Radio>
-          <Radio value={QT.PostCat.POLL}>預測</Radio>
-          <Radio value={QT.PostCat.IDEA}>想法</Radio>
-          {/* <Radio value="d">連結</Radio> */}
-        </Radio.Group>
-      </Form.Item>
+        <Form.Item
+          {...layout}
+          label="類別"
+          name="cat"
+          rules={[{ required: true, message: '請選擇類別' }]}
+        >
+          <Radio.Group onChange={(e) => {
+            setCat(e.target.value)
+            form.setFieldsValue(placeholdersByCat[e.target.value as QT.PostCat])
+          }}>
+            {radio}
+            {/* <Radio value="d">連結</Radio> */}
+          </Radio.Group>
+        </Form.Item>
 
-      <Form.Item
-        {...layout}
-        label="標題"
-        name="title"
-        rules={[{ required: true, message: '請輸入標題' }]}
-      >
-        <Input placeholder={placeholdersByCat[cat]["title"]} />
-      </Form.Item>
+        <Form.Item
+          {...layout}
+          label="標題"
+          name="title"
+          rules={[{ required: true, message: '請輸入標題' }]}
+        >
+          {
+            isReply ?
+              <Input placeholder={placeholdersByCat[cat]["title"]} disabled /> :
+              <Input placeholder={placeholdersByCat[cat]["title"]} />
+          }
 
-      {
-        cat === QT.PostCat.POLL ?
-          <Form.Item
-            {...layout}
-            label="預測期間"
-            name="nDays"
-            rules={[{ required: true, message: '請選擇預測期間' }]}
-          >
-            <Radio.Group>
-              <Radio value={7}>7日</Radio>
-              <Radio value={14}>14日</Radio>
-              <Radio value={30}>30日</Radio>
-              <Radio value={90}>90日</Radio>
-            </Radio.Group>
-          </Form.Item>
-          : null
-      }
+        </Form.Item>
 
-      <Form.List name="choices">
-        {(fields, { add, remove }) => {
-          if (cat !== QT.PostCat.POLL) return null
-          return (
-            <div>
-              {fields.map((field, index) => (
-                <Form.Item
-                  {...(index === 0 ? layout : layoutWithoutLabel)}
-                  label={index === 0 ? '選項' : ''}
-                  required={true}
-                  key={field.key}
-                >
-                  <Form.Item
-                    {...field}
-                    validateTrigger={['onChange', 'onBlur']}
-                    rules={[
-                      {
-                        required: true,
-                        whitespace: true,
-                        message: "請輸入選項",
-                      },
-                    ]}
-                    noStyle
-                  >
-                    <Input placeholder={`選項${index + 1}`} style={{ width: '60%' }} />
-                  </Form.Item>
-
-                  {fields.length > 2 ? (
-                    <MinusCircleOutlined
-                      style={{ margin: '0 8px' }}
-                      onClick={() => { remove(field.name) }}
-                    />
-                  ) : null}
-                </Form.Item>
-              ))}
-
-              <Form.Item  {...layoutWithoutLabel}>
-                <Button
-                  type="dashed"
-                  onClick={() => { add() }}
-                // style={{ width: '60%' }}
-                >
-                  <PlusOutlined /> 增加選項
-                    </Button>
-              </Form.Item>
-
-            </div>
-          )
-        }}
-      </Form.List>
-
-      <Form.Item
-        {...layout}
-        label="內文"
-        name="text"
-        rules={
-          cat !== QT.PostCat.POLL
-            ? [{ required: true, message: '請輸入內文' }]
-            : []
+        {
+          cat === QT.PostCat.POLL ?
+            <Form.Item
+              {...layout}
+              label="預測期間"
+              name="nDays"
+              rules={[{ required: true, message: '請選擇預測期間' }]}
+            >
+              <Radio.Group>
+                <Radio value={7}>7日</Radio>
+                <Radio value={14}>14日</Radio>
+                <Radio value={30}>30日</Radio>
+                <Radio value={90}>90日</Radio>
+              </Radio.Group>
+            </Form.Item>
+            : null
         }
-      >
-        <Input.TextArea rows={3} autoSize={{ minRows: 4 }} />
-      </Form.Item>
 
-      <Form.Item name="symbols" label="標籤" {...layout}>
-        <SymbolAutoComplete form={form} />
-      </Form.Item>
+        <Form.List name="choices">
+          {(fields, { add, remove }) => {
+            if (cat !== QT.PostCat.POLL) return null
+            return (
+              <div>
+                {fields.map((field, index) => (
+                  <Form.Item
+                    {...(index === 0 ? layout : layoutWithoutLabel)}
+                    label={index === 0 ? '選項' : ''}
+                    required={true}
+                    key={field.key}
+                  >
+                    <Form.Item
+                      {...field}
+                      validateTrigger={['onChange', 'onBlur']}
+                      rules={[
+                        {
+                          required: true,
+                          whitespace: true,
+                          message: "請輸入選項",
+                        },
+                      ]}
+                      noStyle
+                    >
+                      <Input placeholder={`選項${index + 1}`} style={{ width: '60%' }} />
+                    </Form.Item>
 
-      <Form.Item {...layoutWithoutLabel}>
-        <Button type="primary" htmlType="submit">送出</Button>
-      </Form.Item>
+                    {fields.length > 2 ? (
+                      <MinusCircleOutlined
+                        style={{ margin: '0 8px' }}
+                        onClick={() => { remove(field.name) }}
+                      />
+                    ) : null}
+                  </Form.Item>
+                ))}
 
-    </Form >
+                <Form.Item  {...layoutWithoutLabel}>
+                  <Button
+                    type="dashed"
+                    onClick={() => { add() }}
+                  // style={{ width: '60%' }}
+                  >
+                    <PlusOutlined /> 增加選項
+                    </Button>
+                </Form.Item>
+
+              </div>
+            )
+          }}
+        </Form.List>
+
+        <Form.Item
+          {...layout}
+          label="內文"
+          name="text"
+          rules={
+            cat !== QT.PostCat.POLL
+              ? [{ required: true, message: '請輸入內文' }]
+              : []
+          }
+        >
+          <Input.TextArea rows={3} autoSize={{ minRows: 8 }} />
+        </Form.Item>
+
+        <Form.Item name="symbols" label="標籤" {...layout}>
+          <SymbolAutoComplete form={form} />
+        </Form.Item>
+
+        <Form.Item {...layoutWithoutLabel}>
+          <Button type="primary" htmlType="submit">送出</Button>
+        </Form.Item>
+
+      </Form >
+    </>
   )
 }
 
@@ -416,42 +466,87 @@ const Preview: React.FC<PreviewProps> = ({ values }) => {
   )
 }
 
-interface Props extends RouteComponentProps { }
-
-export const PostCreate: React.FC<Props> = () => {
+function PostCreate() {
   const [form] = Form.useForm()
   const [showForm, setShowForm] = useState<boolean>(true)
+
+  form.setFields([
+    // { name: "cat", value: QT.PostCat.REPLY },
+  ])
+  const parent = {
+    __typename: "Post",
+    id: "4",
+    userId: "aaa",
+    cat: QT.PostCat.IDEA,
+    status: QT.PostStatus.ACTIVE,
+    title: "string;",
+    text: "string;",
+    symbols: [],
+    count: {
+      __typename: "PostCount",
+      id: "123",
+      nViews: 1,
+      nUps: 1,
+      nDowns: 1,
+      nComments: 1,
+      updatedAt: null,
+      poll: null,
+    },
+    updatedAt: null,
+    poll: null,
+  } as QT.post_post
 
   return (
     <>
       {/* <Typography.Title level={2}><i>新增 Post</i></Typography.Title> */}
-
       {
-        showForm
-          ? (
-            <div>
-              <Button type="link"><Typography.Text strong>編輯</Typography.Text></Button>
-              <Button type="link" onClick={() => { setShowForm(false) }}>預覽</Button>
-            </div>
-          )
-          : (
-            <div>
-              <Button type="link" onClick={() => { setShowForm(true) }}>編輯</Button>
-              <Button type="link"><Typography.Text strong>預覽</Typography.Text></Button>
-            </div>
-          )
+        showForm ?
+          <div>
+            <Button type="link"><Typography.Text strong>編輯</Typography.Text></Button>
+            <Button type="link" onClick={() => { setShowForm(false) }}>預覽</Button>
+          </div> :
+          <div>
+            <Button type="link" onClick={() => { setShowForm(true) }}>編輯</Button>
+            <Button type="link"><Typography.Text strong>預覽</Typography.Text></Button>
+          </div>
       }
 
       {
-        showForm
-          ? <Card style={{ width: "100%" }}>
-            <PostForm form={form} />
-          </Card>
-          : <Card style={{ width: "100%" }}>
+        showForm ?
+          <Card style={{ width: "100%" }}>
+            <PostForm form={form} parent={parent} />
+          </Card> :
+          <Card style={{ width: "100%" }}>
             <Preview values={form.getFieldsValue()} />
           </Card>
       }
 
     </>
+  )
+}
+
+interface PostCreatePageProps {
+  location?: WindowLocation
+  isLoggedIn?: boolean
+}
+
+export const PostCreatePage: React.FC<PostCreatePageProps> = ({ location, isLoggedIn = false }) => {
+  const cat = (new URLSearchParams(window.location.search)).get("cat")
+  const postId = (new URLSearchParams(window.location.search)).get("id")
+
+  console.log(cat, postId)
+
+  // if (cat === "reply" && postId)
+  //   return null
+  // if (cat === "reply" && postId)
+  //   return null
+
+  return (
+    <Layout>
+      <Layout.Content>
+        <Pane left={<PostCreate />} leftSpan={12} />
+      </Layout.Content>
+      <Layout.Footer />
+    </Layout>
   )
 }
