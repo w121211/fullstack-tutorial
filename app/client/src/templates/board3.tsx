@@ -5,7 +5,7 @@ import { Badge, Button, Card, Divider, Layout, Row, Col, Space, List, Typography
 import { CoffeeOutlined, VerticalAlignTopOutlined } from '@ant-design/icons'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
-import { PostTile } from '../components/postTile'
+// import { PostTile } from '../components/postTile'
 import { Chart, Chart2 } from '../components/Chart'
 
 // function Login({ me }: { me: QueryResult<QT.me> }) {
@@ -129,17 +129,6 @@ export const Feed: React.FC<Props> = () => {
               {/* <div style={{ textAlign: "center" }}>
                 <TrendingList />
               </div> */}
-
-              {
-                data?.latestPosts && data?.latestPosts.map(x =>
-                  <PostTile
-                    key={x.id}
-                    post={x}
-                    me={me.data?.me}
-                    toLogin={() => setShowLogin(true)} />
-                )
-              }
-
               <Divider>2010-5-1</Divider>
 
             </Space>
@@ -476,15 +465,7 @@ export const Feed: React.FC<Props> = () => {
               <div style={{ textAlign: "center" }}>
                 <TrendingList />
               </div>
-              {
-                data?.latestPosts && data?.latestPosts.map(x =>
-                  <PostTile
-                    key={x.id}
-                    post={x}
-                    me={me.data?.me}
-                    toLogin={() => setShowLogin(true)} />
-                )
-              }
+
               <Divider>2010-5-1</Divider>
             </Space>
 

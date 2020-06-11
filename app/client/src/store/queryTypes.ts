@@ -44,16 +44,6 @@ export interface latestPosts_latestPosts_symbols {
   name: string;
 }
 
-export interface latestPosts_latestPosts_count_poll {
-  __typename: "PollCount";
-  nVotes: number[];
-  nJudgements: (number | null)[] | null;
-  judgeStartedAt: any | null;
-  judgeEndedAt: any | null;
-  verdictValid: boolean | null;
-  verdictChoice: number | null;
-}
-
 export interface latestPosts_latestPosts_count {
   __typename: "PostCount";
   id: string;
@@ -62,7 +52,16 @@ export interface latestPosts_latestPosts_count {
   nDowns: number;
   nComments: number;
   updatedAt: any;
-  poll: latestPosts_latestPosts_count_poll | null;
+}
+
+export interface latestPosts_latestPosts_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+  nJudgements: (number | null)[] | null;
+  judgeStartedAt: any | null;
+  judgeEndedAt: any | null;
+  verdictValid: boolean | null;
+  verdictChoice: number | null;
 }
 
 export interface latestPosts_latestPosts_poll {
@@ -76,6 +75,21 @@ export interface latestPosts_latestPosts_poll {
   minVotes: number;
   nDaysJudge: number;
   minJudgments: number;
+  count: latestPosts_latestPosts_poll_count | null;
+}
+
+export interface latestPosts_latestPosts_parent {
+  __typename: "PostPeek";
+  id: string;
+  cat: PostCat | null;
+  title: string | null;
+}
+
+export interface latestPosts_latestPosts_children {
+  __typename: "PostPeek";
+  id: string;
+  cat: PostCat | null;
+  title: string | null;
 }
 
 export interface latestPosts_latestPosts {
@@ -90,6 +104,8 @@ export interface latestPosts_latestPosts {
   symbols: latestPosts_latestPosts_symbols[];
   count: latestPosts_latestPosts_count;
   poll: latestPosts_latestPosts_poll | null;
+  parent: latestPosts_latestPosts_parent | null;
+  children: (latestPosts_latestPosts_children | null)[] | null;
 }
 
 export interface latestPosts {
@@ -115,16 +131,6 @@ export interface post_post_symbols {
   name: string;
 }
 
-export interface post_post_count_poll {
-  __typename: "PollCount";
-  nVotes: number[];
-  nJudgements: (number | null)[] | null;
-  judgeStartedAt: any | null;
-  judgeEndedAt: any | null;
-  verdictValid: boolean | null;
-  verdictChoice: number | null;
-}
-
 export interface post_post_count {
   __typename: "PostCount";
   id: string;
@@ -133,7 +139,16 @@ export interface post_post_count {
   nDowns: number;
   nComments: number;
   updatedAt: any;
-  poll: post_post_count_poll | null;
+}
+
+export interface post_post_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+  nJudgements: (number | null)[] | null;
+  judgeStartedAt: any | null;
+  judgeEndedAt: any | null;
+  verdictValid: boolean | null;
+  verdictChoice: number | null;
 }
 
 export interface post_post_poll {
@@ -147,6 +162,21 @@ export interface post_post_poll {
   minVotes: number;
   nDaysJudge: number;
   minJudgments: number;
+  count: post_post_poll_count | null;
+}
+
+export interface post_post_parent {
+  __typename: "PostPeek";
+  id: string;
+  cat: PostCat | null;
+  title: string | null;
+}
+
+export interface post_post_children {
+  __typename: "PostPeek";
+  id: string;
+  cat: PostCat | null;
+  title: string | null;
 }
 
 export interface post_post {
@@ -161,6 +191,8 @@ export interface post_post {
   symbols: post_post_symbols[];
   count: post_post_count;
   poll: post_post_poll | null;
+  parent: post_post_parent | null;
+  children: (post_post_children | null)[] | null;
 }
 
 export interface post {
@@ -328,16 +360,6 @@ export interface commit_commit_post_symbols {
   name: string;
 }
 
-export interface commit_commit_post_count_poll {
-  __typename: "PollCount";
-  nVotes: number[];
-  nJudgements: (number | null)[] | null;
-  judgeStartedAt: any | null;
-  judgeEndedAt: any | null;
-  verdictValid: boolean | null;
-  verdictChoice: number | null;
-}
-
 export interface commit_commit_post_count {
   __typename: "PostCount";
   id: string;
@@ -346,7 +368,16 @@ export interface commit_commit_post_count {
   nDowns: number;
   nComments: number;
   updatedAt: any;
-  poll: commit_commit_post_count_poll | null;
+}
+
+export interface commit_commit_post_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+  nJudgements: (number | null)[] | null;
+  judgeStartedAt: any | null;
+  judgeEndedAt: any | null;
+  verdictValid: boolean | null;
+  verdictChoice: number | null;
 }
 
 export interface commit_commit_post_poll {
@@ -360,6 +391,21 @@ export interface commit_commit_post_poll {
   minVotes: number;
   nDaysJudge: number;
   minJudgments: number;
+  count: commit_commit_post_poll_count | null;
+}
+
+export interface commit_commit_post_parent {
+  __typename: "PostPeek";
+  id: string;
+  cat: PostCat | null;
+  title: string | null;
+}
+
+export interface commit_commit_post_children {
+  __typename: "PostPeek";
+  id: string;
+  cat: PostCat | null;
+  title: string | null;
 }
 
 export interface commit_commit_post {
@@ -374,6 +420,8 @@ export interface commit_commit_post {
   symbols: commit_commit_post_symbols[];
   count: commit_commit_post_count;
   poll: commit_commit_post_poll | null;
+  parent: commit_commit_post_parent | null;
+  children: (commit_commit_post_children | null)[] | null;
 }
 
 export interface commit_commit_reviews {
@@ -538,16 +586,6 @@ export interface createPost_createPost_symbols {
   name: string;
 }
 
-export interface createPost_createPost_count_poll {
-  __typename: "PollCount";
-  nVotes: number[];
-  nJudgements: (number | null)[] | null;
-  judgeStartedAt: any | null;
-  judgeEndedAt: any | null;
-  verdictValid: boolean | null;
-  verdictChoice: number | null;
-}
-
 export interface createPost_createPost_count {
   __typename: "PostCount";
   id: string;
@@ -556,7 +594,16 @@ export interface createPost_createPost_count {
   nDowns: number;
   nComments: number;
   updatedAt: any;
-  poll: createPost_createPost_count_poll | null;
+}
+
+export interface createPost_createPost_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+  nJudgements: (number | null)[] | null;
+  judgeStartedAt: any | null;
+  judgeEndedAt: any | null;
+  verdictValid: boolean | null;
+  verdictChoice: number | null;
 }
 
 export interface createPost_createPost_poll {
@@ -570,6 +617,21 @@ export interface createPost_createPost_poll {
   minVotes: number;
   nDaysJudge: number;
   minJudgments: number;
+  count: createPost_createPost_poll_count | null;
+}
+
+export interface createPost_createPost_parent {
+  __typename: "PostPeek";
+  id: string;
+  cat: PostCat | null;
+  title: string | null;
+}
+
+export interface createPost_createPost_children {
+  __typename: "PostPeek";
+  id: string;
+  cat: PostCat | null;
+  title: string | null;
 }
 
 export interface createPost_createPost {
@@ -584,6 +646,8 @@ export interface createPost_createPost {
   symbols: createPost_createPost_symbols[];
   count: createPost_createPost_count;
   poll: createPost_createPost_poll | null;
+  parent: createPost_createPost_parent | null;
+  children: (createPost_createPost_children | null)[] | null;
 }
 
 export interface createPost {
@@ -610,16 +674,6 @@ export interface updatePost_updatePost_symbols {
   name: string;
 }
 
-export interface updatePost_updatePost_count_poll {
-  __typename: "PollCount";
-  nVotes: number[];
-  nJudgements: (number | null)[] | null;
-  judgeStartedAt: any | null;
-  judgeEndedAt: any | null;
-  verdictValid: boolean | null;
-  verdictChoice: number | null;
-}
-
 export interface updatePost_updatePost_count {
   __typename: "PostCount";
   id: string;
@@ -628,7 +682,16 @@ export interface updatePost_updatePost_count {
   nDowns: number;
   nComments: number;
   updatedAt: any;
-  poll: updatePost_updatePost_count_poll | null;
+}
+
+export interface updatePost_updatePost_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+  nJudgements: (number | null)[] | null;
+  judgeStartedAt: any | null;
+  judgeEndedAt: any | null;
+  verdictValid: boolean | null;
+  verdictChoice: number | null;
 }
 
 export interface updatePost_updatePost_poll {
@@ -642,6 +705,21 @@ export interface updatePost_updatePost_poll {
   minVotes: number;
   nDaysJudge: number;
   minJudgments: number;
+  count: updatePost_updatePost_poll_count | null;
+}
+
+export interface updatePost_updatePost_parent {
+  __typename: "PostPeek";
+  id: string;
+  cat: PostCat | null;
+  title: string | null;
+}
+
+export interface updatePost_updatePost_children {
+  __typename: "PostPeek";
+  id: string;
+  cat: PostCat | null;
+  title: string | null;
 }
 
 export interface updatePost_updatePost {
@@ -656,6 +734,8 @@ export interface updatePost_updatePost {
   symbols: updatePost_updatePost_symbols[];
   count: updatePost_updatePost_count;
   poll: updatePost_updatePost_poll | null;
+  parent: updatePost_updatePost_parent | null;
+  children: (updatePost_updatePost_children | null)[] | null;
 }
 
 export interface updatePost {
@@ -684,16 +764,6 @@ export interface createPostLike_createPostLike_like {
   updatedAt: any;
 }
 
-export interface createPostLike_createPostLike_count_poll {
-  __typename: "PollCount";
-  nVotes: number[];
-  nJudgements: (number | null)[] | null;
-  judgeStartedAt: any | null;
-  judgeEndedAt: any | null;
-  verdictValid: boolean | null;
-  verdictChoice: number | null;
-}
-
 export interface createPostLike_createPostLike_count {
   __typename: "PostCount";
   id: string;
@@ -702,7 +772,6 @@ export interface createPostLike_createPostLike_count {
   nDowns: number;
   nComments: number;
   updatedAt: any;
-  poll: createPostLike_createPostLike_count_poll | null;
 }
 
 export interface createPostLike_createPostLike {
@@ -737,16 +806,6 @@ export interface updatePostLike_updatePostLike_like {
   updatedAt: any;
 }
 
-export interface updatePostLike_updatePostLike_count_poll {
-  __typename: "PollCount";
-  nVotes: number[];
-  nJudgements: (number | null)[] | null;
-  judgeStartedAt: any | null;
-  judgeEndedAt: any | null;
-  verdictValid: boolean | null;
-  verdictChoice: number | null;
-}
-
 export interface updatePostLike_updatePostLike_count {
   __typename: "PostCount";
   id: string;
@@ -755,7 +814,6 @@ export interface updatePostLike_updatePostLike_count {
   nDowns: number;
   nComments: number;
   updatedAt: any;
-  poll: updatePostLike_updatePostLike_count_poll | null;
 }
 
 export interface updatePostLike_updatePostLike {
@@ -1086,16 +1144,6 @@ export interface postLike {
 // GraphQL fragment: postCount
 // ====================================================
 
-export interface postCount_poll {
-  __typename: "PollCount";
-  nVotes: number[];
-  nJudgements: (number | null)[] | null;
-  judgeStartedAt: any | null;
-  judgeEndedAt: any | null;
-  verdictValid: boolean | null;
-  verdictChoice: number | null;
-}
-
 export interface postCount {
   __typename: "PostCount";
   id: string;
@@ -1104,7 +1152,6 @@ export interface postCount {
   nDowns: number;
   nComments: number;
   updatedAt: any;
-  poll: postCount_poll | null;
 }
 
 /* tslint:disable */
@@ -1122,16 +1169,6 @@ export interface postFragment_symbols {
   name: string;
 }
 
-export interface postFragment_count_poll {
-  __typename: "PollCount";
-  nVotes: number[];
-  nJudgements: (number | null)[] | null;
-  judgeStartedAt: any | null;
-  judgeEndedAt: any | null;
-  verdictValid: boolean | null;
-  verdictChoice: number | null;
-}
-
 export interface postFragment_count {
   __typename: "PostCount";
   id: string;
@@ -1140,7 +1177,16 @@ export interface postFragment_count {
   nDowns: number;
   nComments: number;
   updatedAt: any;
-  poll: postFragment_count_poll | null;
+}
+
+export interface postFragment_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+  nJudgements: (number | null)[] | null;
+  judgeStartedAt: any | null;
+  judgeEndedAt: any | null;
+  verdictValid: boolean | null;
+  verdictChoice: number | null;
 }
 
 export interface postFragment_poll {
@@ -1154,6 +1200,21 @@ export interface postFragment_poll {
   minVotes: number;
   nDaysJudge: number;
   minJudgments: number;
+  count: postFragment_poll_count | null;
+}
+
+export interface postFragment_parent {
+  __typename: "PostPeek";
+  id: string;
+  cat: PostCat | null;
+  title: string | null;
+}
+
+export interface postFragment_children {
+  __typename: "PostPeek";
+  id: string;
+  cat: PostCat | null;
+  title: string | null;
 }
 
 export interface postFragment {
@@ -1168,6 +1229,8 @@ export interface postFragment {
   symbols: postFragment_symbols[];
   count: postFragment_count;
   poll: postFragment_poll | null;
+  parent: postFragment_parent | null;
+  children: (postFragment_children | null)[] | null;
 }
 
 /* tslint:disable */
@@ -1271,16 +1334,6 @@ export interface commitDetail_post_symbols {
   name: string;
 }
 
-export interface commitDetail_post_count_poll {
-  __typename: "PollCount";
-  nVotes: number[];
-  nJudgements: (number | null)[] | null;
-  judgeStartedAt: any | null;
-  judgeEndedAt: any | null;
-  verdictValid: boolean | null;
-  verdictChoice: number | null;
-}
-
 export interface commitDetail_post_count {
   __typename: "PostCount";
   id: string;
@@ -1289,7 +1342,16 @@ export interface commitDetail_post_count {
   nDowns: number;
   nComments: number;
   updatedAt: any;
-  poll: commitDetail_post_count_poll | null;
+}
+
+export interface commitDetail_post_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+  nJudgements: (number | null)[] | null;
+  judgeStartedAt: any | null;
+  judgeEndedAt: any | null;
+  verdictValid: boolean | null;
+  verdictChoice: number | null;
 }
 
 export interface commitDetail_post_poll {
@@ -1303,6 +1365,21 @@ export interface commitDetail_post_poll {
   minVotes: number;
   nDaysJudge: number;
   minJudgments: number;
+  count: commitDetail_post_poll_count | null;
+}
+
+export interface commitDetail_post_parent {
+  __typename: "PostPeek";
+  id: string;
+  cat: PostCat | null;
+  title: string | null;
+}
+
+export interface commitDetail_post_children {
+  __typename: "PostPeek";
+  id: string;
+  cat: PostCat | null;
+  title: string | null;
 }
 
 export interface commitDetail_post {
@@ -1317,6 +1394,8 @@ export interface commitDetail_post {
   symbols: commitDetail_post_symbols[];
   count: commitDetail_post_count;
   poll: commitDetail_post_poll | null;
+  parent: commitDetail_post_parent | null;
+  children: (commitDetail_post_children | null)[] | null;
 }
 
 export interface commitDetail_reviews {

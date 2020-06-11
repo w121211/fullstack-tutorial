@@ -24,6 +24,7 @@ model User {
   dailyProfile  DailyProfile
   bets          Bet[]
   polls         Poll[]
+  notices       Notice[]
 }
 
 model Profile {
@@ -69,7 +70,7 @@ model Post {
   parentId  Int?
   parent    Post?      @relation("ParentChildren", fields: [parentId], references: [id])
   children  Post[]     @relation("ParentChildren")
-
+  notices   Notice[]
 }
 
 model PostLike {
@@ -83,6 +84,33 @@ model PostLike {
   updatedAt DateTime   @updatedAt
 
   @@unique([userId, postId])
+}
+
+model PostCount {
+  id        Int      @default(autoincrement()) @id
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    Int      @unique
+  nViews    Int      @default(0)
+  nUps      Int      @default(0)
+  nDowns    Int      @default(0)
+  nComments Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Notice {
+  id        Int          @default(autoincrement()) @id
+  cat       NoticeCat
+  status    NoticeStatus @default(OPEN)
+  user      User         @relation(fields: [userId], references: [id])
+  userId    String
+  post      Post         @relation(fields: [postId], references: [id])
+  postId    Int
+  text      String?
+  nPops     Int          @default(0)
+  expiredAt DateTime
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
 }
 
 model Poll {
@@ -99,10 +127,11 @@ model Poll {
   minVotes     Int            @default(30)
   nDaysJudge   Int            @default(5)
   minJudgments Int            @default(5)
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
   votes        PollVote[]
   judgments    PollJudgment[]
+  count        PollCount
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 }
 
 model PollVote {
@@ -134,23 +163,10 @@ model PollJudgment {
   @@unique([userId, pollId])
 }
 
-model PostCount {
-  id        Int        @default(autoincrement()) @id
-  post      Post       @relation(fields: [postId], references: [id])
-  postId    Int        @unique
-  nViews    Int        @default(0)
-  nUps      Int        @default(0)
-  nDowns    Int        @default(0)
-  nComments Int        @default(0)
-  poll      PollCount?
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-}
-
 model PollCount {
   id             Int       @default(autoincrement()) @id
-  count          PostCount @relation(fields: [countId], references: [id])
-  countId        Int       @unique
+  poll           Poll      @relation(fields: [pollId], references: [id])
+  pollId         Int       @unique
   nVotes         Int[]
   nJudgments     Int[]
   judgeStartedAt DateTime?
@@ -254,6 +270,7 @@ model Commit {
 // createdAt  DateTime @default(now())
 // updatedAt  DateTime @updatedAt
 // }
+
 model CommitReview {
   id        Int      @default(autoincrement()) @id
   user      User     @relation(fields: [userId], references: [id])
@@ -271,8 +288,12 @@ model Tick {
   id       Int      @default(autoincrement()) @id
   symbol   Symbol   @relation(fields: [symbolId], references: [id])
   symbolId Int
-  value    Float
-  at       DateTime
+  o Float?
+  h Float?
+  l Float?
+  c Float?
+  v Int?
+  at DateTime
 }
 
 model Bet {
@@ -297,9 +318,10 @@ enum PostCat {
   REPLY
 }
 
-// LOCK: 可以留言，但post無法編輯
 enum PostStatus {
+  // 不能comment、edit,
   ACTIVE
+  // 可以comment，不能edit
   LOCK
   DELETED
   REPORTED
@@ -311,6 +333,31 @@ enum PollStatus {
   JUDGE
   CLOSE_SUCCESS
   CLOSE_FAIL
+}
+
+enum PollFailReason {
+  // 沒達到最低票數要求
+  MIN_VOTES
+  MIN_JUDGMENTS
+  // 沒有一個多數同意的共識
+  MAJOR_VERDICT
+  // 結果判定為無效
+  VERDICT_AS_FAIL
+  // 其他問題
+  OTHER
+}
+
+enum NoticeCat {
+  POLL_REVOTE
+  POLL_START_JUDGE
+  POLL_INVITE_JUDGE
+  POLL_VERDICT
+  SIGNAL
+}
+
+enum NoticeStatus {
+  OPEN
+  READ
 }
 
 enum SymbolCat {

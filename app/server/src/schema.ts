@@ -3,6 +3,7 @@ import gql from 'graphql-tag'
 export const typeDefs = gql`
   type Query {
     latestPosts(after: String): [Post!]!
+    mePosts(afterId: String): [Post!]!
     _latestPosts(after: String, symbolId: ID): [Post!]!
     risingPosts(after: String): [Post!]!
     trendPosts(after: String): [Post!]!
@@ -115,23 +116,9 @@ export const typeDefs = gql`
     # trips: [Launch]!
   }
 
-  type Poll {
-    id: ID!
-    status: PollStatus!
-    start: DateTime!
-    end: DateTime!
-    choices: [String!]!
-    nDays: Int!
-    minVotes: Int!
-    nDaysJudge: Int!
-    minJudgments: Int!
-  }
-
     # type PostLink {
   #   url: String!
   # }
-
-  
 
   type Post {
     id: ID!
@@ -150,6 +137,15 @@ export const typeDefs = gql`
     children: [PostPeek]
   }
 
+  type PostCount {
+    id: ID!
+    nViews: Int!
+    nUps: Int!
+    nDowns: Int!
+    nComments: Int!
+    updatedAt: DateTime!
+  }
+
   type PostPeek {
     id: ID!
     cat: PostCat
@@ -163,11 +159,6 @@ export const typeDefs = gql`
     symbolIds: [ID!]!
     text: String
     poll: PollInput
-  }
-
-  input PollInput {
-    choices: [String!]!
-    nDays: Int!
   }
 
   # input PostLinkInput {
@@ -191,12 +182,44 @@ export const typeDefs = gql`
     choice: LikeChoice!
   }
 
+  type Poll {
+    id: ID!
+    status: PollStatus!
+    start: DateTime!
+    end: DateTime!
+    choices: [String!]!
+    nDays: Int!
+    minVotes: Int!
+    nDaysJudge: Int!
+    minJudgments: Int!
+    count: PollCount
+  }
+
+  type PollCount {
+    nVotes: [Int!]!,
+    nJudgements: [Int],
+    judgeStartedAt: DateTime,
+    judgeEndedAt: DateTime,
+    verdictValid: Boolean,
+    verdictChoice: Int,
+    # failedMsg: String,
+  }
+
+  input PollInput {
+    choices: [String!]!
+    nDays: Int!
+  }
+  
   type PollVote {
     id: ID!
     pollId: ID!
     choice: Int!
     createdAt: DateTime!
     updatedAt: DateTime!
+  }
+
+  input PollVoteInput {
+    choice: Int!
   }
 
   type PollJudgment {
@@ -208,32 +231,8 @@ export const typeDefs = gql`
     updatedAt: DateTime!
   }
 
-  input PollVoteInput {
-    choice: Int!
-  }
-
   input PollJudgmentInput {
     choice: Int!
-  }
-
-  type PostCount {
-    id: ID!
-    nViews: Int!
-    nUps: Int!
-    nDowns: Int!
-    nComments: Int!
-    updatedAt: DateTime!
-    poll: PollCount
-  }
-
-  type PollCount {
-    nVotes: [Int!]!,
-    nJudgements: [Int],
-    judgeStartedAt: DateTime,
-    judgeEndedAt: DateTime,
-    verdictValid: Boolean,
-    verdictChoice: Int,
-    # failedMsg: String,
   }
 
   type Comment {

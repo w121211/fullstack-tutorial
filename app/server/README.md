@@ -23,12 +23,20 @@
 
 # Release
 
-Pre 
-1. post{poll, idea, ask, reply, spin}, user-poll{judge, verdict, revote}, @me,
- comment, like, profile{karma, 等級}, chart?, auto-feed(有限來源), auto-event,
+pre-alpha
+1. post{poll, idea, ask, reply, spin},
+ user-poll{judge, verdict, cron-notice, }, 
+ @me, @anonymous, 
+ comment, like, 
+ profile{karma, 等級}, chart?, 
+ auto-feed(有限來源), auto-event,
  有限tickers{auto-poll}, 
-2. 審核入會制, follow, survey, 社群審查, 強化symbol/commit
-3. bet, 相關tags/tickers, 推薦系統, 社群過濾, notices
+2. 審核入會制, follow, survey, 社群審查, 強化symbol/commit, poll{revote, voted-choice-tick}, username{preserved-names}
+3. bet, 相關tags/tickers, 推薦系統, 社群過濾, notices, social-login
+
+alpha
+
+beta
 
 # Site
 

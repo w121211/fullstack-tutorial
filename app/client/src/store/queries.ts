@@ -18,14 +18,6 @@ export const POST_COUNT = gql`
     nDowns
     nComments
     updatedAt
-    poll {
-      nVotes
-      nJudgements
-      judgeStartedAt
-      judgeEndedAt
-      verdictValid
-      verdictChoice
-    }
   }
 `
 export const POST_FRAGMENT = gql`
@@ -55,6 +47,14 @@ export const POST_FRAGMENT = gql`
       minVotes
       nDaysJudge
       minJudgments
+      count {
+        nVotes
+        nJudgements
+        judgeStartedAt
+        judgeEndedAt
+        verdictValid
+        verdictChoice
+      }
     }
     parent {
       id

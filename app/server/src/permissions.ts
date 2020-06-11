@@ -25,7 +25,7 @@ import { Context } from './context'
 
 const rules = {
   isNotAuthenticated: rule({ cache: 'contextual' })((parent, args, ctx) => {
-    return !Boolean(ctx.req.userId)
+    return !ctx.req.userId
   }),
   isAuthenticated: rule({ cache: 'contextual' })((parent, args, ctx) => {
     return Boolean(ctx.req.userId)

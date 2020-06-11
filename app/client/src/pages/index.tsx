@@ -7,7 +7,7 @@ import { PageContainer, Pane } from '../components/layout'
 import { Board, BoardRightPane } from './board'
 import { SymbolPage } from './symbol'
 import { PostCreatePage } from './postCreate'
-import { PostSinglePage } from './postSingle'
+import { PostSinglePage } from './postThread'
 import { ProtectedRoute, Login, AutoLogin } from './login'
 
 

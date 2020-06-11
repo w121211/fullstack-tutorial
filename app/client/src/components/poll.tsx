@@ -1,3 +1,5 @@
+import dayjs from 'dayjs'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
 import React, { useState, useEffect } from 'react'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { MutationResult } from '@apollo/react-common'
@@ -5,6 +7,8 @@ import { Button, Tooltip, Form, Radio, Spin, Input, Typography } from 'antd'
 import { RadioChangeEvent } from 'antd/lib/radio'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
+
+dayjs.extend(localizedFormat)
 
 /**
  * 投票狀態分為：
@@ -71,7 +75,7 @@ const PollVoteForm: React.FC<FormProps> = ({ pollId, choices }) => {
       <Form.Item>
         {loading
           ? <Spin />
-          : <Button htmlType="submit" >送出</Button>}
+          : <Button shape="round">投票</Button>}
       </Form.Item>
 
       {/* 
@@ -166,7 +170,7 @@ interface PostPollProps {
   toLogin?: () => void
   pollId: string
   poll: QT.post_post_poll
-  count: QT.post_post_count_poll
+  count: QT.post_post_poll_count
   showDetail: boolean
   setShowDetail: (a: boolean) => void
 }
@@ -286,6 +290,10 @@ export const PostPoll: React.FC<PostPollProps> = ({ me, toLogin, poll, count, sh
     throw new Error("不應該有漏掉的case")
   }
 
+  console.log(poll)
+  const start = dayjs(poll.start)
+  const end = dayjs(poll.end)
+
   // if (!showDetail) return main
   return (
     <>
@@ -301,12 +309,9 @@ export const PostPoll: React.FC<PostPollProps> = ({ me, toLogin, poll, count, sh
       {
         showDetail &&
         <Typography.Text type="secondary">
-          <ul>
-            <li>結果判定：2020/8/1</li>
-            <li>投票期間：2020/1/1 - 2020/2/1（5個月）</li>
-            <li>判定方式：隨選一組投票人決定</li>
-            <li>當前預測價值：???</li>
-          </ul>
+          <br />預測日：{end.format('l')}
+          <br />投票期間：{start.format('l')} - {end.format('l')}
+          <br />判定方式：投票人評審小組
         </Typography.Text>
       }
     </>

@@ -5,7 +5,7 @@ import { Badge, Button, Card, Divider, Layout, Row, Col, Space, List, Typography
 import { CoffeeOutlined, VerticalAlignTopOutlined } from '@ant-design/icons'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
-import { PostTile, PostList } from '../components/postTile'
+import { PostList } from '../components/postList'
 import { Pane } from '../components/layout'
 
 function TrendingList() {

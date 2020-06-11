@@ -149,8 +149,8 @@ export function AutoLogin() {
   if (!data) {
     login({
       variables: {
-        email: "ccc@ccc.com",
-        password: "ccc"
+        email: "aaa@aaa.com",
+        password: "aaa"
       }
     })
     console.log('logging')

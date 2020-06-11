@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/react-hooks';
 
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
-import { PostTile } from '../components/postTile'
+// import { PostTile } from '../components/postTile'
 
 interface EventProps {
   name: string
@@ -56,14 +56,14 @@ const Event: React.FC<EventProps> = ({ name }) => {
   const header = <h1>{getSymbol.data?.symbol.name}</h1>
   const status = <p>{getSymbol.data?.symbol.status}</p>
   const chart = null
-  const posts = getPosts.data?.latestPosts.map(
-    x => <PostTile
-      key={x.id}
-      post={x}
-      me={getMe.data?.me}
-      // toLogin={() => setShowLogin(true)}
-      toLogin={() => { }}
-    />)
+  // const posts = getPosts.data?.latestPosts.map(
+  //   x => <PostTile
+  //     key={x.id}
+  //     post={x}
+  //     me={getMe.data?.me}
+  //     // toLogin={() => setShowLogin(true)}
+  //     toLogin={() => { }}
+  //   />)
   const morePosts = null
   const commits = null
   const createCommit = null
@@ -79,7 +79,7 @@ const Event: React.FC<EventProps> = ({ name }) => {
       {/* {showLogin ? <button>Login</button> : null} */}
       {header}
       {chart}
-      {posts}
+      {/* {posts} */}
       {morePosts}
     </>
   )

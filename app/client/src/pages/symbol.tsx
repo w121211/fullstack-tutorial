@@ -6,7 +6,7 @@ import { LinkOutlined, ExportOutlined, SwapLeftOutlined, QuestionCircleOutlined,
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 import { Pane } from '../components/layout'
-import { PostTile } from '../components/postTile'
+import { PostList } from '../components/postList'
 import { Chart, Chart2 } from '../components/Chart'
 
 // %24AADR
@@ -388,16 +388,16 @@ const Symbol: React.FC<SymbolProps> = ({ name }) => {
         </Typography.Paragraph>
       </Card>
 
-      {
+      {/* {
         getPosts.data?.latestPosts.map(
-          x => <PostTile
+          x => <PostList
             key={x.id}
             post={x}
             me={getMe.data?.me}
             // toLogin={() => setShowLogin(true)}
             toLogin={() => { }}
           />)
-      }
+      } */}
 
       <Button>讀取更多</Button>
 

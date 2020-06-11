@@ -6,7 +6,7 @@ import { LinkOutlined, ExportOutlined, SwapLeftOutlined, QuestionCircleOutlined,
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 import { Pane } from '../components/layout'
-import { PostTile } from '../components/postTile'
+import { PostList } from '../components/postList'
 import { Chart } from '../components/Chart'
 
 // %24AADR
@@ -381,7 +381,7 @@ const PostSingle: React.FC<PostSingleProps> = ({ id }) => {
         </Typography.Paragraph>
       </Card>
 
-      {
+      {/* {
         getPosts.data?.latestPosts.map(
           x => <PostTile
             key={x.id}
@@ -390,7 +390,7 @@ const PostSingle: React.FC<PostSingleProps> = ({ id }) => {
             // toLogin={() => setShowLogin(true)}
             toLogin={() => { }}
           />)
-      }
+      } */}
 
       <Button>讀取更多</Button>
 
@@ -401,8 +401,7 @@ const PostSingle: React.FC<PostSingleProps> = ({ id }) => {
 interface PostSinglePageProps extends RouteComponentProps<{ id: string }> { }
 
 export const PostSinglePage: React.FC<PostSinglePageProps> = ({ id }) => {
-  if (!id)
-    return <Redirect to="/" />
+  if (!id) return <Redirect to="/" />
 
   // return <Symbol name={decodeURIComponent(name)} />
   return (

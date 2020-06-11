@@ -8,19 +8,6 @@ import { PostCount, Post, PostCat, PostStatus, LikeChoice, PrismaClient } from '
 import { Context } from './context'
 import { APP_SECRET } from './server'
 
-async function scanPolls(prisma: PrismaClient) {
-  // 確認poll是否到期: ->judge, ->verdict
-  const polls = await prisma.post.findMany({
-    where: {
-      cat: PostCat.POLL,
-    }
-  })
-  for (let p of polls) {
-    // parse
-    // if (p.)
-  }
-}
-
 // function mapPostInput(post: ST.PostInput) {
 //   let content
 //   switch (post.cat) {
@@ -70,94 +57,134 @@ async function scanPolls(prisma: PrismaClient) {
 export const resolvers: GraphQLResolverMap<Context> = {
   DateTime: GraphQLDateTime, // custom scalar
   Query: {
-    latestPosts: async (parent, { after }, { prisma }) => {
+
+    latestPosts: async (parent, { afterId, symbolId }, { prisma }) => {
+      const maxDate = dayjs().startOf("d").subtract(7, "d")
 
       // TODO: post-children應該要經過「挑選」，只挑重要的出來
       const posts = await prisma.post.findMany({
-        first: 30,
+        take: 30,
+        where: {
+          createdAt: { gte: maxDate.toDate() },
+          symbols: { some: { id: symbolId } }
+        },
         orderBy: { createdAt: "desc" },
         include: {
           symbols: true,
-          poll: true,
-          count: {
-            include: {
-              poll: true
-            }
-          },
+          count: true,
+          poll: { include: { count: true } },
           parent: {
-            select: {
-              id: true,
-              cat: true,
-              title: true,
-            }
+            select: { id: true, cat: true, title: true }
           },
           children: {
-            select: {
-              id: true,
-              cat: true,
-              title: true,
-            }
+            select: { id: true, cat: true, title: true }
           }
         },
-        after: after ? { id: parseInt(after) } : undefined,
+        cursor: { id: afterId }
       })
+
       return posts
       // return _.shuffle(posts)
       // return _.shuffle(posts).map(p => parsePostContent(p))
       // return posts.map(p => parsePost(p))
     },
-    risingPosts: (parent, args, ctx) => {
-      return []
+
+    mePosts: (parent, args, { prisma, req }) => {
+      // TODO: @me: 發文、按讚的、投過票的、comment的
+      return prisma.post.findMany({
+        take: 30,
+        orderBy: { createdAt: "desc" },
+        where: { userId: req.userId },
+        include: {
+          symbols: true,
+          count: true,
+          poll: {
+            include: { count: true }
+          },
+          parent: {
+            select: { id: true, cat: true, title: true }
+          },
+          children: {
+            select: { id: true, cat: true, title: true }
+          }
+        },
+      })
     },
-    trendPosts: (parent, args, ctx) => {
-      return []
-    },
+
     symbolPosts: (parent, { symbolId, after = null }, { prisma }) => {
       // return prisma.symbol.findOne({ where: { id: symbolId } })
       //   .posts({ first: 30 })
       return prisma.post.findMany({ where: { symbols: { every: { id: symbolId } } } })
     },
+
+    risingPosts: (parent, args, ctx) => {
+      return []
+    },
+
+    trendPosts: (parent, args, ctx) => {
+      return []
+    },
+
+
     post: (parent, { id }, { prisma }) => {
       return prisma.post.findOne({
         where: { id }
       })
     },
+
     comments: (parent, { postId, after }, { prisma }) => {
-      return prisma.comment.findMany({ where: { postId: parseInt(postId) }, first: 20 })
+      return prisma.comment.findMany({ where: { postId: parseInt(postId) }, take: 20 })
     },
+
     symbol: (parent, { name }, { prisma }) => {
       return prisma.symbol.findOne({ where: { name } })
     },
-    ticks: (parent, { symbolId, after }, ctx) => {
-      return ctx.prisma.tick.findMany({ where: { symbolId }, first: 50 })
+
+    ticks: (parent, { symbolId, afterId }, { prisma }) => {
+      return prisma.tick.findMany({
+        take: 100,
+        where: { symbolId },
+        orderBy: { at: "desc" },
+        cursor: { id: afterId }
+      })
     },
+
     commit: (parent, { id }, { prisma }) => {
       return prisma.commit.findOne({ where: { id } })
     },
+
     commits: (parent, { symbolId, after }, { prisma }) => {
-      return prisma.commit.findMany({ where: { symbolId }, first: 20 })
+      return prisma.commit.findMany({ where: { symbolId }, take: 20 })
     },
+
     me: (parent, args, { prisma, req }) => {
       // throw Error("what ever error")
       return prisma.user.findOne({ where: { id: req.userId } })
     },
+
     myPostLikes: (parent, { after }, { prisma, req }) => {
-      return prisma.postLike.findMany({ where: { userId: req.userId }, first: 50 })
+      return prisma.postLike.findMany({ where: { userId: req.userId }, take: 50 })
     },
+
     myPollVotes: (parent, { after }, { prisma, req }) => {
-      return prisma.pollVote.findMany({ where: { userId: req.userId }, first: 50 })
+      return prisma.pollVote.findMany({
+        take: 50,
+        where: { userId: req.userId },
+      })
     },
+
     myCommentLikes: (parent, { after }, { prisma, req }) => {
-      return prisma.commentLike.findMany({ where: { userId: req.userId }, first: 50 })
+      return prisma.commentLike.findMany({ where: { userId: req.userId }, take: 50 })
     },
+
     myFollows: (parent, { after }, { prisma, req }) => {
       return prisma.follow.findMany({ where: { userId: req.userId, followed: true } })
     },
     myCommits: (parent, { after }, { prisma, req }) => {
-      return prisma.commit.findMany({ where: { userId: req.userId }, first: 30 })
+      return prisma.commit.findMany({ where: { userId: req.userId }, take: 30 })
     },
     myCommitReviews: (parent, { after }, { prisma, req }) => {
-      return prisma.commitReview.findMany({ where: { userId: req.userId }, first: 30 })
+      return prisma.commitReview.findMany({ where: { userId: req.userId }, take: 30 })
     },
     fetchPage: (parent, { url }, { prisma, req }) => {
       // grpc call to nlp-app
@@ -240,9 +267,7 @@ export const resolvers: GraphQLResolverMap<Context> = {
       return prisma.post.create({
         data: {
           ...temp,
-          count: {
-            create: { poll: { create: {} } }
-          },
+          count: { create: {} },
           poll: {
             create: {
               start: start.toDate(),
@@ -250,13 +275,14 @@ export const resolvers: GraphQLResolverMap<Context> = {
               nDays: data.poll.nDays,
               choices: { set: data.poll.choices },
               user: { connect: { id: req.userId } },
+              count: { create: {} }
             }
           }
         },
         include: {
           symbols: true,
-          poll: true,
-          count: { include: { poll: true } },
+          count: true,
+          poll: { include: { count: true } },
           parent: { select: { id: true, title: true } },
           // children: { select: { id: true, title: true } },
         },
