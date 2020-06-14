@@ -2,42 +2,96 @@ import dayjs from 'dayjs'
 import React, { useState, Dispatch, SetStateAction } from 'react'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { Link } from '@reach/router'
-import { Spin, Input, Card, Divider, Row, Col, Typography, Tag, Button, List, Space, Form, Comment, Radio } from 'antd'
-import { RadioChangeEvent } from 'antd/lib/radio'
-import { CoffeeOutlined, VerticalAlignTopOutlined, SwapLeftOutlined, SwapRightOutlined } from '@ant-design/icons'
+import { Spin, Button, Space, Typography, } from 'antd'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 import { Post } from './postTile'
 
-
 interface PostListProps {
   me?: QT.me_me
   toLogin?: () => void
+  symbolId?: string
+  noHeader?: boolean
 }
 
-export const PostList: React.FC<PostListProps> = ({ me, toLogin }) => {
-  useQuery<QT.myPostLikes>(queries.MY_POST_LIKES)
-  useQuery<QT.myPollVotes>(queries.MY_POLL_VOTES)
-  useQuery<QT.myCommentLikes>(queries.MY_COMMENT_LIKES)
-  const { data, loading, error, fetchMore } = useQuery<QT.latestPosts, QT.latestPostsVariables>(
-    queries.LATEST_POSTS, {
-    onCompleted() {
-      console.log('latestPosts completed')
-    }
+interface RepliedPostListProps extends PostListProps {
+  parent: QT.post_post
+}
+
+export const RepliedPostList: React.FC<RepliedPostListProps> = ({ me, toLogin, parent, noHeader = false }) => {
+  const { data, loading, error, fetchMore } = useQuery<QT.repliedPosts, QT.repliedPostsVariables>(
+    queries.REPLIED_POSTS, {
+    variables: { parentId: parent.id },
   })
 
+  if (loading) return null
   if (error) return <p>Something goes wrong...</p>
-  // if (loading || !data) return null
-  // if (loading) return <p>loading</p>
-  if (!data) return null
+  if (!data) return <p>Something goes wrong...</p>
 
-  const after = data.latestPosts[data.latestPosts.length - 1].id
+  // const after = data.latestPosts[data.latestPosts.length - 1].id
 
-  function onClickMore() {
+  // function onMore() {
+  //   fetchMore({
+  //     // variables: { after },
+  //     updateQuery: (prev, { fetchMoreResult }) => {
+  //       if (!fetchMoreResult) return prev
+  //       return {
+  //         ...prev,
+  //         latestPosts: [...prev.latestPosts, ...fetchMoreResult.latestPosts]
+  //       }
+  //     }
+  //   })
+  // }
+
+  if (data.repliedPosts.length === 0)
+    return (
+      <Typography.Paragraph>
+        目前還沒有回覆，成為第一個
+        <Link to={`/submit?reply=${parent.id}`} state={{ parent }}>回覆</Link>
+      </Typography.Paragraph>
+    )
+  return (
+    <Space direction="vertical" style={{ width: "100%" }}>
+      {
+        data?.repliedPosts && data?.repliedPosts.map(e =>
+          <Post key={e.id} post={e} me={me} toLogin={toLogin} noHeader={noHeader} />
+        )
+      }
+      {/* <div />
+      <div style={{ textAlign: "center" }}>
+        {
+          loading ?
+            <Spin /> :
+          <Button onClick={onMore}>載入更多</Button>
+        }
+      </div> */}
+    </Space>
+  )
+
+}
+
+export const PostList: React.FC<PostListProps> = ({ me, toLogin, symbolId, noHeader = false }) => {
+  const { data, loading, error, fetchMore } = useQuery<QT.latestPosts, QT.latestPostsVariables>(
+    queries.LATEST_POSTS, {
+    variables: { symbolId },
+  })
+  const [hasMore, setHasMore] = useState<boolean>(true)
+
+  if (loading) return null
+  if (error) return <p>Something goes wrong...</p>
+  if (!data) return <p>Something goes wrong...</p>
+
+  const afterId = data.latestPosts[data.latestPosts.length - 1].id
+
+  function onMore() {
     fetchMore({
-      variables: { after },
+      variables: { afterId },
       updateQuery: (prev, { fetchMoreResult }) => {
         if (!fetchMoreResult) return prev
+        if (fetchMoreResult.latestPosts.length === 0) {
+          setHasMore(false)
+          return prev
+        }
         return {
           ...prev,
           latestPosts: [...prev.latestPosts, ...fetchMoreResult.latestPosts]
@@ -50,22 +104,25 @@ export const PostList: React.FC<PostListProps> = ({ me, toLogin }) => {
     <Space direction="vertical" style={{ width: "100%" }}>
       {
         data?.latestPosts && data?.latestPosts.map(x =>
-          <Post
-            key={x.id}
-            post={x}
-            me={me}
-            toLogin={toLogin}
-          />
+          <Post key={x.id} post={x} me={me} toLogin={toLogin} noHeader={noHeader} folded />
         )
       }
-      {/* <Divider>2010-5-1</Divider> */}
-      <div style={{ textAlign: "center" }}>
-        {
-          loading ?
-            <Spin /> :
-            <Button type="primary" onClick={onClickMore}>載入更多</Button>
-        }
-      </div>
+
+      <div />
+
+      {
+        hasMore ?
+          <div style={{ textAlign: "center" }}>
+            {
+              loading ?
+                <Spin /> :
+                <Button onClick={onMore}>載入更多</Button>
+            }
+          </div>
+          :
+          <div style={{ textAlign: "center" }}>已經到底</div>
+      }
+
     </Space>
   )
 

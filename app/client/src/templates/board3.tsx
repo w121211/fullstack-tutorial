@@ -6,7 +6,6 @@ import { CoffeeOutlined, VerticalAlignTopOutlined } from '@ant-design/icons'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 // import { PostTile } from '../components/postTile'
-import { Chart, Chart2 } from '../components/Chart'
 
 // function Login({ me }: { me: QueryResult<QT.me> }) {
 export function Login() {
@@ -94,10 +93,10 @@ export const Feed: React.FC<Props> = () => {
   // const login = me.data ? null : <Login />
   // console.log(typeof me.refetch)
 
-  const after = '1234'
+  const afterId = '1234'
   const more = null
     ? <button onClick={() => fetchMore({
-      variables: { after },
+      variables: { afterId },
       updateQuery: (prev, { fetchMoreResult }) => {
         if (!fetchMoreResult) return prev
         return {

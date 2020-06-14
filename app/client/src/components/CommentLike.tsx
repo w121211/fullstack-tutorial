@@ -5,43 +5,54 @@ import * as QT from '../store/queryTypes'
 
 interface CommentLikeProps {
   commentId: string
+  count: QT.comment_count
   meLike?: QT.commentLike
   createCommentLike: (a: { variables: QT.createCommentLikeVariables }) => void
   updateCommentLike: (a: { variables: QT.updateCommentLikeVariables }) => void
 }
 
-export const CommentLike: React.FC<CommentLikeProps> = ({ commentId, meLike, createCommentLike, updateCommentLike }) => {
+export const CommentLike: React.FC<CommentLikeProps> = ({ commentId, count, meLike, createCommentLike, updateCommentLike }) => {
   let onClick
   let liked = false
   if (meLike && meLike.choice !== QT.LikeChoice.UP) {
-    onClick = (e: any) =>
+    onClick = () =>
       updateCommentLike({ variables: { id: meLike.id, data: { choice: QT.LikeChoice.UP } } })
   } else if (meLike && meLike.choice === QT.LikeChoice.UP) {
-    onClick = (e: any) =>
+    onClick = () =>
       updateCommentLike({ variables: { id: meLike.id, data: { choice: QT.LikeChoice.NEUTRAL } } })
     liked = true
   } else {
-    onClick = (e: any) =>
+    onClick = () =>
       createCommentLike({ variables: { commentId, data: { choice: QT.LikeChoice.UP } } })
   }
-  if (liked) return <LikeFilled onClick={onClick} />
-  else return <LikeOutlined onClick={onClick} />
+
+  return (
+    <span onClick={onClick}>
+      {liked ? <LikeFilled /> : <LikeOutlined />}
+      {count.nUps}
+    </span>
+  )
 }
 
-export const CommentDislike: React.FC<CommentLikeProps> = ({ commentId, meLike, createCommentLike, updateCommentLike }) => {
+export const CommentDislike: React.FC<CommentLikeProps> = ({ commentId, count, meLike, createCommentLike, updateCommentLike }) => {
   let onClick
   let disliked = false
   if (meLike && meLike.choice !== QT.LikeChoice.DOWN) {
-    onClick = (e: any) =>
+    onClick = () =>
       updateCommentLike({ variables: { id: meLike.id, data: { choice: QT.LikeChoice.DOWN } } })
   } else if (meLike && meLike.choice === QT.LikeChoice.DOWN) {
-    onClick = (e: any) =>
+    onClick = () =>
       updateCommentLike({ variables: { id: meLike.id, data: { choice: QT.LikeChoice.NEUTRAL } } })
     disliked = true
   } else {
-    onClick = (e: any) =>
+    onClick = () =>
       createCommentLike({ variables: { commentId, data: { choice: QT.LikeChoice.DOWN } } })
   }
-  if (disliked) return <DislikeFilled onClick={onClick} />
-  else return <DislikeOutlined onClick={onClick} />
+
+  return (
+    <span onClick={onClick}>
+      {disliked ? <DislikeFilled /> : <DislikeOutlined />}
+      {count.nDowns}
+    </span>
+  )
 }

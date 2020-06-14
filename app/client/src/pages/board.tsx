@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 import { RouteComponentProps, Link } from '@reach/router';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { Badge, Button, Card, Divider, Layout, Row, Col, Space, List, Typography, Radio } from 'antd'
-import { CoffeeOutlined, VerticalAlignTopOutlined } from '@ant-design/icons'
+import { Button, Card, Space, List } from 'antd'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 import { PostList } from '../components/postList'
 import { Pane } from '../components/layout'
+import { BarChart, CandleChart } from '../components/charts'
 
 function TrendingList() {
   const [showList, setShowList] = useState<boolean>(false)
-  if (!showList) return <Button
-    type={'primary'}
-    onClick={() => { setShowList(true) }}
-  >trending</Button>
+  if (!showList)
+    return <Button type="primary" onClick={() => { setShowList(true) }}>trending</Button>
 
   return (
     <Card>
@@ -36,42 +34,54 @@ function TrendingList() {
   )
 }
 
-interface Props {
+interface BoardProps {
   me?: QT.me_me
 }
 
-export const Board: React.FC<Props> = ({ me }) => {
+const Board: React.FC<BoardProps> = ({ me }) => {
   return (
-    <Space direction="vertical" style={{ width: "100%" }}>
-      <Link to="/post/new" state={{ fromFeed: true }}>LINK</Link>
+    <>
+      <BarChart />
+      <CandleChart />
 
-      <div />
-      <Space direction="horizontal" size="large">
-        <span><Badge color="blue" dot>#IPO</Badge></span>
-        <span><Badge color="blue" dot>#熱門</Badge></span>
-        <span>#預測</span>
-        <span>#問題</span>
-        <span>@roboCNBC</span>
-        <a>...more</a>
-      </Space>
+      <Space direction="vertical" style={{ width: "100%" }}>
+        {/* <Space direction="horizontal" size="large">
+          <span><Badge color="blue" dot>#IPO</Badge></span>
+          <span><Badge color="blue" dot>#熱門</Badge></span>
+          <span>#預測</span>
+          <span>#問題</span>
+          <span>@roboCNBC</span>
+          <a>...more</a>
+        </Space> */}
 
-      {/* <div style={{ textAlign: "center" }}>
+        {/* <div style={{ textAlign: "center" }}>
                 <TrendingList />
               </div> */}
 
-      <PostList me={me} />
-    </Space>
+        <div />
+        <PostList me={me} />
+      </Space>
+    </>
   )
 }
 
-export function BoardRightPane() {
+interface BoardPageProps extends RouteComponentProps, BoardProps { }
+
+export const BoardPage: React.FC<BoardPageProps> = ({ me }) => {
   return (
-    <Space direction="vertical" style={{ width: "100%" }}>
-      <div />
-      <div style={{ textAlign: "center" }}>
-        <Button type="primary" size="large">New Post</Button>
-      </div>
-    </Space>
+    <Pane
+      left={
+        <Board me={me} />
+      }
+      right={
+        <Space direction="vertical" style={{ width: "100%" }}>
+          <div />
+          <Button type="primary" size="large">
+            <Link to="/submit">Post</Link>
+          </Button>
+        </Space>
+      }
+    />
   )
 }
 

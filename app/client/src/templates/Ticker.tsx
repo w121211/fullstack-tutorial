@@ -2,7 +2,7 @@ import React from 'react'
 import { RouteComponentProps } from "@reach/router"
 import { Radio, Card, Typography, Tag, Divider, Button, Input, Form } from 'antd'
 
-import { Chart } from '../components/Chart'
+import { Chart } from '../components/lightweightChart'
 
 export function Ticker(props: RouteComponentProps) {
   return (

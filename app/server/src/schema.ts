@@ -2,13 +2,12 @@ import gql from 'graphql-tag'
 
 export const typeDefs = gql`
   type Query {
-    latestPosts(after: String): [Post!]!
-    mePosts(afterId: String): [Post!]!
-    _latestPosts(after: String, symbolId: ID): [Post!]!
-    risingPosts(after: String): [Post!]!
-    trendPosts(after: String): [Post!]!
-    symbolPosts(symbolId: ID, after: String): [Post!]!
     post(id: ID!): Post!
+
+    latestPosts(symbolId: ID, afterId: String): [Post!]!
+    repliedPosts(parentId: ID!, afterId: String): [Post!]!
+    risingPosts(afterId: String): [Post!]!
+    trendPosts(afterId: String): [Post!]!
 
     comments(postId: ID!, after: String): [Comment!]!
 
@@ -20,23 +19,25 @@ export const typeDefs = gql`
     commits(symbolId: ID!, after: String): [Commit!]!
     
     me: User!
-    # me: User  # 使用client-cache的情況會有undefined的可能
-    # myPosts: [ID!]!  # 目前post有userId可分辨
-    myPostLikes(after: String): [PostLike!]!
-    myPollVotes(after: String): [PollVote!]!
     # myComments(after: String): [ID!]!
+    myPosts(afterId: String): [Post!]!
+
+    myPollVotes(after: String): [PollVote!]!
+    myPostLikes(after: String): [PostLike!]!
     myCommentLikes(after: String): [CommentLike!]!
+
     myFollows: [Follow!]!
     myCommits(after: String): [ID!]!
     myCommitReviews(after: String): [CommitReview!]!
     # myWaitedCommitReviews: [CommitReview!]!
 
-    fetchPage(url: String!): Page!
     tagHints(term: String): [String!]!
     tickerHints(term: String): [String!]!
     eventHints(term: String): [String!]!
 
     ### upcoming ###
+    fetchPage(url: String!): Page!
+
     # myBets: [Bet!]!
     # myNotices: [Notice!]!
     # mySignals: [Signal]
@@ -52,16 +53,19 @@ export const typeDefs = gql`
 
     createPost(data: PostInput!, parentId: ID): Post!
     updatePost(id: ID!, data: PostInput!): Post!
-    createPostLike(postId: ID!, data: LikeInput!): PostLikeResonse!
-    updatePostLike(id: ID!, data: LikeInput!): PostLikeResonse!
-    createPollVote(pollId: ID!, data: PollVoteInput!): PollVote!
-    # 允許更新postVote？
-    # updatePollVote(pollId: ID!, data: VoteInput!): PollVote!
 
     createComment(postId: ID!, data: CommentInput!): Comment!
     updateComment(id: ID!, data: CommentInput!): Comment!
-    createCommentLike(commentId: ID!, data: LikeInput!): CommentLike!
-    updateCommentLike(id: ID!, data: LikeInput!): CommentLike!
+
+    createPostLike(postId: ID!, data: LikeInput!): PostLikeResonse!
+    updatePostLike(id: ID!, data: LikeInput!): PostLikeResonse!
+
+    createCommentLike(commentId: ID!, data: LikeInput!): CommentLikeResonse!
+    updateCommentLike(id: ID!, data: LikeInput!): CommentLikeResonse!
+
+    createPollVote(pollId: ID!, data: PollVoteInput!): PollVote!
+    # 允許更新postVote？
+    # updatePollVote(pollId: ID!, data: VoteInput!): PollVote!
 
     createCommit(data: CommitInput!): Commit!
     updateCommit(id: ID!, data: CommitInput!): Commit!
@@ -129,7 +133,8 @@ export const typeDefs = gql`
     text: String!
     poll: Poll
     # link: Link
-    symbols: [Symbol!]!
+    # reply-post doesn't need symbols
+    symbols: [Symbol!]
     count: PostCount!
     createdAt: DateTime
     updatedAt: DateTime
@@ -240,6 +245,7 @@ export const typeDefs = gql`
     userId: ID!
     status: PostStatus!
     content: String
+    count: CommentCount!
     createdAt: DateTime!
     updatedAt: DateTime!
   }
@@ -254,7 +260,7 @@ export const typeDefs = gql`
     # nViews: Int!
     nUps: Int!
     nDowns: Int!
-    updatedAt: DateTime!
+    # updatedAt: DateTime!
   }
 
   type CommentLike {
@@ -264,6 +270,12 @@ export const typeDefs = gql`
     createdAt: DateTime!
     updatedAt: DateTime!
   }
+
+  type CommentLikeResonse {
+    like: CommentLike!
+    count: CommentCount!
+  }
+
 
   type Symbol {
     id: ID!

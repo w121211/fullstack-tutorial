@@ -100,8 +100,9 @@ export interface latestPosts_latestPosts {
   status: PostStatus;
   title: string;
   text: string;
+  createdAt: any | null;
   updatedAt: any | null;
-  symbols: latestPosts_latestPosts_symbols[];
+  symbols: latestPosts_latestPosts_symbols[] | null;
   count: latestPosts_latestPosts_count;
   poll: latestPosts_latestPosts_poll | null;
   parent: latestPosts_latestPosts_parent | null;
@@ -113,7 +114,97 @@ export interface latestPosts {
 }
 
 export interface latestPostsVariables {
-  after?: string | null;
+  symbolId?: string | null;
+  afterId?: string | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: repliedPosts
+// ====================================================
+
+export interface repliedPosts_repliedPosts_symbols {
+  __typename: "Symbol";
+  id: string;
+  name: string;
+}
+
+export interface repliedPosts_repliedPosts_count {
+  __typename: "PostCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+  nComments: number;
+  updatedAt: any;
+}
+
+export interface repliedPosts_repliedPosts_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+  nJudgements: (number | null)[] | null;
+  judgeStartedAt: any | null;
+  judgeEndedAt: any | null;
+  verdictValid: boolean | null;
+  verdictChoice: number | null;
+}
+
+export interface repliedPosts_repliedPosts_poll {
+  __typename: "Poll";
+  id: string;
+  status: PollStatus;
+  start: any;
+  end: any;
+  choices: string[];
+  nDays: number;
+  minVotes: number;
+  nDaysJudge: number;
+  minJudgments: number;
+  count: repliedPosts_repliedPosts_poll_count | null;
+}
+
+export interface repliedPosts_repliedPosts_parent {
+  __typename: "PostPeek";
+  id: string;
+  cat: PostCat | null;
+  title: string | null;
+}
+
+export interface repliedPosts_repliedPosts_children {
+  __typename: "PostPeek";
+  id: string;
+  cat: PostCat | null;
+  title: string | null;
+}
+
+export interface repliedPosts_repliedPosts {
+  __typename: "Post";
+  id: string;
+  userId: string;
+  cat: PostCat;
+  status: PostStatus;
+  title: string;
+  text: string;
+  createdAt: any | null;
+  updatedAt: any | null;
+  symbols: repliedPosts_repliedPosts_symbols[] | null;
+  count: repliedPosts_repliedPosts_count;
+  poll: repliedPosts_repliedPosts_poll | null;
+  parent: repliedPosts_repliedPosts_parent | null;
+  children: (repliedPosts_repliedPosts_children | null)[] | null;
+}
+
+export interface repliedPosts {
+  repliedPosts: repliedPosts_repliedPosts[];
+}
+
+export interface repliedPostsVariables {
+  parentId: string;
+  afterId?: string | null;
 }
 
 /* tslint:disable */
@@ -187,8 +278,9 @@ export interface post_post {
   status: PostStatus;
   title: string;
   text: string;
+  createdAt: any | null;
   updatedAt: any | null;
-  symbols: post_post_symbols[];
+  symbols: post_post_symbols[] | null;
   count: post_post_count;
   poll: post_post_poll | null;
   parent: post_post_parent | null;
@@ -212,11 +304,20 @@ export interface postVariables {
 // GraphQL query operation: comments
 // ====================================================
 
+export interface comments_comments_count {
+  __typename: "CommentCount";
+  id: string;
+  nUps: number;
+  nDowns: number;
+}
+
 export interface comments_comments {
   __typename: "Comment";
   id: string;
+  userId: string;
   content: string | null;
   updatedAt: any;
+  count: comments_comments_count;
 }
 
 export interface comments {
@@ -416,8 +517,9 @@ export interface commit_commit_post {
   status: PostStatus;
   title: string;
   text: string;
+  createdAt: any | null;
   updatedAt: any | null;
-  symbols: commit_commit_post_symbols[];
+  symbols: commit_commit_post_symbols[] | null;
   count: commit_commit_post_count;
   poll: commit_commit_post_poll | null;
   parent: commit_commit_post_parent | null;
@@ -642,8 +744,9 @@ export interface createPost_createPost {
   status: PostStatus;
   title: string;
   text: string;
+  createdAt: any | null;
   updatedAt: any | null;
-  symbols: createPost_createPost_symbols[];
+  symbols: createPost_createPost_symbols[] | null;
   count: createPost_createPost_count;
   poll: createPost_createPost_poll | null;
   parent: createPost_createPost_parent | null;
@@ -730,8 +833,9 @@ export interface updatePost_updatePost {
   status: PostStatus;
   title: string;
   text: string;
+  createdAt: any | null;
   updatedAt: any | null;
-  symbols: updatePost_updatePost_symbols[];
+  symbols: updatePost_updatePost_symbols[] | null;
   count: updatePost_updatePost_count;
   poll: updatePost_updatePost_poll | null;
   parent: updatePost_updatePost_parent | null;
@@ -865,11 +969,20 @@ export interface createPollVoteVariables {
 // GraphQL mutation operation: createComment
 // ====================================================
 
+export interface createComment_createComment_count {
+  __typename: "CommentCount";
+  id: string;
+  nUps: number;
+  nDowns: number;
+}
+
 export interface createComment_createComment {
   __typename: "Comment";
   id: string;
+  userId: string;
   content: string | null;
   updatedAt: any;
+  count: createComment_createComment_count;
 }
 
 export interface createComment {
@@ -890,11 +1003,20 @@ export interface createCommentVariables {
 // GraphQL mutation operation: updateComment
 // ====================================================
 
+export interface updateComment_updateComment_count {
+  __typename: "CommentCount";
+  id: string;
+  nUps: number;
+  nDowns: number;
+}
+
 export interface updateComment_updateComment {
   __typename: "Comment";
   id: string;
+  userId: string;
   content: string | null;
   updatedAt: any;
+  count: updateComment_updateComment_count;
 }
 
 export interface updateComment {
@@ -915,12 +1037,25 @@ export interface updateCommentVariables {
 // GraphQL mutation operation: createCommentLike
 // ====================================================
 
-export interface createCommentLike_createCommentLike {
+export interface createCommentLike_createCommentLike_like {
   __typename: "CommentLike";
   id: string;
   commentId: string;
   choice: LikeChoice;
   updatedAt: any;
+}
+
+export interface createCommentLike_createCommentLike_count {
+  __typename: "CommentCount";
+  id: string;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface createCommentLike_createCommentLike {
+  __typename: "CommentLikeResonse";
+  like: createCommentLike_createCommentLike_like;
+  count: createCommentLike_createCommentLike_count;
 }
 
 export interface createCommentLike {
@@ -941,12 +1076,25 @@ export interface createCommentLikeVariables {
 // GraphQL mutation operation: updateCommentLike
 // ====================================================
 
-export interface updateCommentLike_updateCommentLike {
+export interface updateCommentLike_updateCommentLike_like {
   __typename: "CommentLike";
   id: string;
   commentId: string;
   choice: LikeChoice;
   updatedAt: any;
+}
+
+export interface updateCommentLike_updateCommentLike_count {
+  __typename: "CommentCount";
+  id: string;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface updateCommentLike_updateCommentLike {
+  __typename: "CommentLikeResonse";
+  like: updateCommentLike_updateCommentLike_like;
+  count: updateCommentLike_updateCommentLike_count;
 }
 
 export interface updateCommentLike {
@@ -1225,8 +1373,9 @@ export interface postFragment {
   status: PostStatus;
   title: string;
   text: string;
+  createdAt: any | null;
   updatedAt: any | null;
-  symbols: postFragment_symbols[];
+  symbols: postFragment_symbols[] | null;
   count: postFragment_count;
   poll: postFragment_poll | null;
   parent: postFragment_parent | null;
@@ -1255,14 +1404,39 @@ export interface pollVote {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: commentCount
+// ====================================================
+
+export interface commentCount {
+  __typename: "CommentCount";
+  id: string;
+  nUps: number;
+  nDowns: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: comment
 // ====================================================
+
+export interface comment_count {
+  __typename: "CommentCount";
+  id: string;
+  nUps: number;
+  nDowns: number;
+}
 
 export interface comment {
   __typename: "Comment";
   id: string;
+  userId: string;
   content: string | null;
   updatedAt: any;
+  count: comment_count;
 }
 
 /* tslint:disable */
@@ -1390,8 +1564,9 @@ export interface commitDetail_post {
   status: PostStatus;
   title: string;
   text: string;
+  createdAt: any | null;
   updatedAt: any | null;
-  symbols: commitDetail_post_symbols[];
+  symbols: commitDetail_post_symbols[] | null;
   count: commitDetail_post_count;
   poll: commitDetail_post_poll | null;
   parent: commitDetail_post_parent | null;

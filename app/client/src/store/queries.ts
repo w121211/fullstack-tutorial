@@ -29,12 +29,13 @@ export const POST_FRAGMENT = gql`
     status
     title
     text
+    createdAt
     updatedAt
     symbols {
       id
       name
     }
-    count {
+    count { 
       ...postCount
     }
     poll {
@@ -81,18 +82,32 @@ export const POLL_VOTE = gql`
     choice
   }
 `
+export const COMMENT_COUNT = gql`
+  fragment commentCount on CommentCount {
+    __typename
+    id
+    nUps
+    nDowns
+  }
+`
 export const COMMENT = gql`
   fragment comment on Comment {
     __typename
     id
+    userId
     content
     updatedAt
+    count { 
+      ...commentCount
+    }
     # meComment @client
     # meLike @client {
     #   ...commentLike
     # }
   }
+  ${COMMENT_COUNT}
 `
+
 export const COMMENT_LIKE = gql`
   fragment commentLike on CommentLike {
     __typename
@@ -180,15 +195,24 @@ export const ME = gql`
     }
   }
 `
+
 export const LATEST_POSTS = gql`
-  query latestPosts($after: String) {
-    latestPosts(after: $after) {
+  query latestPosts($symbolId: ID,  $afterId: String) {
+    latestPosts(symbolId: $symbolId, afterId: $afterId) {
       ...postFragment
-      id
     }
   }
   ${POST_FRAGMENT}
 `
+export const REPLIED_POSTS = gql`
+  query repliedPosts($parentId: ID!, $afterId: String) {
+    repliedPosts(parentId: $parentId, afterId: $afterId) {
+      ...postFragment
+    }
+  }
+  ${POST_FRAGMENT}
+`
+
 export const POST = gql`
   query post($id: ID!) {
     post(id: $id) {
@@ -385,22 +409,37 @@ export const UPDATE_COMMENT = gql`
   }
   ${COMMENT}
 `
+
 export const CREATE_COMMENT_LIKE = gql`
   mutation createCommentLike($commentId: ID!, $data: LikeInput!) {
     createCommentLike(commentId: $commentId, data: $data) {
-      ...commentLike
+      like {
+        ...commentLike
+      }
+      count {
+        ...commentCount
+      }
     }
   }
   ${COMMENT_LIKE}
+  ${COMMENT_COUNT}
 `
 export const UPDATE_COMMENT_LIKE = gql`
   mutation updateCommentLike($id: ID!, $data: LikeInput!) {
     updateCommentLike(id: $id, data: $data) {
-      ...commentLike
+      like {
+        ...commentLike
+      }
+      count {
+        ...commentCount
+      }
     }
   }
   ${COMMENT_LIKE}
+  ${COMMENT_COUNT}
 `
+
+
 export const CREATE_FOLLOW = gql`
   mutation createFollow($symbolId: ID!, $data: FollowInput!) {
     createFollow(symbolId: $symbolId, data: $data) {

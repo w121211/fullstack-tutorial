@@ -1,5 +1,5 @@
 import React from 'react'
-import { RouteComponentProps, Redirect, Link } from '@reach/router'
+import { RouteComponentProps, Redirect, Link, navigate } from '@reach/router'
 import { useQuery } from '@apollo/react-hooks'
 import { Badge, Button, Card, Radio, Space, List, Typography, Result, Divider } from 'antd'
 import { LinkOutlined, ExportOutlined, SwapLeftOutlined, QuestionCircleOutlined, InfoCircleOutlined, SwapRightOutlined } from '@ant-design/icons'
@@ -7,7 +7,7 @@ import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 import { Pane } from '../components/layout'
 import { PostList } from '../components/postList'
-import { Chart, Chart2 } from '../components/Chart'
+import { Chart, Chart2 } from '../components/lightweightChart'
 
 // %24AADR
 

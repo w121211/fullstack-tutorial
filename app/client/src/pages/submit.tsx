@@ -9,93 +9,10 @@ import { FormInstance } from 'antd/lib/form'
 import { MinusCircleOutlined, PlusOutlined, SwapLeftOutlined } from '@ant-design/icons'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
-// import { Post } from '../components/PostForm'
-import { PageContainer, Pane } from '../components/layout'
+import { Pane } from '../components/layout'
+import { SymbolAutoComplete } from '../components/symbolHint'
 
 dayjs.extend(localizedFormat)
-
-function PopoverSymbol({ symbol, removeSymbol }: { symbol: string, removeSymbol: (a: string) => void }) {
-  const [visible, setVisible] = useState<boolean>(false)
-  return (
-    <Popover
-      content={
-        <>
-          <Button type="link" onClick={() => {
-            removeSymbol(symbol)
-            setVisible(false)
-          }}>
-            刪除
-            </Button>
-        </>
-      }
-      trigger="click"
-      visible={visible}
-      onVisibleChange={(visible) => setVisible(visible)}
-    >
-      <Button type="link">{symbol}</Button>
-    </Popover>
-  )
-}
-
-function SymbolAutoComplete({ form }: { form: FormInstance }) {
-  const [symbols, setSymbols] = useState<string[]>(form.getFieldValue("symbols"))
-  const [value, setValue] = useState<string>("")
-  const [options, setOptions] = useState<{ value: string }[]>([])
-  // const [suggestSymbols, setSuggestSymbols] = useState<string[]>(["#aaa", "#bbb"])
-  const suggestSymbols = ["#aaa", "#bbb"]
-
-  function addSymbol(name: string) {
-    const _symbols = Array.from(new Set(symbols).add(name))
-    setSymbols(_symbols)
-    form.setFields([{ name: "symbols", value: _symbols }])
-  }
-  function removeSymbol(name: string) {
-    const _symbols = symbols.filter(x => x !== name)
-    setSymbols(_symbols)
-    form.setFields([{ name: "symbols", value: _symbols }])
-  }
-  function onSearch(data: string) {
-    if (data.includes("#"))
-      setOptions([{ value: "#aaa" }, { value: "#bbb" }])
-    else if (data.includes("$"))
-      setOptions([{ value: "$123" }, { value: "$456" }])
-    else
-      setOptions([])
-  }
-  function onSelect(data: string) {
-    addSymbol(data)
-    setValue("")
-  }
-  function onChange(data: string) {
-    setValue(data)
-  }
-
-  return (
-    <>
-      {
-        symbols.map((item, i) => <PopoverSymbol key={i} symbol={item} removeSymbol={removeSymbol} />)
-      }
-      <AutoComplete
-        value={value}
-        options={options}
-        style={{ width: 120 }}
-        onSelect={onSelect}
-        onSearch={onSearch}
-        onChange={onChange}
-        placeholder="輸入#, $搜尋"
-      />
-      {/* 建議：
-      {
-        suggestSymbols.map((item, i) => {
-          if (symbols.includes(item))
-            return null
-          return <Button type="link" key={i} onClick={() => { addSymbol(item) }}>{item}</Button>
-        })
-      } */}
-    </>
-  )
-
-}
 
 const layout = {
   labelCol: {
@@ -115,19 +32,19 @@ const layoutWithoutLabel = {
   },
 }
 
-const placeholdersByCat = {
+let placeholdersByCat = {
   [QT.PostCat.POLL]: {
     cat: QT.PostCat.POLL,
-    title: "台達電斥9.65億元 收購加拿大圖控軟體公司Trihedral",
-    text: "電源大廠台達電 (2308-TW) 今 (30) 日宣布，擬透過子公司 Delta Electronics (Netherlands) B.V.，斥約 4500 萬加幣(約新台幣 9.65 億元)，收購加拿大 SCADA 圖控與工業物聯網軟體公司 Trihedral Engineering Limited，深入佈局自動化、人工智能及資料分析等領域。",
-    symbols: ["$AAA", "$BBB"],
+    title: "這是一個預測",
+    text: "這是一個預測這是一個預測這是一個預測這是一個預測這是一個預測這是一個預測這是一個預測這是一個預測這是一個預測",
+    symbols: ["#poll"],
     choices: ["AAA", "BBB", "CCC"],
     nDays: 7,
   },
   [QT.PostCat.ASK]: {
     cat: QT.PostCat.ASK,
-    title: "台達電斥9.65億元 收購加拿大圖控軟體公司Trihedral",
-    text: "電源大廠台達電 (2308-TW) 今 (30) 日宣布，擬透過子公司 Delta Electronics (Netherlands) B.V.，斥約 4500 萬加幣(約新台幣 9.65 億元)，收購加拿大 SCADA 圖控與工業物聯網軟體公司 Trihedral Engineering Limited，深入佈局自動化、人工智能及資料分析等領域。",
+    title: "這是一個問題",
+    text: "這是一個問題這是一個問題這是一個問題這是一個問題這是一個問題這是一個問題這是一個問題這是一個問題",
     symbols: ["#ask"],
     choices: [],
   },
@@ -135,8 +52,14 @@ const placeholdersByCat = {
     cat: QT.PostCat.IDEA,
     title: "台達電斥9.65億元 收購加拿大圖控軟體公司Trihedral",
     text: "主文從第這裏開始...",
-    symbols: ["$AAA", "$BBB"],
+    symbols: ["#idea"],
     choices: [],
+  },
+  [QT.PostCat.REPLY]: {
+    cat: QT.PostCat.REPLY,
+    title: "Reply: 〈友訊經營權之爭〉股東常會確定不延期 公司派決議維持6/15召開",
+    text: "主文從第這裏開始...Reply: 〈友訊經營權之爭〉股東常會確定不延期 公司派決議維持6/15召開Reply: 〈友訊經營權之爭〉股東常會確定不延期 公司派決議維持6/15召開Reply: 〈友訊經營權之爭〉股東常會確定不延期 公司派決議維持6/15召開Reply: 〈友訊經營權之爭〉股東常會確定不延期 公司派決議維持6/15召開",
+    symbols: ["#reply"],
   },
   [QT.PostCat.COMMIT]: {
     cat: QT.PostCat.IDEA,
@@ -150,12 +73,6 @@ const placeholdersByCat = {
     text: "主文從第這裏開始...",
     symbols: [],
   },
-  [QT.PostCat.REPLY]: {
-    cat: QT.PostCat.REPLY,
-    title: "Reply: 〈友訊經營權之爭〉股東常會確定不延期 公司派決議維持6/15召開",
-    text: "主文從第這裏開始...",
-    symbols: ["#reply"],
-  },
 }
 
 interface PostFormProps {
@@ -167,8 +84,8 @@ const PostForm: React.FC<PostFormProps> = ({ form, parent }) => {
   const [createPost] = useMutation<QT.createPost, QT.createPostVariables>(
     queries.CREATE_POST, {
     update(cache, { data }) {
-      console.log(typeof data?.createPost.poll?.start)
-      console.log(data?.createPost)
+      // console.log(typeof data?.createPost.poll?.start)
+      // console.log(data?.createPost)
       try {
         const res = cache.readQuery<QT.latestPosts>({ query: queries.LATEST_POSTS })
         if (data?.createPost && res?.latestPosts) {
@@ -178,22 +95,23 @@ const PostForm: React.FC<PostFormProps> = ({ form, parent }) => {
               latestPosts: res.latestPosts.concat([data.createPost]),
             },
           })
-          // setCount(data.createPostLike.count)
         }
       } catch (e) {
         if (e instanceof InvariantError) { }
-        else {
-          console.error(e)
-        }
+        else { console.error(e) }
       }
-      // navigate("/")
+
+      navigate("/")
     },
   })
   const [cat, setCat] = useState<QT.PostCat>(form.getFieldValue("cat") || QT.PostCat.ASK)
 
-  // const isSpin = [QT.PostCat.SPIN_ASK, QT.PostCat.SPIN_IDEA, QT.PostCat.SPIN_POLL].includes(cat)
-  const isSpin = parent !== undefined && QT.PostCat.REPLY !== cat
   const isReply = parent !== undefined && QT.PostCat.REPLY === cat
+  // const isSpin = parent !== undefined && !isReply
+
+  if (isReply && parent) {
+    placeholdersByCat[QT.PostCat.REPLY].title = `Reply: ${parent.title}`
+  }
 
   function onFinish(values: any) {
     console.log('submit', values)
@@ -219,34 +137,6 @@ const PostForm: React.FC<PostFormProps> = ({ form, parent }) => {
     console.log('Failed:', errorInfo);
   }
 
-  let root = null
-  let radio =
-    <>
-      <Radio value={QT.PostCat.ASK}>問題</Radio>
-      <Radio value={QT.PostCat.POLL}>預測</Radio>
-      <Radio value={QT.PostCat.IDEA}>想法</Radio>
-    </>
-
-  if (isReply) {
-    root =
-      <Typography.Paragraph>
-        <b>Reply to</b> <a>{parent?.title}</a>
-      </Typography.Paragraph>
-    radio = <Radio value={QT.PostCat.REPLY} checked>回覆</Radio>
-
-  } else if (isSpin) {
-    root =
-      <Typography.Title level={4}>
-        Spin from <a>{parent?.title}</a>
-      </Typography.Title>
-    radio =
-      <>
-        <Radio value={QT.PostCat.ASK}>問題</Radio>
-        <Radio value={QT.PostCat.POLL}>預測</Radio>
-        <Radio value={QT.PostCat.IDEA}>看法</Radio>
-      </>
-  }
-
 
   return (
     <Form
@@ -267,8 +157,17 @@ const PostForm: React.FC<PostFormProps> = ({ form, parent }) => {
           setCat(e.target.value)
           form.setFieldsValue(placeholdersByCat[e.target.value as QT.PostCat])
         }}>
-          {radio}
-          {/* <Radio value="d">連結</Radio> */}
+          {
+            isReply ?
+              <Radio value={QT.PostCat.REPLY} checked>回覆</Radio>
+              :
+              <>
+                <Radio value={QT.PostCat.ASK}>問題</Radio>
+                <Radio value={QT.PostCat.POLL}>預測</Radio>
+                <Radio value={QT.PostCat.IDEA}>想法</Radio>
+                {/* <Radio value="d">連結</Radio> */}
+              </>
+          }
         </Radio.Group>
       </Form.Item>
 
@@ -280,28 +179,26 @@ const PostForm: React.FC<PostFormProps> = ({ form, parent }) => {
       >
         {
           isReply ?
-            <Input placeholder={placeholdersByCat[cat]["title"]} disabled /> :
-            <Input placeholder={placeholdersByCat[cat]["title"]} />
+            <Input disabled /> :
+            <Input />
         }
-
       </Form.Item>
 
       {
-        cat === QT.PostCat.POLL ?
-          <Form.Item
-            {...layout}
-            label="預測期間"
-            name="nDays"
-            rules={[{ required: true, message: '請選擇預測期間' }]}
-          >
-            <Radio.Group>
-              <Radio value={7}>7日</Radio>
-              <Radio value={14}>14日</Radio>
-              <Radio value={30}>30日</Radio>
-              <Radio value={90}>90日</Radio>
-            </Radio.Group>
-          </Form.Item>
-          : null
+        cat === QT.PostCat.POLL &&
+        <Form.Item
+          {...layout}
+          label="預測期間"
+          name="nDays"
+          rules={[{ required: true, message: '請選擇預測期間' }]}
+        >
+          <Radio.Group>
+            <Radio value={7}>7日</Radio>
+            <Radio value={14}>14日</Radio>
+            <Radio value={30}>30日</Radio>
+            <Radio value={90}>90日</Radio>
+          </Radio.Group>
+        </Form.Item>
       }
 
       <Form.List name="choices">
@@ -361,15 +258,14 @@ const PostForm: React.FC<PostFormProps> = ({ form, parent }) => {
         name="text"
         rules={
           cat !== QT.PostCat.POLL
-            ? [{ required: true, message: '請輸入內文' }]
-            : []
+            ? [{ required: true, message: '請輸入內文' }] : []
         }
       >
         <Input.TextArea rows={3} autoSize={{ minRows: 8 }} />
       </Form.Item>
 
       <Form.Item name="symbols" label="標籤" {...layout}>
-        <SymbolAutoComplete form={form} />
+        <SymbolAutoComplete form={form} cat={cat} />
       </Form.Item>
 
       <Form.Item {...layoutWithoutLabel}>
@@ -387,21 +283,6 @@ interface PreviewProps {
 
 const Preview: React.FC<PreviewProps> = ({ values, parent }) => {
   const [showDetail, setShowDetail] = useState(true)
-
-  // let text
-  // if (showDetail)
-  //   text = values.text
-  // else if (!showDetail && values.cat === QT.PostCat.POLL)
-  //   text = null
-  // else if (!showDetail && (values.text as string).length > 50)
-  //   text = (
-  //     <>
-  //       {`${values.text.substring(0, 50)}...`}
-  //       <Button type="link" onClick={() => { setShowDetail(true) }}>more</Button>
-  //     </>
-  //   )
-  // else
-  //   text = values.text
 
   const start = dayjs().startOf('d')
 
@@ -429,9 +310,12 @@ const Preview: React.FC<PreviewProps> = ({ values, parent }) => {
           parent &&
           <>
             <br />
-            <Typography.Text type="secondary">
-              <SwapLeftOutlined />{parent.title}
-            </Typography.Text>
+            <a href={`/post/${encodeURIComponent(parent.id)}`} target="_blank" rel="noopener noreferrer">
+              <Typography.Text type="secondary">
+                spin from {parent.title}
+                {/* <SwapLeftOutlined />{parent.title} */}
+              </Typography.Text>
+            </a>
           </>
         }
 
@@ -465,7 +349,6 @@ const Preview: React.FC<PreviewProps> = ({ values, parent }) => {
           )
         }
 
-
       </Typography.Paragraph>
 
       {
@@ -473,46 +356,20 @@ const Preview: React.FC<PreviewProps> = ({ values, parent }) => {
         <Typography.Paragraph>{values.text}</Typography.Paragraph>
       }
 
-
     </>
   )
 }
 
 interface PostCreateProps {
   parent?: QT.post_post
+  isReply?: boolean
 }
 
-export const PostCreate: React.FC<PostCreateProps> = ({ parent }) => {
+const PostCreate: React.FC<PostCreateProps> = ({ parent, isReply = false }) => {
   const [form] = Form.useForm()
   const [showForm, setShowForm] = useState<boolean>(true)
 
-  // form.setFields([
-  //   // { name: "cat", value: QT.PostCat.REPLY },
-  // ])
-  // const parent = {
-  //   __typename: "Post",
-  //   id: "7",
-  //   userId: "aaa",
-  //   cat: QT.PostCat.IDEA,
-  //   status: QT.PostStatus.ACTIVE,
-  //   title: "彼女の彼氏に恋したら　セカンドストーリー",
-  //   text: "string;",
-  //   symbols: [],
-  //   count: {
-  //     __typename: "PostCount",
-  //     id: "123",
-  //     nViews: 1,
-  //     nUps: 1,
-  //     nDowns: 1,
-  //     nComments: 1,
-  //     updatedAt: null,
-  //     poll: null,
-  //   },
-  //   updatedAt: null,
-  //   poll: null,
-  //   parent: null,
-  //   children: [],
-  // } as QT.post_post
+  if (parent && isReply) form.setFields([{ name: "cat", value: QT.PostCat.REPLY }])
 
   return (
     <>
@@ -520,13 +377,12 @@ export const PostCreate: React.FC<PostCreateProps> = ({ parent }) => {
         parent &&
         <Typography.Title level={4}>
           <i>
-            {form.getFieldValue("cat") === QT.PostCat.REPLY ? "Reply: " : "Spin: "}
+            {form.getFieldValue("cat") === QT.PostCat.REPLY ? "Reply to: " : "Spin from: "}
             {parent?.title}
           </i>
         </Typography.Title>
       }
 
-      {/* <Typography.Title level={2}><i>新增 Post</i></Typography.Title> */}
       {
         showForm ?
           <div>
@@ -540,39 +396,47 @@ export const PostCreate: React.FC<PostCreateProps> = ({ parent }) => {
           </div>
       }
 
-      {
-        showForm ?
-          <Card style={{ width: "100%" }}>
+      <Card style={{ width: "100%" }}>
+        {
+          showForm ?
             <PostForm form={form} parent={parent} />
-          </Card>
-          :
-          <Card style={{ width: "100%" }}>
+            :
             <Preview values={form.getFieldsValue()} parent={parent} />
-          </Card>
-      }
-
+        }
+      </Card>
     </>
   )
 }
 
-interface PostCreatePageProps {
+interface SubmitPageProps extends RouteComponentProps {
   location?: WindowLocation<{ parent: QT.post_post }>
   isLoggedIn?: boolean
 }
 
-export const PostCreatePage: React.FC<PostCreatePageProps> = ({ location, isLoggedIn = false }) => {
-  const cat = (new URLSearchParams(window.location.search)).get("cat")
-  console.log(location?.state?.parent)
+export const SubmitPage: React.FC<SubmitPageProps> = ({ location, isLoggedIn = false }) => {
+  const params = new URLSearchParams(window.location.search)
+  const reply = params.get("reply")
+  const spin = params.get("spin")
 
-  // if (cat === "reply" && postId)
-  //   return null
-  // if (cat === "reply" && postId)
-  //   return null
+  const { data, loading, error } = useQuery<QT.post, QT.postVariables>(
+    queries.POST, {
+    variables: { id: reply || spin || "" }
+  })
+
+  if (reply) {
+    if (loading) return null
+    if (error) return <p>something goes wrong</p>
+    if (!data) return <p>something goes wrong</p>
+  } else if (spin) {
+    if (loading) return null
+    if (error) return <p>something goes wrong</p>
+    if (!data) return <p>something goes wrong</p>
+  }
 
   return (
     <Layout>
       <Layout.Content>
-        <Pane left={<PostCreate parent={location?.state?.parent} />} right={<div />} />
+        <Pane left={<PostCreate parent={data?.post} isReply={Boolean(reply)} />} />
       </Layout.Content>
       <Layout.Footer />
     </Layout>

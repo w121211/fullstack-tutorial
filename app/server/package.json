@@ -14,7 +14,7 @@
     "studio": "npx prisma studio --experimental",
     "seed": "npx ts-node prisma/seed.ts",
     "gen:schema": "graphql-schema-typescript generate-ts src/schema.gql --output src/schemaTypes.d.ts --typePrefix=''",
-    "cron": "npx ts-node src/models/poll.ts"
+    "cron": "npx ts-node src/cronjobs.ts"
   },
   "dependencies": {
     "@prisma/client": "^2.0.0",
@@ -24,6 +24,7 @@
     "apollo-server": "2.11.0",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.4",
+    "cron": "^1.8.2",
     "dayjs": "^1.8.28",
     "faker": "^4.1.0",
     "graphql": "^14.6.0",
@@ -40,6 +41,7 @@
     "@prisma/cli": "^2.0.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/cookie-parser": "^1.4.2",
+    "@types/cron": "^1.7.2",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/lodash": "^4.14.155",
     "@types/node": "^13.13.12",

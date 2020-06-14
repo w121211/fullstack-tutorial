@@ -1,3 +1,29 @@
+# Release
+
+_pre-alpha_
+
+1. 目標：了解什麼樣的方式可以刺激討論、社群想要的討論機制/與預測間的接合、預測的形式
+ post{ poll, idea, ask, reply, spin }, comment, like, 
+ user-poll{ judge, verdict, cron-notice }, 
+ board,
+ auto-feed{ 有限來源, cron }, auto-event,
+ 有限tickers{auto-poll}, 
+2. 審核入會制, follow, survey, 社群審查, 強化symbol/commit, poll{revote, voted-choice-tick}, username{preserved-names}, profile{ karma, 等級 },
+post{ nViews },
+board-date-divider,
+symbol-hint,
+post-filter{ @me, #symbol },
+post-spin{ },
+chart, symbol-page{ ticker, event },
+post-success-remind
+
+
+3. bet, 相關tags/tickers, 推薦系統, 社群過濾, notices, social-login, lv
+
+alpha
+
+beta
+
 # Todo
 
 * post children/parent -> spin/reply
@@ -9,7 +35,6 @@
   * profile、權限
   * task目標 -> 達成目標後有申請button -> 審核post(=judge poll) -> 通過/否決
 * poll-reward
-* karma
 * chart
 * ticker chart
 * symbol follow/unfollow
@@ -21,22 +46,17 @@
 * survey：user-record -> robo-generator -> post {@roboSurvey post notice} -> fetchMyNotices -> own-feed
 * bet(目標價)
 
-# Release
+# Give&Take、以事實/預測為前提的交流
 
-pre-alpha
-1. post{poll, idea, ask, reply, spin},
- user-poll{judge, verdict, cron-notice, }, 
- @me, @anonymous, 
- comment, like, 
- profile{karma, 等級}, chart?, 
- auto-feed(有限來源), auto-event,
- 有限tickers{auto-poll}, 
-2. 審核入會制, follow, survey, 社群審查, 強化symbol/commit, poll{revote, voted-choice-tick}, username{preserved-names}
-3. bet, 相關tags/tickers, 推薦系統, 社群過濾, notices, social-login
+Give | Take
+---- | -----
+給預測 | 看預測
+??? | 看文
+發文 | ???
+審查 | ???
+評價 | ???
+舉報 | ???
 
-alpha
-
-beta
 
 # Site
 
@@ -130,17 +150,50 @@ __預測/想知道__
 * 公司經營類：看好/看壞、新產品發表、業績發表、公司事件
   * 公司page
 
-
-
-# Action
+# Action, Risk and Reward
 
 原則：cost/risk vs reward 要互相平衡
+user履歷（信用）：lv、收到的likes、karma（比較不重要）、最後登陸時間、領域、rank
+
+karma（行動值）: 1-100，每天最多+-10，原則：鼓勵user做的動作+、不鼓勵做的動作-、user希望做的動作-
+
+lv
+* exp
+* 權限
+  * like limit
+  * follow limit
+
+poll
+* social-forecase
+* machine-forecast
+* 預測正確：增加exp
+
+market-data
+signals
+
+* login: +1p vs -MAX(10, 連續沒login日數)
+* view (click) 
+* like: +1p
+* dislike: -1p
+* comment: +2P
+* vote: +1p
+* judgment: +1p
+* post: +3p
+* report: +1p
+* 看poll: -3p
+* follow
+* unfollow
+
 
 Post
 
-
 Reply vs Comment 
 皆是回應一個post，comment用於「簡易的意見（字數小於n），看到機率低」，reply為「較完整的論述（字數大於n），看到機率高」
+
+__Cost__
+
+__Karma__
+
 
 # Tag
 
@@ -218,8 +271,6 @@ ticker可以包在tag裡嗎？
 
 
 
-
-
 # Robo
 
 ### poll
@@ -289,3 +340,15 @@ Karma不足，需要__Karma才可開啟 *如何增加karma
 # Group
 
 feature to be added
+
+# Stock Analysis
+
+_比較_
+
+_歷史事件_
+
+_財報分析_
+* eps
+* 營收
+* 盈利率
+* 本益比

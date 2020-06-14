@@ -128,7 +128,6 @@ interface ProtectedRouteProps extends RouteComponentProps {
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ as: Component, isLoggedIn, ...rest }) => {
-
   if (isLoggedIn)
     return <>{React.cloneElement(Component, { ...rest })}</>
   return <Redirect from="" to="/login" noThrow />

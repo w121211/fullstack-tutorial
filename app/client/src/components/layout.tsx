@@ -26,7 +26,7 @@ export const PageContainer: React.FC<PageContainerProps> = ({ isLoggedIn, childr
         <div style={{ float: 'right' }}>
           <Space direction="horizontal" size="large">
             <Typography.Text style={{ color: 'white' }}>
-              Karma 47
+              Karma（待開放）
           </Typography.Text>
             {/* <Typography.Text style={{ color: 'white' }}>
               Votes 5/10

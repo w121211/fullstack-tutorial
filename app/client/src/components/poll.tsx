@@ -2,9 +2,7 @@ import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import React, { useState, useEffect } from 'react'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import { MutationResult } from '@apollo/react-common'
 import { Button, Tooltip, Form, Radio, Spin, Input, Typography } from 'antd'
-import { RadioChangeEvent } from 'antd/lib/radio'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 
@@ -75,7 +73,7 @@ const PollVoteForm: React.FC<FormProps> = ({ pollId, choices }) => {
       <Form.Item>
         {loading
           ? <Spin />
-          : <Button shape="round">投票</Button>}
+          : <Button shape="round" htmlType="submit">投票</Button>}
       </Form.Item>
 
       {/* 
@@ -158,7 +156,7 @@ const PollJudgeForm: React.FC<FormProps> = ({ pollId, choices }) => {
       <Form.Item>
         {loading
           ? <Spin />
-          : <Button htmlType="submit" >送出</Button>}
+          : <Button shape="round" htmlType="submit">判定</Button>}
       </Form.Item>
 
     </Form>
@@ -198,12 +196,24 @@ export const PostPoll: React.FC<PostPollProps> = ({ me, toLogin, poll, count, sh
   const meVote = myVotes.data?.myPollVotes.find((x) => x.pollId === poll.id)
 
   function choice(i: number, text: string, count: number) {
+    console.log(meVote)
+
     if (!me) return <Radio key={i} value={i} onClick={toLogin}>{text}</Radio>
-    if (meVote && meVote.choice === i) return <Radio key={i} value={i} checked onClick={() => { setShowDetail(true) }}><b>{text} [{count}]</b></Radio>
-    if (meVote && meVote.choice !== i) return <Radio key={i} onClick={() => { setShowDetail(true) }}>{text} [{count}]</Radio>
+    if (meVote) {
+      if (meVote.choice === i)
+        return (
+          <Radio key={i} value={i} onClick={() => { setShowDetail(true) }} checked>
+            <Typography.Text mark>{text}</Typography.Text>
+          </Radio>
+        )
+      if (meVote && meVote.choice !== i)
+        return <Radio key={i} value={i} onClick={() => { setShowDetail(true) }}>{text}</Radio>
+    }
+    // return <Radio key={i} onClick={() => { setShowDetail(true) }}>{text} [{count}]</Radio>
     // if (showResult) return <Radio key={i} value={i}>{text} [{count}]</Radio>
     return <Radio key={i} value={i} onClick={() => { setShowDetail(true) }}>{text}</Radio>
   }
+
   const choices = (
     <Radio.Group>
       {poll.choices.map((x, i) => choice(i, x, 0))}
@@ -219,65 +229,60 @@ export const PostPoll: React.FC<PostPollProps> = ({ me, toLogin, poll, count, sh
   let main
   if (poll.status === QT.PollStatus.CLOSE_FAIL) {
     main = <>
-      {/* 投票已結束，因{count.verdict?.failedMsg}原因判定為無效投票 */}
-      投票已結束，經...判定為無效投票
-      <Typography.Text type="secondary">你已經投票</Typography.Text>
+      <br />
       {choices}
+      {/* 投票已結束，因{count.verdict?.failedMsg}原因判定為無效投票 */}
+      <Typography.Text type="secondary">你已經投票</Typography.Text>
+      投票已結束，經...判定為無效投票
     </>
 
   } else if (poll.status === QT.PollStatus.CLOSE_SUCCESS && meVote && count.verdictChoice) {
     main = <>
+      <br />
+      {choices}
       投票已結束，你的選擇為：{poll.choices[meVote.choice]}，判定結果為：{poll.choices[count.verdictChoice]}
       {/* 你預測成功，贏過71%的預測者，獲得獎勵： */}
-      {choices}
     </>
 
-  } else if (poll.status === QT.PollStatus.CLOSE_SUCCESS && showResult && count.verdictChoice) {
+  } else if (poll.status === QT.PollStatus.CLOSE_SUCCESS && count.verdictChoice) {
     main = <>
-      投票已結束，判定結果為：{poll.choices[count.verdictChoice]}<br />
-      <Typography.Text type="secondary">你已經投票</Typography.Text>
+      <br />
       {choices}
+      <Typography.Text type="secondary">你已經投票</Typography.Text>
+      投票已結束，判定結果為：{poll.choices[count.verdictChoice]}<br />
     </>
 
   } else if (poll.status === QT.PollStatus.CLOSE_SUCCESS) {
-    main = <>
-      投票已結束
-      <Tooltip title="耗費10點karma">
-        <Button size="small" type="link" onClick={() => { setShowResult(true) }}>查看結果</Button>
-      </Tooltip>
-      <br />
-      {choices}
-    </>
+    main =
+      <>
+        <br />
+        {choices}
+        <Typography.Text type="secondary">投票已結束</Typography.Text>
+        <Button size="small" type="link" onClick={() => { setShowResult(!showResult) }}>查看結果</Button>
+      </>
 
   } else if (poll.status === QT.PollStatus.JUDGE && meJudgment) {
-    main = (
+    main =
       <>
         投票已結束，你被邀請加入評審團，請評斷實際的結果：
         <PollJudgeForm pollId={poll.id} choices={judgeChoices} />
       </>
-    )
 
   } else if (poll.status === QT.PollStatus.JUDGE) {
-    main = <>
-      <br />
-      {choices}
-      <Typography.Text type="secondary">
-        投票已結束，判定結果中
-      </Typography.Text>
-      {meVote || showResult ? null : (
-        <Tooltip title="耗費10點karma">
-          <Button size="small" type="link" onClick={() => { setShowResult(true) }}>查看投票數</Button>
-        </Tooltip>
-      )}
-
-    </>
+    main =
+      <>
+        <br />
+        {choices}
+        <Typography.Text type="secondary">投票已結束，判定結果中</Typography.Text>
+        <Button size="small" type="link" onClick={() => { setShowResult(!showResult) }}>查看投票數</Button>
+      </>
 
   } else if (poll.status === QT.PollStatus.OPEN && meVote) {
     main = <>
       <br />
       {choices}
       <Typography.Text type="secondary">你已經投票</Typography.Text>
-      <Button size="small" type="link" onClick={() => { setShowResult(true) }}>查看投票數</Button>
+      <Button size="small" type="link" onClick={() => { setShowResult(!showResult) }}>查看投票數</Button>
     </>
 
   } else if (poll.status === QT.PollStatus.OPEN && me) {
@@ -294,17 +299,8 @@ export const PostPoll: React.FC<PostPollProps> = ({ me, toLogin, poll, count, sh
   const start = dayjs(poll.start)
   const end = dayjs(poll.end)
 
-  // if (!showDetail) return main
   return (
     <>
-      {/* 
-      半年期預測
-      <ul>
-        <li>結果判定：2020/8/1</li>
-        <li>投票期間：2020/1/1 - 2020/2/1（5個月）</li>
-        <li>判定方式：隨選一組投票人決定</li>
-        <li>當前預測價值：???</li>
-      </ul> */}
       {main}
       {
         showDetail &&
@@ -313,6 +309,11 @@ export const PostPoll: React.FC<PostPollProps> = ({ me, toLogin, poll, count, sh
           <br />投票期間：{start.format('l')} - {end.format('l')}
           <br />判定方式：投票人評審小組
         </Typography.Text>
+      }
+      {
+        showResult &&
+        // <BarChart />
+        <p>chart</p>
       }
     </>
   )
