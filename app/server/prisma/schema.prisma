@@ -284,18 +284,6 @@ model CommitReview {
   @@unique([userId, commitId])
 }
 
-model Tick {
-  id       Int      @default(autoincrement()) @id
-  symbol   Symbol   @relation(fields: [symbolId], references: [id])
-  symbolId Int
-  o Float?
-  h Float?
-  l Float?
-  c Float?
-  v Int?
-  at DateTime
-}
-
 model Bet {
   id        Int      @default(autoincrement()) @id
   user      User     @relation(fields: [userId], references: [id])
@@ -307,6 +295,18 @@ model Bet {
   expiredAt DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Tick {
+  id       Int      @default(autoincrement()) @id
+  symbol   Symbol   @relation(fields: [symbolId], references: [id])
+  symbolId Int
+  o        Float?
+  h        Float?
+  l        Float?
+  c        Float?
+  v        Int?
+  at       DateTime
 }
 
 enum PostCat {

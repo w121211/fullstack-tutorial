@@ -103,7 +103,7 @@ const Event: React.FC<EventProps> = ({ name }) => {
             預期: 半年期，電動車類股
             <ul>
               <li>漲幅優於電動車綜合：$AAA、$BBB<Button type="link">[社群判定]</Button></li>
-              <li>看多<Button type="link">[robo判定]</Button>
+              <li>哪個<Button type="link">[robo判定]</Button>
                 <Radio.Group>
                   <Radio value={1}>同意</Radio>
                   <Radio value={2}>反對</Radio>

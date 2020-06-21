@@ -9,9 +9,10 @@ import { PostThreadPage } from './postThread'
 import { SubmitPage } from './submit'
 import { SymbolPage } from './symbol'
 import { ProtectedRoute, Login, AutoLogin } from './login'
-import { Ticker } from './Ticker'
-import { EventPage } from './Event'
-
+import { Ticker } from './ticker'
+import { EventPage } from './event'
+import { StackPage } from './stack'
+import { StagePage } from './stage'
 
 interface NotFoundProps extends RouteComponentProps { }
 
@@ -52,7 +53,12 @@ export function Pages() {
 
           <Ticker path="ticker" />
 
-          <EventPage path="event/:name" />
+          {/* <EventPage path="event/:name" /> */}
+          <EventPage path="event" />
+
+          <StackPage path="stack" />
+
+          <StagePage path="stage" />
 
           {/* <ProtectedRoute as={Feed} isLoggedIn={isLoggedIn} default /> */}
           {/* <Pane left={<Board me={data?.me} />} right={<BoardRightPane />} default /> */}
