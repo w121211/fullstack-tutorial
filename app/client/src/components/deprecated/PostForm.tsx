@@ -50,10 +50,10 @@ function SymbolSearchForm() {
 }
 
 interface LinkPostProps {
-  page: QT.fetchPage_fetchPage
+  // page: QT.fetchPage_fetchPage
 }
 
-const LinkPostForm: React.FC<LinkPostProps> = ({ page }) => {
+const LinkPostForm: React.FC<LinkPostProps> = () => {
   // const {
   //   createdPost,
   //   suggestTitle,
@@ -122,9 +122,9 @@ const LinkPostForm: React.FC<LinkPostProps> = ({ page }) => {
 }
 
 function FetchPageForm() {
-  const [fetchPage, { data, loading, error }] = useLazyQuery<QT.fetchPage, QT.fetchPageVariables>(
-    queries.FETCH_PAGE,
-  )
+  // const [fetchPage, { data, loading, error }] = useLazyQuery<QT.fetchPage, QT.fetchPageVariables>(
+  //   queries.FETCH_PAGE,
+  // )
   // const { register, handleSubmit, setValue, errors } = useForm({
   //   defaultValues: {
   //     link: "http://some.url"
@@ -135,16 +135,16 @@ function FetchPageForm() {
   //   fetchPage({ variables: { url: data.link } })
   // }
 
-  if (loading) return <p>Loading...</p>
-  if (error) return <p>ERROR: {error.message}</p>
-  if (!data) return <p>Fetch page failed</p>
-  // if (data?.fetchPage.post) return <Link to={`/post/${data.fetchPage.post.id}`}>Post Existed (Redirect)</Link>
-  if (data.fetchPage.createdPostId) return (
-    <p>
-      URL has been created: <Link to={`/post/${data.fetchPage.createdPostId}`}>post</Link>
-    </p>
-  )
-  if (data.fetchPage) return <LinkPostForm page={data.fetchPage} />
+  // if (loading) return <p>Loading...</p>
+  // if (error) return <p>ERROR: {error.message}</p>
+  // if (!data) return <p>Fetch page failed</p>
+  // // if (data?.fetchPage.post) return <Link to={`/post/${data.fetchPage.post.id}`}>Post Existed (Redirect)</Link>
+  // if (data.fetchPage.createdPostId) return (
+  //   <p>
+  //     URL has been created: <Link to={`/post/${data.fetchPage.createdPostId}`}>post</Link>
+  //   </p>
+  // )
+  // if (data.fetchPage) return <LinkPostForm page={data.fetchPage} />
 
   return (<></>
     // <form onSubmit={handleSubmit(onSubmit)}>

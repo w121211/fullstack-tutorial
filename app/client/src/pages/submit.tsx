@@ -33,54 +33,21 @@ const layoutWithoutLabel = {
 }
 
 let placeholdersByCat = {
-  [QT.PostCat.POLL]: {
-    cat: QT.PostCat.POLL,
-    title: "這是一個預測",
-    text: "這是一個預測這是一個預測這是一個預測這是一個預測這是一個預測這是一個預測這是一個預測這是一個預測這是一個預測",
-    symbols: ["#poll"],
-    choices: ["AAA", "BBB", "CCC"],
-    nDays: 7,
-  },
-  [QT.PostCat.ASK]: {
-    cat: QT.PostCat.ASK,
-    title: "這是一個問題",
-    text: "這是一個問題這是一個問題這是一個問題這是一個問題這是一個問題這是一個問題這是一個問題這是一個問題",
-    symbols: ["#ask"],
-    choices: [],
-  },
-  [QT.PostCat.IDEA]: {
-    cat: QT.PostCat.IDEA,
-    title: "台達電斥9.65億元 收購加拿大圖控軟體公司Trihedral",
-    text: "主文從第這裏開始...",
-    symbols: ["#idea"],
-    choices: [],
-  },
   [QT.PostCat.REPLY]: {
     cat: QT.PostCat.REPLY,
     title: "Reply: 〈友訊經營權之爭〉股東常會確定不延期 公司派決議維持6/15召開",
     text: "主文從第這裏開始...Reply: 〈友訊經營權之爭〉股東常會確定不延期 公司派決議維持6/15召開Reply: 〈友訊經營權之爭〉股東常會確定不延期 公司派決議維持6/15召開Reply: 〈友訊經營權之爭〉股東常會確定不延期 公司派決議維持6/15召開Reply: 〈友訊經營權之爭〉股東常會確定不延期 公司派決議維持6/15召開",
     symbols: ["#reply"],
   },
-  [QT.PostCat.COMMIT]: {
-    cat: QT.PostCat.IDEA,
-    title: "這是一個想法",
-    text: "主文從第這裏開始...",
-    symbols: [],
-  },
-  [QT.PostCat.LINK]: {
-    cat: QT.PostCat.IDEA,
-    title: "這是一個想法",
-    text: "主文從第這裏開始...",
-    symbols: [],
-  },
 }
 
 interface PostFormProps {
   form: FormInstance
-  parent?: QT.post_post
+  // parent?: QT.post_post
+  pollId?: String
 }
 
-const PostForm: React.FC<PostFormProps> = ({ form, parent }) => {
+const PostForm: React.FC<PostFormProps> = ({ form, pollId }) => {
   const [createPost] = useMutation<QT.createPost, QT.createPostVariables>(
     queries.CREATE_POST, {
     update(cache, { data }) {
@@ -104,14 +71,14 @@ const PostForm: React.FC<PostFormProps> = ({ form, parent }) => {
       navigate("/")
     },
   })
-  const [cat, setCat] = useState<QT.PostCat>(form.getFieldValue("cat") || QT.PostCat.ASK)
+  const [cat, setCat] = useState<QT.PostCat>(form.getFieldValue("cat") || QT.PostCat.REPLY)
 
-  const isReply = parent !== undefined && QT.PostCat.REPLY === cat
+  // const isReply = parent !== undefined && QT.PostCat.REPLY === cat
   // const isSpin = parent !== undefined && !isReply
 
-  if (isReply && parent) {
-    placeholdersByCat[QT.PostCat.REPLY].title = `Reply: ${parent.title}`
-  }
+  // if (isReply && parent) {
+  //   placeholdersByCat[QT.PostCat.REPLY].title = `Reply: ${parent.title}`
+  // }
 
   function onFinish(values: any) {
     console.log('submit', values)
@@ -120,16 +87,10 @@ const PostForm: React.FC<PostFormProps> = ({ form, parent }) => {
       variables: {
         data: {
           cat: values.cat,
-          title: values.title,
           symbolIds: values.symbols,
           text: values.text,
-          poll: values.cat === QT.PostCat.POLL ?
-            {
-              nDays: values.nDays,
-              choices: values.choices,
-            } : undefined
         },
-        parentId: parent?.id,
+        // pollId: pollId,
       }
     })
   }
@@ -143,7 +104,7 @@ const PostForm: React.FC<PostFormProps> = ({ form, parent }) => {
       form={form}
       name="basic"
       size="small"
-      initialValues={placeholdersByCat[cat]}
+      // initialValues={placeholdersByCat[cat]}
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
     >
@@ -155,19 +116,9 @@ const PostForm: React.FC<PostFormProps> = ({ form, parent }) => {
       >
         <Radio.Group onChange={(e) => {
           setCat(e.target.value)
-          form.setFieldsValue(placeholdersByCat[e.target.value as QT.PostCat])
+          // form.setFieldsValue(placeholdersByCat[e.target.value as QT.PostCat])
         }}>
-          {
-            isReply ?
-              <Radio value={QT.PostCat.REPLY} checked>回覆</Radio>
-              :
-              <>
-                <Radio value={QT.PostCat.ASK}>問題</Radio>
-                <Radio value={QT.PostCat.POLL}>預測</Radio>
-                <Radio value={QT.PostCat.IDEA}>想法</Radio>
-                {/* <Radio value="d">連結</Radio> */}
-              </>
-          }
+
         </Radio.Group>
       </Form.Item>
 
@@ -177,89 +128,13 @@ const PostForm: React.FC<PostFormProps> = ({ form, parent }) => {
         name="title"
         rules={[{ required: true, message: '請輸入標題' }]}
       >
-        {
-          isReply ?
-            <Input disabled /> :
-            <Input />
-        }
+        <Input />
       </Form.Item>
-
-      {
-        cat === QT.PostCat.POLL &&
-        <Form.Item
-          {...layout}
-          label="預測期間"
-          name="nDays"
-          rules={[{ required: true, message: '請選擇預測期間' }]}
-        >
-          <Radio.Group>
-            <Radio value={7}>7日</Radio>
-            <Radio value={14}>14日</Radio>
-            <Radio value={30}>30日</Radio>
-            <Radio value={90}>90日</Radio>
-          </Radio.Group>
-        </Form.Item>
-      }
-
-      <Form.List name="choices">
-        {(fields, { add, remove }) => {
-          if (cat !== QT.PostCat.POLL) return null
-          return (
-            <div>
-              {fields.map((field, index) => (
-                <Form.Item
-                  {...(index === 0 ? layout : layoutWithoutLabel)}
-                  label={index === 0 ? '選項' : ''}
-                  required={true}
-                  key={field.key}
-                >
-                  <Form.Item
-                    {...field}
-                    validateTrigger={['onChange', 'onBlur']}
-                    rules={[
-                      {
-                        required: true,
-                        whitespace: true,
-                        message: "請輸入選項",
-                      },
-                    ]}
-                    noStyle
-                  >
-                    <Input placeholder={`選項${index + 1}`} style={{ width: '60%' }} />
-                  </Form.Item>
-
-                  {fields.length > 2 ? (
-                    <MinusCircleOutlined
-                      style={{ margin: '0 8px' }}
-                      onClick={() => { remove(field.name) }}
-                    />
-                  ) : null}
-                </Form.Item>
-              ))}
-
-              <Form.Item  {...layoutWithoutLabel}>
-                <Button
-                  type="dashed"
-                  onClick={() => { add() }}
-                // style={{ width: '60%' }}
-                >
-                  <PlusOutlined /> 增加選項
-                    </Button>
-              </Form.Item>
-
-            </div>
-          )
-        }}
-      </Form.List>
 
       <Form.Item
         {...layout}
         label="內文"
         name="text"
-        rules={
-          cat !== QT.PostCat.POLL
-            ? [{ required: true, message: '請輸入內文' }] : []
-        }
       >
         <Input.TextArea rows={3} autoSize={{ minRows: 8 }} />
       </Form.Item>
@@ -306,49 +181,6 @@ const Preview: React.FC<PreviewProps> = ({ values, parent }) => {
           </Space>
         }
 
-        {
-          parent &&
-          <>
-            <br />
-            <a href={`/post/${encodeURIComponent(parent.id)}`} target="_blank" rel="noopener noreferrer">
-              <Typography.Text type="secondary">
-                spin from {parent.title}
-                {/* <SwapLeftOutlined />{parent.title} */}
-              </Typography.Text>
-            </a>
-          </>
-        }
-
-        {
-          values.cat === QT.PostCat.POLL && (
-            <>
-              <br />
-              <Radio.Group onChange={() => { setShowDetail(true) }}>
-                {
-                  (values.choices as string[]).map(
-                    (item, i) => <Radio key={i} value={item}>{item}</Radio>
-                  )
-                }
-              </Radio.Group>
-              <Button type="link" onClick={() => { setShowDetail(!showDetail) }}>{values.nDays}日期預測</Button>
-              <Button shape="round">投票</Button>
-
-              {
-                showDetail && (
-                  <>
-                    <Typography.Text type="secondary">
-                      <br />預測日：{start.add(values.nDays || 0, 'd').format('l')} ({values.nDays}日後)
-                      <br />投票期間：{start.format('l')} - {start.add(values.nDays - 1 || 0, 'd').format('l')}
-                      <br />判定方式：投票人評審小組
-                  </Typography.Text>
-                    <br />
-                  </>
-                )
-              }
-            </>
-          )
-        }
-
       </Typography.Paragraph>
 
       {
@@ -374,16 +206,6 @@ const PostCreate: React.FC<PostCreateProps> = ({ parent, isReply = false }) => {
   return (
     <>
       {
-        parent &&
-        <Typography.Title level={4}>
-          <i>
-            {form.getFieldValue("cat") === QT.PostCat.REPLY ? "Reply to: " : "Spin from: "}
-            {parent?.title}
-          </i>
-        </Typography.Title>
-      }
-
-      {
         showForm ?
           <div>
             <Button type="link"><Typography.Text strong>編輯</Typography.Text></Button>
@@ -399,7 +221,7 @@ const PostCreate: React.FC<PostCreateProps> = ({ parent, isReply = false }) => {
       <Card style={{ width: "100%" }}>
         {
           showForm ?
-            <PostForm form={form} parent={parent} />
+            <PostForm form={form} />
             :
             <Preview values={form.getFieldsValue()} parent={parent} />
         }

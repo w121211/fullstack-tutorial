@@ -46,7 +46,7 @@ const PopoverSymbol: React.FC<PopoverSymbolProps> = ({ symbol, removeSymbol }) =
 
 interface SymbolAutoCompleteProps {
   form: FormInstance
-  cat: QT.PostCat
+  cat?: QT.PostCat
 }
 
 export const SymbolAutoComplete: React.FC<SymbolAutoCompleteProps> = ({ form, cat }) => {
@@ -62,13 +62,16 @@ export const SymbolAutoComplete: React.FC<SymbolAutoCompleteProps> = ({ form, ca
   function addSymbol(name: string) {
     const _symbols = Array.from(new Set(symbols).add(name))
     setSymbols(_symbols)
-    form.setFields([{ name: "symbols", value: _symbols }])
+    // form.setFields([{ name: "symbols", value: _symbols }])
+    form.setFieldsValue({ symbols: _symbols })
   }
+
   function removeSymbol(name: string) {
     const _symbols = symbols.filter(x => x !== name)
     setSymbols(_symbols)
-    form.setFields([{ name: "symbols", value: _symbols }])
+    form.setFieldsValue({ symbols: _symbols })
   }
+
   function onSearch(data: string) {
     if (data.includes("#"))
       setOptions(hashSymbols)
@@ -76,11 +79,14 @@ export const SymbolAutoComplete: React.FC<SymbolAutoCompleteProps> = ({ form, ca
       setOptions(dollarSymbols)
     else
       setOptions([])
+    // setOptions([{ value: "沒有找到" }])
   }
+
   function onSelect(data: string) {
     addSymbol(data)
     setValue("")
   }
+
   function onChange(data: string) {
     setValue(data)
   }

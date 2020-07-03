@@ -8,23 +8,28 @@ generator client {
 }
 
 model User {
-  id            String         @default(cuid()) @id
-  email         String         @unique
-  password      String
-  posts         Post[]
-  votes         PollVote[]
-  judgments     PollJudgment[]
-  postLikes     PostLike[]
-  comments      Comment[]
-  commentLikes  CommentLike[]
-  follows       Follow[]
-  commits       Commit[]
-  commitReviews CommitReview[]
-  profile       Profile
-  dailyProfile  DailyProfile
-  bets          Bet[]
-  polls         Poll[]
-  notices       Notice[]
+  id           String        @default(cuid()) @id
+  email        String        @unique
+  password     String
+  profile      Profile
+  dailyProfile DailyProfile
+  openUser     OpenUser?
+  posts        Post[]
+  votes        Vote[]
+  judgments    Judgment[]
+  postLikes    PostLike[]
+  comments     Comment[]
+  commentLikes CommentLike[]
+  follows      Follow[]
+  // commits       Commit[]
+  // commitReviews CommitReview[]
+  bets         Bet[]
+  polls        Poll[]
+  notices      Notice[]
+  Link         Link[]
+  VoteCommit   VoteCommit[]
+  PollLike     PollLike[]
+  Choice       Choice[]
 }
 
 model Profile {
@@ -51,26 +56,72 @@ model DailyProfile {
   updatedAt      DateTime @updatedAt
 }
 
+// entity? dummy? external user? usersymbol?
+// open-user-predictates: get-votes -> polls/posts
+model OpenUser {
+  id          String       @default(cuid()) @id
+  // 自動建立open-user對應的dummy-user
+  user        User         @relation(fields: [userId], references: [id])
+  userId      String
+  links       Link[]
+  follows     Follow[]
+  voteCommits VoteCommit[]
+}
+
+// 等同想法： 1.有自己的predicates 2.二擇一：回應poll或來自link(user為autolink)
+// 1個link只能有1個thought?
+// 要查open-credit時：open-user -> get-open-user（即便一個link有複數個open-users，仍然為這個
+// 1. 擂台：latest-polls: poll{comments} & replies(posts){reply指向一個poll}
+//    1. reply-to-poll 2. reply-to-post 獨立的情況：優點：好找polls、邏輯較為清處；缺點：notice會較為複雜？
+// 2. 情報流：latest-posts-by-feeder
+// link要獨立嗎？ vs post就存粹作為reply？idea？->
+//    1. 在查詢credit時get-thoughts（透過openUser） vs get-links（透過mentionedOpenUsers）
+//    2. poll在看thoughts時，get-thoughts（取得全部相關的) vs get-replies + get-links
+// 若是link的情況，user要是誰？ open-user?
 model Post {
-  id        Int        @default(autoincrement()) @id
-  user      User       @relation(fields: [userId], references: [id])
-  userId    String
-  cat       PostCat    @default(LINK)
-  status    PostStatus @default(ACTIVE)
-  title     String
-  text      String
-  count     PostCount
-  commments Comment[]
-  likes     PostLike[]
-  symbols   Symbol[]   @relation(references: [id])
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  commit    Commit?
-  poll      Poll?
-  parentId  Int?
-  parent    Post?      @relation("ParentChildren", fields: [parentId], references: [id])
-  children  Post[]     @relation("ParentChildren")
-  notices   Notice[]
+  id          Int          @default(autoincrement()) @id
+  cat         PostCat      @default(REPLY)
+  status      PostStatus   @default(ACTIVE)
+  user        User         @relation(fields: [userId], references: [id])
+  userId      String
+  // reply-poll-post
+  poll        Poll?        @relation(fields: [pollId], references: [id])
+  pollId      Int?
+  // link-post
+  link        Link?        @relation(fields: [linkId], references: [id])
+  linkId      Int?
+  // title     String?
+  text        String
+  count       PostCount
+  commments   Comment[]
+  likes       PostLike[]
+  symbols     Symbol[]     @relation(references: [id])
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  notices     Notice[]
+  // Commit      Commit[]
+  votes       Vote[]
+  voteCommits VoteCommit[]
+}
+
+// Ref
+// 分成1.personal-page (facebook, twitter, etc), 2.third-content(news)
+// 一定會有author(open-user)，mentioned-open-users不考慮（因為可用voteCommits來表示）
+model Link {
+  id         Int      @default(autoincrement()) @id
+  // 將link登陸至網站的user
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  // link內容的author
+  openUser   OpenUser @relation(fields: [openUserId], references: [id])
+  openUserId String
+  url        String
+  // 圖片存擋位址 or byte64?
+  snapshot   String
+  // 連結端的文字，用於NLP，不顯示
+  title      String?
+  text       String
+  post       Post
 }
 
 model PostLike {
@@ -98,57 +149,119 @@ model PostCount {
   updatedAt DateTime @updatedAt
 }
 
-model Notice {
-  id        Int          @default(autoincrement()) @id
-  cat       NoticeCat
-  status    NoticeStatus @default(OPEN)
-  user      User         @relation(fields: [userId], references: [id])
-  userId    String
-  post      Post         @relation(fields: [postId], references: [id])
-  postId    Int
-  text      String?
-  nPops     Int          @default(0)
-  expiredAt DateTime
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
-}
-
+// Poll建立後不能修改？或者允許user修改？目前不行
 model Poll {
-  id           Int            @default(autoincrement()) @id
-  user         User           @relation(fields: [userId], references: [id])
+  id           Int        @default(autoincrement()) @id
+  user         User       @relation(fields: [userId], references: [id])
   userId       String
-  post         Post           @relation(fields: [postId], references: [id])
-  postId       Int            @unique
-  status       PollStatus     @default(OPEN)
-  choices      String[]
-  start        DateTime
-  end          DateTime
-  nDays        Int
-  minVotes     Int            @default(30)
-  nDaysJudge   Int            @default(5)
-  minJudgments Int            @default(5)
-  votes        PollVote[]
-  judgments    PollJudgment[]
+  cat          PollCat    @default(FIXED)
+  status       PollStatus @default(OPEN)
+  // choices      String[]
+  choices      Choice[]
+  title        String
+  text         String?
+  start        DateTime   @default(now())
+  end          DateTime   @default(now())
+  nDays        Int        @default(0)
+  minVotes     Int        @default(30)
+  nDaysJudge   Int        @default(5)
+  minJudgments Int        @default(5)
+  symbols      Symbol[]   @relation(references: [id])
+  votes        Vote[]
+  judgments    Judgment[]
   count        PollCount
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  posts        Post[]
+  likes        PollLike[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  RoboPoll     RoboPoll[]
 }
 
-model PollVote {
+model PollCount {
+  id             Int       @default(autoincrement()) @id
+  poll           Poll      @relation(fields: [pollId], references: [id])
+  pollId         Int       @unique
+  nViews         Int       @default(0)
+  nUps           Int       @default(0)
+  nDowns         Int       @default(0)
+  nComments      Int       @default(0)
+  // 依照ＯＯＯ方式排序
+  nVotes         Int[]
+  nJudgments     Int[]
+  judgeStartedAt DateTime?
+  judgeEndedAt   DateTime?
+  verdictValid   Boolean?
+  verdictChoice  Int?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model PollLike {
+  id        Int        @default(autoincrement()) @id
+  user      User       @relation(fields: [userId], references: [id])
+  userId    String
+  poll      Poll       @relation(fields: [pollId], references: [id])
+  pollId    Int
+  choice    LikeChoice
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@unique([userId, pollId])
+}
+
+model Choice {
   id        Int      @default(autoincrement()) @id
   user      User     @relation(fields: [userId], references: [id])
   userId    String
   poll      Poll     @relation(fields: [pollId], references: [id])
   pollId    Int
-  choice    Int
+  text      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  votes     Vote[]
+}
+
+// TODO: 允許重複vote、複選vote
+model Vote {
+  id        Int      @default(autoincrement()) @id
+  // open-user也用對應的user表示，不另外加入open-user
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  poll      Poll     @relation(fields: [pollId], references: [id])
+  pollId    Int
+  choice    Choice   @relation(fields: [choiceId], references: [id])
+  choiceId  Int
+  // 當user發表thought&vote時
+  post      Post?    @relation(fields: [postId], references: [id])
+  postId    Int?
   reward    Float?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@unique([userId, pollId])
+  // OpenUser   OpenUser?    @relation(fields: [openUserId], references: [id])
+  // openUserId String?
+  // 在post中發表vote？as predicate
+  commits VoteCommit[]
 }
 
-model PollJudgment {
+// 讓user幫open-user產生predicates
+// 先不考慮幫reply產生predicates
+model VoteCommit {
+  id         Int      @default(autoincrement()) @id
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  post       Post     @relation(fields: [postId], references: [id])
+  postId     Int
+  openUser   OpenUser @relation(fields: [openUserId], references: [id])
+  openUserId String
+  vote       Vote     @relation(fields: [voteId], references: [id])
+  voteId     Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Judgment {
   id        Int      @default(autoincrement()) @id
   user      User     @relation(fields: [userId], references: [id])
   userId    String
@@ -163,18 +276,6 @@ model PollJudgment {
   @@unique([userId, pollId])
 }
 
-model PollCount {
-  id             Int       @default(autoincrement()) @id
-  poll           Poll      @relation(fields: [pollId], references: [id])
-  pollId         Int       @unique
-  nVotes         Int[]
-  nJudgments     Int[]
-  judgeStartedAt DateTime?
-  judgeEndedAt   DateTime?
-  verdictValid   Boolean?
-  verdictChoice  Int?
-}
-
 model Comment {
   id        Int           @default(autoincrement()) @id
   user      User          @relation(fields: [userId], references: [id])
@@ -187,7 +288,7 @@ model Comment {
   likes     CommentLike[]
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
-  judgment  PollJudgment?
+  judgment  Judgment?
 }
 
 model CommentCount {
@@ -214,6 +315,22 @@ model CommentLike {
   @@unique([userId, commentId])
 }
 
+// 用於通知post、poll狀態更新
+model Notice {
+  id        Int          @default(autoincrement()) @id
+  cat       NoticeCat
+  status    NoticeStatus @default(OPEN)
+  user      User         @relation(fields: [userId], references: [id])
+  userId    String
+  post      Post         @relation(fields: [postId], references: [id])
+  postId    Int
+  text      String?
+  nPops     Int          @default(0)
+  expiredAt DateTime
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
 model Symbol {
   id        Int          @default(autoincrement()) @id
   name      String       @unique
@@ -222,12 +339,22 @@ model Symbol {
   body      String?
   sys       String?
   posts     Post[]       @relation(references: [id])
-  commits   Commit[]
+  polls     Poll[]       @relation(references: [id])
+  // commits   Commit[]
   ticks     Tick[]
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
   follows   Follow[]
   bets      Bet[]
+  roboPolls RoboPoll[]
+}
+
+model RoboPoll {
+  id       Int    @default(autoincrement()) @id
+  symbol   Symbol @relation(fields: [symbolId], references: [id])
+  symbolId Int
+  poll     Poll   @relation(fields: [pollId], references: [id])
+  pollId   Int
 }
 
 model Follow {
@@ -241,24 +368,26 @@ model Follow {
   updatedAt DateTime @updatedAt
 
   @@unique([userId, symbolId])
+  OpenUser   OpenUser? @relation(fields: [openUserId], references: [id])
+  openUserId String?
 }
 
-model Commit {
-  id        Int            @default(autoincrement()) @id
-  user      User           @relation(fields: [userId], references: [id])
-  userId    String
-  symbol    Symbol         @relation(fields: [symbolId], references: [id])
-  symbolId  Int
-  post      Post           @relation(fields: [postId], references: [id])
-  postId    Int
-  status    CommitStatus   @default(REVIEW)
-  action    CommitAction
-  body      String
-  // count     CommitCount
-  reviews   CommitReview[]
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
-}
+// model Commit {
+//   id        Int            @default(autoincrement()) @id
+//   user      User           @relation(fields: [userId], references: [id])
+//   userId    String
+//   symbol    Symbol         @relation(fields: [symbolId], references: [id])
+//   symbolId  Int
+//   post      Post           @relation(fields: [postId], references: [id])
+//   postId    Int
+//   status    CommitStatus   @default(REVIEW)
+//   action    CommitAction
+//   body      String
+//   // count     CommitCount
+//   reviews   CommitReview[]
+//   createdAt DateTime       @default(now())
+//   updatedAt DateTime       @updatedAt
+// }
 
 // model CommitCount {
 // id         Int      @default(autoincrement()) @id
@@ -271,18 +400,18 @@ model Commit {
 // updatedAt  DateTime @updatedAt
 // }
 
-model CommitReview {
-  id        Int      @default(autoincrement()) @id
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  commit    Commit   @relation(fields: [commitId], references: [id])
-  commitId  Int
-  choice    Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// model CommitReview {
+//   id        Int      @default(autoincrement()) @id
+//   user      User     @relation(fields: [userId], references: [id])
+//   userId    String
+//   commit    Commit   @relation(fields: [commitId], references: [id])
+//   commitId  Int
+//   choice    Int
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
 
-  @@unique([userId, commitId])
-}
+//   @@unique([userId, commitId])
+// }
 
 model Bet {
   id        Int      @default(autoincrement()) @id
@@ -310,11 +439,7 @@ model Tick {
 }
 
 enum PostCat {
-  IDEA
-  ASK
-  POLL
   LINK
-  COMMIT
   REPLY
 }
 
@@ -326,6 +451,15 @@ enum PostStatus {
   DELETED
   REPORTED
   ARCHIVED
+}
+
+enum PollCat {
+  // 固定的選項
+  FIXED
+  // 可以簡易新增選項
+  ADD
+  // 需要reply才能新增選項
+  ADD_BY_POST
 }
 
 enum PollStatus {

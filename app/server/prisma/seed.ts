@@ -2,10 +2,19 @@ import { readFileSync } from 'fs'
 import { hash } from 'bcryptjs'
 import dayjs from 'dayjs'
 import * as PC from '@prisma/client'
+import { connect } from 'http2'
+
+const ROBO = { email: "robo@robo.com", password: "robo" }
+
+const ROBOPOLL_SCHEMA = [
+  { index: 1, title: "", text: "", choices: "".split(","), },
+  { index: 2, title: "", text: "", choices: "".split(","), },
+]
 
 const USERS = [
   { email: 'aaa@aaa.com', password: 'aaa', },
   { email: 'bbb@bbb.com', password: 'bbb', },
+  { email: 'ccc@ccc.com', password: 'ccc', },
 ]
 
 const SYMBOLS = [
@@ -14,6 +23,8 @@ const SYMBOLS = [
   { name: "#idea", cat: PC.SymbolCat.TAG },
   { name: "#poll", cat: PC.SymbolCat.TAG },
   { name: "#link", cat: PC.SymbolCat.TAG },
+  { name: "$aaa", cat: PC.SymbolCat.TAG },
+  { name: "$bbb", cat: PC.SymbolCat.TAG },
 ]
 
 const _count = {
@@ -23,124 +34,40 @@ const _count = {
   nComments: 21,
 }
 
-const POSTS = [
+const POLLS = [
   {
-    cat: PC.PostCat.IDEA,
-    title: "狂印錢的未來",
-    symbols: ["#idea"],
-    count: _count,
-    text: "狂印錢的未來狂印錢的未來狂印錢的未來狂印錢的未來狂印錢的未來狂印錢的未來狂印錢的未來"
-  },
-  {
-    cat: PC.PostCat.LINK,
-    title: "某篇新聞報導連結",
-    symbols: ["#link"],
-    // link: {
-    //   url: "http://url.com",
-    //   domain: "some domain",
-    //   published_at: "2001-01-01 03:50",
-    // }
-    count: _count
-  },
-  {
-    cat: PC.PostCat.ASK,
-    title: "油價大跌，有哪些股票可以趁機買入？",
-    symbols: ["#ask"],
-    count: _count,
-    text: "油價大跌，有哪些股票可以趁機買入？油價大跌，有哪些股票可以趁機買入？油價大跌，有哪些股票可以趁機買入？油價大跌，有哪些股票可以趁機買入？油價大跌，有哪些股票可以趁機買入？"
-  },
-  {
-    cat: PC.PostCat.POLL,
-    status: PC.PostStatus.LOCK,
-    title: "Luckin Coffee會下市嗎？",
-    symbols: ["#poll"],
-    poll: {
-      status: PC.PollStatus.OPEN,
-      start: new Date(200, 1, 1),
-      end: new Date(2000, 2, 1),
-      choices: ["choice a", "choice b", "choice c"],
-      // forecastNDays: 30,
-      // minVotes: 100, // 最低門檻
-      // judgeMinVotes: 10,
-      // judgeNDays: 5, // 審查期間
-      votes: [
-        { userId: USERS[0].email, choice: 1 },
-        { userId: USERS[1].email, choice: 2 },
-      ],
-      count: {
-        nVotes: [10, 29, 38],
-        judge: undefined,
-        verdict: undefined, // undefined for not judged
-        // reports: [  { createdAt: new Date(2000, 1, 1) }],
-      },
+    cat: PC.PollCat.FIXED,
+    title: "狂印前的未來",
+    text: "狂印錢的未來狂印錢的未來狂印錢的未來狂印錢的未來狂印錢的未來狂印錢的未來狂印錢的未來",
+    user: { connect: { email: USERS[0].email } },
+    choices: {
+      create: [
+        { user: { connect: { email: USERS[0].email } }, text: "選項1" },
+        { user: { connect: { email: USERS[0].email } }, text: "選項2" },
+        { user: { connect: { email: USERS[0].email } }, text: "選項3" },
+      ]
     },
-    count: { ..._count }
+    count: { create: {} }
   },
   {
-    cat: PC.PostCat.POLL,
-    status: PC.PostStatus.LOCK,
-    title: "Luckin Coffee會下市嗎？",
-    symbols: ["#poll"],
-    poll: {
-      status: PC.PollStatus.JUDGE,
-      start: new Date(200, 1, 1),
-      end: new Date(2000, 2, 1),
-      choices: ["choice a", "choice b", "choice c"],
-      nDays: 7,
-      minVotes: 30,
-      nDaysJudge: 5,
-      minJudgements: 5,
-      votes: [
-        { userId: USERS[0].email, choice: 1, comment: { body: "連結[aaa.com]", status: PC.PostStatus.LOCK } },
-        { userId: USERS[1].email, choice: 2, comment: { body: "連結[aaa.com]", status: PC.PostStatus.LOCK } },
-      ],
-      judgments: [
-        { userId: USERS[0].email, choice: 1 },
-        { userId: USERS[1].email, choice: 2 },
-      ],
-      count: {
-        nVotes: [10, 29, 38],
-        nJudgments: [10, 29, 38, 1], // [choice1, choice2, ..., nAbandoned]
-        judgeStartedAt: new Date(2000, 1, 1),
-        judgeEndedAt: undefined,
-        verdictValid: undefined,
-        verdictChoice: undefined,
-      }
-    },
-    count: { ..._count },
-    notice: {
-      cat: PC.NoticeCat.POLL_INVITE_JUDGE,
-      text: "",
-      expiredAt: new Date(2021, 1, 1)
-    }
+    cat: PC.PollCat.ADD,
+    title: "退休存股該買哪些股票？",
+    user: { connect: { email: USERS[1].email } },
+    count: { create: {} }
   },
   {
-    title: "3月21日是這次股市崩盤的最低點了嗎？",
-    cat: PC.PostCat.POLL,
-    status: PC.PostStatus.LOCK,
-    symbols: ["#poll"],
-    text: "",
-    count: { ..._count, },
-    poll: {
-      status: PC.PollStatus.CLOSE_SUCCESS,
-      start: new Date(200, 1, 1),
-      end: new Date(2000, 2, 1),
-      choices: ["choice a", "choice b", "choice c"],
-      minVotes: 100, // 最低門檻
-      judgeMinVotes: 10,
-      judgeNDays: 5, // in days
-      votes: [],
-      count: {
-        nVotes: [10, 29, 38],
-        nJudgments: [10, 29, 38, 1], // [choice1, choice2, ..., nAbandoned]
-        judgeStartedAt: new Date(2000, 1, 1),
-        judgeEndedAt: new Date(2000, 1, 2),
-        verdictValid: true,
-        verdictChoice: 2,
-      }
-    },
+    cat: PC.PollCat.ADD_BY_POST,
+    title: "退休存股該買哪些股票？(add by post)",
+    user: { connect: { email: USERS[2].email } },
+    count: { create: {} }
   }
 ]
+
+// const ADD_CHOICES = [
+//   { id: 1, user: { connect: { email: USERS[0].email } }, text: "選項1" },
+// ]
+
+
 
 const prisma = new PC.PrismaClient({
   errorFormat: "pretty",
@@ -151,8 +78,6 @@ async function main() {
   console.log('seeding')
 
   await prisma.executeRaw('TRUNCATE "User", "Symbol" CASCADE;')
-
-  // create a user, ie signup
 
   for (let d of USERS) {
     const hashedPassword = await hash(d.password, 10)
@@ -166,116 +91,52 @@ async function main() {
     })
   }
 
-  for (let d of SYMBOLS) {
-    await prisma.symbol.create({
-      data: {
-        name: d.name,
-        cat: d.cat,
-      }
-    })
-  }
+  const symbols = await Promise.all(SYMBOLS.map(
+    e => prisma.symbol.create({ data: e })))
+  // console.log(symbols)
 
-  for (let d of POSTS) {
-    const _post = await prisma.post.create({
-      data: {
-        cat: d.cat,
-        status: d.status,
-        title: d.title,
-        text: d?.text || "",
-        user: { connect: { email: USERS[0].email } },
-        count: {
-          create: {
-            nViews: d.count.nViews,
-            nUps: d.count.nUps,
-            nDowns: d.count.nDowns,
-            nComments: d.count.nComments,
+  const polls = await Promise.all(POLLS.map(
+    e => prisma.poll.create({ data: e, include: { choices: true } })))
+
+  const POSTS = [
+    {
+      user: { connect: { email: USERS[0].email } },
+      cat: PC.PostCat.REPLY,
+      text: "這是回覆1這是回覆1這是回覆1這是回覆1這是回覆1這是回覆1這是回覆1",
+      symbols: { connect: [{ name: "$aaa" }] },
+      poll: { connect: { id: polls[0].id } },
+      votes: {
+        create: [
+          {
+            user: { connect: { email: USERS[0].email } },
+            poll: { connect: { id: polls[0].id } },
+            choice: { connect: { id: polls[0].choices[0].id } },
           }
-        },
-        symbols: {
-          connect: d.symbols.map(e => ({ name: e }))
-        }
-      }
-    })
-
-    if (d.poll) {
-      const _poll = await prisma.poll.create({
-        data: {
-          status: d.poll.status,
-          start: d.poll.start,
-          end: d.poll.end,
-          choices: { set: d.poll.choices },
-          nDays: 1,
-          user: { connect: { email: USERS[0].email } },
-          post: { connect: { id: _post.id } },
-          count: { create: {} }
-        }
-      })
-
-      for (let v of d.poll.votes) {
-        prisma.pollVote.create({
-          data: {
-            choice: v.choice,
-            user: { connect: { id: v.userId } },
-            poll: { connect: { id: _poll.id } },
-          }
-        })
-      }
-
-      for (let j of d.poll.judgments || []) {
-        prisma.pollJudgment.create({
-          data: {
-            choice: j.choice,
-            user: { connect: { id: j.userId } },
-            poll: { connect: { id: _poll.id } },
-            comment: {
-              create: {
-                content: "judgment comment",
-                user: { connect: { id: j.userId } },
-                post: { connect: { id: _post.id } },
-                count: { create: {} }
-              }
-            },
-          }
-        })
-      }
-
-    }
-
-    if (d.notice) {
-      await prisma.notice.create({
-        data: {
-          cat: d.notice.cat,
-          expiredAt: d.notice.expiredAt,
-          user: { connect: { email: USERS[0].email } },
-          post: { connect: { id: _post.id } }
-        }
-      })
-    }
-  }
-
-  const posts = await prisma.post.findMany({
-    take: 30,
-    where: {
-      createdAt: { gte: dayjs().startOf("d").subtract(7, "d").toDate() },
-      // symbols: { some: { name: undefined } }
-      symbols: { some: { name: "#link" } }
-    },
-    orderBy: { createdAt: "desc" },
-    include: {
-      symbols: true,
-      count: true,
-      poll: { include: { count: true } },
-      parent: {
-        select: { id: true, cat: true, title: true }
+        ]
       },
-      children: {
-        select: { id: true, cat: true, title: true }
-      }
+      count: { create: {} },
     },
-    // cursor: { id: afterId }
-  })
+    {
+      user: { connect: { email: USERS[1].email } },
+      cat: PC.PostCat.REPLY,
+      text: "這是回覆2這是回覆2這是回覆2這是回覆2這是回覆2這是回覆2這是回覆2",
+      symbols: { connect: [{ name: "$bbb" }] },
+      poll: { connect: { id: polls[0].id } },
+      votes: {
+        create: [
+          {
+            user: { connect: { email: USERS[1].email } },
+            poll: { connect: { id: polls[0].id } },
+            choice: { connect: { id: polls[0].choices[1].id } },
+          }
+        ]
+      },
+      count: { create: {} },
+    }
+  ]
 
-  console.log(posts)
+  const posts = await Promise.all(POSTS.map(
+    e => prisma.post.create({ data: e })))
 }
 
 main()

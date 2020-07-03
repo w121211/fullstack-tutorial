@@ -1,21 +1,32 @@
 import React from 'react'
 import { RouteComponentProps } from '@reach/router'
 import { useQuery } from '@apollo/react-hooks'
-import { Badge, Button, Card, Descriptions, Radio, Space, List, Typography, Input } from 'antd'
+import { Badge, Button, Card, Descriptions, Radio, Space, List, Typography, Result, Divider } from 'antd'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 import { Pane } from '../components/layout'
-import { PollList } from '../components/pollList'
+import { LineChart } from '../components/charts'
 
-interface StageProps {
-  me?: QT.me_me
+interface EventProps {
+  name: string
 }
 
-const Stage: React.FC<StageProps> = ({me}) => {
-  return (
-    <>
-      <PollList me={me}/>
+const Event: React.FC<EventProps> = ({ name }) => {
+  // const header = <h1>{getSymbol.data?.symbol.name}</h1>
+  // const status = <p>{getSymbol.data?.symbol.status}</p>
+  // const chart = null
 
+  const morePosts = null
+  const commits = null
+  const createCommit = null
+  const parentEvent = null
+  const tickers = ["$$風電"]
+  const tags = []
+  const synonyms = []  // resolve
+
+
+  const demo = (
+    <>
       <Space direction="vertical" style={{ width: "100%" }}>
         <Typography>
           <Typography.Title level={2}>
@@ -40,11 +51,7 @@ const Stage: React.FC<StageProps> = ({me}) => {
 
         <Card>
           // user建立的poll，fixed-choices<br />
-          [新] 2020-2021年房價會大跌嗎？ 
-          <Radio>會</Radio>
-          <Radio>不會</Radio>
-          <Input placeholder={"你的意見（可留空）"}/>
-          <br />
+          [新] 2020-2021年房價會大跌嗎？ [會] [不會]<br />
           #房價<br />
           <div style={{textAlign: "right"}}>@anonymous 12:31 [up] [down] [comments] [replies?] [給author的特別功能]</div>
           -------------<br />
@@ -72,36 +79,6 @@ const Stage: React.FC<StageProps> = ({me}) => {
             總之是一些回覆總之是一些回覆總之是一些回覆總之是一些回覆總之是一些回覆
             <div style={{textAlign: "right"}}>@anonymous 12:31 [up] [down] [comments]</div>
           </Card>
-          <Card>
-            [會] <br />
-            總之是一些回覆總之是一些回覆總之是一些回覆總之是一些回覆總之是一些回覆
-            <div style={{textAlign: "right"}}>@anonymous 12:31 [up] [down] [comments]</div>
-          </Card>
-          <Card>
-            [會] <br />
-            總之是一些回覆總之是一些回覆總之是一些回覆總之是一些回覆總之是一些回覆
-            <div style={{textAlign: "right"}}>@anonymous 12:31 [up] [down] [comments]</div>
-          </Card>
-          <Card>
-            [會] <br />
-            總之是一些回覆總之是一些回覆總之是一些回覆總之是一些回覆總之是一些回覆
-            <div style={{textAlign: "right"}}>@anonymous 12:31 [up] [down] [comments]</div>
-          </Card>
-          <Card>
-            [會] <br />
-            總之是一些回覆總之是一些回覆總之是一些回覆總之是一些回覆總之是一些回覆
-            <div style={{textAlign: "right"}}>@anonymous 12:31 [up] [down] [comments]</div>
-          </Card>
-          <Card>
-            [會] <br />
-            總之是一些回覆總之是一些回覆總之是一些回覆總之是一些回覆總之是一些回覆
-            <div style={{textAlign: "right"}}>@anonymous 12:31 [up] [down] [comments]</div>
-          </Card>
-          <Card>
-            [會] <br />
-            總之是一些回覆總之是一些回覆總之是一些回覆總之是一些回覆總之是一些回覆
-            <div style={{textAlign: "right"}}>@anonymous 12:31 [up] [down] [comments]</div>
-          </Card>
         </Card>
 
         <Card>
@@ -122,7 +99,8 @@ const Stage: React.FC<StageProps> = ({me}) => {
           #站方 <br />
           <div style={{textAlign: "right"}}>@webmaster 12:31 [up] [down] [comments] [replies?]</div>
           ------最新想法-----<br />
-          [#AAA] [#BBB] [#CCC] [回答] [查看完整]
+          [#AAA] [#BBB] [#CCC]<br />
+          [回答] [查看完整]
         </Card>
 
         <Card>
@@ -196,18 +174,16 @@ const Stage: React.FC<StageProps> = ({me}) => {
         </Card>
 
         <Card>
-          [共筆]某篇文章、某個影片<br />
+          某篇文章、某個影片<br />
           重點（社群整理）：<br />
           1. <br />
           2. <br />
           3. <br />
           <br />
-          討論 / comments
+          討論 / comments222.252.62.63
         </Card>
 
-        <Card>
-          票選本日頭條<br />
-        </Card>
+
 
         <Card>
           航空業的復甦時間？（載客量回到歷年水準） []2020年6-9月 []2020年9-12月 []2021年1-3月 []2021年4-6月<br />
@@ -224,17 +200,14 @@ const Stage: React.FC<StageProps> = ({me}) => {
 
         <Card>
           [新]iPhone12將有助蘋果($AAPL)股價持續攀升 []同意 []不同意 <br />
+          
         </Card>
+
 
       </Space>
     </>
   )
-}
 
-
-interface Props extends RouteComponentProps, StageProps {}
-
-export const StagePage: React.FC<Props> = ({ me }) => {
   const demoRight =
     <Space direction="vertical" style={{ width: "100%" }}>
       <div />
@@ -256,5 +229,17 @@ export const StagePage: React.FC<Props> = ({ me }) => {
       </Card> */}
     </Space>
 
-  return <Pane left={<Stage me={me} />} right={demoRight} />
+  return (
+    <Pane left={demo} right={demoRight} />
+  )
+}
+
+
+interface Props extends RouteComponentProps {
+  name?: string
+}
+
+export const StagePage: React.FC<Props> = ({ name = "#event#" }) => {
+  // if (name === undefined) return <Event name="404" />
+  return <Event name={name} />
 }

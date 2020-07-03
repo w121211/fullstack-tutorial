@@ -5,7 +5,7 @@ import { Card, Typography, Form, Button, Input, Space, List } from 'antd'
 
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
-import { CommentLike, CommentDislike } from './commentLike'
+import { CommentLike, CommentDislike } from './likes'
 
 const N_COMMENTS_TAKEN = 20
 

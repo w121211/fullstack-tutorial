@@ -5,7 +5,7 @@ import { Link } from '@reach/router'
 import { Spin, Button, Space, Typography, } from 'antd'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
-import { Post } from './postTile'
+import { Post } from './tile'
 
 interface PostListProps {
   me?: QT.me_me

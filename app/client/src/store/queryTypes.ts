@@ -54,42 +54,15 @@ export interface latestPosts_latestPosts_count {
   updatedAt: any;
 }
 
-export interface latestPosts_latestPosts_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-  nJudgements: (number | null)[] | null;
-  judgeStartedAt: any | null;
-  judgeEndedAt: any | null;
-  verdictValid: boolean | null;
-  verdictChoice: number | null;
-}
-
-export interface latestPosts_latestPosts_poll {
-  __typename: "Poll";
+export interface latestPosts_latestPosts_votes {
+  __typename: "Vote";
   id: string;
-  status: PollStatus;
-  start: any;
-  end: any;
-  choices: string[];
-  nDays: number;
-  minVotes: number;
-  nDaysJudge: number;
-  minJudgments: number;
-  count: latestPosts_latestPosts_poll_count | null;
-}
-
-export interface latestPosts_latestPosts_parent {
-  __typename: "PostPeek";
-  id: string;
-  cat: PostCat | null;
-  title: string | null;
-}
-
-export interface latestPosts_latestPosts_children {
-  __typename: "PostPeek";
-  id: string;
-  cat: PostCat | null;
-  title: string | null;
+  pollId: string;
+  choiceId: string;
+  postId: string | null;
+  reward: number | null;
+  createdAt: any;
+  updatedAt: any;
 }
 
 export interface latestPosts_latestPosts {
@@ -98,15 +71,12 @@ export interface latestPosts_latestPosts {
   userId: string;
   cat: PostCat;
   status: PostStatus;
-  title: string;
   text: string;
   createdAt: any | null;
   updatedAt: any | null;
   symbols: latestPosts_latestPosts_symbols[] | null;
   count: latestPosts_latestPosts_count;
-  poll: latestPosts_latestPosts_poll | null;
-  parent: latestPosts_latestPosts_parent | null;
-  children: (latestPosts_latestPosts_children | null)[] | null;
+  votes: latestPosts_latestPosts_votes[];
 }
 
 export interface latestPosts {
@@ -143,42 +113,15 @@ export interface repliedPosts_repliedPosts_count {
   updatedAt: any;
 }
 
-export interface repliedPosts_repliedPosts_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-  nJudgements: (number | null)[] | null;
-  judgeStartedAt: any | null;
-  judgeEndedAt: any | null;
-  verdictValid: boolean | null;
-  verdictChoice: number | null;
-}
-
-export interface repliedPosts_repliedPosts_poll {
-  __typename: "Poll";
+export interface repliedPosts_repliedPosts_votes {
+  __typename: "Vote";
   id: string;
-  status: PollStatus;
-  start: any;
-  end: any;
-  choices: string[];
-  nDays: number;
-  minVotes: number;
-  nDaysJudge: number;
-  minJudgments: number;
-  count: repliedPosts_repliedPosts_poll_count | null;
-}
-
-export interface repliedPosts_repliedPosts_parent {
-  __typename: "PostPeek";
-  id: string;
-  cat: PostCat | null;
-  title: string | null;
-}
-
-export interface repliedPosts_repliedPosts_children {
-  __typename: "PostPeek";
-  id: string;
-  cat: PostCat | null;
-  title: string | null;
+  pollId: string;
+  choiceId: string;
+  postId: string | null;
+  reward: number | null;
+  createdAt: any;
+  updatedAt: any;
 }
 
 export interface repliedPosts_repliedPosts {
@@ -187,15 +130,12 @@ export interface repliedPosts_repliedPosts {
   userId: string;
   cat: PostCat;
   status: PostStatus;
-  title: string;
   text: string;
   createdAt: any | null;
   updatedAt: any | null;
   symbols: repliedPosts_repliedPosts_symbols[] | null;
   count: repliedPosts_repliedPosts_count;
-  poll: repliedPosts_repliedPosts_poll | null;
-  parent: repliedPosts_repliedPosts_parent | null;
-  children: (repliedPosts_repliedPosts_children | null)[] | null;
+  votes: repliedPosts_repliedPosts_votes[];
 }
 
 export interface repliedPosts {
@@ -232,42 +172,15 @@ export interface post_post_count {
   updatedAt: any;
 }
 
-export interface post_post_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-  nJudgements: (number | null)[] | null;
-  judgeStartedAt: any | null;
-  judgeEndedAt: any | null;
-  verdictValid: boolean | null;
-  verdictChoice: number | null;
-}
-
-export interface post_post_poll {
-  __typename: "Poll";
+export interface post_post_votes {
+  __typename: "Vote";
   id: string;
-  status: PollStatus;
-  start: any;
-  end: any;
-  choices: string[];
-  nDays: number;
-  minVotes: number;
-  nDaysJudge: number;
-  minJudgments: number;
-  count: post_post_poll_count | null;
-}
-
-export interface post_post_parent {
-  __typename: "PostPeek";
-  id: string;
-  cat: PostCat | null;
-  title: string | null;
-}
-
-export interface post_post_children {
-  __typename: "PostPeek";
-  id: string;
-  cat: PostCat | null;
-  title: string | null;
+  pollId: string;
+  choiceId: string;
+  postId: string | null;
+  reward: number | null;
+  createdAt: any;
+  updatedAt: any;
 }
 
 export interface post_post {
@@ -276,15 +189,12 @@ export interface post_post {
   userId: string;
   cat: PostCat;
   status: PostStatus;
-  title: string;
   text: string;
   createdAt: any | null;
   updatedAt: any | null;
   symbols: post_post_symbols[] | null;
   count: post_post_count;
-  poll: post_post_poll | null;
-  parent: post_post_parent | null;
-  children: (post_post_children | null)[] | null;
+  votes: post_post_votes[];
 }
 
 export interface post {
@@ -293,6 +203,115 @@ export interface post {
 
 export interface postVariables {
   id: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: latestPolls
+// ====================================================
+
+export interface latestPolls_latestPolls_symbols {
+  __typename: "Symbol";
+  id: string;
+  name: string;
+}
+
+export interface latestPolls_latestPolls_choices {
+  __typename: "Choice";
+  id: string;
+  userId: string;
+  text: string;
+}
+
+export interface latestPolls_latestPolls_count {
+  __typename: "PollCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+  nComments: number;
+  nVotes: number[];
+  nJudgements: (number | null)[] | null;
+  judgeStartedAt: any | null;
+  judgeEndedAt: any | null;
+  verdictValid: boolean | null;
+  verdictChoice: number | null;
+  updatedAt: any;
+}
+
+export interface latestPolls_latestPolls_posts_symbols {
+  __typename: "Symbol";
+  id: string;
+  name: string;
+}
+
+export interface latestPolls_latestPolls_posts_count {
+  __typename: "PostCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+  nComments: number;
+  updatedAt: any;
+}
+
+export interface latestPolls_latestPolls_posts_votes {
+  __typename: "Vote";
+  id: string;
+  pollId: string;
+  choiceId: string;
+  postId: string | null;
+  reward: number | null;
+  createdAt: any;
+  updatedAt: any;
+}
+
+export interface latestPolls_latestPolls_posts {
+  __typename: "Post";
+  id: string;
+  userId: string;
+  cat: PostCat;
+  status: PostStatus;
+  text: string;
+  createdAt: any | null;
+  updatedAt: any | null;
+  symbols: latestPolls_latestPolls_posts_symbols[] | null;
+  count: latestPolls_latestPolls_posts_count;
+  votes: latestPolls_latestPolls_posts_votes[];
+}
+
+export interface latestPolls_latestPolls {
+  __typename: "Poll";
+  id: string;
+  userId: string;
+  cat: PollCat;
+  status: PollStatus;
+  symbols: latestPolls_latestPolls_symbols[] | null;
+  choices: latestPolls_latestPolls_choices[];
+  title: string;
+  text: string | null;
+  start: any;
+  end: any;
+  nDays: number;
+  minVotes: number;
+  nDaysJudge: number;
+  minJudgments: number;
+  count: latestPolls_latestPolls_count;
+  posts: latestPolls_latestPolls_posts[];
+  createdAt: any;
+}
+
+export interface latestPolls {
+  latestPolls: latestPolls_latestPolls[];
+}
+
+export interface latestPollsVariables {
+  symbolId?: string | null;
+  afterId?: string | null;
 }
 
 /* tslint:disable */
@@ -356,18 +375,43 @@ export interface myPostLikes {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: myPollVotes
+// GraphQL query operation: myPollLikes
 // ====================================================
 
-export interface myPollVotes_myPollVotes {
-  __typename: "PollVote";
+export interface myPollLikes_myPollLikes {
+  __typename: "PollLike";
   id: string;
   pollId: string;
-  choice: number;
+  choice: LikeChoice;
+  updatedAt: any;
 }
 
-export interface myPollVotes {
-  myPollVotes: myPollVotes_myPollVotes[];
+export interface myPollLikes {
+  myPollLikes: myPollLikes_myPollLikes[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: myVotes
+// ====================================================
+
+export interface myVotes_myVotes {
+  __typename: "Vote";
+  id: string;
+  pollId: string;
+  choiceId: string;
+  postId: string | null;
+  reward: number | null;
+  createdAt: any;
+  updatedAt: any;
+}
+
+export interface myVotes {
+  myVotes: myVotes_myVotes[];
 }
 
 /* tslint:disable */
@@ -471,42 +515,15 @@ export interface commit_commit_post_count {
   updatedAt: any;
 }
 
-export interface commit_commit_post_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-  nJudgements: (number | null)[] | null;
-  judgeStartedAt: any | null;
-  judgeEndedAt: any | null;
-  verdictValid: boolean | null;
-  verdictChoice: number | null;
-}
-
-export interface commit_commit_post_poll {
-  __typename: "Poll";
+export interface commit_commit_post_votes {
+  __typename: "Vote";
   id: string;
-  status: PollStatus;
-  start: any;
-  end: any;
-  choices: string[];
-  nDays: number;
-  minVotes: number;
-  nDaysJudge: number;
-  minJudgments: number;
-  count: commit_commit_post_poll_count | null;
-}
-
-export interface commit_commit_post_parent {
-  __typename: "PostPeek";
-  id: string;
-  cat: PostCat | null;
-  title: string | null;
-}
-
-export interface commit_commit_post_children {
-  __typename: "PostPeek";
-  id: string;
-  cat: PostCat | null;
-  title: string | null;
+  pollId: string;
+  choiceId: string;
+  postId: string | null;
+  reward: number | null;
+  createdAt: any;
+  updatedAt: any;
 }
 
 export interface commit_commit_post {
@@ -515,15 +532,12 @@ export interface commit_commit_post {
   userId: string;
   cat: PostCat;
   status: PostStatus;
-  title: string;
   text: string;
   createdAt: any | null;
   updatedAt: any | null;
   symbols: commit_commit_post_symbols[] | null;
   count: commit_commit_post_count;
-  poll: commit_commit_post_poll | null;
-  parent: commit_commit_post_parent | null;
-  children: (commit_commit_post_children | null)[] | null;
+  votes: commit_commit_post_votes[];
 }
 
 export interface commit_commit_reviews {
@@ -575,44 +589,6 @@ export interface myFollows_myFollows {
 
 export interface myFollows {
   myFollows: myFollows_myFollows[];
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL query operation: fetchPage
-// ====================================================
-
-export interface fetchPage_fetchPage_createdEvent {
-  __typename: "Symbol";
-  id: string;
-  name: string;
-  cat: SymbolCat;
-  status: SymbolStatus;
-  body: string | null;
-  sys: string | null;
-}
-
-export interface fetchPage_fetchPage {
-  __typename: "Page";
-  id: string;
-  createdPostId: string | null;
-  suggestTitle: string | null;
-  suggestTags: string[];
-  suggestEvents: string[];
-  suggestTickers: string[];
-  createdEvent: fetchPage_fetchPage_createdEvent | null;
-}
-
-export interface fetchPage {
-  fetchPage: fetchPage_fetchPage;
-}
-
-export interface fetchPageVariables {
-  url: string;
 }
 
 /* tslint:disable */
@@ -698,42 +674,15 @@ export interface createPost_createPost_count {
   updatedAt: any;
 }
 
-export interface createPost_createPost_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-  nJudgements: (number | null)[] | null;
-  judgeStartedAt: any | null;
-  judgeEndedAt: any | null;
-  verdictValid: boolean | null;
-  verdictChoice: number | null;
-}
-
-export interface createPost_createPost_poll {
-  __typename: "Poll";
+export interface createPost_createPost_votes {
+  __typename: "Vote";
   id: string;
-  status: PollStatus;
-  start: any;
-  end: any;
-  choices: string[];
-  nDays: number;
-  minVotes: number;
-  nDaysJudge: number;
-  minJudgments: number;
-  count: createPost_createPost_poll_count | null;
-}
-
-export interface createPost_createPost_parent {
-  __typename: "PostPeek";
-  id: string;
-  cat: PostCat | null;
-  title: string | null;
-}
-
-export interface createPost_createPost_children {
-  __typename: "PostPeek";
-  id: string;
-  cat: PostCat | null;
-  title: string | null;
+  pollId: string;
+  choiceId: string;
+  postId: string | null;
+  reward: number | null;
+  createdAt: any;
+  updatedAt: any;
 }
 
 export interface createPost_createPost {
@@ -742,15 +691,12 @@ export interface createPost_createPost {
   userId: string;
   cat: PostCat;
   status: PostStatus;
-  title: string;
   text: string;
   createdAt: any | null;
   updatedAt: any | null;
   symbols: createPost_createPost_symbols[] | null;
   count: createPost_createPost_count;
-  poll: createPost_createPost_poll | null;
-  parent: createPost_createPost_parent | null;
-  children: (createPost_createPost_children | null)[] | null;
+  votes: createPost_createPost_votes[];
 }
 
 export interface createPost {
@@ -759,7 +705,7 @@ export interface createPost {
 
 export interface createPostVariables {
   data: PostInput;
-  parentId?: string | null;
+  pollId?: string | null;
 }
 
 /* tslint:disable */
@@ -787,42 +733,15 @@ export interface updatePost_updatePost_count {
   updatedAt: any;
 }
 
-export interface updatePost_updatePost_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-  nJudgements: (number | null)[] | null;
-  judgeStartedAt: any | null;
-  judgeEndedAt: any | null;
-  verdictValid: boolean | null;
-  verdictChoice: number | null;
-}
-
-export interface updatePost_updatePost_poll {
-  __typename: "Poll";
+export interface updatePost_updatePost_votes {
+  __typename: "Vote";
   id: string;
-  status: PollStatus;
-  start: any;
-  end: any;
-  choices: string[];
-  nDays: number;
-  minVotes: number;
-  nDaysJudge: number;
-  minJudgments: number;
-  count: updatePost_updatePost_poll_count | null;
-}
-
-export interface updatePost_updatePost_parent {
-  __typename: "PostPeek";
-  id: string;
-  cat: PostCat | null;
-  title: string | null;
-}
-
-export interface updatePost_updatePost_children {
-  __typename: "PostPeek";
-  id: string;
-  cat: PostCat | null;
-  title: string | null;
+  pollId: string;
+  choiceId: string;
+  postId: string | null;
+  reward: number | null;
+  createdAt: any;
+  updatedAt: any;
 }
 
 export interface updatePost_updatePost {
@@ -831,15 +750,12 @@ export interface updatePost_updatePost {
   userId: string;
   cat: PostCat;
   status: PostStatus;
-  title: string;
   text: string;
   createdAt: any | null;
   updatedAt: any | null;
   symbols: updatePost_updatePost_symbols[] | null;
   count: updatePost_updatePost_count;
-  poll: updatePost_updatePost_poll | null;
-  parent: updatePost_updatePost_parent | null;
-  children: (updatePost_updatePost_children | null)[] | null;
+  votes: updatePost_updatePost_votes[];
 }
 
 export interface updatePost {
@@ -941,23 +857,232 @@ export interface updatePostLikeVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: createPollVote
+// GraphQL mutation operation: createPoll
 // ====================================================
 
-export interface createPollVote_createPollVote {
-  __typename: "PollVote";
+export interface createPoll_createPoll_symbols {
+  __typename: "Symbol";
+  id: string;
+  name: string;
+}
+
+export interface createPoll_createPoll_choices {
+  __typename: "Choice";
+  id: string;
+  userId: string;
+  text: string;
+}
+
+export interface createPoll_createPoll_count {
+  __typename: "PollCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+  nComments: number;
+  nVotes: number[];
+  nJudgements: (number | null)[] | null;
+  judgeStartedAt: any | null;
+  judgeEndedAt: any | null;
+  verdictValid: boolean | null;
+  verdictChoice: number | null;
+  updatedAt: any;
+}
+
+export interface createPoll_createPoll_posts_symbols {
+  __typename: "Symbol";
+  id: string;
+  name: string;
+}
+
+export interface createPoll_createPoll_posts_count {
+  __typename: "PostCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+  nComments: number;
+  updatedAt: any;
+}
+
+export interface createPoll_createPoll_posts_votes {
+  __typename: "Vote";
   id: string;
   pollId: string;
-  choice: number;
+  choiceId: string;
+  postId: string | null;
+  reward: number | null;
+  createdAt: any;
+  updatedAt: any;
 }
 
-export interface createPollVote {
-  createPollVote: createPollVote_createPollVote;
+export interface createPoll_createPoll_posts {
+  __typename: "Post";
+  id: string;
+  userId: string;
+  cat: PostCat;
+  status: PostStatus;
+  text: string;
+  createdAt: any | null;
+  updatedAt: any | null;
+  symbols: createPoll_createPoll_posts_symbols[] | null;
+  count: createPoll_createPoll_posts_count;
+  votes: createPoll_createPoll_posts_votes[];
 }
 
-export interface createPollVoteVariables {
+export interface createPoll_createPoll {
+  __typename: "Poll";
+  id: string;
+  userId: string;
+  cat: PollCat;
+  status: PollStatus;
+  symbols: createPoll_createPoll_symbols[] | null;
+  choices: createPoll_createPoll_choices[];
+  title: string;
+  text: string | null;
+  start: any;
+  end: any;
+  nDays: number;
+  minVotes: number;
+  nDaysJudge: number;
+  minJudgments: number;
+  count: createPoll_createPoll_count;
+  posts: createPoll_createPoll_posts[];
+  createdAt: any;
+}
+
+export interface createPoll {
+  createPoll: createPoll_createPoll;
+}
+
+export interface createPollVariables {
+  data: PollInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: createPollLike
+// ====================================================
+
+export interface createPollLike_createPollLike_like {
+  __typename: "PollLike";
+  id: string;
   pollId: string;
-  data: PollVoteInput;
+  choice: LikeChoice;
+  updatedAt: any;
+}
+
+export interface createPollLike_createPollLike_count {
+  __typename: "PollCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+  nComments: number;
+  nVotes: number[];
+  nJudgements: (number | null)[] | null;
+  judgeStartedAt: any | null;
+  judgeEndedAt: any | null;
+  verdictValid: boolean | null;
+  verdictChoice: number | null;
+  updatedAt: any;
+}
+
+export interface createPollLike_createPollLike {
+  __typename: "PollLikeResonse";
+  like: createPollLike_createPollLike_like;
+  count: createPollLike_createPollLike_count;
+}
+
+export interface createPollLike {
+  createPollLike: createPollLike_createPollLike;
+}
+
+export interface createPollLikeVariables {
+  pollId: string;
+  data: LikeInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: updatePollLike
+// ====================================================
+
+export interface updatePollLike_updatePollLike_like {
+  __typename: "PollLike";
+  id: string;
+  pollId: string;
+  choice: LikeChoice;
+  updatedAt: any;
+}
+
+export interface updatePollLike_updatePollLike_count {
+  __typename: "PollCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+  nComments: number;
+  nVotes: number[];
+  nJudgements: (number | null)[] | null;
+  judgeStartedAt: any | null;
+  judgeEndedAt: any | null;
+  verdictValid: boolean | null;
+  verdictChoice: number | null;
+  updatedAt: any;
+}
+
+export interface updatePollLike_updatePollLike {
+  __typename: "PollLikeResonse";
+  like: updatePollLike_updatePollLike_like;
+  count: updatePollLike_updatePollLike_count;
+}
+
+export interface updatePollLike {
+  updatePollLike: updatePollLike_updatePollLike;
+}
+
+export interface updatePollLikeVariables {
+  id: string;
+  data: LikeInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: createVote
+// ====================================================
+
+export interface createVote_createVote {
+  __typename: "Vote";
+  id: string;
+  pollId: string;
+  choiceId: string;
+  postId: string | null;
+  reward: number | null;
+  createdAt: any;
+  updatedAt: any;
+}
+
+export interface createVote {
+  createVote: createVote_createVote;
+}
+
+export interface createVoteVariables {
+  pollId: string;
+  choiceId: string;
+  postId?: string | null;
 }
 
 /* tslint:disable */
@@ -1272,6 +1397,26 @@ export interface updateCommitReviewVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: vote
+// ====================================================
+
+export interface vote {
+  __typename: "Vote";
+  id: string;
+  pollId: string;
+  choiceId: string;
+  postId: string | null;
+  reward: number | null;
+  createdAt: any;
+  updatedAt: any;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: postLike
 // ====================================================
 
@@ -1327,42 +1472,15 @@ export interface postFragment_count {
   updatedAt: any;
 }
 
-export interface postFragment_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-  nJudgements: (number | null)[] | null;
-  judgeStartedAt: any | null;
-  judgeEndedAt: any | null;
-  verdictValid: boolean | null;
-  verdictChoice: number | null;
-}
-
-export interface postFragment_poll {
-  __typename: "Poll";
+export interface postFragment_votes {
+  __typename: "Vote";
   id: string;
-  status: PollStatus;
-  start: any;
-  end: any;
-  choices: string[];
-  nDays: number;
-  minVotes: number;
-  nDaysJudge: number;
-  minJudgments: number;
-  count: postFragment_poll_count | null;
-}
-
-export interface postFragment_parent {
-  __typename: "PostPeek";
-  id: string;
-  cat: PostCat | null;
-  title: string | null;
-}
-
-export interface postFragment_children {
-  __typename: "PostPeek";
-  id: string;
-  cat: PostCat | null;
-  title: string | null;
+  pollId: string;
+  choiceId: string;
+  postId: string | null;
+  reward: number | null;
+  createdAt: any;
+  updatedAt: any;
 }
 
 export interface postFragment {
@@ -1371,15 +1489,12 @@ export interface postFragment {
   userId: string;
   cat: PostCat;
   status: PostStatus;
-  title: string;
   text: string;
   createdAt: any | null;
   updatedAt: any | null;
   symbols: postFragment_symbols[] | null;
   count: postFragment_count;
-  poll: postFragment_poll | null;
-  parent: postFragment_parent | null;
-  children: (postFragment_children | null)[] | null;
+  votes: postFragment_votes[];
 }
 
 /* tslint:disable */
@@ -1388,14 +1503,156 @@ export interface postFragment {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL fragment: pollVote
+// GraphQL fragment: choice
 // ====================================================
 
-export interface pollVote {
-  __typename: "PollVote";
+export interface choice {
+  __typename: "Choice";
+  id: string;
+  userId: string;
+  text: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: pollLike
+// ====================================================
+
+export interface pollLike {
+  __typename: "PollLike";
   id: string;
   pollId: string;
-  choice: number;
+  choice: LikeChoice;
+  updatedAt: any;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: pollCount
+// ====================================================
+
+export interface pollCount {
+  __typename: "PollCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+  nComments: number;
+  nVotes: number[];
+  nJudgements: (number | null)[] | null;
+  judgeStartedAt: any | null;
+  judgeEndedAt: any | null;
+  verdictValid: boolean | null;
+  verdictChoice: number | null;
+  updatedAt: any;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: pollFragment
+// ====================================================
+
+export interface pollFragment_symbols {
+  __typename: "Symbol";
+  id: string;
+  name: string;
+}
+
+export interface pollFragment_choices {
+  __typename: "Choice";
+  id: string;
+  userId: string;
+  text: string;
+}
+
+export interface pollFragment_count {
+  __typename: "PollCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+  nComments: number;
+  nVotes: number[];
+  nJudgements: (number | null)[] | null;
+  judgeStartedAt: any | null;
+  judgeEndedAt: any | null;
+  verdictValid: boolean | null;
+  verdictChoice: number | null;
+  updatedAt: any;
+}
+
+export interface pollFragment_posts_symbols {
+  __typename: "Symbol";
+  id: string;
+  name: string;
+}
+
+export interface pollFragment_posts_count {
+  __typename: "PostCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+  nComments: number;
+  updatedAt: any;
+}
+
+export interface pollFragment_posts_votes {
+  __typename: "Vote";
+  id: string;
+  pollId: string;
+  choiceId: string;
+  postId: string | null;
+  reward: number | null;
+  createdAt: any;
+  updatedAt: any;
+}
+
+export interface pollFragment_posts {
+  __typename: "Post";
+  id: string;
+  userId: string;
+  cat: PostCat;
+  status: PostStatus;
+  text: string;
+  createdAt: any | null;
+  updatedAt: any | null;
+  symbols: pollFragment_posts_symbols[] | null;
+  count: pollFragment_posts_count;
+  votes: pollFragment_posts_votes[];
+}
+
+export interface pollFragment {
+  __typename: "Poll";
+  id: string;
+  userId: string;
+  cat: PollCat;
+  status: PollStatus;
+  symbols: pollFragment_symbols[] | null;
+  choices: pollFragment_choices[];
+  title: string;
+  text: string | null;
+  start: any;
+  end: any;
+  nDays: number;
+  minVotes: number;
+  nDaysJudge: number;
+  minJudgments: number;
+  count: pollFragment_count;
+  posts: pollFragment_posts[];
+  createdAt: any;
 }
 
 /* tslint:disable */
@@ -1518,42 +1775,15 @@ export interface commitDetail_post_count {
   updatedAt: any;
 }
 
-export interface commitDetail_post_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-  nJudgements: (number | null)[] | null;
-  judgeStartedAt: any | null;
-  judgeEndedAt: any | null;
-  verdictValid: boolean | null;
-  verdictChoice: number | null;
-}
-
-export interface commitDetail_post_poll {
-  __typename: "Poll";
+export interface commitDetail_post_votes {
+  __typename: "Vote";
   id: string;
-  status: PollStatus;
-  start: any;
-  end: any;
-  choices: string[];
-  nDays: number;
-  minVotes: number;
-  nDaysJudge: number;
-  minJudgments: number;
-  count: commitDetail_post_poll_count | null;
-}
-
-export interface commitDetail_post_parent {
-  __typename: "PostPeek";
-  id: string;
-  cat: PostCat | null;
-  title: string | null;
-}
-
-export interface commitDetail_post_children {
-  __typename: "PostPeek";
-  id: string;
-  cat: PostCat | null;
-  title: string | null;
+  pollId: string;
+  choiceId: string;
+  postId: string | null;
+  reward: number | null;
+  createdAt: any;
+  updatedAt: any;
 }
 
 export interface commitDetail_post {
@@ -1562,15 +1792,12 @@ export interface commitDetail_post {
   userId: string;
   cat: PostCat;
   status: PostStatus;
-  title: string;
   text: string;
   createdAt: any | null;
   updatedAt: any | null;
   symbols: commitDetail_post_symbols[] | null;
   count: commitDetail_post_count;
-  poll: commitDetail_post_poll | null;
-  parent: commitDetail_post_parent | null;
-  children: (commitDetail_post_children | null)[] | null;
+  votes: commitDetail_post_votes[];
 }
 
 export interface commitDetail_reviews {
@@ -1659,6 +1886,12 @@ export enum LikeChoice {
   UP = "UP",
 }
 
+export enum PollCat {
+  ADD = "ADD",
+  ADD_BY_POST = "ADD_BY_POST",
+  FIXED = "FIXED",
+}
+
 export enum PollStatus {
   CLOSE_FAIL = "CLOSE_FAIL",
   CLOSE_SUCCESS = "CLOSE_SUCCESS",
@@ -1667,11 +1900,7 @@ export enum PollStatus {
 }
 
 export enum PostCat {
-  ASK = "ASK",
-  COMMIT = "COMMIT",
-  IDEA = "IDEA",
   LINK = "LINK",
-  POLL = "POLL",
   REPLY = "REPLY",
 }
 
@@ -1722,21 +1951,18 @@ export interface LikeInput {
 }
 
 export interface PollInput {
+  cat: PollCat;
+  symbolIds: string[];
   choices: string[];
+  title: string;
+  text?: string | null;
   nDays: number;
-}
-
-export interface PollVoteInput {
-  choice: number;
 }
 
 export interface PostInput {
   cat: PostCat;
-  status?: PostStatus | null;
-  title?: string | null;
   symbolIds: string[];
   text?: string | null;
-  poll?: PollInput | null;
 }
 
 //==============================================================

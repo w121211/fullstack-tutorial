@@ -2,6 +2,16 @@ import gql from 'graphql-tag'
 
 export const typeDefs = gql`
   type Query {
+    roboPolls(symbolName: String): [Poll!]!
+
+    latestPolls(symbolId: ID, afterId: String): [Poll!]!
+
+    pollHints(symbols: [String], title: String): [Poll!]!
+
+    poll(id: ID!): Poll!
+
+    myPollLikes(afterId: ID): [PollLike!]!
+
     post(id: ID!): Post!
 
     latestPosts(symbolId: ID, afterId: String): [Post!]!
@@ -22,7 +32,7 @@ export const typeDefs = gql`
     # myComments(after: String): [ID!]!
     myPosts(afterId: String): [Post!]!
 
-    myPollVotes(after: String): [PollVote!]!
+    myVotes(after: String): [Vote!]!
     myPostLikes(after: String): [PostLike!]!
     myCommentLikes(after: String): [CommentLike!]!
 
@@ -36,7 +46,7 @@ export const typeDefs = gql`
     eventHints(term: String): [String!]!
 
     ### upcoming ###
-    fetchPage(url: String!): Page!
+    # fetchPage(url: String!): Page!
 
     # myBets: [Bet!]!
     # myNotices: [Notice!]!
@@ -47,23 +57,30 @@ export const typeDefs = gql`
   }
 
   type Mutation {
+    createPoll(data: PollInput!): Poll!
+
+    createPollLike(pollId: ID!, data: LikeInput!): PollLikeResonse!
+    updatePollLike(id: ID!, data: LikeInput!): PollLikeResonse!
+
+    # createVote(pollId: ID!, data: VoteInput!): Vote!
+    createVote(pollId: ID!, choiceId: ID!, postId: ID): Vote!
+
     signup(email: String!, password: String!): AuthPayload!
     login(email: String!, password: String!): AuthPayload!
     logout: Boolean!
 
-    createPost(data: PostInput!, parentId: ID): Post!
+    createPost(data: PostInput!, pollId: ID): Post!
     updatePost(id: ID!, data: PostInput!): Post!
-
-    createComment(postId: ID!, data: CommentInput!): Comment!
-    updateComment(id: ID!, data: CommentInput!): Comment!
 
     createPostLike(postId: ID!, data: LikeInput!): PostLikeResonse!
     updatePostLike(id: ID!, data: LikeInput!): PostLikeResonse!
 
+    createComment(postId: ID!, data: CommentInput!): Comment!
+    updateComment(id: ID!, data: CommentInput!): Comment!
+    
     createCommentLike(commentId: ID!, data: LikeInput!): CommentLikeResonse!
     updateCommentLike(id: ID!, data: LikeInput!): CommentLikeResonse!
 
-    createPollVote(pollId: ID!, data: PollVoteInput!): PollVote!
     # 允許更新postVote？
     # updatePollVote(pollId: ID!, data: VoteInput!): PollVote!
 
@@ -88,25 +105,162 @@ export const typeDefs = gql`
     # inviteJoin(groupId: ID, criteria: String): Boolean
   }
 
-  type Page {
+
+  type Post {
     id: ID!
-    # null if not existed
-    createdPostId: ID
-    # symbols: [String!]
-    suggestTitle: String
-    suggestTags: [String!]!
-    suggestEvents: [String!]!
-    suggestTickers: [String!]!
-    # null if not created
-    createdEvent: Symbol
+    userId: ID!
+    cat: PostCat!
+    status: PostStatus!
+    text: String!
+    symbols: [Symbol!]
+    count: PostCount!
+    createdAt: DateTime
+    updatedAt: DateTime
+    votes: [Vote!]!
+    # voteCommits: [VoteCommit!]!
   }
 
-  type EventContent {
-    tags: [String!]!
-    tickers: [String!]!
-    events: [String!]!
-    equalEvents: [String!]!
+  input PostInput {
+    cat: PostCat!
+    symbolIds: [ID!]!
+    text: String
   }
+
+  type PostLike {
+    id: ID!
+    postId: ID!
+    choice: LikeChoice!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+  }
+
+  type PostLikeResonse {
+    like: PostLike!
+    count: PostCount!
+  }
+
+  type PostCount {
+    id: ID!
+    nViews: Int!
+    nUps: Int!
+    nDowns: Int!
+    nComments: Int!
+    updatedAt: DateTime!
+  }
+
+
+  type Poll {
+    id: ID!
+    userId: ID!
+    cat: PollCat!
+    status: PollStatus!
+    symbols: [Symbol!]
+    choices: [Choice!]!
+    title: String!
+    text: String
+    start: DateTime!
+    end: DateTime!
+    nDays: Int!
+    minVotes: Int!
+    nDaysJudge: Int!
+    minJudgments: Int!
+    count: PollCount!
+    posts: [Post!]!
+    createdAt: DateTime!
+  }
+
+  input PollInput {
+    cat: PollCat!
+    symbolIds: [ID!]!
+    choices: [String!]!
+    title: String!
+    text: String
+    nDays: Int!
+  }
+
+  type Choice {
+    id: ID!
+    userId: ID!
+    text: String!
+  }
+
+  type PollLike {
+    id: ID!
+    pollId: ID!
+    choice: LikeChoice!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+  }
+
+  type PollLikeResonse {
+    like: PollLike!
+    count: PollCount!
+  }
+
+  type PollCount {
+    id: ID!
+    nViews: Int!
+    nUps: Int!
+    nDowns: Int!
+    nComments: Int!
+    nVotes: [Int!]!
+    nJudgements: [Int]
+    judgeStartedAt: DateTime
+    judgeEndedAt: DateTime
+    verdictValid: Boolean
+    verdictChoice: Int
+    updatedAt: DateTime!
+    # failedMsg: String
+  }
+
+  type Vote {
+    id: ID!
+    pollId: ID!
+    choiceId: ID!
+    postId: ID
+    reward: Float
+    createdAt: DateTime!
+    updatedAt: DateTime!
+  }
+
+  input VoteInput {
+    choiceId: ID!
+  }
+
+  type PollJudgment {
+    id: ID!
+    pollId: ID!
+    choice: Int!
+    comment: Comment!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+  }
+
+  input PollJudgmentInput {
+    choice: Int!
+  }
+
+
+  # type Page {
+  #   id: ID!
+  #   # null if not existed
+  #   createdPostId: ID
+  #   # symbols: [String!]
+  #   suggestTitle: String
+  #   suggestTags: [String!]!
+  #   suggestEvents: [String!]!
+  #   suggestTickers: [String!]!
+  #   # null if not created
+  #   createdEvent: Symbol
+  # }
+
+  # type EventContent {
+  #   tags: [String!]!
+  #   tickers: [String!]!
+  #   events: [String!]!
+  #   equalEvents: [String!]!
+  # }
+
 
   type AuthPayload {
     token: String!
@@ -124,122 +278,14 @@ export const typeDefs = gql`
   #   url: String!
   # }
 
-  type Post {
-    id: ID!
-    userId: ID!
-    cat: PostCat!
-    status: PostStatus!
-    title: String!
-    text: String!
-    poll: Poll
-    # link: Link
-    # reply-post doesn't need symbols
-    symbols: [Symbol!]
-    count: PostCount!
-    createdAt: DateTime
-    updatedAt: DateTime
-    parent: PostPeek
-    children: [PostPeek]
-  }
-
-  type PostCount {
-    id: ID!
-    nViews: Int!
-    nUps: Int!
-    nDowns: Int!
-    nComments: Int!
-    updatedAt: DateTime!
-  }
-
-  type PostPeek {
-    id: ID!
-    cat: PostCat
-    title: String
-  }
-
-  input PostInput {
-    cat: PostCat!
-    status: PostStatus
-    title: String
-    symbolIds: [ID!]!
-    text: String
-    poll: PollInput
-  }
-
-  # input PostLinkInput {
-  #   url: String!
-  # }
-
-  type PostLike {
-    id: ID!
-    postId: ID!
-    choice: LikeChoice!
-    createdAt: DateTime!
-    updatedAt: DateTime!
-  }
-
-  type PostLikeResonse {
-    like: PostLike!
-    count: PostCount!
-  }
-
+  
   input LikeInput {
     choice: LikeChoice!
   }
 
-  type Poll {
-    id: ID!
-    status: PollStatus!
-    start: DateTime!
-    end: DateTime!
-    choices: [String!]!
-    nDays: Int!
-    minVotes: Int!
-    nDaysJudge: Int!
-    minJudgments: Int!
-    count: PollCount
-  }
-
-  type PollCount {
-    nVotes: [Int!]!,
-    nJudgements: [Int],
-    judgeStartedAt: DateTime,
-    judgeEndedAt: DateTime,
-    verdictValid: Boolean,
-    verdictChoice: Int,
-    # failedMsg: String,
-  }
-
-  input PollInput {
-    choices: [String!]!
-    nDays: Int!
-  }
   
-  type PollVote {
-    id: ID!
-    pollId: ID!
-    choice: Int!
-    createdAt: DateTime!
-    updatedAt: DateTime!
-  }
-
-  input PollVoteInput {
-    choice: Int!
-  }
-
-  type PollJudgment {
-    id: ID!
-    pollId: ID!
-    choice: Int!
-    comment: Comment!
-    createdAt: DateTime!
-    updatedAt: DateTime!
-  }
-
-  input PollJudgmentInput {
-    choice: Int!
-  }
-
+  
+  
   type Comment {
     id: ID!
     userId: ID!
@@ -345,11 +391,7 @@ export const typeDefs = gql`
   }
 
   enum PostCat {
-    IDEA
-    ASK
-    POLL
     LINK
-    COMMIT
     REPLY
   }
 
@@ -359,6 +401,12 @@ export const typeDefs = gql`
     DELETED
     REPORTED
     ARCHIVED
+  }
+
+  enum PollCat {
+    FIXED
+    ADD
+    ADD_BY_POST
   }
 
   enum SymbolCat {

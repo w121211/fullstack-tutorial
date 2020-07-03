@@ -5,17 +5,29 @@ import Chart from 'react-apexcharts'
 export function BarChart() {
     const options = {
         chart: {
-            id: 'apexchart-example',
-            animations: { enabled: false },
-            toolbar: { show: false },
+            type: 'bar',
+            height: 350,
+            toolbar: {
+                show: false
+            }
+        },
+        plotOptions: {
+            bar: {
+                horizontal: true,
+            }
+        },
+        dataLabels: {
+            enabled: false
         },
         xaxis: {
-            categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999]
+            categories: ['South Korea', 'Canada', 'United Kingdom', 'Netherlands', 'Italy', 'France', 'Japan',
+                'United States', 'China', 'Germany'
+            ],
         }
     }
     const series = [{
         // name: 'series-1',
-        data: [30, 40, 35, 50, 49, 60, 70, 91, 125]
+        data: [400, 430, 448, 470, 540, 580, 690, 1100, 1200, 1380]
     }]
 
     return <Chart options={options} series={series} type="bar" />

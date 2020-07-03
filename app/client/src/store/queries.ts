@@ -1,5 +1,18 @@
 import gql from 'graphql-tag'
 
+export const VOTE = gql`
+  fragment vote on Vote {
+    __typename
+    id
+    pollId
+    choiceId
+    postId
+    reward
+    createdAt
+    updatedAt
+  }
+`
+
 export const POST_LIKE = gql`
   fragment postLike on PostLike {
     __typename
@@ -9,6 +22,7 @@ export const POST_LIKE = gql`
     updatedAt
   }
 `
+
 export const POST_COUNT = gql`
   fragment postCount on PostCount {
     __typename
@@ -20,6 +34,7 @@ export const POST_COUNT = gql`
     updatedAt
   }
 `
+
 export const POST_FRAGMENT = gql`
   fragment postFragment on Post {
     __typename
@@ -27,7 +42,6 @@ export const POST_FRAGMENT = gql`
     userId
     cat
     status
-    title
     text
     createdAt
     updatedAt
@@ -38,50 +52,86 @@ export const POST_FRAGMENT = gql`
     count { 
       ...postCount
     }
-    poll {
-      id
-      status
-      start
-      end
-      choices
-      nDays
-      minVotes
-      nDaysJudge
-      minJudgments
-      count {
-        nVotes
-        nJudgements
-        judgeStartedAt
-        judgeEndedAt
-        verdictValid
-        verdictChoice
-      }
+    votes {
+      ...vote
     }
-    parent {
-      id
-      cat
-      title
-    }
-    children {
-      id
-      cat
-      title
-    }
-    # mePost @client
-    # meLike @client {
-    #   ...postLike
-    # }
   }
   ${POST_COUNT}
+  ${VOTE}
 `
-export const POLL_VOTE = gql`
-  fragment pollVote on PollVote {
+
+export const CHOICE = gql`
+  fragment choice on Choice {
+    __typename
+    id
+    userId
+    text
+  }
+`
+
+export const POLL_LIKE = gql`
+  fragment pollLike on PollLike {
     __typename
     id
     pollId
     choice
+    updatedAt
   }
 `
+
+export const POLL_COUNT = gql`
+  fragment pollCount on PollCount {
+    __typename
+    id
+    nViews
+    nUps
+    nDowns
+    nComments
+    nVotes
+    nJudgements
+    judgeStartedAt
+    judgeEndedAt
+    verdictValid
+    verdictChoice
+    updatedAt
+  }
+`
+
+export const POLL_FRAGMENT = gql`
+  fragment pollFragment on Poll {
+    __typename
+    id
+    userId
+    cat
+    status
+    symbols {
+      id
+      name
+    }
+    choices {
+      ...choice
+    }
+    title
+    text
+    start
+    end
+    nDays
+    minVotes
+    nDaysJudge
+    minJudgments
+    count {
+      ...pollCount
+    }
+    posts {
+      ...postFragment
+    }
+    createdAt
+  }
+  ${POLL_COUNT}
+  ${POST_FRAGMENT}
+  ${CHOICE}
+`
+
 export const COMMENT_COUNT = gql`
   fragment commentCount on CommentCount {
     __typename
@@ -90,6 +140,7 @@ export const COMMENT_COUNT = gql`
     nDowns
   }
 `
+
 export const COMMENT = gql`
   fragment comment on Comment {
     __typename
@@ -117,6 +168,7 @@ export const COMMENT_LIKE = gql`
     updatedAt
   }
 `
+
 export const SYMBOL_FRAGMENT = gql`
   fragment symbolFragment on Symbol {
     __typename
@@ -129,6 +181,7 @@ export const SYMBOL_FRAGMENT = gql`
     # ticks: [Tick!]!
   }
 `
+
 export const COMMIT_REVIEW = gql`
   fragment commitReview on CommitReview {
     __typename
@@ -139,6 +192,7 @@ export const COMMIT_REVIEW = gql`
     updatedAt
   }
 `
+
 export const COMMIT_DETAIL = gql`
   fragment commitDetail on Commit {
     __typename
@@ -159,6 +213,7 @@ export const COMMIT_DETAIL = gql`
   ${POST_FRAGMENT}
   ${COMMIT_REVIEW}
 `
+
 export const COMMIT_TILE = gql`
   fragment commitTile on Commit {
     __typename
@@ -170,6 +225,7 @@ export const COMMIT_TILE = gql`
     updatedAt
   }
 `
+
 export const FOLLOW = gql`
   fragment follow on Follow {
     __typename
@@ -188,6 +244,7 @@ export const IS_LOGGED_IN = gql`
     isLoggedIn @client
   }
 `
+
 export const ME = gql`
   query me {
     me {
@@ -204,6 +261,7 @@ export const LATEST_POSTS = gql`
   }
   ${POST_FRAGMENT}
 `
+
 export const REPLIED_POSTS = gql`
   query repliedPosts($parentId: ID!, $afterId: String) {
     repliedPosts(parentId: $parentId, afterId: $afterId) {
@@ -221,6 +279,17 @@ export const POST = gql`
   }
   ${POST_FRAGMENT}
 `
+
+export const LATEST_POLLS = gql`
+  query latestPolls($symbolId: ID,  $afterId: String) {
+    latestPolls(symbolId: $symbolId, afterId: $afterId) {
+      ...pollFragment
+    }
+  }
+  ${POLL_FRAGMENT}
+`
+
+
 export const COMMENTS = gql`
   query comments($postId: ID!, $after: String) {
     comments(postId: $postId, after: $after) {
@@ -229,6 +298,7 @@ export const COMMENTS = gql`
   }
   ${COMMENT}
 `
+
 export const MY_POST_LIKES = gql`
   query myPostLikes {
     myPostLikes {
@@ -237,14 +307,25 @@ export const MY_POST_LIKES = gql`
   }
   ${POST_LIKE}
 `
-export const MY_POLL_VOTES = gql`
-  query myPollVotes {
-    myPollVotes {
-      ...pollVote
+
+export const MY_POLL_LIKES = gql`
+  query myPollLikes {
+    myPollLikes {
+      ...pollLike
     }
   }
-  ${POLL_VOTE}
+  ${POLL_LIKE}
 `
+
+export const MY_VOTES = gql`
+  query myVotes {
+    myVotes {
+      ...vote
+    }
+  }
+  ${VOTE}
+`
+
 export const MY_COMMENT_LIKES = gql`
   query myCommentLikes {
     myCommentLikes {
@@ -253,6 +334,7 @@ export const MY_COMMENT_LIKES = gql`
   }
   ${COMMENT_LIKE}
 `
+
 export const GET_SYMBOL = gql`
   query getSymbol($name: String!) {
     symbol(name: $name) {
@@ -261,6 +343,7 @@ export const GET_SYMBOL = gql`
   }
   ${SYMBOL_FRAGMENT}
 `
+
 export const COMMITS = gql`
   query commits($symbolId: ID!, $after: String) {
     commits(symbolId: $symbolId, after: $after) {
@@ -269,6 +352,7 @@ export const COMMITS = gql`
   }
   ${COMMIT_TILE}
 `
+
 export const COMMIT = gql`
   query commit($id: ID!) {
     commit(id: $id) {
@@ -277,6 +361,7 @@ export const COMMIT = gql`
   }
   ${COMMIT_DETAIL}
 `
+
 export const MY_FOLLOWS = gql`
   query myFollows {
     myFollows {
@@ -289,25 +374,23 @@ export const MY_FOLLOWS = gql`
 
 
 
-
-
-export const FETCH_PAGE = gql`
-  query fetchPage($url: String!) {
-    fetchPage(url: $url) {
-      id
-      createdPostId
-      suggestTitle
-      suggestTags
-      suggestEvents
-      suggestTickers
-      # null if not created
-      createdEvent {
-        ...symbolFragment
-      }
-    }
-  }
-  ${SYMBOL_FRAGMENT}
-`
+// export const FETCH_PAGE = gql`
+//   query fetchPage($url: String!) {
+//     fetchPage(url: $url) {
+//       id
+//       createdPostId
+//       suggestTitle
+//       suggestTags
+//       suggestEvents
+//       suggestTickers
+//       # null if not created
+//       createdEvent {
+//         ...symbolFragment
+//       }
+//     }
+//   }
+//   ${SYMBOL_FRAGMENT}
+// `
 
 // ----------------------------
 // mutation
@@ -323,6 +406,7 @@ export const SINGUP = gql`
     }
   }
 `
+
 export const LOGIN = gql`
   mutation login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
@@ -333,14 +417,16 @@ export const LOGIN = gql`
     }
   }
 `
+
 export const CREATE_POST = gql`
-  mutation createPost($data: PostInput!, $parentId: ID) {
-    createPost(data: $data,  parentId: $parentId) {
+  mutation createPost($data: PostInput!, $pollId: ID) {
+    createPost(data: $data,  pollId: $pollId) {
       ...postFragment
     }
   }
   ${POST_FRAGMENT}
 `
+
 export const UPDATE_POST = gql`
   mutation updatePost($id: ID!, $data: PostInput!) {
     updatePost(id: $id, data: $data) {
@@ -349,6 +435,7 @@ export const UPDATE_POST = gql`
   }
   ${POST_FRAGMENT}
 `
+
 export const CREATE_POST_LIKE = gql`
   mutation createPostLike($postId: ID!, $data: LikeInput!) {
     createPostLike(postId: $postId, data: $data) {
@@ -363,6 +450,7 @@ export const CREATE_POST_LIKE = gql`
   ${POST_LIKE}
   ${POST_COUNT}
 `
+
 export const UPDATE_POST_LIKE = gql`
   mutation updatePostLike($id: ID!, $data: LikeInput!) {
     updatePostLike(id: $id, data: $data) {
@@ -377,14 +465,56 @@ export const UPDATE_POST_LIKE = gql`
   ${POST_LIKE}
   ${POST_COUNT}
 `
-export const CREATE_POLL_VOTE = gql`
-  mutation createPollVote($pollId: ID!, $data: PollVoteInput!) {
-    createPollVote(pollId: $pollId, data: $data) {
-      ...pollVote
+
+export const CREATE_POLL = gql`
+  mutation createPoll($data: PollInput!) {
+    createPoll(data: $data) {
+      ...pollFragment
     }
   }
-  ${POLL_VOTE}
+  ${POLL_FRAGMENT}
 `
+
+export const CREATE_POLL_LIKE = gql`
+  mutation createPollLike($pollId: ID!, $data: LikeInput!) {
+    createPollLike(pollId: $pollId, data: $data) {
+      like {
+        ...pollLike
+      }
+      count {
+        ...pollCount
+      }
+    }
+  }
+  ${POLL_LIKE}
+  ${POLL_COUNT}
+`
+
+export const UPDATE_POLL_LIKE = gql`
+  mutation updatePollLike($id: ID!, $data: LikeInput!) {
+    updatePollLike(id: $id, data: $data) {
+      like {
+        ...pollLike
+      }
+      count {
+        ...pollCount
+      }
+    }
+  }
+  ${POLL_LIKE}
+  ${POLL_COUNT}
+`
+
+
+export const CREATE_VOTE = gql`
+  mutation createVote($pollId: ID!, $choiceId: ID!, $postId: ID) {
+    createVote(pollId: $pollId, choiceId: $choiceId, postId: $postId) {
+      ...vote
+    }
+  }
+  ${VOTE}
+`
+
 // export const UPDATE_POLL_VOTE = gql`
 //   mutation updatePostVote($postId: ID!, $data: PostVoteInput!) {
 //     updatePostVote(postId: $postId, data: $data) {
@@ -393,6 +523,7 @@ export const CREATE_POLL_VOTE = gql`
 //   }
 //   ${POST_VOTE}
 // `
+
 export const CREATE_COMMENT = gql`
   mutation createComment($postId: ID!, $data: CommentInput!) {
     createComment(postId: $postId, data: $data) {

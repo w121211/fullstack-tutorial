@@ -19,7 +19,7 @@ const Symbol: React.FC<SymbolProps> = ({ name }) => {
   console.log(name)
   useQuery<QT.myPostLikes>(queries.MY_POST_LIKES)
   useQuery<QT.myCommentLikes>(queries.MY_COMMENT_LIKES)
-  useQuery<QT.myPollVotes>(queries.MY_POLL_VOTES)
+  useQuery<QT.myVotes>(queries.MY_VOTES)
   const getMe = useQuery<QT.me>(queries.ME)
   const getPosts = useQuery<QT.latestPosts, QT.latestPostsVariables>(
     queries.LATEST_POSTS,

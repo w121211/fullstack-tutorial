@@ -13,6 +13,10 @@ import { Ticker } from './ticker'
 import { EventPage } from './event'
 import { StackPage } from './stack'
 import { StagePage } from './stage'
+import { CreditPage } from './credit'
+import { CreatePollPage } from './createPoll'
+import { TagPage } from './tag'
+import { ComparePage } from './compare'
 
 interface NotFoundProps extends RouteComponentProps { }
 
@@ -22,7 +26,7 @@ const NotFound: React.FC<NotFoundProps> = () => {
 
 export function Pages() {
   useQuery<QT.myPostLikes>(queries.MY_POST_LIKES)
-  useQuery<QT.myPollVotes>(queries.MY_POLL_VOTES)
+  useQuery<QT.myVotes>(queries.MY_VOTES)
   useQuery<QT.myCommentLikes>(queries.MY_COMMENT_LIKES)
   const { data, loading, refetch } = useQuery<QT.me>(queries.ME)
 
@@ -54,11 +58,13 @@ export function Pages() {
           <Ticker path="ticker" />
 
           {/* <EventPage path="event/:name" /> */}
+          <StagePage path="stage" me={data?.me} />
           <EventPage path="event" />
-
           <StackPage path="stack" />
-
-          <StagePage path="stage" />
+          <CreditPage path="credit" />
+          <CreatePollPage path="cpoll" />
+          <TagPage path="tag" />
+          <ComparePage path="compare" />
 
           {/* <ProtectedRoute as={Feed} isLoggedIn={isLoggedIn} default /> */}
           {/* <Pane left={<Board me={data?.me} />} right={<BoardRightPane />} default /> */}

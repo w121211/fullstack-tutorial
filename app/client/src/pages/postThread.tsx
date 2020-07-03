@@ -6,7 +6,7 @@ import { ArrowLeftOutlined } from '@ant-design/icons'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 import { Pane } from '../components/layout'
-import { Post } from '../components/postTile'
+import { Post } from '../components/tile'
 import { RepliedPostList } from '../components/postList'
 
 // %24AADR
