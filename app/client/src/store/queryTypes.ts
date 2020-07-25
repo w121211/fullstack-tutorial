@@ -714,6 +714,66 @@ export interface createPostVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: createVotePost
+// ====================================================
+
+export interface createVotePost_createVotePost_symbols {
+  __typename: "Symbol";
+  id: string;
+  name: string;
+}
+
+export interface createVotePost_createVotePost_count {
+  __typename: "PostCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+  nComments: number;
+  updatedAt: any;
+}
+
+export interface createVotePost_createVotePost_votes {
+  __typename: "Vote";
+  id: string;
+  pollId: string;
+  choiceId: string;
+  postId: string | null;
+  reward: number | null;
+  createdAt: any;
+  updatedAt: any;
+}
+
+export interface createVotePost_createVotePost {
+  __typename: "Post";
+  id: string;
+  userId: string;
+  cat: PostCat;
+  status: PostStatus;
+  text: string;
+  createdAt: any | null;
+  updatedAt: any | null;
+  symbols: createVotePost_createVotePost_symbols[] | null;
+  count: createVotePost_createVotePost_count;
+  votes: createVotePost_createVotePost_votes[];
+}
+
+export interface createVotePost {
+  createVotePost: createVotePost_createVotePost;
+}
+
+export interface createVotePostVariables {
+  pollId: string;
+  choiceId: string;
+  data: PostInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: updatePost
 // ====================================================
 

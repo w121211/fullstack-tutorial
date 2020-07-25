@@ -1,6 +1,7 @@
 import gql from 'graphql-tag'
 
 export const typeDefs = gql`
+
   type Query {
     roboPolls(symbolName: String): [Poll!]!
 
@@ -68,6 +69,8 @@ export const typeDefs = gql`
     signup(email: String!, password: String!): AuthPayload!
     login(email: String!, password: String!): AuthPayload!
     logout: Boolean!
+
+    createVotePost(pollId: ID!, choiceId: ID!, data: PostInput!): Post!
 
     createPost(data: PostInput!, pollId: ID): Post!
     updatePost(id: ID!, data: PostInput!): Post!

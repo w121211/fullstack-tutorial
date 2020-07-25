@@ -19,6 +19,9 @@ export const PollList: React.FC<PollListProps> = ({ me, toLogin, symbolId, noHea
     queries.LATEST_POLLS, {
     variables: { symbolId },
   })
+  const myVotes = useQuery<QT.myVotes>(
+    queries.MY_VOTES, {
+  })
   const [hasMore, setHasMore] = useState<boolean>(true)
 
   if (loading) return null
@@ -50,7 +53,7 @@ export const PollList: React.FC<PollListProps> = ({ me, toLogin, symbolId, noHea
 
       {
         data?.latestPolls && data?.latestPolls.map(e =>
-          <PollCard key={e.id} poll={e} me={me} toLogin={toLogin} noHeader={noHeader} folded />
+          <PollCard key={e.id} poll={e} me={me} toLogin={toLogin} noHeader={noHeader} folded myVotes={myVotes.data?.myVotes} />
         )
       }
 

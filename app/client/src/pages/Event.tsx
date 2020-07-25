@@ -18,18 +18,23 @@ const demo0 = (
             <Button type="primary">追蹤</Button>
           </Space>
         </Typography.Title>
-        <Typography.Paragraph>
-          屬性：#原油 #遊戲 #反托拉斯
-          影響：觀光、航運、
-          機會：$A3類、$B2類、$AAA、PS5供應鏈、生技、COVID-19疫苗概念股、口罩、醫療用品、
-          可能發展：和解、石油繼續下跌、V型反彈、U型反彈、勾型緩步回升、PS5拉貨備貨
-          關注重點：PS5價格、二次爆發、
-          關聯事件：
-          [分析（3）] [] [新擂台]
 
-          觀光類股可以進場了嗎？#拐點 ：通過投票變化可以看出進場時機
-          事件與子事件
+        <Typography.Paragraph>
+          屬性：#原油 #遊戲 #反托拉斯<br />
+          {/* 影響：觀光、航運、<br /> */}
+          機會：$A3類、$B2類、$AAA、PS5供應鏈、生技、COVID-19疫苗概念股、口罩、醫療用品、<br />
+          世界線：和解、石油繼續下跌、V型反彈、U型反彈、勾型緩步回升、PS5拉貨備貨<br />
+          關注重點：PS5價格、二次爆發、<br />
+          關聯事件：<br />
+          [分析（3）] [] [新擂台]<br />
+
+          觀光類股可以進場了嗎？#拐點 ：通過投票變化可以看出進場時機<br />
+          事件與子事件<br />
+          歷史事件<br />
+
+          [新增欄位]<br />
         </Typography.Paragraph>
+
       </Typography>
 
       <Typography.Paragraph>
@@ -173,11 +178,20 @@ const demo1 = (
           </Space>
         </Typography.Title>
         <Typography.Paragraph>
-          Orci dapibus ultrices in iaculis nunc sed augue. In eu mi bibendum neque egestas congue.<br />
+          屬性：#原油 #遊戲 #反托拉斯
+          影響：觀光、航運、
+          機會：$A3類、$B2類、$AAA、PS5供應鏈、生技、COVID-19疫苗概念股、口罩、醫療用品、
+          可能發展：和解、石油繼續下跌、V型反彈、U型反彈、勾型緩步回升、PS5拉貨備貨
+          關注重點：PS5價格、二次爆發、
+          關聯事件：
+          [分析（3）] [] [新擂台]
+
+          觀光類股可以進場了嗎？#拐點 ：通過投票變化可以看出進場時機
+          事件與子事件
         </Typography.Paragraph>
       </Typography>
 
-      <LineChart />
+      {/* <LineChart /> */}
 
       {/* <Divider>Focus</Divider> */}
 
@@ -297,7 +311,7 @@ interface EventProps {
 
 const Event: React.FC<EventProps> = ({ name }) => {
   return (
-    <Pane left={demo1} right={demoRight} />
+    <Pane left={demo0} right={demoRight} />
   )
 }
 

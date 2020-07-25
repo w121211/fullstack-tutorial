@@ -9,7 +9,7 @@ import * as QT from '../store/queryTypes'
 import { CommentList } from './commentList'
 import { PollChoiceRadioGroup } from './pollChoice'
 import { PollFooter, PostFooter } from './tileFooter'
-import { PostForm } from './postForm'
+import { VotePostForm, NewChoicePostForm } from './postForm'
 
 interface SymbolListProps {
   symbols: QT.pollFragment_symbols[] | null
@@ -42,9 +42,10 @@ interface PostCardProps {
   noHeader?: boolean
   noSpin?: boolean
   noThread?: boolean
+  choice: string
 }
 
-const PostCard: React.FC<PostCardProps> = ({ post, me, toLogin, folded = true, noHeader = false, noSpin = false, noThread = false }) => {
+const PostCard: React.FC<PostCardProps> = ({ post, me, toLogin, choice, folded = true, noHeader = false, noSpin = false, noThread = false }) => {
   const [commentCount, setCommentCount] = useState<number>(post.count.nComments)
   const [showComments, setShowComments] = useState<boolean>(false)
 
@@ -56,17 +57,16 @@ const PostCard: React.FC<PostCardProps> = ({ post, me, toLogin, folded = true, n
     : null
 
   return (
-    <Card size="small">
-      <Typography.Paragraph>{post.text}</Typography.Paragraph>
-      {
+    <>
+      <Typography.Paragraph>
+        {`[${choice}] ${post.text}`}
+        <PostFooter {...{ post, commentCount, showComments, setShowComments, mePosted }} />
+      </Typography.Paragraph>
+      {/* {
         showComments &&
         <CommentList me={me} postId={post.id} toAddCommentCountByOne={toAddCommentCountByOne} />
-      }
-
-
-      <PostFooter {...{ post, commentCount, showComments, setShowComments, mePosted }} />
-
-    </Card>
+      } */}
+    </>
   )
 }
 
@@ -81,6 +81,7 @@ interface PollProps {
   noHeader?: boolean
   noSpin?: boolean
   noThread?: boolean
+  myVotes?: QT.myVotes_myVotes[]
 }
 
 enum TailPanel {
@@ -106,7 +107,7 @@ function ChoicePanel({ choices }: { choices: QT.choice[] }) {
   )
 }
 
-export const PollCard: React.FC<PollProps> = ({ poll, me, toLogin, folded = true, noHeader = false, noSpin = false, noThread = false }) => {
+export const PollCard: React.FC<PollProps> = ({ poll, me, toLogin, myVotes = [], folded = true, noHeader = false, noSpin = false, noThread = false }) => {
   const [commentCount, setCommentCount] = useState<number>(poll.count.nComments)
   const [showComments, setShowComments] = useState<boolean>(false)
   const [showDetail, setShowDetail] = useState<boolean>(!folded)
@@ -119,6 +120,7 @@ export const PollCard: React.FC<PollProps> = ({ poll, me, toLogin, folded = true
   }
 
   const mePolled = me?.id === poll.userId
+  const meVote = myVotes.find(e => e.pollId === poll.id)
   // const edit = me?.id === poll.userId
   //   ? <Link to={`/post/${poll.id}?update`}>edit</Link>
   //   : null
@@ -133,7 +135,7 @@ export const PollCard: React.FC<PollProps> = ({ poll, me, toLogin, folded = true
   }))
 
 
-  const postsByChoice = Object.fromEntries<QT.pollFragment_posts[]>(
+  const postsDict = Object.fromEntries<QT.pollFragment_posts[]>(
     poll.choices.map(e => {
       const posts = poll.posts.filter(f => {
         const v = f.votes.find(g => g.pollId === poll.id)
@@ -143,17 +145,17 @@ export const PollCard: React.FC<PollProps> = ({ poll, me, toLogin, folded = true
       return [e.id, posts]
     })
   )
-
-
-  function onClick(e: React.MouseEvent<HTMLElement>) {
-
-  }
-
+  const choiceDict = Object.fromEntries(
+    poll.choices.map(e => [e.id, e])
+  )
 
   return (
     <Card>
 
       <Typography.Paragraph>
+
+        <PollFooter {...{ poll, commentCount, showComments, setShowComments, mePolled }} />
+
         {/* <Typography.Text type="secondary">邀請您參與評審：</Typography.Text> */}
         {
           <span onClick={() => { setViewed(true); setShowDetail(!showDetail) }}>
@@ -165,31 +167,54 @@ export const PollCard: React.FC<PollProps> = ({ poll, me, toLogin, folded = true
             }
           </span>
         }
-        {/* <PollChoiceRadioGroup {...{ pollId: poll.id, me, poll, count: poll.count, setShowDetail }} /> */}
+
         <SymbolList symbols={poll.symbols} />
+
+        {
+          meVote &&
+          <>
+            <br />
+            <Typography.Text type="secondary">你已經投票</Typography.Text>
+          </>
+        }
+
+        {/* <PollChoiceRadioGroup {...{ pollId: poll.id, me, poll, count: poll.count, setShowDetail }} /> */}
+
 
       </Typography.Paragraph>
 
+
+      {/* {
+        showComments &&
+        <Typography.Paragraph>
+          {poll.text}
+        </Typography.Paragraph>
+      } */}
 
       <Typography.Paragraph>
         <Space>
           {
             poll.choices.map(e =>
-              <Button key={e.id} data-id={e.id} size="small" shape="round" onClick={(e) => {
-                setShowComments(true)
-                setClickedChoiceId(e.currentTarget.getAttribute('data-id'))
-              }}>
-                {e.text}
-                {/* &nbsp; */}
-                {/* <small><LikeOutlined />30</small> */}
+              <Button key={e.id} data-id={e.id} size="small" shape="round"
+                type={e.id === clickedChoiceId ? "primary" : "default"}
+                onClick={(e) => {
+                  setShowComments(true)
+                  setShowDetail(true)
+                  setClickedChoiceId(e.currentTarget.getAttribute('data-id'))
+                }}
+              >
+                {e.text}&nbsp;<small>?%</small>
+                {/* &nbsp; <small><LikeOutlined />30</small> */}
               </Button>
             )
           }
+          <Button type="link" size="small">新增選項</Button>
+          {/* <Button type="link" size="small">所有</Button> */}
         </Space>
       </Typography.Paragraph>
 
 
-      {
+      {/* {
         showDetail &&
         <Typography.Paragraph>
           <Typography.Text type="secondary">
@@ -198,37 +223,27 @@ export const PollCard: React.FC<PollProps> = ({ poll, me, toLogin, folded = true
             <br />判定方式：投票人評審小組
           </Typography.Text>
         </Typography.Paragraph>
-      }
-
-      {
-        showDetail &&
-        <Typography.Paragraph>
-          {poll.text}
-        </Typography.Paragraph>
-      }
-
-      <PollFooter {...{ poll, commentCount, showComments, setShowComments, mePolled }} />
+      } */}
 
       {
         // showComments && clickedChoiceId && postsByChoice[clickedChoiceId].length > 0 &&
         showComments && clickedChoiceId &&
-        <List
-          // bordered
-          size="small"
-          dataSource={postsByChoice[clickedChoiceId]}
-          locale={{ emptyText: "no ~~~~" }}
-          renderItem={e => {
-            return (
-              <List.Item>
-                {/* <Button size="small" shape="round">產品有競爭力</Button><br /> */}
-                [產品有競爭力]<br />
-                {e.text}<br />
-                [up] [down]
-              </List.Item>
-            )
-          }}
-        />
-
+        <>
+          <List
+            bordered
+            size="small"
+            dataSource={postsDict[clickedChoiceId]}
+            locale={{ emptyText: `[${choiceDict[clickedChoiceId].text}] 無人回覆` }}
+            renderItem={e => {
+              return (
+                <List.Item>
+                  <PostCard post={e} me={me} choice={choiceDict[clickedChoiceId].text} />
+                </List.Item>
+              )
+            }}
+          />
+          <br />
+        </>
 
         // <>
         //   <Divider />
@@ -243,6 +258,18 @@ export const PollCard: React.FC<PollProps> = ({ poll, me, toLogin, folded = true
       }
 
 
+      {
+        showComments && clickedChoiceId && !meVote &&
+        <>
+          <Card size="small">
+            <VotePostForm pollId={poll.id} choice={choiceDict[clickedChoiceId]} />
+            {/* <NewChoicePostForm /> */}
+          </Card>
+        </>
+      }
+
+
+
     </Card>
   )
 }
@@ -254,7 +281,6 @@ export const Post: React.FC<PostCardProps> = ({ post, me, toLogin, folded = fals
       // return <PostCard title={<a target="_new" href="link">title<a />} />
       return null
     case QT.PostCat.REPLY:
-      return <PostCard post={post} me={me} toLogin={toLogin} folded={folded} noHeader={noHeader} noThread noSpin />
+      return <PostCard post={post} me={me} toLogin={toLogin} folded={folded} noHeader={noHeader} noThread noSpin choice="choice" />
   }
-  return <PostCard post={post} me={me} toLogin={toLogin} folded={folded} noHeader={noHeader} />
 }

@@ -377,6 +377,36 @@ export const resolvers: GraphQLResolverMap<Context> = {
     //   return prisma.post.update({ userId: req.userId, ...data })
     // },
 
+    createVotePost: async function (parent, { pollId, choiceId, data }, { prisma, req }) {
+      return prisma.post.create({
+        data: {
+          cat: data.cat,
+          text: data.text,
+          user: { connect: { id: req.userId } },
+          poll: pollId ? { connect: { id: parseInt(pollId) } } : undefined,
+          symbols: { connect: (data.symbolIds as string[]).map(x => ({ name: x })) },
+          count: { create: {} },
+          votes: {
+            create: [
+              {
+                user: { connect: { id: req.userId } },
+                poll: { connect: { id: parseInt(pollId) } },
+                choice: { connect: { id: parseInt(choiceId) } }
+              }
+            ]
+          }
+        },
+        include: {
+          count: true,
+          symbols: true,
+          votes: true,
+          // poll: true,
+        },
+      })
+    },
+
+
+
     createPoll: async (parent, { data }, { prisma, req }) => {
       const start = dayjs().startOf('d')
       const end = start.add(data.nDays, 'd')

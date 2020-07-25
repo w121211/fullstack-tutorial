@@ -13,7 +13,7 @@ export const PageContainer: React.FC<PageContainerProps> = ({ isLoggedIn, childr
     <Layout>
       {/* <Layout.Header style={{ zIndex: 1, width: '100%' }}> */}
       <Layout.Header>
-        <Link to="/board" style={{ color: "white" }}>HOME</Link>
+        <Link to="/" style={{ color: "white" }}>HOME</Link>
 
         {/* <div style={{ float: 'left' }}>
           <Input.Search

@@ -54,7 +54,7 @@ export const RepliedPostList: React.FC<RepliedPostListProps> = ({ me, toLogin, p
     <Space direction="vertical" style={{ width: "100%" }}>
       {
         data?.repliedPosts && data?.repliedPosts.map(e =>
-          <Post key={e.id} post={e} me={me} toLogin={toLogin} noHeader={noHeader} />
+          <Post key={e.id} post={e} me={me} toLogin={toLogin} noHeader={noHeader} choice="choice" />
         )
       }
       {/* <div />
@@ -104,7 +104,7 @@ export const PostList: React.FC<PostListProps> = ({ me, toLogin, symbolId, noHea
     <Space direction="vertical" style={{ width: "100%" }}>
       {
         data?.latestPosts && data?.latestPosts.map(x =>
-          <Post key={x.id} post={x} me={me} toLogin={toLogin} noHeader={noHeader} folded />
+          <Post key={x.id} post={x} me={me} toLogin={toLogin} noHeader={noHeader} folded choice="choice" />
         )
       }
 

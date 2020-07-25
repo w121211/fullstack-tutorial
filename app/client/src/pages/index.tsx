@@ -51,14 +51,15 @@ export function Pages() {
 
         <PageContainer path="/" isLoggedIn={isLoggedIn}>
 
-          <BoardPage path="/" me={data?.me} />
+          {/* <BoardPage path="/" me={data?.me} /> */}
+
+          <StagePage path="/" me={data?.me} />
 
           <SymbolPage path="symbol/:name" />
 
           <Ticker path="ticker" />
 
           {/* <EventPage path="event/:name" /> */}
-          <StagePage path="stage" me={data?.me} />
           <EventPage path="event" />
           <StackPage path="stack" />
           <CreditPage path="credit" />

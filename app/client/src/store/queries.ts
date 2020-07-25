@@ -427,6 +427,15 @@ export const CREATE_POST = gql`
   ${POST_FRAGMENT}
 `
 
+export const CREATE_VOTE_POST = gql`
+  mutation createVotePost($pollId: ID!, $choiceId: ID!, $data: PostInput!) {
+    createVotePost(pollId: $pollId, choiceId: $choiceId, data: $data) {
+      ...postFragment
+    }
+  }
+  ${POST_FRAGMENT}
+`
+
 export const UPDATE_POST = gql`
   mutation updatePost($id: ID!, $data: PostInput!) {
     updatePost(id: $id, data: $data) {

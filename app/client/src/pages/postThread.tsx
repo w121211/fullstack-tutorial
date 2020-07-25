@@ -26,7 +26,7 @@ const PostThread: React.FC<PostSingleProps> = ({ id, me }) => {
 
   return (
     <>
-      <Post post={queryPost.data.post} me={me} folded={false} />
+      <Post post={queryPost.data.post} me={me} folded={false} choice="choice" />
 
       {/* <div style={{ textAlign: "center" }}>
         <Typography.Title level={4}>Replies</Typography.Title>

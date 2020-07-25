@@ -33,7 +33,6 @@ interface Props extends RouteComponentProps {
   id?: any
 }
 
-
 function Tag() {
   const [showChoiceForm, setShowChoiceForm] = useState<boolean>(false)
   const [showComments, setShowComments] = useState<boolean>(false)
@@ -48,15 +47,28 @@ function Tag() {
           </Space>
         </Typography.Title>
         <Typography.Paragraph>
-          類股：$AAA $BBB $CCC [比較] [指標] [新增]<br />
-          相關：#觀光 #飯店 [比較] [新增]<br />
+          （無法有tickers的tag？ eg：#反傾銷 #美國 #熱榜）<br />
+          個股：$AAA $BBB $CCC [看好] [看壞] [比較] [新增] <br />
+          鄰近：#觀光 #飯店 [比較] [新增]<br />
           組合（＋）：#線上 # [新增]<br />
-          社群判斷：有潛力、穩定、<br />
-          [數據統計]<br />
-          熱度：週變化-2.3% <br />
-          [新增]<br />
+
+          事件（近3個月）：#COVID-19# <br />
+          判斷：看多、看空、題目不適合<br />
+
+          [數據統計/chart] 話題熱度（週變化-2.3%）、類股價格變動（+3.1%）、<br />
+
+          [新增欄位] - [機會] [風險] <br />
+
         </Typography.Paragraph>
       </Typography>
+
+      <Card>
+        個股：#博弈＋$AAA 相關新聞？
+      </Card>
+
+      <Card>
+        個股比較：熱度高的股票？
+      </Card>
 
       <Card>
         <Typography.Paragraph>
@@ -177,101 +189,24 @@ function Tag() {
         <Button size="small" type="text">看多</Button>
       </Card>
 
+      <Card>
+        <Typography.Title level={4}>群組間比較</Typography.Title>
+        #博弈 #觀光 #網購 [候選：#郵輪 #航空 (新增)] <br />
+        [chart] [經營數據] [與大盤相比] [與其他類股相比] [加入類股平均指數] [3個月] [半年] [1年]
+        <Button size="small" type="dashed">看空</Button>
+        <Button size="small" type="text">看多</Button>
+      </Card>
+
       <Typography.Title level={4}>擂台</Typography.Title>
-      <Card>博弈類股可以投資哪隻？</Card>
-      <Card>疫情會影響博弈嗎？</Card>
+      <Card>which 博弈類股可以投資哪隻？</Card>
+      <Card>事件 疫情會影響博弈嗎？ #COVID-19# </Card>
       <Card>現在是買入博弈股的好時機嗎？</Card>
-      <Card>[可能想問]博弈類股中哪隻最值得投資？ [提問]</Card>
 
-      {/* <LineChart /> */}
-
-      {/* <div>
-      風向標 / 股價預測 <Button size="small">解鎖</Button>
-      <br />
-      <img src={blur} alt="" />
-    </div> */}
-      <Card>
-        <Typography.Paragraph>
-          <Typography.Text strong>新產品將進一步推升$AAA股價[開放式回答]</Typography.Text>
-          &nbsp;#hash #tag
-          <br />
-          <Space>
-            <Button size="small" shape="round">同意</Button>
-            <Button size="small" shape="round">不同意</Button>
-            <Button size="small" shape="round">不知道</Button>
-            {/* <Button size="small" type="link">不知道</Button> */}
-          </Space>
-
-        </Typography.Paragraph>
-      </Card>
-
-      <Card>
-        <Typography.Paragraph>
-          <Typography.Text strong>新產品將進一步推升＄AAA股價[開放式回答]</Typography.Text>
-          &nbsp;#hash #tag
-          <br />
-          <Space>
-            <Button size="small" shape="round">同意</Button>
-            <Button size="small" shape="round">不同意</Button>
-            <Button size="small" shape="round">不知道</Button>
-            {/* <Button size="small" type="link">不知道</Button> */}
-          </Space>
-
-        </Typography.Paragraph>
-
-        {/* <BarChart /> */}
-
-        <Typography.Paragraph>
-          針對於投票的一些資訊
-        </Typography.Paragraph>
-
-        <Typography.Paragraph>
-          新產品將進一步推升＄AAA股價新產品將進一步推升＄AAA股價新產品將進一步推升＄AAA股價新產品將進一步推升＄AAA股價
-          <Button size="small" type="link" >全文</Button>
-        </Typography.Paragraph>
-        [up] [down]
-
-        <Divider />
-
-        <Space>
-          <Button size="small" shape="round">同意</Button>
-          <Button size="small" shape="round">不同意</Button>
-          <Button size="small" shape="round" type="primary">不知道</Button>
-          <Button size="small" type="link">新增</Button>
-        </Space>
-
-        <List
-          // bordered
-          size="small"
-          dataSource={[
-            "產品有競爭力產品有競爭力產品有競爭力產品有競爭力產品有競爭力",
-            "產品有競爭力產品有競爭力產品有競爭力產品有競爭力產品有競爭力",
-          ]}
-          renderItem={e => (
-            <List.Item>
-              {/* <Button size="small" shape="round">產品有競爭力</Button><br /> */}
-                [產品有競爭力]<br />
-              {e}<br />
-                [up] [down]
-            </List.Item>
-          )}
-        />
-
-        <Card size="small">
-          <Form size="small">
-            <Form.Item label="選項" required>
-              [同意]
-              {/* <Input /> */}
-            </Form.Item>
-            <Form.Item label="說明" required>
-              <Input.TextArea autoSize={{ minRows: 1 }} />
-            </Form.Item>
-            <Form.Item>
-              <Button>投票</Button>
-            </Form.Item>
-          </Form>
-        </Card>
-      </Card>
+      <div>
+        發起討論
+        <Button>博弈類股可以投資哪隻？</Button>
+        <Button>疫情會影響博弈嗎？</Button>
+      </div>
 
     </Space>
   )

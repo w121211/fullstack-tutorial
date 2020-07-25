@@ -118,9 +118,9 @@ export const PollForm: React.FC<PollFormProps> = () => {
           // setCat(e.target.value)
           // form.setFieldsValue(placeholdersByCat[e.target.value as QT.PostCat])
         }}>
-          <Radio value={QT.PollCat.ADD}>開放社群提供選項（無需回文）</Radio>
-          <Radio value={QT.PollCat.ADD_BY_POST}>開放社群提供選項（需回文）</Radio>
-          <Radio value={QT.PollCat.FIXED}>僅由作者提供選項</Radio>
+          {/* <Radio value={QT.PollCat.ADD}>開放式（無需回文）</Radio> */}
+          <Radio value={QT.PollCat.ADD_BY_POST}>開放式（允許社群增加選項）</Radio>
+          <Radio value={QT.PollCat.FIXED}>封閉式</Radio>
         </Radio.Group>
       </Form.Item>
 
@@ -201,9 +201,9 @@ export const PollForm: React.FC<PollFormProps> = () => {
         {...layout}
         label="內文"
         name="text"
-        rules={[{ required: true, message: '請輸入內文' }]}
+        rules={[{ required: false, message: '請輸入內文' }]}
       >
-        <Input.TextArea rows={3} autoSize={{ minRows: 8 }} />
+        <Input.TextArea rows={3} autoSize={{ minRows: 5 }} />
       </Form.Item>
 
       <Form.Item name="symbols" label="標籤" {...layout}>

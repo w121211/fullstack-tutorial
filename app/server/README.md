@@ -8,6 +8,10 @@ _pre-alpha_
  board,
  auto-feed{ 有限來源, cron }, auto-event,
  有限tickers{auto-poll}, 
+
+ vote, ticker-data {co-tickers, co-tags}, tag-data {co-tickers, co-tags},
+ event-data {}, 
+
 2. 審核入會制, follow, survey, 社群審查, 強化symbol/commit, poll{revote, voted-choice-tick}, username{preserved-names}, profile{ karma, 等級 },
 post{ nViews },
 board-date-divider,

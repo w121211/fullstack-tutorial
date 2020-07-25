@@ -1,12 +1,85 @@
 import React, { useState } from 'react'
-import { RouteComponentProps } from '@reach/router'
+import { RouteComponentProps, Link } from '@reach/router'
 import { useQuery } from '@apollo/react-hooks'
 import { Form, Button, Card, Descriptions, Radio, Space, List, Typography, Result, Divider, Row, Col, Input } from 'antd'
-import { LikeOutlined } from '@ant-design/icons'
+import { LikeOutlined, DislikeOutlined } from '@ant-design/icons'
 import { Pane } from '../components/layout'
 import { LineChart, BarChart } from '../components/charts'
 import blur from '../assets/download.jpeg'
 
+import count from '../assets/ticker_count.json'
+
+const ticker = "BA"
+const keywords = count["BA"]["co_keywords"]
+const tickers = count["BA"]["co_tickers"]
+
+const demoCard0 =
+  <Card>
+    <Typography.Paragraph>
+      <Typography.Text strong>新產品將進一步推升＄AAA股價[開放式回答]</Typography.Text>
+          &nbsp;#hash #tag
+          <br />
+      <Space>
+        <Button size="small" shape="round">同意</Button>
+        <Button size="small" shape="round">不同意</Button>
+        <Button size="small" shape="round">不知道</Button>
+        {/* <Button size="small" type="link">不知道</Button> */}
+      </Space>
+
+    </Typography.Paragraph>
+
+    {/* <BarChart /> */}
+
+    <Typography.Paragraph>
+      [針對於投票的一些資訊：投票期間：]
+        </Typography.Paragraph>
+
+    <Typography.Paragraph>
+      新產品將進一步推升＄AAA股價新產品將進一步推升＄AAA股價新產品將進一步推升＄AAA股價新產品將進一步推升＄AAA股價
+          <Button size="small" type="link" >全文</Button>
+    </Typography.Paragraph>
+        [up] [down]
+
+        <Divider />
+
+    <Space>
+      <Button size="small" shape="round">同意</Button>
+      <Button size="small" shape="round">不同意</Button>
+      <Button size="small" shape="round" type="primary">不知道</Button>
+      <Button size="small" type="link">新增</Button>
+    </Space>
+    <List
+      // bordered
+      size="small"
+      dataSource={[
+        "產品有競爭力產品有競爭力產品有競爭力產品有競爭力產品有競爭力",
+        "產品有競爭力產品有競爭力產品有競爭力產品有競爭力產品有競爭力",
+      ]}
+      renderItem={e => (
+        <List.Item>
+          {/* <Button size="small" shape="round">產品有競爭力</Button><br /> */}
+                [產品有競爭力]<br />
+          {e}<br />
+                [up] [down]
+        </List.Item>
+      )}
+    />
+
+    <Card size="small">
+      <Form size="small">
+        <Form.Item label="選項" required>
+          [同意]
+              {/* <Input /> */}
+        </Form.Item>
+        <Form.Item label="說明" required>
+          <Input.TextArea autoSize={{ minRows: 1 }} />
+        </Form.Item>
+        <Form.Item>
+          <Button>投票</Button>
+        </Form.Item>
+      </Form>
+    </Card>
+  </Card>
 
 const demo =
   <>
@@ -14,7 +87,7 @@ const demo =
       <Typography>
         <Typography.Title level={2}>
           <Space size="large">
-            <i>$XXXX</i>
+            <i>${ticker}</i>
             {/* <i>{getSymbol.data.symbol.name}</i> */}
             <Button type="primary">追蹤</Button>
           </Space>
@@ -216,83 +289,211 @@ interface Props extends RouteComponentProps {
   id?: any
 }
 
+function DemoChoice({ name }: { name: string }) {
+  const [showPanel, setShowPanel] = useState<boolean>(false)
+  function onClick() {
+    setShowPanel(!showPanel)
+  }
+
+  return (
+    <>
+      {
+        showPanel ?
+          <>
+            <Button size="small" type="primary" shape="round" onClick={onClick}>產品市佔率高</Button>
+            <small><LikeOutlined /> <DislikeOutlined /> </small>
+          </>
+          :
+          <Button size="small" shape="round" onClick={onClick}>產品市佔率高</Button>
+      }
+    </>
+  )
+
+}
+
 function _Ticker() {
   const [showChoiceForm, setShowChoiceForm] = useState<boolean>(false)
   const [showComments, setShowComments] = useState<boolean>(false)
+  const [showOppCard, setShowOppCard] = useState<boolean>(false)
+
+  const kws = Object.entries(keywords)
+    .sort((a, b) => b[1] - a[1])
+    .map(e => e[0])
+  const tks = Object.entries(tickers)
+    .sort((a, b) => b[1] - a[1])
+    .map(e => e[0])
+
+
+
+  const demoOppCard = (
+    <Card>
+      {/* <Typography.Title level={4}>機會</Typography.Title> */}
+      <Typography.Paragraph>
+        <Typography.Text strong>$BA機會？</Typography.Text>
+        <Button size="small" type="link" onClick={() => { setShowChoiceForm(!showChoiceForm) }}>前5名</Button>
+        <br />
+        <DemoChoice name="有成長潛力" />
+        <DemoChoice name="產品市佔率高" />
+
+        {/* <Button size="small" shape="round" onClick={() => { setShowComments(!showComments) }}>產品有競爭力&nbsp;
+              <small><LikeOutlined />30</small>
+        </Button>
+
+        <Button size="small" shape="round">產品市佔率高</Button>
+        <Button size="small" shape="round">有成長潛力</Button>
+        <Button size="small" type="dashed" shape="round" onClick={function () { setShowChoiceForm(!showChoiceForm) }}>新增</Button> */}
+      </Typography.Paragraph>
+
+
+      {
+        showChoiceForm &&
+        <Card size="small">
+          <Form size="small">
+            <Form.Item label="選項" required>
+              <Input />
+              <Button size="small" type="dashed" shape="round">有成長潛力</Button>
+              <Button size="small" type="dashed" shape="round">產品有競爭力</Button>
+              <Button size="small" type="dashed" shape="round">產品市佔率高</Button>
+            </Form.Item>
+            <Form.Item label="說明" required>
+              <Input.TextArea autoSize={{ minRows: 1 }} />
+            </Form.Item>
+            <Form.Item>
+              <Button>送出</Button>
+            </Form.Item>
+          </Form>
+        </Card>
+      }
+
+      <Button type="link">最新</Button>
+
+      {
+        showComments &&
+        <List
+          // bordered
+          size="small"
+          dataSource={[
+            "產品有競爭力產品有競爭力產品有競爭力產品有競爭力產品有競爭力",
+            "產品有競爭力產品有競爭力產品有競爭力產品有競爭力產品有競爭力",
+          ]}
+          renderItem={e => (
+            <List.Item>
+              {/* <Button size="small" shape="round">產品有競爭力</Button><br /> */}
+                [產品有競爭力]<br />
+              {e}<br />
+                [up] [down]
+            </List.Item>
+          )}
+        />
+      }
+
+    </Card>
+  )
 
   return (
     <Space direction="vertical" style={{ width: "100%" }}>
       <Typography>
         <Typography.Title level={2}>
           <Space size="large">
-            <i>$XXXX</i>
+            <i>Boeing Co, ${ticker}</i>
             {/* <i>{getSymbol.data.symbol.name}</i> */}
           </Space>
         </Typography.Title>
-        <Typography.Paragraph>
-          OOO XXX 有限公司, Nasdaq<br />
-          [屬性]：#Saas類股
-          #新產品＃
-      </Typography.Paragraph>
-      </Typography>
 
-      <Card>
-        <Typography.Title level={4}>機會</Typography.Title>
+        {/* <Descriptions title="基本面" size="small">
+          <Descriptions.Item label="屬性">
+            <Space>
+              <Link to="">#Transportation</Link>
+              <Link to="">#Travel</Link>
+              <Link to="">#Aerospace</Link>
+            </Space>
+          </Descriptions.Item>
+
+          <Descriptions.Item label="EPS">1.2</Descriptions.Item>
+          <Descriptions.Item label="本益比">32</Descriptions.Item>
+          <Descriptions.Item label="資本負債比">32</Descriptions.Item>
+          <Descriptions.Item label="現金資本比">32</Descriptions.Item>
+          <Descriptions.Item label="產業">#Saas #網路基礎設備</Descriptions.Item>
+          <Descriptions.Item label="總體面">#COVID-19# ##</Descriptions.Item>
+          <Descriptions.Item label="消息面">#新產品發布# ##</Descriptions.Item>
+          <Descriptions.Item label="比較">與類股相比、與大盤相比</Descriptions.Item>
+        </Descriptions> */}
+
         <Typography.Paragraph>
           <Space>
-            <Button size="small" shape="round" onClick={() => { setShowComments(!showComments) }}>產品有競爭力&nbsp;
-              <small><LikeOutlined />30</small>
-            </Button>
-            <Button size="small" shape="round">產品市佔率高</Button>
-            {/* <Input style={{ width: 60 }} /> */}
-            <Button size="small" shape="round">有成長潛力</Button>
-            <Button size="small" type="link" onClick={() => { setShowChoiceForm(!showChoiceForm) }}>新增</Button>
+            <Link to="">#Transportation</Link>
+            <Link to="">#Travel</Link>
+            <Link to="">#Aerospace</Link>
+            <span>#熱門</span>
+            <span>#熱度竄升中</span>
+            <span>#冷門</span>
+            <span>#交易量高</span>
+            <Button type="text">...</Button>
           </Space>
         </Typography.Paragraph>
 
-        {
-          showChoiceForm &&
-          <Card size="small">
-            <Form size="small">
-              <Form.Item label="選項" required>
-                <Input />
-                <Button size="small" type="dashed" shape="round">有成長潛力</Button>
-                <Button size="small" type="dashed" shape="round">產品有競爭力</Button>
-                <Button size="small" type="dashed" shape="round">產品市佔率高</Button>
-              </Form.Item>
-              <Form.Item label="說明" required>
-                <Input.TextArea autoSize={{ minRows: 1 }} />
-              </Form.Item>
-              <Form.Item>
-                <Button>送出</Button>
-              </Form.Item>
-            </Form>
-          </Card>
-        }
+        <Typography.Paragraph>
+          <span>事件：</span>
+          <Space>
+            <Link to="">#脫歐#</Link>
+            <Button type="text">...</Button>
+          </Space>
+        </Typography.Paragraph>
 
+        <Typography.Paragraph>
+          <span>機會：</span>
+          <Button type="text" size="small">
+            產品有競爭力
+              <small><LikeOutlined />?</small>
+          </Button>
+          <Button type="text" size="small">股價低於長期平均</Button>
+          <Button type="text" size="small" onClick={function () { setShowOppCard(!showOppCard) }}>...</Button>
+        </Typography.Paragraph>
+
+        {showOppCard && demoOppCard}
+
+        <Typography.Paragraph>
+          <Space>
+            <span>判斷：</span>
+            <Button type="text" size="small">看多</Button>
+            <Button type="text" size="small">看空</Button>
+          </Space>
+        </Typography.Paragraph>
+      </Typography>
+
+      {/* <Typography.Title level={4}>擂台</Typography.Title> */}
+      <Divider />
+
+      <div>
         <Button type="link">最新</Button>
+        <Button type="text"><b>火熱</b></Button>
+        <Link to="/cpoll">
+          <Button type="primary">新問題</Button>
+        </Link>
+      </div>
 
-        {
-          showComments &&
-          <List
-            // bordered
-            size="small"
-            dataSource={[
-              "產品有競爭力產品有競爭力產品有競爭力產品有競爭力產品有競爭力",
-              "產品有競爭力產品有競爭力產品有競爭力產品有競爭力產品有競爭力",
-            ]}
-            renderItem={e => (
-              <List.Item>
-                {/* <Button size="small" shape="round">產品有競爭力</Button><br /> */}
-                [產品有競爭力]<br />
-                {e}<br />
-                [up] [down]
-              </List.Item>
-            )}
-          />
-        }
+      <Card>OO產品發表 5W1H（想知道）</Card>
+      <Card>南北韓衝突</Card>
+      <Card>OOO積欠工資</Card>
+      <Card>發放消費券</Card>
 
+
+      <Card>
+        <Typography.Title level={4}>Tickers</Typography.Title>
+        <div>
+          {tks.map((e, i) => <Button key={i} size="small" shape="round" type="text">${e}</Button>)}
+        </div>
       </Card>
+
+
+      <Card>
+        <Typography.Title level={4}>屬性</Typography.Title>
+        <div>
+          {kws.map((e, i) => <Button key={i} size="small" shape="round" type="text">#{e}</Button>)}
+        </div>
+      </Card>
+
+
 
       <Card>
         <Typography.Paragraph>
@@ -357,72 +558,7 @@ function _Ticker() {
         </Typography.Paragraph>
       </Card>
 
-      <Card>
-        <Typography.Paragraph>
-          <Typography.Text strong>新產品將進一步推升＄AAA股價[開放式回答]</Typography.Text>
-          &nbsp;#hash #tag
-          <br />
-          <Space>
-            <Button size="small" shape="round">同意</Button>
-            <Button size="small" shape="round">不同意</Button>
-            <Button size="small" shape="round">不知道</Button>
-            {/* <Button size="small" type="link">不知道</Button> */}
-          </Space>
 
-        </Typography.Paragraph>
-
-        {/* <BarChart /> */}
-
-        <Typography.Paragraph>
-          針對於投票的一些資訊
-        </Typography.Paragraph>
-
-        <Typography.Paragraph>
-          新產品將進一步推升＄AAA股價新產品將進一步推升＄AAA股價新產品將進一步推升＄AAA股價新產品將進一步推升＄AAA股價
-          <Button size="small" type="link" >全文</Button>
-        </Typography.Paragraph>
-        [up] [down]
-
-        <Divider />
-
-        <Space>
-          <Button size="small" shape="round">同意</Button>
-          <Button size="small" shape="round">不同意</Button>
-          <Button size="small" shape="round" type="primary">不知道</Button>
-          <Button size="small" type="link">新增</Button>
-        </Space>
-        <List
-          // bordered
-          size="small"
-          dataSource={[
-            "產品有競爭力產品有競爭力產品有競爭力產品有競爭力產品有競爭力",
-            "產品有競爭力產品有競爭力產品有競爭力產品有競爭力產品有競爭力",
-          ]}
-          renderItem={e => (
-            <List.Item>
-              {/* <Button size="small" shape="round">產品有競爭力</Button><br /> */}
-                [產品有競爭力]<br />
-              {e}<br />
-                [up] [down]
-            </List.Item>
-          )}
-        />
-
-        <Card size="small">
-          <Form size="small">
-            <Form.Item label="選項" required>
-              [同意]
-              {/* <Input /> */}
-            </Form.Item>
-            <Form.Item label="說明" required>
-              <Input.TextArea autoSize={{ minRows: 1 }} />
-            </Form.Item>
-            <Form.Item>
-              <Button>投票</Button>
-            </Form.Item>
-          </Form>
-        </Card>
-      </Card>
 
 
       <Card>
