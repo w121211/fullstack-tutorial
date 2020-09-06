@@ -77,7 +77,7 @@ const prisma = new PC.PrismaClient({
 async function main() {
   console.log('seeding')
 
-  await prisma.executeRaw('TRUNCATE "User", "Symbol" CASCADE;')
+  await prisma.$executeRaw('TRUNCATE "User", "Symbol" CASCADE;')
 
   for (let d of USERS) {
     const hashedPassword = await hash(d.password, 10)
@@ -144,5 +144,5 @@ main()
     throw e
   })
   .finally(async () => {
-    await prisma.disconnect()
+    await prisma.$disconnect()
   })

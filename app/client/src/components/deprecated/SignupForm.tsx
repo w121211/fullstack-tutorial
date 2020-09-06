@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useMutation, useQuery, useLazyQuery } from '@apollo/react-hooks'
+import { useMutation, useQuery, useLazyQuery } from '@apollo/client'
 
 import { navigate } from "@reach/router"
 import * as queries from '../../store/queries'

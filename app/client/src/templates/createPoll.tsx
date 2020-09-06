@@ -1,6 +1,6 @@
 import React from 'react'
 import { RouteComponentProps } from '@reach/router'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery } from '@apollo/client'
 import { Badge, Button, Card, Descriptions, Radio, Space, List, Form, Input, Typography } from 'antd'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'

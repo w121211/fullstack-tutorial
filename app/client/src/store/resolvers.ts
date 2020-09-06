@@ -1,6 +1,4 @@
-import gql from 'graphql-tag';
-import { Resolvers } from 'apollo-client'
-import { ApolloCache } from 'apollo-cache';
+import { ApolloCache, Resolvers, gql } from '@apollo/client'
 import Cookies from 'js-cookie'
 import * as queries from './queries'
 import * as QT from './queryTypes'
@@ -16,8 +14,6 @@ interface AppResolvers extends Resolvers {
   Query: ResolverMap
   Post: ResolverMap
   Comment: ResolverMap
-  // Launch: ResolverMap
-  // Mutation: ResolverMap
 }
 
 export const typeDefs = gql`
@@ -28,12 +24,6 @@ export const typeDefs = gql`
   extend type Mutation {
     addOrRemoveFromCart(id: ID!): [ID!]!
   }
-  # extend type Launch {
-  #   isInCart: Boolean!
-  # }
-  # extend type Feed {
-  #   isClicked: Boolean!
-  # }
   extend type Post {
     mePost: Boolean!
     meLike: PostLike

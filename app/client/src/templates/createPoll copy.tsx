@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { RouteComponentProps } from '@reach/router'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery } from '@apollo/client'
 import { Badge, Button, Card, Descriptions, Radio, Space, List, Form, Input, Typography } from 'antd'
 import { FormInstance } from 'antd/lib/form'
 import * as queries from '../store/queries'

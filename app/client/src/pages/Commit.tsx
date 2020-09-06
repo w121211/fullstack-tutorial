@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { RouteComponentProps } from '@reach/router';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from '@reach/router'
-import { useQuery, useMutation, } from '@apollo/react-hooks'
+import { useQuery, useMutation, } from '@apollo/client'
 import { Card, Typography, Form, Button, Input, Space, List } from 'antd'
 
 import * as queries from '../store/queries'

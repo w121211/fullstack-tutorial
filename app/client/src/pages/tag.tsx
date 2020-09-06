@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { RouteComponentProps } from '@reach/router'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery } from '@apollo/client'
 import { Form, Button, Card, Descriptions, Radio, Space, List, Typography, Result, Divider, Row, Col, Input } from 'antd'
 import { LikeOutlined } from '@ant-design/icons'
 import { Pane } from '../components/layout'

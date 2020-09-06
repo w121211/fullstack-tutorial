@@ -1,6 +1,6 @@
 import React from 'react'
 import { RouteComponentProps, Redirect, Link, navigate } from '@reach/router'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery } from '@apollo/client'
 import { Row, Col, Badge, Button, Card, Radio, Space, List, Typography, Layout, Divider, Drawer, Modal } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import * as queries from '../store/queries'

@@ -1,6 +1,6 @@
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import React, { useState, useEffect } from 'react'
-import { useQuery, useMutation } from '@apollo/react-hooks'
+import { useQuery, useMutation } from '@apollo/client'
 import { Alert, AutoComplete, Form, Input, Button, Layout, Row, Col, Card, Typography, Radio, Popover, Space } from 'antd'
 import { FormInstance } from 'antd/lib/form'
 import * as queries from '../store/queries'

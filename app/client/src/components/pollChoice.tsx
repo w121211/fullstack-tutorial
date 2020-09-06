@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import React, { useState, useEffect } from 'react'
-import { useQuery, useMutation } from '@apollo/react-hooks'
+import { useQuery, useMutation } from '@apollo/client'
 import { Button, Card, Tooltip, Form, Radio, Spin, Input, Typography } from 'antd'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'

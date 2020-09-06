@@ -1,6 +1,6 @@
 import React from 'react'
 import { Redirect, RouteComponentProps, Link } from '@reach/router'
-import { useMutation, useQuery } from '@apollo/react-hooks'
+import { useMutation, useQuery } from '@apollo/client'
 import { Space, Form, Input, Button, Row, Col, Result } from 'antd'
 import { FormInstance } from 'antd/lib/form'
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'

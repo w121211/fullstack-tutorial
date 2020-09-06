@@ -345,7 +345,7 @@ export const resolvers: GraphQLResolverMap<Context> = {
         maxAge: 1000 * 60 * 60 * 24,
         // secure: true,  // https only
       })
-      console.log('login succeess')
+      console.log(`User ${user.email} login succeess`)
       return { token, user }
     },
 

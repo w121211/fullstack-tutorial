@@ -1,12 +1,12 @@
-# start
+# Install
 
-## 環境安裝
+### 安裝Docker & VScode
 
 1. 安裝docker, vscode（包含remote dev pack [安裝方法](https://code.visualstudio.com/docs/remote/containers)）, github-desktop
 2. clone這個project
 3. 用vscode打開project folder，會自動詢"open and build in container?"，選`yes`，等待vscode自動build好並開啟
 
-## 啟動開發環境
+### 啟動開發環境
 
 ```bash
 # 用terminal進入container-bash
@@ -15,21 +15,50 @@ sudo docker ps -a
 sudo docker exec -it 32ae50cd95fc /bin/bash 
 ```
 
-1. 啟動client-app
+### 安裝server-app, client-app
+
+1. 安裝server-app（只有第一次需要）
+
+```bash
+cd /workspace/fullstack-tutorial/app/server
+npm install
+```
+
+2. 設定Postgres（只有第一次需要）
+  - 登入pgadmin4，網址：http://localhost:5050/，帳密:參考`./.devcontainer/docker-compose.yml`
+  - 點選`Add New Server`, Name(隨意取):`pg`, HostName:`pg`, Username/Password:參考`./.devcontainer/docker-compose.yml`
+  - 連線成功後，在pg-database點右鍵 > Create Database，Database:`prisma`
+
+```bash
+# 初始化資料庫table（利用prisma）
+cd /workspace/fullstack-tutorial/app/server
+npm run migrate
+npm run migrateup
+
+# 將dummy資料(seed)寫入資料庫
+npm run seed
+
+# 生成prisma-client code
+npm run gen:prisma
+```
+
+3. 啟動server-app
+
+```bash
+npm run dev
+# 啟動後可試graphql：http://localhost:4000/graphql
+```
+
+4. 安裝&啟動client-app
 
 ```bash
 cd /workspace/fullstack-tutorial/app/client
+
+# 安裝libraries（只有第一次需要）
+npm install
+
+# 啟動，需要一段時間....
 npm run start
-# 啟動需要一段時間....
-```
-
-2. 啟動server-app
-
-```bash
-# 開一個新的terminal，進入container-bash
-cd /workspace/fullstack-tutorial/app/server
-npm run dev
-# 啟動後可嘗試graphql：http://localhost:4000/graphql
 ```
 
 ### client playground

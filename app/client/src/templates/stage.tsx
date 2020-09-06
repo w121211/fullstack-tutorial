@@ -1,6 +1,6 @@
 import React from 'react'
 import { RouteComponentProps } from '@reach/router'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery } from '@apollo/client'
 import { Badge, Button, Card, Descriptions, Radio, Space, List, Typography, Result, Divider } from 'antd'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
@@ -53,7 +53,7 @@ const Event: React.FC<EventProps> = ({ name }) => {
           // user建立的poll，fixed-choices<br />
           [新] 2020-2021年房價會大跌嗎？ [會] [不會]<br />
           #房價<br />
-          <div style={{textAlign: "right"}}>@anonymous 12:31 [up] [down] [comments] [replies?] [給author的特別功能]</div>
+          <div style={{ textAlign: "right" }}>@anonymous 12:31 [up] [down] [comments] [replies?] [給author的特別功能]</div>
           -------------<br />
           時間：<br />
           判定方式：投票人小組<br />
@@ -69,7 +69,7 @@ const Event: React.FC<EventProps> = ({ name }) => {
           <Card>
             [會] <br />
             總之是一些回覆總之是一些回覆總之是一些回覆總之是一些回覆總之是一些回覆
-            <div style={{textAlign: "right"}}>@anonymous 12:31 [up] [down] [comments]</div>
+            <div style={{ textAlign: "right" }}>@anonymous 12:31 [up] [down] [comments]</div>
             ----predicates-----<br />
             1. OOOOOOOOOO <br />
             2. OOOOOOOOOO <br />
@@ -77,7 +77,7 @@ const Event: React.FC<EventProps> = ({ name }) => {
           <Card>
             [會] <br />
             總之是一些回覆總之是一些回覆總之是一些回覆總之是一些回覆總之是一些回覆
-            <div style={{textAlign: "right"}}>@anonymous 12:31 [up] [down] [comments]</div>
+            <div style={{ textAlign: "right" }}>@anonymous 12:31 [up] [down] [comments]</div>
           </Card>
         </Card>
 
@@ -85,7 +85,7 @@ const Event: React.FC<EventProps> = ({ name }) => {
           // user建立的poll，open-choices<br />
           [新] 航空股哪隻值得買？[開放回答]<br />
           #航空運輸 <br />
-          <div style={{textAlign: "right"}}>@anonymous 12:31 [up] [down] [comments] [replies?]</div>
+          <div style={{ textAlign: "right" }}>@anonymous 12:31 [up] [down] [comments] [replies?]</div>
           ------最新想法-----<br />
           [$AAA(AAA航空)] [$BBB(...)] <br />
           <Card>
@@ -97,7 +97,7 @@ const Event: React.FC<EventProps> = ({ name }) => {
         <Card>
           此網站應該要有哪些tag？[開放回答]<br />
           #站方 <br />
-          <div style={{textAlign: "right"}}>@webmaster 12:31 [up] [down] [comments] [replies?]</div>
+          <div style={{ textAlign: "right" }}>@webmaster 12:31 [up] [down] [comments] [replies?]</div>
           ------最新想法-----<br />
           [#AAA] [#BBB] [#CCC]<br />
           [回答] [查看完整]
@@ -119,12 +119,12 @@ const Event: React.FC<EventProps> = ({ name }) => {
           -------------<br />
           源自於[link-post]，author可以做一些發言，雖然不是強制，但可以當作是補充說明。author可以做一些發言，雖然不是強制，但可以當作是補充說明。author可以做一些發言，雖然不是強制，但可以當作是補充說明。<br />
           <br />
-          <div style={{textAlign: "right"}}>@anonymous 12:31 [up] [down] [comments] [回應]</div>
+          <div style={{ textAlign: "right" }}>@anonymous 12:31 [up] [down] [comments] [回應]</div>
           <br />
           最新 [完整] [分享你的想法]<br />
           <Card>
             [會] @open-user：最前面的幾個字.... [link] [predicates]<br />
-            <div style={{textAlign: "right"}}>@open-user 12:31 [up] [down] [comments] [predicates]</div>
+            <div style={{ textAlign: "right" }}>@open-user 12:31 [up] [down] [comments] [predicates]</div>
             ----predicates-----<br />
             1. [OOOOOOOOOO?] (選項1) 選項2<br />
             2. [OOOOOOOOOO?] <br />
@@ -135,7 +135,7 @@ const Event: React.FC<EventProps> = ({ name }) => {
           // user建立的poll，fixed-choices<br />
           [新] 2020-2021年房價會大跌嗎？ [會] [不會]<br />
           #房價 <br />
-          <div style={{textAlign: "right"}}>@anonymous 12:31 [up] [down] [comments]</div>
+          <div style={{ textAlign: "right" }}>@anonymous 12:31 [up] [down] [comments]</div>
           -------------<br />
           時間：<br />
           判定方式：投票人小組<br />
@@ -163,7 +163,7 @@ const Event: React.FC<EventProps> = ({ name }) => {
           COVID-19若2次爆發，會重挫全球經濟嗎？<br />
         </Card>
 
-        
+
 
         <Card>
           美聯儲會用一切力量拉抬股市，本次疫情危機已結束，美股轉為熊市 []同意 []不同意<br />
@@ -200,7 +200,7 @@ const Event: React.FC<EventProps> = ({ name }) => {
 
         <Card>
           [新]iPhone12將有助蘋果($AAPL)股價持續攀升 []同意 []不同意 <br />
-          
+
         </Card>
 
 

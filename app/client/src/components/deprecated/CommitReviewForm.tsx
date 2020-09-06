@@ -1,5 +1,5 @@
 import React, { useState, Fragment } from 'react'
-import { useQuery, useLazyQuery, useMutation } from '@apollo/react-hooks'
+import { useQuery, useLazyQuery, useMutation } from '@apollo/client'
 import { Link, Router, RouteComponentProps } from '@reach/router'
 import * as queries from '../../store/queries'
 import * as QT from '../../store/queryTypes'

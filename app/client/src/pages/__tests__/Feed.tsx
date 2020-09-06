@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from '@reach/router'
-import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks'
+import { useQuery, useMutation, useApolloClient } from '@apollo/client'
 import ApolloClient from 'apollo-client'
 import { Input, Card, Divider, Typography, Tag, Button, Form } from 'antd'
 import { UpOutlined, DownOutlined } from '@ant-design/icons'

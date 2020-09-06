@@ -1,5 +1,5 @@
 import React from 'react';
-import {InMemoryCache} from 'apollo-cache-inmemory';
+import { InMemoryCache } from '@apollo/client';
 import gql from 'graphql-tag';
 
 import {
@@ -8,7 +8,7 @@ import {
   fireEvent,
   waitForElement,
 } from '../../test-utils';
-import Login, {LOGIN_USER} from '../login';
+import Login, { LOGIN_USER } from '../login';
 
 describe('Login Page', () => {
   // automatically unmount and cleanup DOM after the test is finished.
@@ -22,18 +22,18 @@ describe('Login Page', () => {
     const cache = new InMemoryCache();
     const mocks = [
       {
-        request: {query: LOGIN_USER, variables: {email: 'a@a.a'}},
-        result: {data: {login: 'abc'}},
+        request: { query: LOGIN_USER, variables: { email: 'a@a.a' } },
+        result: { data: { login: 'abc' } },
       },
     ];
 
-    const {getByText, getByTestId} = await renderApollo(<Login />, {
+    const { getByText, getByTestId } = await renderApollo(<Login />, {
       mocks,
       cache,
     });
 
     fireEvent.change(getByTestId('login-input'), {
-      target: {value: 'a@a.a'},
+      target: { value: 'a@a.a' },
     });
 
     fireEvent.click(getByText(/log in/i));
@@ -49,7 +49,7 @@ describe('Login Page', () => {
         }
       `,
     });
-    const {isLoggedIn} = response;
+    const { isLoggedIn } = response;
     expect(isLoggedIn).toBeTruthy();
   });
 });

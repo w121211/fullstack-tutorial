@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import { Router, RouteComponentProps, Redirect } from '@reach/router'
-import { useApolloClient, useMutation, useQuery } from '@apollo/react-hooks'
+import { useApolloClient, useMutation, useQuery } from '@apollo/client'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 import { PageContainer, Pane } from '../components/layout'
@@ -17,6 +17,7 @@ import { CreditPage } from './credit'
 import { CreatePollPage } from './createPoll'
 import { TagPage } from './tag'
 import { ComparePage } from './compare'
+import { BlockPage } from './block'
 
 interface NotFoundProps extends RouteComponentProps { }
 
@@ -40,6 +41,8 @@ export function Pages() {
       {!isLoggedIn && <Redirect from="" to="/login" noThrow />}
 
       <Router primary={false} component={Fragment}>
+
+        <BlockPage path="block" />
 
         <SubmitPage path="submit" />
 
