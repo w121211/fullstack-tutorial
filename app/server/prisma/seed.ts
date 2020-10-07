@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import * as PC from '@prisma/client'
 import { connect } from 'http2'
 
-const ROBO = { email: "robo@robo.com", password: "robo" }
+const BOT = { email: "bot@bot.com", password: "robo" }
 
 const ROBOPOLL_SCHEMA = [
   { index: 1, title: "", text: "", choices: "".split(","), },

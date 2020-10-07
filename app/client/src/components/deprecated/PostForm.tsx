@@ -53,127 +53,128 @@ interface LinkPostProps {
   // page: QT.fetchPage_fetchPage
 }
 
-const LinkPostForm: React.FC<LinkPostProps> = () => {
-  // const {
-  //   createdPost,
-  //   suggestTitle,
-  //   suggestTags,
-  //   suggestEvents,
-  //   suggestTickers,
-  //   createdEvent } = page
-  const [createPost, { data, loading, error }] = useMutation<QT.createPost, QT.createPostVariables>(
-    queries.CREATE_POST
-  )
-  // const { register, handleSubmit, setValue, errors } = useForm({
-  //   defaultValues: {
-  //     title: page.suggestTitle,
-  //     tags: page.suggestTags,
-  //     events: page.suggestEvents,
-  //     tickers: page.suggestTickers,
-  //     text: "some comments goes here",
-  //   }
-  // })
-  // const onSubmit = (data: any) => {
-  //   // createPost({
-  //   //   variables: {
-  //   //     data: {
-  //   //       cat: QT.PostCat.LINK,
-  //   //       title: page.title,
-  //   //       // symbols: page.symbols,
-  //   //     }
-  //   //   }
-  //   // })
-  // }
+// const LinkPostForm: React.FC<LinkPostProps> = () => {
+//   // const {
+//   //   createdPost,
+//   //   suggestTitle,
+//   //   suggestTags,
+//   //   suggestEvents,
+//   //   suggestTickers,
+//   //   createdEvent } = page
+//   const [createPost, { data, loading, error }] = useMutation<QT.createPost, QT.createPostVariables>(
+//     // queries.CREATE_POST
+//     queries.BLOCK,
+//   )
+//   // const { register, handleSubmit, setValue, errors } = useForm({
+//   //   defaultValues: {
+//   //     title: page.suggestTitle,
+//   //     tags: page.suggestTags,
+//   //     events: page.suggestEvents,
+//   //     tickers: page.suggestTickers,
+//   //     text: "some comments goes here",
+//   //   }
+//   // })
+//   // const onSubmit = (data: any) => {
+//   //   // createPost({
+//   //   //   variables: {
+//   //   //     data: {
+//   //   //       cat: QT.PostCat.LINK,
+//   //   //       title: page.title,
+//   //   //       // symbols: page.symbols,
+//   //   //     }
+//   //   //   }
+//   //   // })
+//   // }
 
-  if (loading) return <p>Loading...</p>
-  if (error) return <p>ERROR: {error.message}</p>
-  if (data?.createPost.id) return <Link to={`/post/${data.createPost.id}`}>Post Created</Link>
+//   if (loading) return <p>Loading...</p>
+//   if (error) return <p>ERROR: {error.message}</p>
+//   if (data?.createPost.id) return <Link to={`/post/${data.createPost.id}`}>Post Created</Link>
 
-  return (
-    <>
-      <h1>Page fetched, create a new link-post</h1>
+//   return (
+//     <>
+//       <h1>Page fetched, create a new link-post</h1>
 
-      {/* <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <label htmlFor="title">title</label>
-          <input
-            name="title"
-            placeholder="title..."
-            ref={register}
-          />
-        </div>
+//       {/* <form onSubmit={handleSubmit(onSubmit)}>
+//         <div>
+//           <label htmlFor="title">title</label>
+//           <input
+//             name="title"
+//             placeholder="title..."
+//             ref={register}
+//           />
+//         </div>
 
-        <div>
-          <label htmlFor="content">content</label>
-          <input
-            name="content"
-            placeholder="body..."
-            ref={register}
-          />
-        </div>
+//         <div>
+//           <label htmlFor="content">content</label>
+//           <input
+//             name="content"
+//             placeholder="body..."
+//             ref={register}
+//           />
+//         </div>
 
-        <button type="submit">
-          Submit
-      </button>
+//         <button type="submit">
+//           Submit
+//       </button>
 
-      </form> */}
-    </>
-  )
-}
+//       </form> */}
+//     </>
+//   )
+// }
 
-function FetchPageForm() {
-  // const [fetchPage, { data, loading, error }] = useLazyQuery<QT.fetchPage, QT.fetchPageVariables>(
-  //   queries.FETCH_PAGE,
-  // )
-  // const { register, handleSubmit, setValue, errors } = useForm({
-  //   defaultValues: {
-  //     link: "http://some.url"
-  //   }
-  // })
-  // const onSubmit = (data: any) => {
-  //   console.log(data)
-  //   fetchPage({ variables: { url: data.link } })
-  // }
+// function FetchPageForm() {
+//   // const [fetchPage, { data, loading, error }] = useLazyQuery<QT.fetchPage, QT.fetchPageVariables>(
+//   //   queries.FETCH_PAGE,
+//   // )
+//   // const { register, handleSubmit, setValue, errors } = useForm({
+//   //   defaultValues: {
+//   //     link: "http://some.url"
+//   //   }
+//   // })
+//   // const onSubmit = (data: any) => {
+//   //   console.log(data)
+//   //   fetchPage({ variables: { url: data.link } })
+//   // }
 
-  // if (loading) return <p>Loading...</p>
-  // if (error) return <p>ERROR: {error.message}</p>
-  // if (!data) return <p>Fetch page failed</p>
-  // // if (data?.fetchPage.post) return <Link to={`/post/${data.fetchPage.post.id}`}>Post Existed (Redirect)</Link>
-  // if (data.fetchPage.createdPostId) return (
-  //   <p>
-  //     URL has been created: <Link to={`/post/${data.fetchPage.createdPostId}`}>post</Link>
-  //   </p>
-  // )
-  // if (data.fetchPage) return <LinkPostForm page={data.fetchPage} />
+//   // if (loading) return <p>Loading...</p>
+//   // if (error) return <p>ERROR: {error.message}</p>
+//   // if (!data) return <p>Fetch page failed</p>
+//   // // if (data?.fetchPage.post) return <Link to={`/post/${data.fetchPage.post.id}`}>Post Existed (Redirect)</Link>
+//   // if (data.fetchPage.createdPostId) return (
+//   //   <p>
+//   //     URL has been created: <Link to={`/post/${data.fetchPage.createdPostId}`}>post</Link>
+//   //   </p>
+//   // )
+//   // if (data.fetchPage) return <LinkPostForm page={data.fetchPage} />
 
-  return (<></>
-    // <form onSubmit={handleSubmit(onSubmit)}>
+//   return (<></>
+//     // <form onSubmit={handleSubmit(onSubmit)}>
 
-    //   <div>
-    //     <label htmlFor="link">link</label>
-    //     <input
-    //       name="link"
-    //       placeholder="http://"
-    //       ref={register}
-    //     />
-    //   </div>
+//     //   <div>
+//     //     <label htmlFor="link">link</label>
+//     //     <input
+//     //       name="link"
+//     //       placeholder="http://"
+//     //       ref={register}
+//     //     />
+//     //   </div>
 
-    //   <button type="submit">
-    //     Submit
-    // </button>
+//     //   <button type="submit">
+//     //     Submit
+//     // </button>
 
-    // </form>
-  )
-}
+//     // </form>
+//   )
+// }
 
 
-interface PostFormProps {
-  cat: QT.PostCat
-}
+// interface PostFormProps {
+//   cat: QT.PostCat
+// }
 
-export const PostForm: React.FC<PostFormProps> = ({ cat }) => {
-  return null
-}
+// export const PostForm: React.FC<PostFormProps> = ({ cat }) => {
+//   return null
+// }
 
 
 

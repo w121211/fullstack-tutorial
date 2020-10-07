@@ -38,270 +38,276 @@ const PLACEHOLDER = {
   symbols: ["#poll"],
 }
 
-interface PostFormProps {
-  cat?: QT.PollCat
-  choice?: QT.pollFragment_choices
-}
+// interface PostFormProps {
+//   cat?: QT.PollCat
+//   choice?: QT.pollFragment_choices
+// }
 
-const PostForm: React.FC<PostFormProps> = ({ cat = QT.PostCat.REPLY, choice }) => {
-  const [form] = Form.useForm()
-  const [createPost] = useMutation<QT.createPost, QT.createPostVariables>(
-    queries.CREATE_POST, {
-    update(cache, { data }) {
-      // console.log(typeof data?.createPost.poll?.start)
-      // console.log(data?.createPost)
-      // try {
-      //   const res = cache.readQuery<QT.latestPosts>({ query: queries.LATEST_POLLS })
-      //   if (data?.createPost && res?.latestPolls) {
-      //     cache.writeQuery<QT.latestPolls>({
-      //       query: queries.LATEST_POLLS,
-      //       data: {
-      //         latestPolls: res.latestPolls.concat([data.createPoll]),
-      //       },
-      //     })
-      //   }
-      // } catch (e) {
-      //   if (e instanceof InvariantError) { }
-      //   else { console.error(e) }
-      // }
+// const PostForm: React.FC<PostFormProps> = ({ cat = QT.PostCat.REPLY, choice }) => {
+//   const [form] = Form.useForm()
+//   const [createPost] = useMutation<QT.createPost, QT.createPostVariables>(
+//     queries.BLOCK,
+//     // queries.CREATE_POST, {
+//     // update(cache, { data }) {
+//     // console.log(typeof data?.createPost.poll?.start)
+//     // console.log(data?.createPost)
+//     // try {
+//     //   const res = cache.readQuery<QT.latestPosts>({ query: queries.LATEST_POLLS })
+//     //   if (data?.createPost && res?.latestPolls) {
+//     //     cache.writeQuery<QT.latestPolls>({
+//     //       query: queries.LATEST_POLLS,
+//     //       data: {
+//     //         latestPolls: res.latestPolls.concat([data.createPoll]),
+//     //       },
+//     //     })
+//     //   }
+//     // } catch (e) {
+//     //   if (e instanceof InvariantError) { }
+//     //   else { console.error(e) }
+//     // }
 
-      navigate("/")
-    },
-  })
+//     // navigate("/")
+//     // },
+//     // }
+//   )
 
-  function onFinish(values: any) {
-    console.log('submit', values)
+//   function onFinish(values: any) {
+//     console.log('submit', values)
 
-    createPost({
-      variables: {
-        data: {
-          cat: values.cat,
-          symbolIds: values.symbols,
-          text: values.text,
-        }
-      }
-    })
-  }
-  function onFinishFailed(errorInfo: any) {
-    console.log('Failed:', errorInfo);
-  }
+//     createPost({
+//       variables: {
+//         data: {
+//           cat: values.cat,
+//           symbolIds: values.symbols,
+//           text: values.text,
+//         }
+//       }
+//     })
+//   }
+//   function onFinishFailed(errorInfo: any) {
+//     console.log('Failed:', errorInfo);
+//   }
 
-  const requireText = cat === QT.PollCat.ADD_BY_POST
-
-
-  return (
-    <Form
-      form={form}
-      name="basic"
-      size="small"
-      initialValues={PLACEHOLDER}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-    >
-
-      <Form.Item {...layout} label="選項">
-        {choice?.text}
-      </Form.Item>
+//   const requireText = cat === QT.PollCat.ADD_BY_POST
 
 
-      {
-        cat === QT.PollCat.ADD &&
-        <Form.Item
-          {...layout}
-          label="選項"
-          name="choice"
-          rules={[{ required: true, message: '請輸入選項' }]}
-        >
-          <Input />
-        </Form.Item>
-      }
+//   return (
+//     <Form
+//       form={form}
+//       name="basic"
+//       size="small"
+//       initialValues={PLACEHOLDER}
+//       onFinish={onFinish}
+//       onFinishFailed={onFinishFailed}
+//     >
 
-      <Form.Item
-        {...layout}
-        label="內文"
-        name="text"
-        required={requireText}
-        rules={[{ required: requireText, message: '請輸入內文' }]}
-      >
-        <Input.TextArea rows={3} autoSize={{ minRows: 8 }} />
-      </Form.Item>
-
-      <Form.Item name="symbols" label="標籤" {...layout}>
-        <SymbolAutoComplete form={form} />
-      </Form.Item>
-
-      <Form.Item {...layoutWithoutLabel}>
-        <Button type="primary" htmlType="submit">送出</Button>
-      </Form.Item>
-
-    </Form >
-  )
-}
+//       <Form.Item {...layout} label="選項">
+//         {choice?.text}
+//       </Form.Item>
 
 
-interface VotePostFormProps {
-  pollId: string
-  choice: QT.pollFragment_choices
-}
+//       {
+//         cat === QT.PollCat.ADD &&
+//         <Form.Item
+//           {...layout}
+//           label="選項"
+//           name="choice"
+//           rules={[{ required: true, message: '請輸入選項' }]}
+//         >
+//           <Input />
+//         </Form.Item>
+//       }
 
-export const VotePostForm: React.FC<VotePostFormProps> = ({ pollId, choice }) => {
-  const [form] = Form.useForm()
-  const [createVotePost] = useMutation<QT.createVotePost, QT.createVotePostVariables>(
-    queries.CREATE_VOTE_POST, {
-    update(cache, { data }) {
-      // console.log(typeof data?.createPost.poll?.start)
-      // console.log(data?.createPost)
-      try {
-        const res = cache.readQuery<QT.latestPolls>({ query: queries.LATEST_POLLS })
-        if (data?.createVotePost && res?.latestPolls) {
-          res.latestPolls.map(function (e) {
-            if (e.id === pollId) e.posts.concat(data.createVotePost)
-            return e
-          })
-          cache.writeQuery<QT.latestPolls>({
-            query: queries.LATEST_POLLS,
-            data: { latestPolls: res.latestPolls },
-          })
-        }
-      } catch (e) {
-        if (e instanceof InvariantError) { }
-        else { console.error(e) }
-      }
-      // navigate("/")
-    },
-  })
+//       <Form.Item
+//         {...layout}
+//         label="內文"
+//         name="text"
+//         required={requireText}
+//         rules={[{ required: requireText, message: '請輸入內文' }]}
+//       >
+//         <Input.TextArea rows={3} autoSize={{ minRows: 8 }} />
+//       </Form.Item>
 
+//       <Form.Item name="symbols" label="標籤" {...layout}>
+//         <SymbolAutoComplete form={form} />
+//       </Form.Item>
 
+//       <Form.Item {...layoutWithoutLabel}>
+//         <Button type="primary" htmlType="submit">送出</Button>
+//       </Form.Item>
 
-  function onFinish(values: any) {
-    console.log('submit', values)
-
-    createVotePost({
-      variables: {
-        pollId,
-        choiceId: choice?.id,
-        data: {
-          cat: QT.PostCat.REPLY,
-          // symbolIds: [values.symbols],
-          symbolIds: [],
-          text: values.text,
-        }
-      }
-    })
-  }
-  function onFinishFailed(errorInfo: any) {
-    console.log('Failed:', errorInfo);
-  }
-
-  return (
-    <Form
-      form={form}
-      name="basic"
-      size="small"
-      initialValues={PLACEHOLDER}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-    >
-
-      <Form.Item label="選項" required>
-        <Button size="small" shape="round">{choice?.text}</Button>
-      </Form.Item>
-
-      <Form.Item
-        label="意見"
-        name="text"
-        rules={[{ required: false, message: '請輸入內文' }]}
-      >
-        <Input.TextArea rows={3} autoSize={{ minRows: 1 }} />
-      </Form.Item>
-
-      <Form.Item>
-        <Button type="primary" htmlType="submit">投票</Button>
-      </Form.Item>
-
-    </Form >
-  )
-}
+//     </Form >
+//   )
+// }
 
 
-interface NewChoicePostFormProps { }
+// interface VotePostFormProps {
+//   pollId: string
+//   choice: QT.pollFragment_choices
+// }
 
-export const NewChoicePostForm: React.FC<NewChoicePostFormProps> = () => {
-  const [form] = Form.useForm()
-  const [createPost] = useMutation<QT.createPost, QT.createPostVariables>(
-    queries.CREATE_POST, {
-    update(cache, { data }) {
-      // console.log(typeof data?.createPost.poll?.start)
-      // console.log(data?.createPost)
-      // try {
-      //   const res = cache.readQuery<QT.latestPosts>({ query: queries.LATEST_POLLS })
-      //   if (data?.createPost && res?.latestPolls) {
-      //     cache.writeQuery<QT.latestPolls>({
-      //       query: queries.LATEST_POLLS,
-      //       data: {
-      //         latestPolls: res.latestPolls.concat([data.createPoll]),
-      //       },
-      //     })
-      //   }
-      // } catch (e) {
-      //   if (e instanceof InvariantError) { }
-      //   else { console.error(e) }
-      // }
+// export const VotePostForm: React.FC<VotePostFormProps> = ({ pollId, choice }) => {
+//   const [form] = Form.useForm()
+//   const [createVotePost] = useMutation<QT.createVotePost, QT.createVotePostVariables>(
+//     queries.BLOCK,
+//     //   queries.CREATE_VOTE_POST, {
+//     //   update(cache, { data }) {
+//     //     // console.log(typeof data?.createPost.poll?.start)
+//     //     // console.log(data?.createPost)
+//     //     try {
+//     //       const res = cache.readQuery<QT.latestPolls>({ query: queries.LATEST_POLLS })
+//     //       if (data?.createVotePost && res?.latestPolls) {
+//     //         res.latestPolls.map(function (e) {
+//     //           if (e.id === pollId) e.posts.concat(data.createVotePost)
+//     //           return e
+//     //         })
+//     //         cache.writeQuery<QT.latestPolls>({
+//     //           query: queries.LATEST_POLLS,
+//     //           data: { latestPolls: res.latestPolls },
+//     //         })
+//     //       }
+//     //     } catch (e) {
+//     //       if (e instanceof InvariantError) { }
+//     //       else { console.error(e) }
+//     //     }
+//     //     // navigate("/")
+//     //   },
+//     // }
+//   )
 
-      navigate("/")
-    },
-  })
 
-  function onFinish(values: any) {
-    console.log('submit', values)
 
-    createPost({
-      variables: {
-        data: {
-          cat: values.cat,
-          symbolIds: values.symbols,
-          text: values.text,
-        }
-      }
-    })
-  }
-  function onFinishFailed(errorInfo: any) {
-    console.log('Failed:', errorInfo);
-  }
+//   function onFinish(values: any) {
+//     console.log('submit', values)
 
-  // const requireText = cat === QT.PollCat.ADD_BY_POST
+//     createVotePost({
+//       variables: {
+//         pollId,
+//         choiceId: choice?.id,
+//         data: {
+//           cat: QT.PostCat.REPLY,
+//           // symbolIds: [values.symbols],
+//           symbolIds: [],
+//           text: values.text,
+//         }
+//       }
+//     })
+//   }
+//   function onFinishFailed(errorInfo: any) {
+//     console.log('Failed:', errorInfo);
+//   }
 
-  return (
-    <Form
-      form={form}
-      name="basic"
-      size="small"
-      initialValues={PLACEHOLDER}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-    >
+//   return (
+//     <Form
+//       form={form}
+//       name="basic"
+//       size="small"
+//       initialValues={PLACEHOLDER}
+//       onFinish={onFinish}
+//       onFinishFailed={onFinishFailed}
+//     >
 
-      <Form.Item
-        label="選項"
-        name="choice"
-        rules={[{ required: true, message: '請輸入選項' }]}
-      >
-        <Input />
-      </Form.Item>
+//       <Form.Item label="選項" required>
+//         <Button size="small" shape="round">{choice?.text}</Button>
+//       </Form.Item>
 
-      <Form.Item
-        label="意見"
-        name="text"
-        required
-        rules={[{ required: true, message: '請輸入內文' }]}
-      >
-        <Input.TextArea rows={3} autoSize={{ minRows: 1 }} />
-      </Form.Item>
+//       <Form.Item
+//         label="意見"
+//         name="text"
+//         rules={[{ required: false, message: '請輸入內文' }]}
+//       >
+//         <Input.TextArea rows={3} autoSize={{ minRows: 1 }} />
+//       </Form.Item>
 
-      <Form.Item>
-        <Button type="primary" htmlType="submit">投票</Button>
-      </Form.Item>
+//       <Form.Item>
+//         <Button type="primary" htmlType="submit">投票</Button>
+//       </Form.Item>
 
-    </Form >
-  )
-}
+//     </Form >
+//   )
+// }
+
+
+// interface NewChoicePostFormProps { }
+
+// export const NewChoicePostForm: React.FC<NewChoicePostFormProps> = () => {
+//   const [form] = Form.useForm()
+//   const [createPost] = useMutation<QT.createPost, QT.createPostVariables>(
+//     queries.BLOCK,
+//     // queries.CREATE_POST, {
+//     // update(cache, { data }) {
+//     // console.log(typeof data?.createPost.poll?.start)
+//     // console.log(data?.createPost)
+//     // try {
+//     //   const res = cache.readQuery<QT.latestPosts>({ query: queries.LATEST_POLLS })
+//     //   if (data?.createPost && res?.latestPolls) {
+//     //     cache.writeQuery<QT.latestPolls>({
+//     //       query: queries.LATEST_POLLS,
+//     //       data: {
+//     //         latestPolls: res.latestPolls.concat([data.createPoll]),
+//     //       },
+//     //     })
+//     //   }
+//     // } catch (e) {
+//     //   if (e instanceof InvariantError) { }
+//     //   else { console.error(e) }
+//     // }
+
+//     // navigate("/")
+//     // },
+//     // }
+//   )
+
+//   function onFinish(values: any) {
+//     console.log('submit', values)
+
+//     createPost({
+//       variables: {
+//         data: {
+//           cat: values.cat,
+//           symbolIds: values.symbols,
+//           text: values.text,
+//         }
+//       }
+//     })
+//   }
+//   function onFinishFailed(errorInfo: any) {
+//     console.log('Failed:', errorInfo);
+//   }
+
+//   // const requireText = cat === QT.PollCat.ADD_BY_POST
+
+//   return (
+//     <Form
+//       form={form}
+//       name="basic"
+//       size="small"
+//       initialValues={PLACEHOLDER}
+//       onFinish={onFinish}
+//       onFinishFailed={onFinishFailed}
+//     >
+
+//       <Form.Item
+//         label="選項"
+//         name="choice"
+//         rules={[{ required: true, message: '請輸入選項' }]}
+//       >
+//         <Input />
+//       </Form.Item>
+
+//       <Form.Item
+//         label="意見"
+//         name="text"
+//         required
+//         rules={[{ required: true, message: '請輸入內文' }]}
+//       >
+//         <Input.TextArea rows={3} autoSize={{ minRows: 1 }} />
+//       </Form.Item>
+
+//       <Form.Item>
+//         <Button type="primary" htmlType="submit">投票</Button>
+//       </Form.Item>
+
+//     </Form >
+//   )
+// }

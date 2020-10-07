@@ -12,7 +12,7 @@ interface ResolverMap {
 
 interface AppResolvers extends Resolvers {
   Query: ResolverMap
-  Post: ResolverMap
+  // Post: ResolverMap
   Comment: ResolverMap
 }
 
@@ -24,10 +24,10 @@ export const typeDefs = gql`
   extend type Mutation {
     addOrRemoveFromCart(id: ID!): [ID!]!
   }
-  extend type Post {
-    mePost: Boolean!
-    meLike: PostLike
-  }
+  # extend type Post {
+  #   mePost: Boolean!
+  #   meLike: PostLike
+  # }
   extend type Comment {
     meComment: Boolean!
     meLike: CommentLike
@@ -40,29 +40,32 @@ export const resolvers: AppResolvers = {
       return Cookies.get('userId') ? true : false
     }
   },
-  Post: {
-    mePost: ({ id }, args, { cache }): boolean => {
-      const data = cache.readQuery<QT.me>({ query: queries.ME })
-      return (data?.me?.id === id) ? true : false
-      // try {
-      //   const data = cache.readQuery<QT.me>({ query: queries.ME })
-      //   return (data?.me?.id === id) ? true : false
-      // } catch (err) {
-      //   console.log(err)
-      // }
-      // return false
-    },
-    meLike: ({ id }, args, { cache }): QT.postLike | null => {
-      console.log("resolver: melike")
-      try {
-        const data = cache.readQuery<QT.myPostLikes>({ query: queries.MY_POST_LIKES })
-        return data?.myPostLikes.find((x) => x.postId === id) || null
-      } catch (err) {
-        // console.log(err)
-      }
-      return null
-    },
-  },
+  // Post: {
+  //   mePost: ({ id }, args, { cache }): boolean => {
+  //     const data = cache.readQuery<QT.me>({ query: queries.ME })
+  //     return (data?.me?.id === id) ? true : false
+  //     // try {
+  //     //   const data = cache.readQuery<QT.me>({ query: queries.ME })
+  //     //   return (data?.me?.id === id) ? true : false
+  //     // } catch (err) {
+  //     //   console.log(err)
+  //     // }
+  //     // return false
+  //   },
+  //   meLike: ({ id }, args, { cache }): QT.postLike | null => {
+  //     console.log("resolver: melike")
+  //     try {
+  //       const data = cache.readQuery<QT.myPostLikes>({
+  //         query: queries.BLOCK,
+  //         // query: queries.MY_POST_LIKES 
+  //       })
+  //       return data?.myPostLikes.find((x) => x.postId === id) || null
+  //     } catch (err) {
+  //       // console.log(err)
+  //     }
+  //     return null
+  //   },
+  // },
   Comment: {
     meComment: ({ id }, args, { cache }): boolean => {
       try {

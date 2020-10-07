@@ -46,7 +46,8 @@ const PopoverSymbol: React.FC<PopoverSymbolProps> = ({ symbol, removeSymbol }) =
 
 interface SymbolAutoCompleteProps {
   form: FormInstance
-  cat?: QT.PostCat
+  cat?: string
+  // cat?: QT.PostCat
 }
 
 export const SymbolAutoComplete: React.FC<SymbolAutoCompleteProps> = ({ form, cat }) => {

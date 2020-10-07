@@ -52,9 +52,9 @@ import * as QT from '../store/queryTypes'
 
 // }
 
-interface CommitFormProps {
-  commit?: QT.commitDetail
-}
+// interface CommitFormProps {
+//   commit?: QT.commitDetail
+// }
 
 
 // export const CommitForm: React.FC<CommitFormProps> = ({ commit }) => {
@@ -110,70 +110,71 @@ const tailLayout = {
   wrapperCol: { offset: 8, span: 16 },
 };
 
-function CommitForm() {
-  const [form] = Form.useForm()
-  const [createCommit, { data, loading, error }] = useMutation<QT.createCommit, QT.createCommitVariables>(
-    queries.CREATE_COMMIT
-  )
+// function CommitForm() {
+//   const [form] = Form.useForm()
+//   const [createCommit, { data, loading, error }] = useMutation<QT.createCommit, QT.createCommitVariables>(
+//     queries.BLOCK,
+//     // queries.CREATE_COMMIT
+//   )
 
-  const onFinish = (values: any) => {
-    console.log('Success:', values)
-    createCommit({
-      variables: {
-        data: {
-          // symbolId?: string | null;
-          action: QT.CommitAction.CREATE,
-          content: JSON.stringify({})
-        }
-      }
-    })
-  }
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
-  }
+//   const onFinish = (values: any) => {
+//     console.log('Success:', values)
+//     createCommit({
+//       variables: {
+//         data: {
+//           // symbolId?: string | null;
+//           action: QT.CommitAction.CREATE,
+//           content: JSON.stringify({})
+//         }
+//       }
+//     })
+//   }
+//   const onFinishFailed = (errorInfo: any) => {
+//     console.log('Failed:', errorInfo);
+//   }
 
-  return (
-    <Form
-      {...layout}
-      form={form}
-      name="basic"
-      initialValues={{ remember: true }}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-    >
-      <Form.Item
-        label="Username"
-        name="username"
-        rules={[{ required: true, message: 'Please input your username!' }]}
-      >
-        <Input />
-      </Form.Item>
+//   return (
+//     <Form
+//       {...layout}
+//       form={form}
+//       name="basic"
+//       initialValues={{ remember: true }}
+//       onFinish={onFinish}
+//       onFinishFailed={onFinishFailed}
+//     >
+//       <Form.Item
+//         label="Username"
+//         name="username"
+//         rules={[{ required: true, message: 'Please input your username!' }]}
+//       >
+//         <Input />
+//       </Form.Item>
 
-      <Form.Item
-        label="Password"
-        name="password"
-        rules={[{ required: true, message: 'Please input your password!' }]}
-      >
-        <Input.Password />
-      </Form.Item>
+//       <Form.Item
+//         label="Password"
+//         name="password"
+//         rules={[{ required: true, message: 'Please input your password!' }]}
+//       >
+//         <Input.Password />
+//       </Form.Item>
 
-      <Form.Item {...tailLayout}>
-        <Button type="primary" htmlType="submit">
-          Submit
-        </Button>
-      </Form.Item>
+//       <Form.Item {...tailLayout}>
+//         <Button type="primary" htmlType="submit">
+//           Submit
+//         </Button>
+//       </Form.Item>
 
-    </Form>
-  )
-}
+//     </Form>
+//   )
+// }
 
 
-interface CommitCreateProps extends RouteComponentProps { }
+// interface CommitCreateProps extends RouteComponentProps { }
 
-export const CommitCreate: React.FC<CommitCreateProps> = () => {
-  const getMe = useQuery<QT.me>(queries.ME)
-  const [showResult, setShowResult] = useState(false)
-  const [showCreateReview, setShowCreateReview] = useState(false)
+// export const CommitCreate: React.FC<CommitCreateProps> = () => {
+//   const getMe = useQuery<QT.me>(queries.ME)
+//   const [showResult, setShowResult] = useState(false)
+//   const [showCreateReview, setShowCreateReview] = useState(false)
 
-  return <CommitForm />
-}
+//   return <CommitForm />
+// }

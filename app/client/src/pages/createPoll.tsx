@@ -7,7 +7,7 @@ import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 import { Pane } from '../components/layout'
 import { SymbolAutoComplete } from '../components/symbolHint'
-import { PollForm } from '../components/pollForm'
+// import { PollForm } from '../components/pollForm'
 
 interface Props extends RouteComponentProps { }
 
@@ -38,7 +38,7 @@ export const CreatePollPage: React.FC<Props> = () => {
         <br />
         <Pane left={
           <Card>
-            <PollForm />
+            {/* <PollForm /> */}
           </Card>
         } />
       </Layout.Content>

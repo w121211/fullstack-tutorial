@@ -26,7 +26,7 @@ interface Token {
 
 export const APP_SECRET = 'appsecret321'
 
-// ref: https://github.com/maticzav/graphql-shield/blob/master/examples/with-graphql-nexus/src/lib/middlewares/authorization.js
+// Ref: https://github.com/maticzav/graphql-shield/blob/master/examples/with-graphql-nexus/src/lib/middlewares/authorization.js
 function authorization(): express.RequestHandler {
   return function (req, res, next) {
     // console.log(req.cookies)
@@ -103,14 +103,14 @@ const server = new ApolloServer({
       "request.credentials": "include"  // for cookies
     }
   },
-  // mocks,
+  mocks,
   debug: true,
   // debug: false,
-  // plugins: [ logError],
   formatError: (err) => {
     console.error(err)
     return err
   },
+  // plugins: [ logError],
 })
 
 

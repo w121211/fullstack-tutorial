@@ -4,7 +4,7 @@ import { useQuery, useMutation } from '@apollo/client';
 import { Button, Card, Space, List } from 'antd'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
-import { PostList } from '../components/postList'
+// import { PostList } from '../components/postList'
 import { Pane } from '../components/layout'
 import { BarChart, CandleChart } from '../components/charts'
 
@@ -59,7 +59,7 @@ const Board: React.FC<BoardProps> = ({ me }) => {
               </div> */}
 
         <div />
-        <PostList me={me} />
+        {/* <PostList me={me} /> */}
       </Space>
     </>
   )

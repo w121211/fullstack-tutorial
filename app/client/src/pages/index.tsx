@@ -6,8 +6,8 @@ import * as QT from '../store/queryTypes'
 import { PageContainer, Pane } from '../components/layout'
 import { BoardPage } from './board'
 import { PostThreadPage } from './postThread'
-import { SubmitPage } from './submit'
-import { SymbolPage } from './symbol'
+// import { SubmitPage } from './submit'
+// import { SymbolPage } from './symbol'
 import { ProtectedRoute, Login, AutoLogin } from './login'
 import { Ticker } from './ticker'
 import { EventPage } from './event'
@@ -26,7 +26,7 @@ const NotFound: React.FC<NotFoundProps> = () => {
 }
 
 export function Pages() {
-  useQuery<QT.myPostLikes>(queries.MY_POST_LIKES)
+  // useQuery<QT.myPostLikes>(queries.MY_POST_LIKES)
   useQuery<QT.myVotes>(queries.MY_VOTES)
   useQuery<QT.myCommentLikes>(queries.MY_COMMENT_LIKES)
   const { data, loading, refetch } = useQuery<QT.me>(queries.ME)
@@ -38,13 +38,13 @@ export function Pages() {
   return (
     <>
       {/* <AutoLogin /> */}
-      {!isLoggedIn && <Redirect from="" to="/login" noThrow />}
+      {/* {!isLoggedIn && <Redirect from="" to="/login" noThrow />} */}
 
       <Router primary={false} component={Fragment}>
 
         <BlockPage path="block" />
 
-        <SubmitPage path="submit" />
+        {/* <SubmitPage path="submit" /> */}
 
         {/* <ProtectedRoute path="submit" isLoggedIn={isLoggedIn} as={<SubmitPage />} /> */}
 
@@ -58,7 +58,7 @@ export function Pages() {
 
           <StagePage path="/" me={data?.me} />
 
-          <SymbolPage path="symbol/:name" />
+          {/* <SymbolPage path="symbol/:name" /> */}
 
           <Ticker path="ticker" />
 

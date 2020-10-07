@@ -3,9 +3,10 @@ import ReactDOM from 'react-dom'
 import { ApolloClient, ApolloProvider, NormalizedCacheObject } from '@apollo/client'
 
 import { typeDefs } from './store/resolvers'
+import { cache } from './cache'
 import { Pages } from './pages'
 import Templates from './templates'
-import { cache } from './cache'
+// import { TestCommentList } from './components/commentList'
 import './index.css'
 
 // const cache = new InMemoryCache({
@@ -23,6 +24,7 @@ import './index.css'
 //     }
 //   },
 // })
+
 
 const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
   cache,
@@ -78,6 +80,7 @@ const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
 
 ReactDOM.render(
   <ApolloProvider client={client}>
+    {/* <TestCommentList /> */}
     {/* <Templates /> */}
     <Pages />
   </ApolloProvider>,
