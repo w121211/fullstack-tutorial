@@ -1,3 +1,6 @@
+/**
+ * TEST: npm run dev; http://localhost:4000/graphql
+ */
 import _, { includes } from 'lodash'
 import dayjs from 'dayjs'
 import { compare, hash } from 'bcryptjs'
@@ -7,18 +10,7 @@ import { GraphQLDateTime } from 'graphql-iso-date'
 import * as PA from '@prisma/client'
 import { Context } from './context'
 import { APP_SECRET } from '.'
-import { parse } from 'path'
-
-type BlockProperties = {
-  name: string
-  fullName?: string
-  path?: string
-  symbol?: string
-  linkedSymbols?: string[]
-  canComment?: boolean
-  canOpenAlone?: boolean
-  intro?: { create: Comment, id?: number }
-}
+import { fillBlock, PrismaBlockProperties } from './models/block'
 
 // function mapPostInput(post: ST.PostInput) {
 //   let content
@@ -97,21 +89,25 @@ export const resolvers: GraphQLResolverMap<Context> = {
   DateTime: GraphQLDateTime, // custom scalar, 目前的error似乎是typescript的bug
 
   Query: {
-    block: (parent, { id, path }, { prisma }) => {
-      if (id)
-        return prisma.block.findOne({
+    block: async (parent, { id, path }, { prisma }) => {
+      if (id) {
+        const bk = await prisma.block.findOne({
           where: { id: parseInt(id) },
           include: {
-            children: true,
-            comments: {
-              // isSpot: true,
-              include: { count: true },
-            },
-            propComments: {
-              include: { count: true },
+            propComments: { include: { count: true, replies: true } },
+            comments: { where: { isSpot: true }, include: { count: true } },
+            children: {
+              include: {
+                propComments: { include: { count: true, replies: true } },
+                comments: { where: { isSpot: true }, include: { count: true } },
+              },
             },
           },
         })
+        if (bk === null)
+          return null
+        return await fillBlock(bk)
+      }
       if (path)
         return null
       throw new Error('Require block ID or path')
@@ -136,7 +132,6 @@ export const resolvers: GraphQLResolverMap<Context> = {
         take: 20
       })
     },
-
 
     // roboPolls: async (parent, { symbolName }, { prisma }) => {
     //   const maxDate = dayjs().startOf("d").subtract(7, "d")
@@ -399,10 +394,14 @@ export const resolvers: GraphQLResolverMap<Context> = {
     },
 
     createComment: async function (parent, { data, blockId }, { prisma, req }) {
-      // 檢查該block是否可以comment
+      // Check can comment
       const bk = await prisma.block.findOne({ where: { id: blockId } })
-      if (bk === null) throw new Error('This block is not found')
-      if (!(bk.props as BlockProperties).canComment) throw new Error('This block cannot comment')
+      if (bk === null)
+        throw new Error('This block not exist')
+      if (!(bk.props as PrismaBlockProperties).canComment)
+        throw new Error('This block cannot comment')
+
+      // TODO: Create poll
       return prisma.comment.create({
         data: {
           text: data.text,

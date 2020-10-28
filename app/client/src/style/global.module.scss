@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+/* Color */
+$bg: #f5f7fa;
+$white: #ffffff;
+$black: #393939;
+$black_2: #515253;
+$disable: #a7a7a7;
+$natual: #f0f2f5;
+$light-primary: rgba(28, 191, 185, 0.17);
+$light-primary-hover: rgba(28, 191, 186, 0.13);
+$primary: rgba(28, 191, 185, 1);
+$error: #f94d6a;
+$natual2: #d1d1d1;
+
+/* Fonts */
+$letter-sp: 0.0875rem;
+
+$font-sm: 0.8125rem;
+$font-lg: 1.125rem;
+
+$font-rg: 400;
+$font-md: 500;
+$font-bd: 700;
+
+ul {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  list-style: none;
+  font-size: $font-sm;
+}
+li {
+  height: auto;
+  margin-bottom: 10px;
+}

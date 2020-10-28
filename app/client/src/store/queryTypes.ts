@@ -7,6 +7,42 @@
 // GraphQL query operation: block
 // ====================================================
 
+export interface block_block_props_commentIntro_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface block_block_props_commentIntro {
+  __typename: "Comment";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string | null;
+  updatedAt: any;
+  count: block_block_props_commentIntro_count;
+}
+
+export interface block_block_props_commentSymbols_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface block_block_props_commentSymbols {
+  __typename: "Comment";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string | null;
+  updatedAt: any;
+  count: block_block_props_commentSymbols_count;
+}
+
 export interface block_block_props {
   __typename: "BlockProperties";
   name: string | null;
@@ -15,19 +51,141 @@ export interface block_block_props {
   symbol: string | null;
   canComment: boolean | null;
   canOpenAsPage: boolean | null;
+  commentIntro: block_block_props_commentIntro | null;
+  commentSymbols: block_block_props_commentSymbols | null;
 }
 
-export interface block_block_propComments {
+export interface block_block_body_ticks {
+  __typename: "Tick";
+  id: string;
+  symbolId: string;
+  value: number;
+  at: any;
+}
+
+export interface block_block_body_blocks_props_commentIntro_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface block_block_body_blocks_props_commentIntro {
   __typename: "Comment";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
   text: string | null;
+  updatedAt: any;
+  count: block_block_body_blocks_props_commentIntro_count;
+}
+
+export interface block_block_body_blocks_props_commentSymbols_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface block_block_body_blocks_props_commentSymbols {
+  __typename: "Comment";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string | null;
+  updatedAt: any;
+  count: block_block_body_blocks_props_commentSymbols_count;
+}
+
+export interface block_block_body_blocks_props {
+  __typename: "BlockProperties";
+  name: string | null;
+  longName: string | null;
+  path: string | null;
+  symbol: string | null;
+  canComment: boolean | null;
+  canOpenAsPage: boolean | null;
+  commentIntro: block_block_body_blocks_props_commentIntro | null;
+  commentSymbols: block_block_body_blocks_props_commentSymbols | null;
+}
+
+export interface block_block_body_blocks_body_ticks {
+  __typename: "Tick";
+  id: string;
+  symbolId: string;
+  value: number;
+  at: any;
+}
+
+export interface block_block_body_blocks_body {
+  __typename: "BlockBody";
+  text: string | null;
+  ticks: block_block_body_blocks_body_ticks[] | null;
+  table: (number | null)[] | null;
+  chart: (number | null)[] | null;
+}
+
+export interface block_block_body_blocks_comments_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface block_block_body_blocks_comments {
+  __typename: "Comment";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string | null;
+  updatedAt: any;
+  count: block_block_body_blocks_comments_count;
+}
+
+export interface block_block_body_blocks {
+  __typename: "Block";
+  id: string;
+  props: block_block_body_blocks_props;
+  body: block_block_body_blocks_body;
+  comments: block_block_body_blocks_comments[] | null;
+}
+
+export interface block_block_body {
+  __typename: "BlockBody";
+  text: string | null;
+  ticks: block_block_body_ticks[] | null;
+  table: (number | null)[] | null;
+  chart: (number | null)[] | null;
+  blocks: (block_block_body_blocks | null)[] | null;
+}
+
+export interface block_block_comments_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface block_block_comments {
+  __typename: "Comment";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string | null;
+  updatedAt: any;
+  count: block_block_comments_count;
 }
 
 export interface block_block {
   __typename: "Block";
   id: string;
-  tempalte: string | null;
   props: block_block_props;
-  propComments: block_block_propComments[] | null;
+  body: block_block_body;
+  comments: block_block_comments[] | null;
 }
 
 export interface block {
@@ -575,6 +733,105 @@ export interface replyLike {
   replyId: string;
   choice: LikeChoice;
   updatedAt: any;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: blockFragment
+// ====================================================
+
+export interface blockFragment_props_commentIntro_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface blockFragment_props_commentIntro {
+  __typename: "Comment";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string | null;
+  updatedAt: any;
+  count: blockFragment_props_commentIntro_count;
+}
+
+export interface blockFragment_props_commentSymbols_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface blockFragment_props_commentSymbols {
+  __typename: "Comment";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string | null;
+  updatedAt: any;
+  count: blockFragment_props_commentSymbols_count;
+}
+
+export interface blockFragment_props {
+  __typename: "BlockProperties";
+  name: string | null;
+  longName: string | null;
+  path: string | null;
+  symbol: string | null;
+  canComment: boolean | null;
+  canOpenAsPage: boolean | null;
+  commentIntro: blockFragment_props_commentIntro | null;
+  commentSymbols: blockFragment_props_commentSymbols | null;
+}
+
+export interface blockFragment_body_ticks {
+  __typename: "Tick";
+  id: string;
+  symbolId: string;
+  value: number;
+  at: any;
+}
+
+export interface blockFragment_body {
+  __typename: "BlockBody";
+  text: string | null;
+  ticks: blockFragment_body_ticks[] | null;
+  table: (number | null)[] | null;
+  chart: (number | null)[] | null;
+}
+
+export interface blockFragment_comments_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface blockFragment_comments {
+  __typename: "Comment";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string | null;
+  updatedAt: any;
+  count: blockFragment_comments_count;
+}
+
+export interface blockFragment {
+  __typename: "Block";
+  id: string;
+  props: blockFragment_props;
+  body: blockFragment_body;
+  comments: blockFragment_comments[] | null;
 }
 
 /* tslint:disable */

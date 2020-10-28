@@ -69,55 +69,6 @@ const N_COMMENTS_TAKEN = 20
 //   meComment: boolean
 // }
 
-// const CommentFooter: React.FC<CommentFooterProps> = ({ comment, meComment }) => {
-//   const [count, setCount] = useState<QT.comment_count>(comment.count)
-//   const [createCommentLike] = useMutation<QT.createCommentLike, QT.createCommentLikeVariables>(
-//     queries.CREATE_COMMENT_LIKE, {
-//     update(cache, { data }) {
-//       const res = cache.readQuery<QT.myCommentLikes>({ query: queries.MY_COMMENT_LIKES, })
-//       if (data?.createCommentLike && res?.myCommentLikes) {
-//         cache.writeQuery<QT.myCommentLikes>({
-//           query: queries.MY_COMMENT_LIKES,
-//           data: { myCommentLikes: res?.myCommentLikes.concat([data?.createCommentLike.like]), },
-//         })
-//         setCount(data.createCommentLike.count)
-//       }
-//     },
-//   })
-//   const [updateCommentLike] = useMutation<QT.updateCommentLike, QT.updateCommentLikeVariables>(
-//     queries.UPDATE_COMMENT_LIKE, {
-//     update(cache, { data }) {
-//       const res = cache.readQuery<QT.myCommentLikes>({ query: queries.MY_COMMENT_LIKES, })
-//       if (data?.updateCommentLike && res?.myCommentLikes) {
-//         cache.writeQuery<QT.myCommentLikes>({
-//           query: queries.MY_COMMENT_LIKES,
-//           data: {
-//             myCommentLikes: res.myCommentLikes.map((e) =>
-//               e.commentId === data.updateCommentLike.like.commentId ? data.updateCommentLike.like : e
-//             ),
-//           },
-//         })
-//         setCount(data.updateCommentLike.count)
-//       }
-//     },
-//   })
-//   const myCommentLikes = useQuery<QT.myCommentLikes>(
-//     queries.MY_COMMENT_LIKES, { fetchPolicy: "cache-only" }
-//   )
-//   const meLike = myCommentLikes.data?.myCommentLikes.find(e => e.commentId === comment.id)
-
-//   return (
-//     <Space style={{ textAlign: "right" }}>
-//       <small>{meComment ? "@me" : "@anonymous"}</small>
-//       <small>
-//         <CommentLike {...{ commentId: comment.id, count, meLike, createCommentLike, updateCommentLike }} />
-//       </small>
-//       <small>
-//         <CommentDislike {...{ commentId: comment.id, count, meLike, createCommentLike, updateCommentLike }} />
-//       </small>
-//     </Space>
-//   )
-// }
 
 // interface CommentListProps extends QT.commentsVariables {
 //   me?: QT.me_me

@@ -42,7 +42,7 @@ export function Pages() {
 
       <Router primary={false} component={Fragment}>
 
-        <BlockPage path="block" />
+        <BlockPage path="block/:id" me={data?.me} />
 
         {/* <SubmitPage path="submit" /> */}
 

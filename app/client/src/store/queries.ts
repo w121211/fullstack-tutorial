@@ -57,7 +57,8 @@ export const COMMENT = gql`
     userId
     isSpot
     text
-    updatedAt
+    # updatedAt
+    createdAt
     count { 
       ...commentCount
     }
@@ -85,6 +86,43 @@ export const REPLY_LIKE = gql`
   }
 `
 
+export const BLOCK_FRAGMENT = gql`
+  fragment blockFragment on Block {
+    __typename
+    id
+    props {
+      name
+      longName
+      path
+      symbol
+      canComment
+      canOpenAsPage
+      commentIntro {
+        ...comment
+      }
+      commentSymbols {
+        ...comment
+      }
+    }
+    body {
+      text
+      ticks {
+        __typename
+        id
+        symbolId
+        value
+        at
+      }
+      table
+      chart
+    }
+    comments {
+      ...comment
+    }
+  }
+  ${COMMENT}
+`
+
 // ----------------------------
 // Query
 // ----------------------------
@@ -92,32 +130,16 @@ export const REPLY_LIKE = gql`
 export const BLOCK = gql`
   query block($id: ID,  $path: String) {
     block(id: $id, path: $path) {
-      __typename
-      id
-      tempalte
-      props {
-        name
-        longName
-        path
-        symbol
-        canComment
-        canOpenAsPage
-        # commentIntro
-        # commentSymbols
+      ...blockFragment
+      body {
+        blocks {
+          ...blockFragment
+        }
       }
-      # body
-      propComments {
-        # blocks {
-        # }
-        text
-        # ticks: [Tick!]
-        # table: [Int]
-        # chart: [Int]
-      }
-      ...comment
     }
   }
   ${COMMENT}
+  ${BLOCK_FRAGMENT}
 `
 
 export const COMMENTS = gql`

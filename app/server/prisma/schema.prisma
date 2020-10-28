@@ -1,3 +1,6 @@
+// DROP DB: http://localhost:5050/
+// DROP ALL TABLES: DROP SCHEMA public CASCADE; CREATE SCHEMA public; GRANT ALL ON SCHEMA public TO postgres; GRANT ALL ON SCHEMA public TO public;
+// RUN: npm run migrate; npm run migrateup; npm run gen:prisma
 datasource db {
   provider = "postgresql"
   url      = "postgresql://postgres:postgrespassword@pg/prisma?schema=public"
@@ -125,17 +128,17 @@ model ReplyCount {
 }
 
 model Reply {
-  id          Int           @id @default(autoincrement())
-  user        User          @relation(fields: [userId], references: [id])
-  userId      String
+  id        Int         @id @default(autoincrement())
+  user      User        @relation(fields: [userId], references: [id])
+  userId    String
   // status         PostStatus    @default(ACTIVE)
-  text        String
-  count       ReplyCount
-  likes       ReplyLike[]
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  comment     Comment      @relation(fields: [commentId], references: [id])
-  commentId   Int
+  text      String
+  count     ReplyCount
+  likes     ReplyLike[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  comment   Comment     @relation(fields: [commentId], references: [id])
+  commentId Int
 }
 
 model CommentLike {
@@ -166,12 +169,14 @@ model Comment {
   id        Int           @id @default(autoincrement())
   user      User          @relation(fields: [userId], references: [id])
   userId    String
+  symbols   Symbol[]
   block     Block         @relation("Comments", fields: [blockId], references: [id])
   blockId   Int
   propFor   Block?        @relation("PropComments", fields: [propForId], references: [id])
   propForId Int?
   // status    PostStatus    @default(ACTIVE)
-  isSpot Boolean
+  isSpot    Boolean       @default(false)
+  // meta Json
   text      String
   count     CommentCount
   likes     CommentLike[]
@@ -186,10 +191,9 @@ model Block {
   parentId     Int?
   parent       Block?    @relation("ParentChildren", fields: [parentId], references: [id])
   children     Block[]   @relation("ParentChildren")
-  // cat          PostCat      @default(REPLY)
   // status       PostStatus   @default(ACTIVE)
   template     String
-  path String @unique
+  path         String    @unique
   props        Json
   body         Json
   propComments Comment[] @relation("PropComments")
@@ -206,6 +210,7 @@ model Symbol {
   cat       SymbolCat
   status    SymbolStatus @default(ACTIVE)
   ticks     Tick[]
+  comments  Comment[]
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
   // follows   Follow[]
@@ -214,15 +219,17 @@ model Symbol {
 }
 
 model Tick {
-  id       Int      @id @default(autoincrement())
-  symbol   Symbol   @relation(fields: [symbolId], references: [id])
-  symbolId Int
-  o        Float?
-  h        Float?
-  l        Float?
-  c        Float?
-  v        Int?
-  at       DateTime
+  id            Int      @id @default(autoincrement())
+  symbol        Symbol   @relation(fields: [symbolId], references: [id])
+  symbolId      Int
+  open          Float
+  close         Float
+  high          Float
+  low           Float
+  volume        Int
+  change        Float
+  changePercent Float
+  at            DateTime
 }
 
 enum PostCat {
@@ -326,7 +333,7 @@ enum LikeChoice {
 //   voteCommits VoteCommit[]
 // }
 
-// 等同想法： 1.有自己的predicates 2.二擇一：���應poll或來自link(user為autolink)
+// 等同想法： 1.有自��的predicates 2.二擇一：���應poll或來自link(user為autolink)
 // 1個link只能有1個thought?
 // 要查open-credit時：open-user -> get-open-user（即便一個link有複數個open-users，仍然為這個
 // 1. 擂台：latest-polls: poll{comments} & replies(posts){reply指向一個poll}

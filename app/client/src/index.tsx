@@ -7,7 +7,8 @@ import { cache } from './cache'
 import { Pages } from './pages'
 import Templates from './templates'
 // import { TestCommentList } from './components/commentList'
-import './index.css'
+import AppLayout from './appLayout/appLayout'
+import './index.less'
 
 // const cache = new InMemoryCache({
 //   dataIdFromObject: (o: any) => {
@@ -24,7 +25,6 @@ import './index.css'
 //     }
 //   },
 // })
-
 
 const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
   cache,
@@ -82,7 +82,8 @@ ReactDOM.render(
   <ApolloProvider client={client}>
     {/* <TestCommentList /> */}
     {/* <Templates /> */}
-    <Pages />
+    {/* <Pages /> */}
+    <AppLayout />
   </ApolloProvider>,
   document.getElementById('root'),
 )

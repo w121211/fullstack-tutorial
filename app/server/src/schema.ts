@@ -3,7 +3,7 @@ import gql from 'graphql-tag'
 export const typeDefs = gql`
   type Query {
     # blockId(path: string): string!
-    block(id: ID, path: String): Block!
+    block(id: ID, path: String): Block
     
     # 會有找不到的情況，需要注意sanitize(?)
     # searchBlock(symbolName: String): Block!
@@ -192,8 +192,8 @@ export const typeDefs = gql`
     text: String
     count: CommentCount!
     replies: [Reply!]
-    # createdAt: DateTime!
-    updatedAt: DateTime!
+    createdAt: DateTime!
+    # updatedAt: DateTime!
     poll: Poll
   }
 
@@ -208,8 +208,10 @@ export const typeDefs = gql`
     blocks: [Block]
     text: String
     ticks: [Tick!]
-    table: [Int]
+    table: Int
     chart: [Int]
+    # json不應該在正常情況下作為傳輸，但考慮到可能會有許多不確定的資料（table, chart）
+    json: String
   }
 
   type BlockProperties {
@@ -219,15 +221,13 @@ export const typeDefs = gql`
     symbol: String
     canComment: Boolean
     canOpenAsPage: Boolean
-    
-    # prop-comment
     commentIntro: Comment
     commentSymbols: Comment
   }
 
   type Block {
     id: ID!
-    tempalte: String
+    template: String
     props: BlockProperties!
     body: BlockBody!
     propComments: [Comment!]
@@ -249,14 +249,6 @@ export const typeDefs = gql`
     createdAt: DateTime!
     updatedAt: DateTime!
   }
-
-  # type CommentCount {
-  #   id: ID!
-  #   # nViews: Int!
-  #   nUps: Int!
-  #   nDowns: Int!
-  #   # updatedAt: DateTime!
-  # }
 
   type CommentLikeResonse {
     like: CommentLike!

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { renderApollo, cleanup } from '../../test-utils';
-import Footer from '../tileFooter';
+import Footer from '../tilePanel';
 
 describe('Footer', () => {
   // automatically unmount and cleanup DOM after the test is finished.

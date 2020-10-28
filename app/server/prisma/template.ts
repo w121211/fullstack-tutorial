@@ -15,9 +15,10 @@ import * as _ from 'lodash'
 import { hash } from 'bcryptjs'
 import dayjs from 'dayjs'
 import * as PC from '@prisma/client'
-import { connect } from 'http2'
-import { prismaVersion } from '@prisma/client'
-import { exception } from 'console'
+
+// import { connect } from 'http2'
+// import { prismaVersion } from '@prisma/client'
+// import { exception } from 'console'
 
 /**
  * $ticker
@@ -52,22 +53,22 @@ import { exception } from 'console'
 const defaultProps = {
   name: "",
   path: "",
-  symbol: ".",
+  symbol: "",
   canComment: true,
   canOpenAlone: false,
   longName: { connect: true },
-  linkedSymbols: { connect: true },
-  intro: { connect: true },
+  commentSymbols: { connect: true },
+  commentIntro: { connect: true },
 }
 
-// ---------------
+// --- Types ---
 
 enum Template {
   Ticker = "TICKER",
   View = "VIEW",
   Board = "BOARD",
   Trades = "TRADES",
-  Alternative = "ALTERNATIVE",
+  Alternatives = "ALTERNATIVES",
   Financial = "FINANCIAL",
   Price = "PRICE",
 }
@@ -83,34 +84,44 @@ type Poll = {
 }
 
 type Comment = {
+  blockPath?: string,
   type: CommentType
   text: string
   poll?: Poll
+  suggestedReplies?: string[],
+}
+
+type PropCommentCreater = {
+  create: Comment,
+  id?: number
 }
 
 type BlockProperties = {
   name: string
+  path: string
   fullName?: string
-  path?: string
   symbol?: string
-  linkedSymbols?: string[]
   canComment?: boolean
   canOpenAlone?: boolean
-  intro?: { create: Comment, id?: number }
+  commentIntro?: PropCommentCreater
+  commentSymbols?: PropCommentCreater
+}
+
+type BlockBody = {
+  blocks?: Block[]
 }
 
 type Block = {
   template: Template
   props: BlockProperties
-  body?: {
-    blocks?: Block[]
-  }
+  body?: BlockBody
   spotComments?: Comment[]
 }
 
-// ---------------
+// --- Initiators ---
 
-function initBoardBlock(ticker: string) {
+
+function initBoardBlock(ticker: string): Block {
   const name = "Board"
   return {
     template: Template.Board,
@@ -118,19 +129,20 @@ function initBoardBlock(ticker: string) {
   }
 }
 
-function initAlternativeBlock(ticker: string) {
+function initAlternativesBlock(ticker: string): Block {
   const name = "Alternatives"
   return {
-    template: Template.Alternative,
+    template: Template.Alternatives,
     props: { name, symbol: `${ticker}`, path: `/${ticker}/${name}` },
     spotComments: [
-      { type: CommentType.Poll, text: "A vs B", poll: { choices: ["A", "B"] } },
-      { type: CommentType.Poll, text: "A vs C" },
+      { type: CommentType.Prop, text: "相似股票", },
+      // { blockPath: "/stage", type: CommentType.Poll, text: "$A vs $B ", poll: { choices: ["A", "B"] } },
+      // { blockPath: "/stage", type: CommentType.Poll, text: "A vs C" },
     ],
   }
 }
 
-function initTradesBlock(ticker: string) {
+function initTradesBlock(ticker: string): Block {
   const name = "Trades"
   return {
     template: Template.Trades,
@@ -138,7 +150,7 @@ function initTradesBlock(ticker: string) {
   }
 }
 
-function initFinancialBlock(ticker: string) {
+function initFinancialBlock(ticker: string): Block {
   const name = "Financial Report"
   return {
     template: Template.Financial,
@@ -146,27 +158,27 @@ function initFinancialBlock(ticker: string) {
   }
 }
 
-function initPriceBlock(ticker: string) {
+function initPriceBlock(ticker: string): Block {
   return {
     template: Template.Price,
     props: { name: "Price", symbol: `${ticker}`, path: `/${ticker}/Price` },
   }
 }
 
-function initViewBlock(ticker: string) {
+function initCommonQBlock(ticker: string): Block {
   return {
     template: Template.View,
-    props: { name: "View", symbol: `${ticker}`, path: `/${ticker}/View`, canComment: false, canOpenAlone: false },
+    props: { name: "Common", symbol: `${ticker}`, path: `/${ticker}/View`, canComment: false },
     spotComments: [
-      { type: CommentType.Prop, text: "Pros", suggestedReplies: [] },
-      { type: CommentType.Prop, text: "Cons", suggestedReplies: [] },
-      { type: CommentType.Poll, text: "Predict", suggestedReplies: [] },
+      { type: CommentType.Prop, text: "正面", suggestedReplies: [] },
+      { type: CommentType.Prop, text: "負面", suggestedReplies: [] },
+      { type: CommentType.Poll, text: "預測", suggestedReplies: [] },
     ],
   }
 }
 
 function initTickerBlock(ticker: string, block?: string) {
-  const template = {
+  const template: Block = {
     template: Template.Ticker,
     props: {
       name: `${ticker}`,
@@ -174,43 +186,56 @@ function initTickerBlock(ticker: string, block?: string) {
       path: `/${ticker}`,
       symbol: `${ticker}`,
       canComment: false,
-      intro: { create: { type: CommentType.Prop, text: "intro" } },
-      symbols: { create: { type: CommentType.Prop, text: "symbols" } },
+      canOpenAlone: true,
+      commentIntro: { create: { type: CommentType.Prop, text: "簡介" } },
+      commentSymbols: { create: { type: CommentType.Prop, text: "標籤" } },
     },
     body: {
       blocks: [
-        initViewBlock(ticker),
+        initCommonQBlock(ticker),
         initPriceBlock(ticker),
         // initFinancialBlock(ticker),
         // initTradesBlock(ticker),
-        // initAlternativeBlock(ticker),
+        // initAlternativesBlock(ticker),
         // initBoardBlock(ticker),
       ]
     },
   }
   // if (block) return null
+  validateBlock(template)  // If not valid, throw error
   return template
 }
+
+function validateBlock(block: Block) {
+  function _isValidName(name: string) {
+    const regex = /^[a-zA-Z0-9@$#_-]{2,20}$/
+    if (!regex.test(name)) throw new Error("Not valid")
+  }
+  _isValidName(block.props.name)
+
+  for (const bk of block.body?.blocks || [])
+    validateBlock(bk)
+}
+
+
+// --- Main ---
 
 const prisma = new PC.PrismaClient({
   errorFormat: "pretty",
   log: ['query', 'info', 'warn'],
 })
 
-
-
 async function saveBlockToDB(botUserId: string, block: Block, parentBlockId?: number) {
   // 順序： create parentBlock > create comments > update props > children-block
 
   // 移除childrenBlocks後存入block，暫時不存block.props（因為還需要連結propComments）
-  const children = block.body?.blocks || []
-  const body = _.cloneDeep(block.body) || {}
-  delete body?.blocks
+  const { blocks: childrenBlocks, ...bodyWithoutBlocks } = block.body || {}
   const bk = await prisma.block.create({
     data: {
+      path: block.props.path,
       template: block.template,
       props: {},
-      body,
+      body: bodyWithoutBlocks,
       parent: parentBlockId ? { connect: { id: parentBlockId } } : undefined
     },
   })
@@ -219,7 +244,8 @@ async function saveBlockToDB(botUserId: string, block: Block, parentBlockId?: nu
   const props = _.cloneDeep(block.props)
   for (const k in props) {
     let v = props[k as keyof BlockProperties]
-    if (typeof v !== 'object' || Array.isArray(v)) continue
+    if (typeof v !== 'object' || Array.isArray(v))
+      continue
     if ('create' in v) {
       const propComment = await prisma.comment.create({
         data: {
@@ -228,6 +254,7 @@ async function saveBlockToDB(botUserId: string, block: Block, parentBlockId?: nu
           user: { connect: { id: botUserId } },
           block: { connect: { id: bk.id } },
           propFor: { connect: { id: bk.id } },
+          count: { create: {} }
         }
       })
       v["id"] = propComment.id
@@ -235,7 +262,7 @@ async function saveBlockToDB(botUserId: string, block: Block, parentBlockId?: nu
   }
   console.log(props)
   await prisma.block.update({
-    data: { props: block.props },
+    data: { props },
     where: { id: bk.id }
   })
 
@@ -246,20 +273,39 @@ async function saveBlockToDB(botUserId: string, block: Block, parentBlockId?: nu
         text: e.text,
         // isSpot: true
         user: { connect: { id: botUserId } },
-        block: { connect: { id: bk.id } }
+        block: { connect: { id: bk.id } },
+        count: { create: {} }
       }
     }))
 
   // 存nested blocks
-  for (let child of children) {
+  for (let child of childrenBlocks || []) {
     saveBlockToDB(botUserId, child, bk.id)
   }
 }
 
-const BOT = { email: "bot@bot.com", password: "robo" }
+const BOT = { email: "bot@bot.bot", password: "robo" }
 
 async function main() {
-  await prisma.$executeRaw('TRUNCATE "User", "Symbol" CASCADE;')
+  console.log("需要的預資料")
+  const preData = {
+    ticker: "BA",
+    name: "波音",
+    tags: ["交通", ""],
+    description: "some description",
+    // priceTicks: JSON.parse(readFileSync('file', 'utf8')),
+  }
+
+  console.log("依template生成ticker block")
+  const bk = initTickerBlock("$BA")
+  console.log(JSON.stringify(bk, null, 2))
+
+  // return
+
+  // const symbols = await Promise.all(
+  //   SYMBOLS.map(e => prisma.symbol.create({ data: e })))
+
+  await prisma.$executeRaw('TRUNCATE "User", "Symbol", "Block" CASCADE;')
 
   const bot = await prisma.user.create({
     data: {
@@ -268,17 +314,11 @@ async function main() {
     },
   })
 
-  // const symbols = await Promise.all(
-  //   SYMBOLS.map(e => prisma.symbol.create({ data: e })))
-
-  console.log("依template生成ticker block")
-  const bk = initTickerBlock("$BA")
-  console.log(JSON.stringify(bk, null, 2))
-
   console.log("將ticker block存入DB")
   await saveBlockToDB(bot.id, bk)
 
   console.log("補充數據，例如propComments的values")
+
   // const user = "bot"
   // const data = {
   //   name: "$BA",
@@ -302,3 +342,56 @@ main()
   .finally(async () => {
     await prisma.$disconnect()
   })
+
+
+
+// --- NEXT ---
+
+class TemplateGenerator {
+  regex: RegExp = /^[a-zA-Z0-9@$#_-]{2,20}$/
+  greeting: string
+
+  constructor(message: string) {
+    this.greeting = message
+  }
+
+  _isValidName(name: string) {
+    return this.regex.test(name)
+  }
+}
+
+// class TickerTemplate extends TemplateGenerator {
+//   ticker: string
+
+//   constructor(ticker: string) {
+//     super("")
+//     this.ticker = ticker
+//   }
+
+//   toJson() {
+//     return {
+//       template: Template.Ticker,
+//       props: {
+//         name: this.ticker,
+//         fullName: `${ticker}`,
+//         path: `/${ticker}`,
+//         symbol: `${ticker}`,
+//         canComment: false,
+//         intro: { create: { type: CommentType.Prop, text: "intro" } },
+//         symbols: { create: { type: CommentType.Prop, text: "symbols" } },
+//       },
+//       body: {
+//         blocks: [
+//           initViewBlock(ticker),
+//           initPriceBlock(ticker),
+//           // initFinancialBlock(ticker),
+//           // initTradesBlock(ticker),
+//           // initAlternativeBlock(ticker),
+//           // initBoardBlock(ticker),
+//         ]
+//       },
+//     }
+//   }
+// }
+
+// request()
