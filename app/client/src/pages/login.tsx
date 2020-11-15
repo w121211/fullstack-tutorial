@@ -7,6 +7,7 @@ import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 
+
 // const layout = {
 //   labelCol: { span: 8 },
 //   wrapperCol: { span: 16 },
@@ -20,8 +21,10 @@ function LoginForm({ login }: { login: (a: { variables: QT.loginVariables }) => 
   function onFinish(values: any) {
     login({
       variables: {
-        email: values.email,
-        password: values.password,
+        // email: values.email,
+        // password: values.password,
+        email: "aaa@aaa.com",
+        password: "aaa"
       }
     })
   }
@@ -67,7 +70,7 @@ function LoginForm({ login }: { login: (a: { variables: QT.loginVariables }) => 
 
 interface LoginProps extends RouteComponentProps { }
 
-export const Login: React.FC<LoginProps> = () => {
+export const LoginPage: React.FC<LoginProps> = () => {
   // const client: ApolloClient<any> = useApolloClient()
   // const [login, { loading, error }] = useMutation<QT.login, QT.loginVariables>(
   //   queries.LOGIN,
@@ -97,17 +100,20 @@ export const Login: React.FC<LoginProps> = () => {
     }
   )
 
-  if (loading) return null
-  if (me.data) return <Result
-    status="success"
-    title="Successfully Logged In"
-    extra={<Button type="primary"><Link to="/">Go to Main Page</Link></Button>}
-  />
-  if (error) return <Result
-    status="warning"
-    title="Oops! Log In Failed"
-    subTitle={error.message}
-  />
+  if (loading)
+    return null
+  if (me.data)
+    return <Result
+      status="success"
+      title="Successfully Logged In"
+      extra={<Button type="primary"><Link to="/">Go to Main Page</Link></Button>}
+    />
+  if (error)
+    return <Result
+      status="warning"
+      title="Oops! Log In Failed"
+      subTitle={error.message}
+    />
   return (
     <Row justify="center">
       <Col span={6}>

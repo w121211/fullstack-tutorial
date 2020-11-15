@@ -24,6 +24,17 @@ export const REPLY_COUNT = gql`
   }
 `
 
+export const COMMENT_COUNT = gql`
+  fragment commentCount on CommentCount {
+    __typename
+    id
+    nViews
+    nUps
+    nDowns
+    # updatedAt
+  }
+`
+
 export const REPLY = gql`
   fragment reply on Reply {
     __typename
@@ -39,17 +50,6 @@ export const REPLY = gql`
   ${REPLY_COUNT}
 `
 
-export const COMMENT_COUNT = gql`
-  fragment commentCount on CommentCount {
-    __typename
-    id
-    nViews
-    nUps
-    nDowns
-    # updatedAt
-  }
-`
-
 export const COMMENT = gql`
   fragment comment on Comment {
     __typename
@@ -59,6 +59,9 @@ export const COMMENT = gql`
     text
     # updatedAt
     createdAt
+    # replies {
+    #   ...reply
+    # }
     count { 
       ...commentCount
     }
@@ -90,6 +93,7 @@ export const BLOCK_FRAGMENT = gql`
   fragment blockFragment on Block {
     __typename
     id
+    template
     props {
       name
       longName
@@ -215,8 +219,8 @@ export const CREATE_COMMENT = gql`
 `
 
 export const CREATE_REPLY = gql`
-  mutation createReply($replyId: ID!, $data: ReplyInput!) {
-    createReply(replyId: $replyId,  data: $data) {
+  mutation createReply($commentId: ID!, $data: ReplyInput!) {
+    createReply(commentId: $commentId,  data: $data) {
       ...reply
     }
   }
@@ -261,6 +265,36 @@ export const UPDATE_COMMENT_LIKE = gql`
   }
   ${COMMENT_LIKE}
   ${COMMENT_COUNT}
+`
+
+export const CREATE_REPLY_LIKE = gql`
+  mutation createReplyLike($replyId: ID!, $data: LikeInput!) {
+    createReplyLike(replyId: $replyId, data: $data) {
+      like {
+        ...replyLike
+      }
+      count {
+        ...replyCount
+      }
+    }
+  }
+  ${REPLY_LIKE}
+  ${REPLY_COUNT}
+`
+
+export const UPDATE_REPLY_LIKE = gql`
+  mutation updateReplyLike($id: ID!, $data: LikeInput!) {
+    updateReplyLike(id: $id, data: $data) {
+      like {
+        ...replyLike
+      }
+      count {
+        ...replyCount
+      }
+    }
+  }
+  ${REPLY_LIKE}
+  ${REPLY_COUNT}
 `
 
 // export const UPDATE_POLL_VOTE = gql`

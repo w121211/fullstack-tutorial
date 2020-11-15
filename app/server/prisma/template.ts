@@ -1,4 +1,7 @@
 /**
+ * Run:
+ * npx ts-node prisma/template.ts 
+ * 
  * 思考：
  * - property該如何儲存？
  *   - 需求：透過更新template可更新property、template應該是一個類似json的東西、一些property允許user更新
@@ -7,8 +10,6 @@
  * - 類template：用function，輸入需要的variables，生成對應的data
  *   - 真template: 直接以json形式儲存，而不是function
  * 
- * Run:
- * npx ts-node prisma/template.ts 
  */
 import { readFileSync } from 'fs'
 import * as _ from 'lodash'
@@ -52,11 +53,11 @@ import * as PC from '@prisma/client'
 
 const defaultProps = {
   name: "",
+  longName: "",
   path: "",
   symbol: "",
   canComment: true,
   canOpenAlone: false,
-  longName: { connect: true },
   commentSymbols: { connect: true },
   commentIntro: { connect: true },
 }
@@ -71,6 +72,11 @@ enum Template {
   Alternatives = "ALTERNATIVES",
   Financial = "FINANCIAL",
   Price = "PRICE",
+
+  Tag = "TAG",
+  Event = "EVENT",
+
+  TickerTable = "TICKERTABLE"
 }
 
 enum CommentType {
@@ -89,6 +95,7 @@ type Comment = {
   text: string
   poll?: Poll
   suggestedReplies?: string[],
+  meta?: object
 }
 
 type PropCommentCreater = {
@@ -99,12 +106,18 @@ type PropCommentCreater = {
 type BlockProperties = {
   name: string
   path: string
-  fullName?: string
+  canComment: boolean
+  longName?: string
   symbol?: string
-  canComment?: boolean
   canOpenAlone?: boolean
   commentIntro?: PropCommentCreater
   commentSymbols?: PropCommentCreater
+
+  commentTickers?: PropCommentCreater
+  commentTags?: PropCommentCreater
+
+  // wiki title
+  wikiTitle?: string
 }
 
 type BlockBody = {
@@ -115,17 +128,27 @@ type Block = {
   template: Template
   props: BlockProperties
   body?: BlockBody
-  spotComments?: Comment[]
+  spotComments?: Comment[],
 }
 
 // --- Initiators ---
 
+function validateBlock(block: Block) {
+  function _isValidName(name: string) {
+    const regex = /^[a-zA-Z0-9@$#_-]{2,20}$/
+    if (!regex.test(name)) throw new Error("Not valid")
+  }
+  _isValidName(block.props.name)
+
+  for (const bk of block.body?.blocks || [])
+    validateBlock(bk)
+}
 
 function initBoardBlock(ticker: string): Block {
   const name = "Board"
   return {
     template: Template.Board,
-    props: { name, symbol: `${ticker}`, path: `/${ticker}/${name}` },
+    props: { name, symbol: `${ticker}`, path: `/${ticker}/${name}`, canComment: false },
   }
 }
 
@@ -133,7 +156,7 @@ function initAlternativesBlock(ticker: string): Block {
   const name = "Alternatives"
   return {
     template: Template.Alternatives,
-    props: { name, symbol: `${ticker}`, path: `/${ticker}/${name}` },
+    props: { name, symbol: `${ticker}`, path: `/${ticker}/${name}`, canComment: false },
     spotComments: [
       { type: CommentType.Prop, text: "相似股票", },
       // { blockPath: "/stage", type: CommentType.Poll, text: "$A vs $B ", poll: { choices: ["A", "B"] } },
@@ -146,7 +169,7 @@ function initTradesBlock(ticker: string): Block {
   const name = "Trades"
   return {
     template: Template.Trades,
-    props: { name, symbol: `${ticker}`, path: `/${ticker}/${name}` },
+    props: { name, symbol: `${ticker}`, path: `/${ticker}/${name}`, canComment: true },
   }
 }
 
@@ -154,14 +177,14 @@ function initFinancialBlock(ticker: string): Block {
   const name = "Financial Report"
   return {
     template: Template.Financial,
-    props: { name, symbol: `${ticker}`, path: `/${ticker}/${name}` },
+    props: { name, symbol: `${ticker}`, path: `/${ticker}/${name}`, canComment: true },
   }
 }
 
 function initPriceBlock(ticker: string): Block {
   return {
     template: Template.Price,
-    props: { name: "Price", symbol: `${ticker}`, path: `/${ticker}/Price` },
+    props: { name: "Price", symbol: `${ticker}`, path: `/${ticker}/Price`, canComment: true },
   }
 }
 
@@ -170,19 +193,19 @@ function initCommonQBlock(ticker: string): Block {
     template: Template.View,
     props: { name: "Common", symbol: `${ticker}`, path: `/${ticker}/View`, canComment: false },
     spotComments: [
-      { type: CommentType.Prop, text: "正面", suggestedReplies: [] },
-      { type: CommentType.Prop, text: "負面", suggestedReplies: [] },
-      { type: CommentType.Poll, text: "預測", suggestedReplies: [] },
+      { type: CommentType.Prop, text: "{0}正面", suggestedReplies: [] },
+      { type: CommentType.Prop, text: "{1}負面", suggestedReplies: [] },
+      { type: CommentType.Poll, text: "{2}預測", suggestedReplies: [] },
     ],
   }
 }
 
-function initTickerBlock(ticker: string, block?: string) {
+function initTickerBlock(ticker: string) {
   const template: Block = {
     template: Template.Ticker,
     props: {
       name: `${ticker}`,
-      fullName: `${ticker}`,
+      longName: `${ticker}`,
       path: `/${ticker}`,
       symbol: `${ticker}`,
       canComment: false,
@@ -206,15 +229,52 @@ function initTickerBlock(ticker: string, block?: string) {
   return template
 }
 
-function validateBlock(block: Block) {
-  function _isValidName(name: string) {
-    const regex = /^[a-zA-Z0-9@$#_-]{2,20}$/
-    if (!regex.test(name)) throw new Error("Not valid")
-  }
-  _isValidName(block.props.name)
+// --------
 
-  for (const bk of block.body?.blocks || [])
-    validateBlock(bk)
+
+function initTickerTableBlock(parent: Block): Block {
+  return {
+    template: Template.TickerTable,
+    props: { name: "Ticker Table", path: `${parent.props.path}/TickerTable`, canComment: false },
+  }
+}
+
+function initTagQBlock(tag: string): Block {
+  return {
+    template: Template.View,
+    props: { name: "Common", symbol: `${tag}`, path: `/${tag}/Q`, canComment: false },
+    spotComments: [
+      { type: CommentType.Poll, text: "判斷", meta: { order: 0 }, poll: { choices: ["看好", "看壞", "中立"] } },
+      { type: CommentType.Poll, text: "感受", poll: { choices: ["看好", "看壞", "中立"] } },
+      { type: CommentType.Prop, text: "", meta: {}, suggestedReplies: [] },
+    ],
+  }
+}
+
+function initTagBlock(tag: string, wikiTitle: string) {
+  let bk: Block = {
+    template: Template.Tag,
+    props: {
+      name: `#${tag}`,
+      // longName: `${tag}`,
+      path: `/#${tag}`,
+      symbol: `#${tag}`,
+      canComment: false,
+      canOpenAlone: true,
+      wikiTitle,
+      // commentIntro: { create: { type: CommentType.Prop, text: "簡介" } },
+      commentSymbols: { create: { type: CommentType.Prop, text: "Tickers" } },
+    },
+  }
+  bk.body = {
+    blocks: [
+      initTagQBlock(tag),
+      initTickerTableBlock(bk),
+    ]
+  }
+  // if (block) return null
+  // validateBlock(template)  // If not valid, throw error
+  return bk
 }
 
 
@@ -226,9 +286,10 @@ const prisma = new PC.PrismaClient({
 })
 
 async function saveBlockToDB(botUserId: string, block: Block, parentBlockId?: number) {
-  // 順序： create parentBlock > create comments > update props > children-block
-
-  // 移除childrenBlocks後存入block，暫時不存block.props（因為還需要連結propComments）
+  /**
+   * Workflow (recursion): create parentBlock > create comments > update props > child block
+   */
+  // 移除childBlocks後存入block，暫時不存block.props（因為還需要連結propComments）
   const { blocks: childrenBlocks, ...bodyWithoutBlocks } = block.body || {}
   const bk = await prisma.block.create({
     data: {
@@ -260,7 +321,7 @@ async function saveBlockToDB(botUserId: string, block: Block, parentBlockId?: nu
       v["id"] = propComment.id
     }
   }
-  console.log(props)
+  // console.log(props)
   await prisma.block.update({
     data: { props },
     where: { id: bk.id }
@@ -271,7 +332,7 @@ async function saveBlockToDB(botUserId: string, block: Block, parentBlockId?: nu
     async (e) => await prisma.comment.create({
       data: {
         text: e.text,
-        // isSpot: true
+        isSpot: true,
         user: { connect: { id: botUserId } },
         block: { connect: { id: bk.id } },
         count: { create: {} }
@@ -284,27 +345,44 @@ async function saveBlockToDB(botUserId: string, block: Block, parentBlockId?: nu
   }
 }
 
-const BOT = { email: "bot@bot.bot", password: "robo" }
+// --- Main ---
 
 async function main() {
-  console.log("需要的預資料")
-  const preData = {
+  console.log("-- 需要的預資料")
+  const BOT = { email: "bot@bot.bot", password: "robo" }
+  const TESTUSER = { email: "aaa@aaa.com", password: "aaa" }
+  const preTickerData = {
     ticker: "BA",
     name: "波音",
-    tags: ["交通", ""],
+    tags: ["air_manufacture", ""],
     description: "some description",
     // priceTicks: JSON.parse(readFileSync('file', 'utf8')),
+    trades: {},
+    hodlers: {},
+    alternatives: {
+      "依產業": {},
+      "依": {},
+    },
+    stage: {},
+  }
+  const preTagData = {
+    tag: "air_manufacture",
+    tickers: ["BA", "RXT"],
+    collection: {
+      table: {
+        // 名字、價格、當日漲跌、近1個月漲跌、近1年漲跌、社群感受、市值、活躍度、波動
+        sources: ["symbol", "price", "deltaPrice (1Y)", "marketCap", "socialSentiment"],
+        // 選前20個，依照關注度、...做排序
+        nLimit: 20,
+      },
+    },
   }
 
-  console.log("依template生成ticker block")
+  console.log("-- 依template生成ticker block")
   const bk = initTickerBlock("$BA")
   console.log(JSON.stringify(bk, null, 2))
 
-  // return
-
-  // const symbols = await Promise.all(
-  //   SYMBOLS.map(e => prisma.symbol.create({ data: e })))
-
+  console.log("-- 將DB清空")
   await prisma.$executeRaw('TRUNCATE "User", "Symbol", "Block" CASCADE;')
 
   const bot = await prisma.user.create({
@@ -313,11 +391,19 @@ async function main() {
       password: await hash(BOT.password, 10),
     },
   })
+  await prisma.user.create({
+    data: {
+      email: TESTUSER.email,
+      password: await hash(TESTUSER.password, 10),
+    }
+  })
+  // const symbols = await Promise.all(
+  //   SYMBOLS.map(e => prisma.symbol.create({ data: e })))
 
-  console.log("將ticker block存入DB")
+  console.log("-- 將ticker block存入DB")
   await saveBlockToDB(bot.id, bk)
 
-  console.log("補充數據，例如propComments的values")
+  console.log("-- 補充數據，例如propComments的values")
 
   // const user = "bot"
   // const data = {
@@ -331,7 +417,6 @@ async function main() {
   //   const comment = bk.propComments.filter(id)
   //   prisma.create({ reply: { text: "test", isSpot: true, user } })
   // }
-
 }
 
 main()

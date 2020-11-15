@@ -70,42 +70,7 @@ const N_COMMENTS_TAKEN = 20
 // }
 
 
-// interface CommentListProps extends QT.commentsVariables {
-//   me?: QT.me_me
-//   toAddCommentCountByOne: () => void
-// }
 
-// export const CommentList: React.FC<CommentListProps> = ({ me, postId, toAddCommentCountByOne }) => {
-//   const { data, loading, error, refetch } = useQuery<QT.comments, QT.commentsVariables>(
-//     queries.COMMENTS, { variables: { postId } }
-//   )
-
-//   const [hasMore, setHasMore] = useState<boolean>(false)
-
-//   if (loading) return null
-//   // if (error) return <p>ERROR: {error.message}</p>
-//   if (!data) return null
-//   if (data.comments.length === N_COMMENTS_TAKEN) setHasMore(true)
-
-//   return (
-//     <Card type="inner" bordered={false}>
-//       <List
-//         // bordered
-//         size="small"
-//         // split={false}
-//         dataSource={data.comments}
-//         // loadMore={hasMore ? <Button type="link">more</Button> : null}
-//         renderItem={e => (
-//           <List.Item>
-//             <span>{e.content}</span>
-//             <CommentFooter comment={e} meComment={me?.id === e.userId} />
-//           </List.Item>
-//         )}
-//       />
-//       <CommentForm postId={postId} toAddCommentCountByOne={toAddCommentCountByOne} />
-//     </Card>
-//   )
-// }
 
 
 // function Body({ pattern, setPattern }: { pattern: null | string, setPattern: (a: string | null) => void }) {

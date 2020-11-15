@@ -17,7 +17,5 @@ export function fakeFetchPage(url: string) {
         cluster: {
             id: 12938,
         },
-
-
     }
 }

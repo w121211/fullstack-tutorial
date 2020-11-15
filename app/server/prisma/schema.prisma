@@ -158,7 +158,7 @@ model CommentCount {
   id        Int      @id @default(autoincrement())
   comment   Comment  @relation(fields: [commentId], references: [id])
   commentId Int      @unique
-  // nViews    Int      @default(0)
+  nViews    Int      @default(0)
   nUps      Int      @default(0)
   nDowns    Int      @default(0)
   createdAt DateTime @default(now())

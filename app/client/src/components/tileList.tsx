@@ -10,124 +10,160 @@ import * as QT from '../store/queryTypes'
 // import { PollChoiceRadioGroup } from './pollChoice'
 // import { PollFooter, PostFooter } from './tileFooter'
 // import { VotePostForm, NewChoicePostForm } from './postForm'
-import { ReplyPanel, CommentPanel } from './tilePanel'
-import { ReplyList, QueryReplyList } from './tileList'
-import { ReplyForm } from './tileForms'
+import { Reply, Comment } from './tile'
 
-
-function TextMarker({ text }: { text: string | null }) {
-  const tokens = [
-    <span key={1}>This is some </span>,
-    <a key={2}>#bbb</a>,
-  ]
-  return <>{tokens.map(e => e)}</>
-
-  // const re = /#\w+/g
-  // const matched = []
-
-  // while (true) {
-  //   const match = re.exec(text);
-  //   if (!match) break
-  //   matched.push([match.index, re.lastIndex])
-  // }
-
-  // const elements = []
-  // let start = 0
-  // for (let m of matched) {
-  //   const pre = text.substr(start, m[0] - start)
-  //   const matched = text.substr(m[0], m[1] - m[0])
-  //   start = m[1]
-  //   elements.push(pre)
-  //   elements.push(matched)
-  // }
-  // // tail string
-  // elements.push(text.substr(start))
-  // return null
-}
-
-export function Reply({ reply, me }: { reply: QT.replies_replies, me?: QT.me_me }) {
-  // const edit = me?.id === post.userId
-  //   ? <Link to={`/post/${post.id}?update`}>edit</Link>
-  //   : null
+export function ReplyList({ replies, pattern }: { replies: QT.replies_replies[], pattern?: string }) {
+  /** 
+   * args:
+   * - pattern（還沒實裝） : 依照reply的vote（會嵌進text）做filter，
+   *     `pattern=null`的情況，就是一個普通的reply list 
+   * */
+  // const list = replies.map((e, i) => {
+  //   if (pattern === null)
+  //     return <span key={i}>{e}, </span>
+  //   else if (e.indexOf(pattern) >= 0)
+  //     return <span key={i}>{e}</span>
+  //   return null
+  // })
+  // return <p>{list}</p>
   return (
-    <div>
-      <TextMarker text={reply.text} />
-      {reply.text}
-      <ReplyPanel reply={reply} meAuthor={me?.id === reply.userId} />
-    </div>
+    <>
+      {replies.map(function (e, i) {
+        return <Reply reply={e} key={i} />
+      })}
+    </>
   )
 }
 
-export function Comment({ comment, showSpotReplies = true }: { comment: QT.comment, showSpotReplies?: boolean }) {
-  /**
-   *        | 折疊時                      | 展開時
-   * - Text | 只顯示text                  | text + replies(as-list) 
-   * - Poll | 顯示Text, PollChoices       | text + replies(as-list) 
-   * - Prop | 同時展現text & spotReplies  | prop-text + replies(as-list)
-   */
-  // const [replyCount, setReplyCount] = useState<number>(comment.count.nReplies)
-  // function addCommentCountByOne() { setCommentCount(commentCount + 1) }
+export function QueryReplyList({ commentId }: { commentId: string }) {
+  const { data, loading, error, refetch } = useQuery<QT.replies, QT.repliesVariables>(
+    queries.REPLIES, { variables: { commentId } }
+  )
+  if (loading) return null
+  if (error) return <p>ERROR: {error.message}</p>
+  if (!data) return null
+  return <ReplyList replies={data.replies} />
+}
 
-  // const edit = me?.id === post.userId
-  //   ? <Link to={`/post/${post.id}?update`}>edit</Link>
-  //   : null
+interface CommentListProps extends QT.commentsVariables {
+  me?: QT.me_me
+  blockId: string
+  toAddCommentCountByOne: () => void
+}
 
-  // getReplies, addReply, voteComment, voteReply
-  // const data = {
-  //   id: 11,
-  //   type: "PROP",  // "TEXT", "POLL"
-  //   text: "a comment here",
-  //   replies: [{ id: 11, text: "aaa" }, { id: 12, text: "bbb" }, { id: 13, text: "ccc" }],
-  //   spotReplies: [{ id: 11, text: "aaa" }, { id: 12, text: "bbb" }],
-  //   // poll: { id: 11, choices: ["aaa", "bbb"], nVotes: [10, 20], },
-  // }
+// const a = <List
+//   className={classes.List}
+//   size="large"
+//   // header={`${list.length} 條討論`}
+//   // pagination={{
+//   //   onChange: (page) => {
+//   //     console.log(page)
+//   //   },
+//   //   pageSize: 5,
+//   // }}
+//   dataSource={list}
+//   // footer={
+//   //   //   <div>
+//   //   //     <b>ant design</b> footer part
+//   //   //   </div>
+//   // }
+//   renderItem={(item) => (
+//     <li
+//       className={classes.commentRoot}
+//       onClick={() => parentCommentClickHandler(item.id)}
+//     >
+//       <CommentTemplate
+//         id={item.id}
+//         content={item.content}
+//         clicked={item.clicked}
+//         parent={true}
+//       >
+//         {item.clicked ? (
+//           <>
+//             <CommentTemplate
+//               id={item.id}
+//               content="fsjd;flkja;lksdjf"
+//               clicked={item.clicked}
+//               parent={false}
+//             />
+//             <CommentTemplate
+//               id={item.id}
+//               content="fsjd;flkja;lksdjf"
+//               clicked={item.clicked}
+//               parent={false}
+//             />
+//           </>
+//         ) : null}
+//       </CommentTemplate>
+//     </li>
+//   )}
+// />
 
-  // let text
-  // switch (data.type) {
-  //   case "PROP":
-  //     text = <p>{data.text}: {data.spotReplies.map(e => e.text)}</p>
-  //     break
-  //   // case "POLL":
-  //   //   text = <p>{data.text}</p>
-  //   default:
-  //     text = <p>{data.text}</p>
-  //     break
-  // }
-  const [folded, setFolded] = useState<boolean>(true)
-  // const spotReplies = comment.replies.filter(e => e.isSpot)
-  if (folded)
-    return (
-      <div>
-        <p>{comment.text}</p>
-        <CommentPanel comment={comment} />
-        <p>Replies (只有spot)</p>
-        {/* <ReplyList replies={comment.replies} /> */}
-        <QueryReplyList commentId={comment.id} />
-        <button onClick={function (e) { setFolded(!folded) }}>展開</button>
-      </div>
-    )
+export function CommentList({ comments }: { comments: QT.comment[] }) {
+  const spotComments = comments.filter(e => e.isSpot)
+  const otherComments = comments.filter(e => !e.isSpot)
   return (
-    <div>
-      <p>{comment.text}</p>
-      <CommentPanel comment={comment} />
-      <QueryReplyList commentId={comment.id} />
-      <ReplyForm commentId={comment.id} addReplyCountByOne={function () { }} />
-      <button onClick={function (e) { setFolded(!folded) }}>折疊</button>
-    </div>
+    <>
+      <h3>Spot Comments</h3>
+      {spotComments.map(function (e, i) {
+        return <Comment comment={e} key={i} />
+      })}
+      <h3>Other Comments</h3>
+      {otherComments.map(function (e, i) {
+        return <Comment comment={e} key={i} />
+      })}
+    </>
   )
 }
 
-function CommentWithPoll() {
-  const [pattern, setPattern] = useState<string | null>(null)
-  {/* {data.poll ? <Poll poll={data.poll} pattern={pattern} setPattern={setPattern} /> : null} */ }
-  return null
+export function QueryCommentList({ me, blockId }: { me?: QT.me_me, blockId: string }) {
+  const { data, loading, error, refetch } = useQuery<QT.comments, QT.commentsVariables>(
+    queries.COMMENTS, { variables: { blockId } }
+  )
+  if (loading) return null
+  if (error) return <p>ERROR: {error.message}</p>
+  if (!data) return null
+  return <CommentList comments={data.comments} />
 }
 
 
-// interface SymbolListProps {
+export function QuerySpotCommentList() {
+
+}
+
+const LoadMoreCommentList: React.FC<CommentListProps> = ({ me, blockId, toAddCommentCountByOne }) => {
+  const { data, loading, error, refetch } = useQuery<QT.comments, QT.commentsVariables>(
+    queries.COMMENTS, { variables: { blockId } }
+  )
+  const [hasMore, setHasMore] = useState<boolean>(false)
+  if (loading) return null
+  // if (error) return <p>ERROR: {error.message}</p>
+  if (!data) return null
+  // if (data.comments.length === N_COMMENTS_TAKEN) setHasMore(true)
+  return (
+    <Card type="inner" bordered={false}>
+      <List
+        // bordered
+        size="small"
+        // split={false}
+        dataSource={data.comments}
+        // loadMore={hasMore ? <Button type="link">more</Button> : null}
+        renderItem={e => (
+          <List.Item>
+            {/* <span>{e.content}</span> */}
+            {/* <CommentFooter comment={e} meComment={me?.id === e.userId} /> */}
+          </List.Item>
+        )}
+      />
+      {/* <CommentForm postId={postId} toAddCommentCountByOne={toAddCommentCountByOne} /> */}
+    </Card>
+  )
+}
+
+interface SymbolListProps {
   // symbols: QT.pollFragment_symbols[] | null
-  // symbols: null
-// }
+  symbols: null
+}
 
 // const SymbolList: React.FC<SymbolListProps> = ({ symbols }) => {
 //   if (symbols === null) return null

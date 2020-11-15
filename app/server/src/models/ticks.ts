@@ -1,7 +1,10 @@
 /**
- * RUN: npx ts-node src/models/ticks.ts 
+ * RUN: 
+ * cd .../app/server
+ * npx ts-node src/models/ticks.ts 
  */
-// import * as https from 'https'
+import * as fs from 'fs'
+import * as path from 'path'
 import _ from 'lodash'
 import dotenv from 'dotenv'
 import dayjs from 'dayjs'
@@ -10,43 +13,47 @@ import * as PA from '@prisma/client'
 
 dotenv.config()
 
+const DOWNLOAD_FOLDER = "./downloads"
+const API_ROOT = "https://cloud.iexapis.com/v1"
 const TOKEN = process.env.IEX_TOKEN
-const API_ROOT = "https://sandbox.iexapis.com/stable"
+// const API_ROOT = "https://sandbox.iexapis.com/stable"
+// const TOKEN = "Tsk_fb96b83c73fe46debd5e3b2ee5033c75"
 
-function api_urls(root: string, symbol: string) {
-  return {
+function getApiUrl(root: string, symbol: string, range: string) {
+  const urls = {
     previous: `${root}/stock/${symbol}/previous`,
     d5: `${root}/stock/${symbol}/chart/5d`,
     m1: `${root}/stock/${symbol}/chart/m1`,
     max: `${root}/stock/${symbol}/chart/max`,
   }
+  return urls[range as keyof typeof urls]
 }
-
-enum FetchSapn {
-  PREVIOUS,
-  D5,
-  MAX,
-}
-
 
 const prisma = new PA.PrismaClient({
   errorFormat: "pretty",
-  log: ['query', 'info', 'warn'],
+  // log: ['query', 'info', 'warn'],
 })
 
-function fetchAndSaveTicks(symbol: PA.Symbol, span: FetchSapn = FetchSapn.D5) {
+function fetchAndSaveTicks(symbol: PA.Symbol, range: string = "d5") {
+  /**
+   * range: "previous", "d5", "m1", "max"
+   */
   console.log("連上IEX API抓取ticks")
-  const api = api_urls(API_ROOT, symbol.name)
+  const url = getApiUrl(API_ROOT, symbol.name, range)
   const qs = {
-    token: "Tsk_fb96b83c73fe46debd5e3b2ee5033c75"
+    token: TOKEN
     // screen_name: perm_data.screen_name,
     // user_id: perm_data.user_id
   }
-  request.get({ url: api.d5, qs: qs, json: true }, async function (err, resp, body) {
+  const filename = `${symbol.name}_${range}_${dayjs().format('YYYYMMDDHHmm')}.json`
+
+  request.get({ url, qs: qs, json: true }, async function (err, resp, body) {
     if (err) {
       console.error('error:', err)
       return
     }
+    fs.writeFileSync(path.join(DOWNLOAD_FOLDER, filename), JSON.stringify(body))
+
     // console.log(body)
     const promises = body.map(function (e: any) {
       return prisma.tick.create({
@@ -90,7 +97,7 @@ async function getTicks(symbolName: string) {
 
   // 僅抓最新的部分
   if (tick === null) {
-    await fetchAndSaveTicks(symbol, FetchSapn.MAX)
+    await fetchAndSaveTicks(symbol, "max")
   } else {
     const now = dayjs()
     const diff = now.diff(dayjs(tick.at), 'day')
@@ -104,25 +111,50 @@ async function getTicks(symbolName: string) {
 }
 
 async function main() {
-
-  return
-  // const symbols = ["$BA", "$AA"]
+  // const symbols = ["BA", "AA"]
   // const range = [2000, now()]  // start, end
-  const symbolName = "TWTR"
-  // try {
-  //   await prisma.symbol.create({
-  //     data: {
-  //       cat: PA.SymbolCat.TICKER,
-  //       name: symbolName,
-  //     }
-  //   })
-  // } catch (e) {
-  //   console.log(e)
-  // }
+  // const symbolName = "TWTR"
 
   console.log("依照給予的ticker抓最新的ticks")
 
-  const ticks = await getTicks("TWTR")
+  if (!fs.existsSync(DOWNLOAD_FOLDER)) {
+    fs.mkdirSync(DOWNLOAD_FOLDER)
+  }
+
+  const symbols = JSON.parse(fs.readFileSync(path.join(DOWNLOAD_FOLDER, "symbols.json"), 'utf8'))
+
+  console.log(symbols.length)
+
+  for (let i = 0; i < symbols.length; i++) {
+    if (i > 1)
+      break
+
+    const name = symbols[i]["symbol"]
+    // const ticks = await getTicks("TWTR")
+    try {
+      await prisma.symbol.create({
+        data: {
+          cat: PA.SymbolCat.TICKER,
+          name: name,
+        }
+      })
+    } catch (e) {
+      console.log(e)
+    }
+
+    const symbol = await prisma.symbol.findOne({
+      where: {
+        name: name,
+      }
+    })
+    if (symbol) {
+      await fetchAndSaveTicks(symbol, "max")
+      await new Promise(function (resolve) { return setTimeout(resolve, 2000) });
+    } else {
+      throw new Error(`No symbol found in DB ${symbol}`)
+    }
+  }
+
 }
 
 main()

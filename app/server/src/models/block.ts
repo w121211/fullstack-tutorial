@@ -70,9 +70,13 @@ type PrismaBlockWithComments = PA.Block & {
 }
 
 export async function fillBlock(block: PrismaBlockWithComments): Promise<any> {
+  /**
+   * 現階段的block不考慮有nested-nested block，也就是說，不用考慮child-block還需要在找children的情形
+   */
+
   // Map PropComments
-  const props = block.propComments ?
-    mapPropCommentsToProps(block.props, block.propComments) : block.props
+  const props = (block.propComments ?
+    mapPropCommentsToProps(block.props, block.propComments) : block.props) as SchemaBlockProperties
 
   // Fill block body & symbol-linked-comments
   const body: { [k: string]: any } = {}
@@ -83,12 +87,15 @@ export async function fillBlock(block: PrismaBlockWithComments): Promise<any> {
       break
     }
     case Template.Price:
-      // body.ticks = await prisma.tick.findMany()
+      body.ticks = await prisma.tick.findMany({
+        where: { symbol: { name: props.symbol } }
+      })
       break
     case Template.View:
+      // 使用spotComments，不做其他處理
       break
     case Template.Alternatives:
-      // 直接用原本的spotComments
+      // 使用spotComments，不做其他處理
       break
     case Template.Trades:
       // body.table = await prisma.trade.findMany()
@@ -119,8 +126,8 @@ export async function fillBlock(block: PrismaBlockWithComments): Promise<any> {
   }
 
   console.log(props)
-  console.log(body)
-  console.log({ ...block, props, body })
+  // console.log(body)
+  // console.log({ ...block, props, body })
 
   return { ...block, props, body }
 }

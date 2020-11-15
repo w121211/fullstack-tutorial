@@ -2,9 +2,8 @@
 
 .List {
   &:global(.ant-list) {
-    margin-top: 20px;
-
     :global(.ant-list-header) {
+      padding: 20px 0 10px;
       font-weight: $font-bd;
       color: $black;
     }
@@ -13,17 +12,16 @@
     flex-direction: row;
   }
   :global(.ant-comment-nested) {
-    // align-items: flex-end;
     :global(.ant-comment) {
       border: none;
     }
   }
-  :global(.ant-list-items) {
-  }
+
   :global(.ant-comment) {
     width: 100%;
+    min-height: 30px;
     border-bottom: 1px solid $natual2;
-    background-color: none;
+    background-color: transparent;
   }
   .commentRoot {
     margin-bottom: 0;
@@ -34,44 +32,41 @@
 
       opacity: 0;
     }
-    &:hover {
-      background-color: $natual-hover;
-      :global(.ant-comment-actions) {
-        opacity: 1;
-        transition: opacity 0.2s;
+    :global(.ant-comment-inner) {
+      padding: 10px 0;
+      background-color: transparent;
+      &:hover {
+        :global(.ant-comment-actions) {
+          opacity: 1;
+          transition: opacity 0.2s;
+        }
+        // background-color: $natual-hover;
       }
     }
   }
-  :global(.ant-comment-inner) {
-    padding: 5px 0;
-  }
   :global(.ant-comment-content) {
     display: flex;
-    // justify-content: space-between;
     align-items: center;
     font-size: $font-sm;
   }
   :global(.ant-comment-content-detail) {
     margin: 0 16px 0 10px;
+    word-wrap: break-word;
+    word-break: break-all;
   }
   :global(.ant-comment-nested) {
     margin-left: 0;
-    padding-left: 40px;
-    // background-color: $natual-light;
+    padding: 0px;
+    :global(.ant-comment-inner) {
+      padding: 0px 0 0px 40px;
+      background-color: transparent;
+      &:hover {
+        :global(.ant-comment-actions) {
+          opacity: 1;
+          transition: opacity 0.2s;
+        }
+        // background-color: $natual-hover;
+      }
+    }
   }
 }
-.ListContent {
-  word-wrap: break-word;
-  word-break: break-all;
-}
-// .iconText {
-//   ul {
-//     flex-direction: row;
-
-//     // margin-left: 0;
-//     li {
-//       margin-top: 10px;
-//       margin-bottom: 0;
-//     }
-//   }
-// }

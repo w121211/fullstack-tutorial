@@ -1,13 +1,29 @@
 import React, { useState } from 'react'
 import { RouteComponentProps, Redirect, Link, navigate } from '@reach/router'
 import { useQuery } from '@apollo/client'
-import { Row, Col, Badge, Button, Card, Radio, Space, List, Typography, Layout, Divider, Drawer, Modal, Input } from 'antd'
+import { Row, Col, Badge, Button, Card, Space, List, Typography, Layout, Divider, Drawer, Modal, Input } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
-import { CommentPanel } from '../components/tilePanel'
-import { CommentForm } from '../components/tileForms'
 // import { RepliedPostList } from '../components/postList'
+import { CommentForm } from '../components/tileForms'
+import { CommentList, QueryCommentList, QuerySpotCommentList } from '../components/tileList'
+import { Reply, Comment } from '../components/tile'
+
+import { LineChart } from '../components/charts'
+import ProsCons from '../components/prosCons/prosCons'
+import Anchor from '../components/anchor/tickerAnchor'
+import Tag from '../components/tag/tag'
+import BlockCss from '../components/block/block.module.scss'
+import BlockMetaCss from '../components/blockMeta/blockMeta.module.scss'
+import Radio from '../components/radios/radios'
+import CommenTemplate from '../components/commentTemplate/commentTemplate'
+import MyTextArea from '../components/myTextArea/myTextArea'
+import CssCommentList from '../components/commentList/commentList'
+import { SomeTable } from '../components/tables'
+
+const { Header, Sider, Content } = Layout
+
 
 /**
  * 1. comment, reply: list, form
@@ -96,211 +112,224 @@ const fakeTickerBlock = {
   ]
 }
 
-// ---------------------------------------------------------------
+// --- CSS support UI ---
 
-function FilteredReplyList({ replies, pattern }: { replies: string[], pattern: string | null }) {
-  const list = replies.map(e => {
-    if (pattern === null)
-      return <span>{e}, </span>
-    else if (e.indexOf(pattern) >= 0)
-      return <span>{e}</span>
-    return null
-  })
-  return <p>{list}</p>
+export function CssBlockCard({ title, children }: { title: string, children: React.ReactNode }) {
+  // const [isloadding, setLoadding] = useState(true)
+  // useEffect(() => {
+  //   setTimeout(() => setLoadding(false), 1000)
+  // }, [])
+  return (
+    <Card
+      title={title}
+      className={BlockCss.card}
+      hoverable
+      // loading={isloadding}
+      bordered={false}
+    >
+      {children}
+    </Card>
+  )
 }
+
+
+// ---------------------------------------------------------------
 
 function Poll({ poll, pattern, setPattern }: { poll: { choices: string[] }, pattern: null | string, setPattern: (a: string | null) => void }) {
   function setter(s: string) {
     if (pattern !== null) setPattern(null)
     else setPattern(s)
   }
-  const choices = poll.choices.map(e => {
-    return <button onClick={f => { setter(e) }}>{e}</button>
+  const choices = poll.choices.map((e, i) => {
+    return <button key={i} onClick={f => { setter(e) }}>{e}</button>
   })
   return <>{choices}</>
 }
 
-
-function BaseComment({ comment }: { comment: QT.comment }) {
-  /**
-   *        | 折疊時                      | 展開時
-   * - Text | 只顯示text                  | text + replies(as-list) 
-   * - Poll | 顯示Text, PollChoices       | text + replies(as-list) 
-   * - Prop | 同時展現text & spotReplies   | prop-text + replies(as-list) 
-   * 
-   */
-  // getReplies, addReply, voteComment, voteReply
-  // const { data, loading, error, refetch } = useQuery<QT.comments, QT.commentsVariables>(
-  //   queries.COMMENTS, { variables: { postId: "12345" } }
-  // )
-  // if (loading) return null
-  // if (error) return <p>ERROR: {error.message}</p>
-  // if (!data) return null
-  // function toAddCommentCountByOne() { }
-  const data = {
-    id: 11,
-    type: "PROP",  // "TEXT", "POLL"
-    text: "this is something",
-    replies: [{ id: 11, text: "aaa" }, { id: 12, text: "bbb" }],
-    spotReplies: [{ id: 11, text: "aaa" }, { id: 12, text: "bbb" }],
-    poll: { id: 11, choices: ["aaa", "bbb"], nVotes: [10, 20], },
-  }
-  const [pattern, setPattern] = useState<string | null>(null)
-  const [folded, setFolded] = useState<boolean>(true)
-
-  let text
-  switch (data.type) {
-    case "PROP":
-      text = <p>{data.text}: {data.spotReplies.map(e => e.text)}</p>
-      break
-    // case "POLL":
-    //   text = <p>{data.text}</p>
-    default:
-      text = <p>{data.text}</p>
-      break
-  }
-
-  // const meCommented = me?.id === post.userId
-
-  if (folded) return (
-    <div onClick={e => { setFolded(false) }}>
-      {text}
-      {data.poll ? <Poll poll={data.poll} pattern={pattern} setPattern={setPattern} /> : null}
-    </div>
-  )
+function SomeChart({ data }: any) {
+  // return <div>[[[Some chart goes here]]]</div>
   return (
     <>
-      {text}
-      {data.poll ? <Poll poll={data.poll} pattern={pattern} setPattern={setPattern} /> : null}
-      <CommentPanel comment={comment} meCommented={false} />
-      <FilteredReplyList replies={data.replies.map(e => e.text)} pattern={pattern} />
+      <LineChart />
     </>
   )
 }
 
-function CommentList({ comments, spotComments }: any) {
-  return (
-    <>
-      <h1>Spot Comments</h1>
-      {spotComments.map((e: any) => <BaseComment comment={e} />)}
-
-      <h1>Comments</h1>
-      {spotComments.map((e: any) => <BaseComment comment={e} />)}
-    </>
-  )
-}
-
-function SomeTable({ data }: any) { return null }
-function SomeChart({ data }: any) { return null }
-
-function BlockCardBody({ body }: any) {
-  // 假定body只能是其中一個
-  if (body.blocks) throw new Error("Block card cannot have blocks as body")
-  else if (body.table) return <SomeTable data={body.table} />
-  else if (body.ticks) return <SomeChart data={body.ticks} />
-  return null
-}
-
-function BlockCard({ block }: any) {
-  const data = fakeViewBlock
-  return (
-    <>
-      {data.props.canOpenAlone ? <a href={data.props.path}>{data.props.name}</a> : data.props.name}
-      <BlockCardBody body={block.body} />
-      <CommentList spotComments={data.spotComments} />
-    </>
-  )
-}
-
-function BlockBody({ body }: any) {
-  // 假定body只能是其中一個
-  if (body.blocks) body = body.blocks.map((e: any) => <BlockCard block={e} />)
-  else if (body.table) body = <SomeTable data={body.table} />
-  else if (body.ticks) body = <SomeChart data={body.ticks} />
-  return body
-}
+// ---------------------------------------------------------------
 
 function BlockPath({ path }: { path: string | null }) {
-  if (path === null) return null
-
-  // const fake = "/$AAA/aaa/bbb"
+  if (path === null)
+    return null
   let base = ""
-  let paths = []
+  let subs = []
   for (const p of path.split("/")) {
     if (p === "") continue
     const joined = `${base}/${p}`
     base = joined
-    paths.push(joined)
+    subs.push([p, joined])
   }
+  // console.log(paths)
   return (
-    <>{paths.map(e => <a href={e}></a>)}</>
+    <>
+      {subs.map(function (e, i) {
+        return <span key={i} >/<a href={e[1]}>{e[0]}</a></span>
+      })}
+    </>
   )
 }
 
-function NewComment({ blockId }: { blockId: string }) {
-  const fakeToAddCommentCountByOne = () => { }
-  return <CommentForm blockId={blockId} toAddCommentCountByOne={fakeToAddCommentCountByOne} />
+function NestedBlockBody({ body }: { body: QT.block_block_body_blocks_body }) {
+  // 假定body只能是其中一個
+  if (body.table)
+    return <SomeTable />
+  if (body.ticks)
+    return <SomeChart data={body.ticks} />
+  // throw new Error("應該要被處理但沒處理的body")
+  return null
 }
 
+function NestedBlock({ block }: { block: QT.block_block_body_blocks }) {
+  // const { data, loading, error, refetch } = useQuery<QT.comments, QT.commentsVariables>(
+  //   queries.COMMENTS, { variables: { blockId: block.id } }
+  // )
+  // if (loading)
+  //   return null
+  // console.log(data?.comments)
+  // const data = fakeViewBlock
+  // if (block.body.blocks) throw new Error("Block card cannot have blocks as body")
+  return (
+    <CssBlockCard title={block.props.name ?? ""}>
+      {/* {data.props.canOpenAlone ? <a href={data.props.path}>{data.props.name}</a> : data.props.name} */}
+      {/* <CommentList spotComments={data.spotComments} /> */}
+      <BlockPath path={block.props.path} />
 
-function BlockAsPage({ id, path }: { id?: string, path?: string }) {
+      <h2>Block Body</h2>
+      <NestedBlockBody body={block.body} />
+
+      {/* <h2>Comments (NestedBlock 只會給spot comments)</h2>
+      {block.comments ? <CommentList comments={block.comments} /> : <p>null spot comments</p>} */}
+
+      <CssCommentList />
+      <MyTextArea />
+    </CssBlockCard>
+  )
+}
+
+function BlockBody({ body }: { body: QT.block_block_body }) {
+  // 假定body只能是其中一個
+  if (body.blocks)
+    return <>{body.blocks.map((e, i) => <NestedBlock key={i} block={e} />)}</>
+  if (body.table)
+    return <SomeTable />
+  if (body.ticks)
+    return <SomeChart data={body.ticks} />
+  // throw new Error("應該要被處理但沒處理的body")
+  return null
+}
+
+function BlockAsPage({ id, path }: { id: string, path?: string }) {
   /**
    * TODO: `block.props`需定義是否需要顯示、怎麼顯示，這裡就不考慮個別property
+   * 需要考慮template？
    */
   const queryBlock = useQuery<QT.block, QT.blockVariables>(
     queries.BLOCK, { variables: { id } }
   )
-
-  if (id === null && path === null) throw new Error("Should provide either id or path")
-  if (queryBlock.loading) return null
-  if (!queryBlock.data) return <p>something goes wrong</p>
-
+  if (id === null && path === null)
+    throw new Error("Should provide either id or path")
+  if (queryBlock.loading)
+    return null
+  if (!queryBlock.data)
+    return <p>something goes wrong</p>
   const bk = queryBlock.data.block
+  if (!bk)
+    return <h1>Null block</h1>
+
   return (
-    <>
-      <h1>Page Header</h1>
+    <Content
+      className="site-layout-background content"
+      style={{ minHeight: 280, }}
+    >
+      <h2>Block as page: Path</h2>
       <BlockPath path={bk.props.path} />
 
-      <h1>Properties</h1>
-      {bk.props.longName}
-      {bk.props?.commentSymbols ? <BaseComment comment={bk.props?.commentSymbols} /> : null}
-      {bk.props?.commentIntro ? <BaseComment comment={bk.props?.commentIntro} /> : null}
+      {/* 
+      {bk.props.longName ? bk.props.longName : bk.props.name}
+      symbol: {bk.props.symbol ? bk.props.symbol : "null"}<br />
+      symbols: {bk.props?.commentSymbols ? <Comment comment={bk.props?.commentSymbols} /> : null}<br />
+      intro: {bk.props?.commentIntro ? <Comment comment={bk.props?.commentIntro} /> : null}<br /> 
+      */}
 
-      <h1>Block Body</h1>
+      <h2>Block Body (含nested blocks)</h2>
       <BlockBody body={bk.body} />
 
-      <h1>Block Comments (當允許comment的情況)</h1>
-      {bk.props.canComment ? <NewComment blockId={bk.id} /> : <p>不允許comment</p>}
-      {bk.comments ? <CommentList comments={bk.comments} /> : null}
-    </>
+      <h2>Block Comments</h2>
+      <h3>1. spot comments</h3>
+      {bk.comments ? <CommentList comments={bk.comments} /> : <p>null spot comments</p>}
+
+      <h3>2. comments (若允許comment的話)</h3>
+      {bk.props.canComment ? <QueryCommentList blockId={id} /> : <p>不允許comment</p>}
+
+      <h3>3. new comment (若允許comment的話)</h3>
+      {bk.props.canComment
+        ? <CommentForm blockId={bk.id} toAddCommentCountByOne={() => { }} />
+        : <p>不允許comment</p>}
+    </Content>
   )
 }
 
-function BlockWithFakeData({ block }: any) {
-  // const [share, setShare] = useState<{ clickedChoice: number | null }>({ clickedChoice: null })
-  // const symbols = data.props.symbols.map(e => <a href="/">e</a>)
-  // const dict = data.body.dict.map(e => {
-  //   // e[1:]
-  //   const key = e[0]
-  //   const value = e.slice(1).join(",")
-  //   return <li>{key}: {value}</li>
-  // })
-  const data = fakeTickerBlock
+function TickerPage({ id, path }: { id: string, path?: string }) {
+  /**
+   * TODO: `block.props`需定義是否需要顯示、怎麼顯示，這裡就不考慮個別property
+   * 需要考慮template？
+   */
+  const queryBlock = useQuery<QT.block, QT.blockVariables>(
+    queries.BLOCK, { variables: { id } }
+  )
+  if (id === null && path === null)
+    throw new Error("Should provide either id or path")
+  if (queryBlock.loading)
+    return null
+  if (!queryBlock.data)
+    return <p>something goes wrong</p>
+  const bk = queryBlock.data.block
+  if (!bk)
+    return <h1>Null block</h1>
 
   return (
-    <>
-      <h1>Page Header</h1>
-      <BlockPath path={data.props.path} />
-      {data.props.fullName}
-      <h1>Page Body</h1>
-      <BlockBody body={block.body} />
+    <Content
+      className="site-layout-background content"
+      style={{ minHeight: 280, }}
+    >
+      <h2>Ticker page: Path</h2>
+      {/* <BlockPath path={bk.props.path} /> */}
 
-      <h1>Page Comments</h1>
-      {data.comments ? <CommentList comments={data.comments} /> : null}
-      {/* {data.props.canComment ? <NewComment /> : null} */}
-    </>
+
+      {/* {bk.props.longName ? bk.props.longName : bk.props.name}
+      symbol: {bk.props.symbol ? bk.props.symbol : "null"}<br />
+      symbols: {bk.props?.commentSymbols ? <Comment comment={bk.props?.commentSymbols} /> : null}<br />
+      intro: {bk.props?.commentIntro ? <Comment comment={bk.props?.commentIntro} /> : null}<br />  */}
+
+
+      <h2>Block Body (含nested blocks)</h2>
+      <BlockBody body={bk.body} />
+
+      <h2>Block Comments</h2>
+      <h3>1. spot comments</h3>
+      {bk.comments ? <CommentList comments={bk.comments} /> : <p>null spot comments</p>}
+
+      <h3>2. comments (若允許comment的話)</h3>
+      {bk.props.canComment ? <QueryCommentList blockId={id} /> : <p>不允許comment</p>}
+
+      <h3>3. new comment (若允許comment的話)</h3>
+      {bk.props.canComment
+        ? <CommentForm blockId={bk.id} toAddCommentCountByOne={() => { }} />
+        : <p>不允許comment</p>}
+    </Content>
   )
 }
+
+
 
 // ----------------------------------------------------------------------
 
@@ -331,9 +360,60 @@ interface BlockPageProps extends RouteComponentProps<{ id: string }> {
 }
 
 export const BlockPage: React.FC<BlockPageProps> = ({ id, me }) => {
+  if (!id)
+    return <h1>Need Block ID</h1>
   // if (!id) return <Redirect to="/" />
   // if (!location?.state.id) return <Redirect to="/" />
   // return <Symbol name={decodeURIComponent(name)} />
   // return <Block me={me} id="123" />
+  // return <BlockAsPage id={id} me={me} />
   return <BlockAsPage id={id} />
+}
+
+
+interface BlockPageProps extends RouteComponentProps<{ id: string }> {
+  me?: QT.me_me
+}
+
+export const BlockMetaPage: React.FC<BlockPageProps> = ({ id, me }) => {
+  return (
+    <Content
+      className="site-layout-background content"
+      style={{ minHeight: 280, }}
+    >
+      <h1>Boeing ($BA)</h1>
+      <CssBlockCard title="">
+        <ul>
+          <li>
+            <span className={BlockMetaCss.span}>標籤</span>
+            <p>[新增]</p>
+            {/* <Tag content="$BA" /> */}
+          </li>
+          <li>
+            <span className={BlockMetaCss.span}>標籤</span>
+            <p>[新增]</p>
+            {/* <Tag content="$BA" /> */}
+          </li>
+          <li>
+            <span className={BlockMetaCss.span}>關聯事件</span>
+            <Tag content="~COVI-19~" />
+          </li>
+          <li>
+            <span className={BlockMetaCss.span}>簡介</span>
+            <p>
+              波音公司（英語：The Boeing
+              Company）是美國一家開發、生產及销售固定翼飛機、旋翼
+              机、运载火箭、导弹和人造卫星等產品，為世界最大的航天航空器製造商。
+          </p>
+          </li>
+        </ul>
+      </CssBlockCard>
+      <CssBlockCard title="Community">
+        {/* {radioList} */}
+        <MyTextArea />
+        <CssCommentList />
+      </CssBlockCard>
+
+    </Content>
+  )
 }

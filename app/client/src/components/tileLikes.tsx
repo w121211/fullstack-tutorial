@@ -6,9 +6,7 @@ interface DummyPostLikeProps {
   // setShowLogin: React.Dispatch<React.SetStateAction<boolean>>
   action: any
 }
-
 // const action = () => setShowLogin(true)
-
 export const DummyPostLike: React.FC<DummyPostLikeProps> = ({ action }) => {
   return (
     <>
@@ -21,6 +19,70 @@ export const DummyPostLike: React.FC<DummyPostLikeProps> = ({ action }) => {
     </>
   )
 }
+
+// --- ReplyLike ---
+
+interface ReplyLikeProps {
+  replyId: string
+  count: QT.reply_count
+  meLike?: QT.replyLike
+  createReplyLike: (a: { variables: QT.createReplyLikeVariables }) => void
+  updateReplyLike: (a: { variables: QT.updateReplyLikeVariables }) => void
+}
+
+export const ReplyLike: React.FC<ReplyLikeProps> = ({ replyId, count, meLike, createReplyLike, updateReplyLike }) => {
+  let onClick
+  let liked = false
+  if (meLike && meLike.choice !== QT.LikeChoice.UP) {
+    onClick = function () {
+      updateReplyLike({ variables: { id: meLike.id, data: { choice: QT.LikeChoice.UP } } })
+    }
+  } else if (meLike && meLike.choice === QT.LikeChoice.UP) {
+    onClick = function () {
+      updateReplyLike({ variables: { id: meLike.id, data: { choice: QT.LikeChoice.NEUTRAL } } })
+    }
+    liked = true
+  } else {
+    onClick = function () {
+      createReplyLike({ variables: { replyId, data: { choice: QT.LikeChoice.UP } } })
+    }
+  }
+  return (
+    <span onClick={onClick}>
+      {liked ? <LikeFilled /> : <LikeOutlined />}
+      {count.nUps}
+    </span>
+  )
+}
+
+export const ReplyDislike: React.FC<ReplyLikeProps> = ({ replyId, count, meLike, createReplyLike, updateReplyLike }) => {
+  let onClick
+  let disliked = false
+  if (meLike && meLike.choice !== QT.LikeChoice.DOWN) {
+    onClick = function () {
+      updateReplyLike({ variables: { id: meLike.id, data: { choice: QT.LikeChoice.DOWN } } })
+    }
+
+  } else if (meLike && meLike.choice === QT.LikeChoice.DOWN) {
+    onClick = function () {
+      updateReplyLike({ variables: { id: meLike.id, data: { choice: QT.LikeChoice.NEUTRAL } } })
+    }
+    disliked = true
+  } else {
+    onClick = function () {
+      createReplyLike({ variables: { replyId, data: { choice: QT.LikeChoice.DOWN } } })
+    }
+  }
+
+  return (
+    <span onClick={onClick}>
+      {disliked ? <DislikeFilled /> : <DislikeOutlined />}
+      {count.nDowns}
+    </span>
+  )
+}
+
+// --- CommentLike ---
 
 interface CommentLikeProps {
   commentId: string

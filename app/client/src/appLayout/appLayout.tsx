@@ -11,7 +11,8 @@ import './appLayout.less'
 import BlockMeta from '../components/blockMeta/blockMeta'
 import ProsCons from '../components/prosCons/prosCons'
 import Anchor from '../components/anchor/tickerAnchor'
-// import TickerComment from '../../components/TickerComment/tickerComment'
+import TickerComment from '../components/tickerComment/tickerComment'
+import Tab from '../components/tab/tab'
 
 const { Header, Sider, Content } = Layout
 
@@ -29,7 +30,7 @@ class AppLayout extends Component {
   render() {
     return (
       <Layout className="my-app">
-        <Sider
+        {/* <Sider
           trigger={null}
           collapsible
           collapsed={this.state.collapsed}
@@ -48,7 +49,7 @@ class AppLayout extends Component {
               關注
             </Menu.Item>
           </Menu>
-        </Sider>
+        </Sider> */}
         <Layout className="site-layout" style={{ position: 'relative' }}>
           <Header
             className="site-layout-background header "
@@ -68,14 +69,13 @@ class AppLayout extends Component {
           <Content
             className="site-layout-background content"
             style={{
-              margin: '24px 16px',
-              // padding: 24,
               minHeight: 280,
             }}
           >
             <BlockMeta />
             <ProsCons />
-            {/* <TickerComment /> */}
+            <TickerComment />
+            <Tab />
           </Content>
         </Layout>
       </Layout>

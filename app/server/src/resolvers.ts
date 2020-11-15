@@ -104,6 +104,7 @@ export const resolvers: GraphQLResolverMap<Context> = {
             },
           },
         })
+        // console.log(bk)
         if (bk === null)
           return null
         return await fillBlock(bk)
@@ -117,7 +118,7 @@ export const resolvers: GraphQLResolverMap<Context> = {
       return prisma.comment.findMany({
         where: { blockId: parseInt(blockId) },
         orderBy: { createdAt: "desc" },
-        include: { count: true },
+        include: { count: true, replies: true },
         cursor: afterId ? { id: parseInt(afterId) } : undefined,
         take: 20
       })
@@ -291,8 +292,6 @@ export const resolvers: GraphQLResolverMap<Context> = {
     //   })
     // },
 
-
-
     // symbol: (parent, { name }, { prisma }) => {
     //   return prisma.symbol.findOne({ where: { name } })
     // },
@@ -306,18 +305,18 @@ export const resolvers: GraphQLResolverMap<Context> = {
     //   })
     // },
 
-    // me: (parent, args, { prisma, req }) => {
-    //   // throw Error("what ever error")
-    //   return prisma.user.findOne({ where: { id: req.userId } })
-    // },
+    me: (parent, args, { prisma, req }) => {
+      // throw Error("what ever error")
+      return prisma.user.findOne({ where: { id: req.userId } })
+    },
 
     // myPostLikes: (parent, { after }, { prisma, req }) => {
     //   return prisma.postLike.findMany({ where: { userId: req.userId }, take: 50 })
     // },
 
-    // myCommentLikes: (parent, { after }, { prisma, req }) => {
-    //   return prisma.commentLike.findMany({ where: { userId: req.userId }, take: 50 })
-    // },
+    myCommentLikes: (parent, { after }, { prisma, req }) => {
+      return prisma.commentLike.findMany({ where: { userId: req.userId }, take: 50 })
+    },
 
     // myVotes: (parent, { after }, { prisma, req }) => {
     //   return prisma.vote.findMany({
@@ -395,11 +394,11 @@ export const resolvers: GraphQLResolverMap<Context> = {
 
     createComment: async function (parent, { data, blockId }, { prisma, req }) {
       // Check can comment
-      const bk = await prisma.block.findOne({ where: { id: blockId } })
+      const bk = await prisma.block.findOne({ where: { id: parseInt(blockId) } })
       if (bk === null)
-        throw new Error('This block not exist')
+        throw new Error('Block not exist')
       if (!(bk.props as PrismaBlockProperties).canComment)
-        throw new Error('This block cannot comment')
+        throw new Error('Block not allow to comment')
 
       // TODO: Create poll
       return prisma.comment.create({
@@ -407,15 +406,16 @@ export const resolvers: GraphQLResolverMap<Context> = {
           text: data.text,
           // cat: data.cat,
           user: { connect: { id: req.userId } },
-          block: { connect: { id: blockId } },
+          block: { connect: { id: parseInt(blockId) } },
           // symbols: { connect: (data.symbolIds as string[]).map(x => ({ name: x })) },
           count: { create: {} },
           // poll: data.poll ? { create: {} } : undefined,
           // poll: { create: {} },
         },
         include: {
+          symbols: true,
+          replies: true,
           count: true,
-          // symbols: true,
           // poll: true,
         },
       })
@@ -472,22 +472,23 @@ export const resolvers: GraphQLResolverMap<Context> = {
     },
 
     createReply: async (parent, { commentId, data }, { prisma, req }) => {
-      const comment = await prisma.reply.findOne({
+      const comment = await prisma.comment.findOne({
         where: { id: parseInt(commentId) },
         include: { count: true }
       })
-      if (comment === null) throw new Error("cannot find post")
+      if (comment === null)
+        throw new Error(`Cannot find comment: id=${commentId}`)
       // if (post.status !== PostStatus.ACTIVE)
       //   throw new Error("post is not active")
       // await prisma.commentCount.update({
-      //   data: { nComments: comment.count.nComments + 1 },
-      //   where: { postId: post.id }
+      //   data: { nReplies: comment.count.nComments + 1 },
+      //   where: { commentId: comment.id }
       // })
       return prisma.reply.create({
         data: {
-          text: data.contentText,
+          text: data.text,
           user: { connect: { id: req.userId } },
-          // comment: { connect: { id: parseInt(commentId) } },
+          comment: { connect: { id: parseInt(commentId) } },
           count: { create: {} }
         },
         include: { count: true }

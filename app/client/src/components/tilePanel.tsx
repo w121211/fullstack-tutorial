@@ -3,17 +3,66 @@ import React, { useState } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
-import { CommentLike, CommentDislike } from './tileLikes'
+import { ReplyLike, ReplyDislike, CommentLike, CommentDislike } from './tileLikes'
+
+export function ReplyPanel({ reply, meAuthor }: { reply: QT.replies_replies, meAuthor: boolean }) {
+    const [count, setCount] = useState<QT.reply_count>(reply.count)
+    const [createReplyLike] = useMutation<QT.createReplyLike, QT.createReplyLikeVariables>(
+        queries.CREATE_REPLY_LIKE, {
+        update(cache, { data }) {
+            const res = cache.readQuery<QT.myReplyLikes>({ query: queries.MY_REPLY_LIKES, })
+            if (data?.createReplyLike && res?.myReplyLikes) {
+                cache.writeQuery<QT.myReplyLikes>({
+                    query: queries.MY_REPLY_LIKES,
+                    data: { myReplyLikes: res?.myReplyLikes.concat([data?.createReplyLike.like]), },
+                })
+                setCount(data.createReplyLike.count)
+            }
+        },
+    })
+    const [updateReplyLike] = useMutation<QT.updateReplyLike, QT.updateReplyLikeVariables>(
+        queries.UPDATE_COMMENT_LIKE, {
+        update(cache, { data }) {
+            const res = cache.readQuery<QT.myReplyLikes>({ query: queries.MY_REPLY_LIKES, })
+            if (data?.updateReplyLike && res?.myReplyLikes) {
+                cache.writeQuery<QT.myReplyLikes>({
+                    query: queries.MY_REPLY_LIKES,
+                    data: {
+                        myReplyLikes: res.myReplyLikes.map(function (e) {
+                            return e.replyId === data.updateReplyLike.like.replyId ? data.updateReplyLike.like : e
+                        }),
+                    },
+                })
+                setCount(data.updateReplyLike.count)
+            }
+        },
+    })
+    const myReplyLikes = useQuery<QT.myReplyLikes>(queries.MY_REPLY_LIKES, { fetchPolicy: "cache-only" })
+    const meLike = myReplyLikes.data?.myReplyLikes.find(e => e.replyId === reply.id)
+    return (
+        <span>
+            {meAuthor ? "@me" : "@anonymous"}
+            <span>{dayjs(reply.updatedAt).format("H:mm")}</span>
+            <ReplyLike {...{ replyId: reply.id, count, meLike, createReplyLike, updateReplyLike }} />
+            <ReplyDislike {...{ replyId: reply.id, count, meLike, createReplyLike, updateReplyLike }} />
+            {/* <span
+            key="comments"
+            onClick={() => { setShowComments(!showComments) }}>
+            <CoffeeOutlined />{commentCount}
+            </span> */}
+        </span>
+    )
+}
 
 interface CommentPanelProps {
     comment: QT.comment
     // nReplies: number
     // showReplies: boolean
     // setShowReplies: (a: boolean) => void
-    meCommented: boolean
+    meAuthor?: boolean
 }
 
-export const CommentPanel: React.FC<CommentPanelProps> = ({ comment, meCommented }) => {
+export const CommentPanel: React.FC<CommentPanelProps> = ({ comment, meAuthor = false }) => {
     const [count, setCount] = useState<QT.comment_count>(comment.count)
     const [createCommentLike] = useMutation<QT.createCommentLike, QT.createCommentLikeVariables>(
         queries.CREATE_COMMENT_LIKE, {
@@ -52,7 +101,7 @@ export const CommentPanel: React.FC<CommentPanelProps> = ({ comment, meCommented
 
     return (
         <span>
-            {meCommented ? "@me" : "@anonymous"}
+            {meAuthor ? "@me" : "@anonymous"}
             {/* <span>{dayjs(comment.createdAt).format("H:mm")}</span> */}
             <CommentLike {...{ commentId: comment.id, count, meLike, createCommentLike, updateCommentLike }} />
             <CommentDislike {...{ commentId: comment.id, count, meLike, createCommentLike, updateCommentLike }} />
@@ -64,6 +113,9 @@ export const CommentPanel: React.FC<CommentPanelProps> = ({ comment, meCommented
         </span>
     )
 }
+
+
+
 
 // interface PollFooterProps {
 //   poll: QT.pollFragment

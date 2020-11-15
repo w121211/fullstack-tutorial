@@ -21,7 +21,7 @@ export interface block_block_props_commentIntro {
   userId: string;
   isSpot: boolean | null;
   text: string | null;
-  updatedAt: any;
+  createdAt: any;
   count: block_block_props_commentIntro_count;
 }
 
@@ -39,7 +39,7 @@ export interface block_block_props_commentSymbols {
   userId: string;
   isSpot: boolean | null;
   text: string | null;
-  updatedAt: any;
+  createdAt: any;
   count: block_block_props_commentSymbols_count;
 }
 
@@ -77,7 +77,7 @@ export interface block_block_body_blocks_props_commentIntro {
   userId: string;
   isSpot: boolean | null;
   text: string | null;
-  updatedAt: any;
+  createdAt: any;
   count: block_block_body_blocks_props_commentIntro_count;
 }
 
@@ -95,7 +95,7 @@ export interface block_block_body_blocks_props_commentSymbols {
   userId: string;
   isSpot: boolean | null;
   text: string | null;
-  updatedAt: any;
+  createdAt: any;
   count: block_block_body_blocks_props_commentSymbols_count;
 }
 
@@ -123,8 +123,8 @@ export interface block_block_body_blocks_body {
   __typename: "BlockBody";
   text: string | null;
   ticks: block_block_body_blocks_body_ticks[] | null;
-  table: (number | null)[] | null;
-  chart: (number | null)[] | null;
+  table: number[] | null;
+  chart: number[] | null;
 }
 
 export interface block_block_body_blocks_comments_count {
@@ -141,13 +141,14 @@ export interface block_block_body_blocks_comments {
   userId: string;
   isSpot: boolean | null;
   text: string | null;
-  updatedAt: any;
+  createdAt: any;
   count: block_block_body_blocks_comments_count;
 }
 
 export interface block_block_body_blocks {
   __typename: "Block";
   id: string;
+  template: string;
   props: block_block_body_blocks_props;
   body: block_block_body_blocks_body;
   comments: block_block_body_blocks_comments[] | null;
@@ -157,9 +158,9 @@ export interface block_block_body {
   __typename: "BlockBody";
   text: string | null;
   ticks: block_block_body_ticks[] | null;
-  table: (number | null)[] | null;
-  chart: (number | null)[] | null;
-  blocks: (block_block_body_blocks | null)[] | null;
+  table: number[] | null;
+  chart: number[] | null;
+  blocks: block_block_body_blocks[] | null;
 }
 
 export interface block_block_comments_count {
@@ -176,20 +177,21 @@ export interface block_block_comments {
   userId: string;
   isSpot: boolean | null;
   text: string | null;
-  updatedAt: any;
+  createdAt: any;
   count: block_block_comments_count;
 }
 
 export interface block_block {
   __typename: "Block";
   id: string;
+  template: string;
   props: block_block_props;
   body: block_block_body;
   comments: block_block_comments[] | null;
 }
 
 export interface block {
-  block: block_block;
+  block: block_block | null;
 }
 
 export interface blockVariables {
@@ -220,7 +222,7 @@ export interface comments_comments {
   userId: string;
   isSpot: boolean | null;
   text: string | null;
-  updatedAt: any;
+  createdAt: any;
   count: comments_comments_count;
 }
 
@@ -385,7 +387,7 @@ export interface createComment_createComment {
   userId: string;
   isSpot: boolean | null;
   text: string | null;
-  updatedAt: any;
+  createdAt: any;
   count: createComment_createComment_count;
 }
 
@@ -430,7 +432,7 @@ export interface createReply {
 }
 
 export interface createReplyVariables {
-  replyId: string;
+  commentId: string;
   data: ReplyInput;
 }
 
@@ -545,6 +547,86 @@ export interface updateCommentLikeVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: createReplyLike
+// ====================================================
+
+export interface createReplyLike_createReplyLike_like {
+  __typename: "ReplyLike";
+  id: string;
+  replyId: string;
+  choice: LikeChoice;
+  updatedAt: any;
+}
+
+export interface createReplyLike_createReplyLike_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface createReplyLike_createReplyLike {
+  __typename: "ReplyLikeResonse";
+  like: createReplyLike_createReplyLike_like;
+  count: createReplyLike_createReplyLike_count;
+}
+
+export interface createReplyLike {
+  createReplyLike: createReplyLike_createReplyLike;
+}
+
+export interface createReplyLikeVariables {
+  replyId: string;
+  data: LikeInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: updateReplyLike
+// ====================================================
+
+export interface updateReplyLike_updateReplyLike_like {
+  __typename: "ReplyLike";
+  id: string;
+  replyId: string;
+  choice: LikeChoice;
+  updatedAt: any;
+}
+
+export interface updateReplyLike_updateReplyLike_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface updateReplyLike_updateReplyLike {
+  __typename: "ReplyLikeResonse";
+  like: updateReplyLike_updateReplyLike_like;
+  count: updateReplyLike_updateReplyLike_count;
+}
+
+export interface updateReplyLike {
+  updateReplyLike: updateReplyLike_updateReplyLike;
+}
+
+export interface updateReplyLikeVariables {
+  id: string;
+  data: LikeInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: signup
 // ====================================================
 
@@ -636,6 +718,23 @@ export interface replyCount {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: commentCount
+// ====================================================
+
+export interface commentCount {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: reply
 // ====================================================
 
@@ -663,23 +762,6 @@ export interface reply {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL fragment: commentCount
-// ====================================================
-
-export interface commentCount {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
 // GraphQL fragment: comment
 // ====================================================
 
@@ -697,7 +779,7 @@ export interface comment {
   userId: string;
   isSpot: boolean | null;
   text: string | null;
-  updatedAt: any;
+  createdAt: any;
   count: comment_count;
 }
 
@@ -758,7 +840,7 @@ export interface blockFragment_props_commentIntro {
   userId: string;
   isSpot: boolean | null;
   text: string | null;
-  updatedAt: any;
+  createdAt: any;
   count: blockFragment_props_commentIntro_count;
 }
 
@@ -776,7 +858,7 @@ export interface blockFragment_props_commentSymbols {
   userId: string;
   isSpot: boolean | null;
   text: string | null;
-  updatedAt: any;
+  createdAt: any;
   count: blockFragment_props_commentSymbols_count;
 }
 
@@ -804,8 +886,8 @@ export interface blockFragment_body {
   __typename: "BlockBody";
   text: string | null;
   ticks: blockFragment_body_ticks[] | null;
-  table: (number | null)[] | null;
-  chart: (number | null)[] | null;
+  table: number[] | null;
+  chart: number[] | null;
 }
 
 export interface blockFragment_comments_count {
@@ -822,13 +904,14 @@ export interface blockFragment_comments {
   userId: string;
   isSpot: boolean | null;
   text: string | null;
-  updatedAt: any;
+  createdAt: any;
   count: blockFragment_comments_count;
 }
 
 export interface blockFragment {
   __typename: "Block";
   id: string;
+  template: string;
   props: blockFragment_props;
   body: blockFragment_body;
   comments: blockFragment_comments[] | null;
@@ -843,12 +926,6 @@ export interface blockFragment {
 // START Enums and Input Objects
 //==============================================================
 
-export enum CommentCat {
-  POLL = "POLL",
-  PROP = "PROP",
-  TEXT = "TEXT",
-}
-
 export enum LikeChoice {
   DOWN = "DOWN",
   NEUTRAL = "NEUTRAL",
@@ -856,7 +933,6 @@ export enum LikeChoice {
 }
 
 export interface CommentInput {
-  cat: CommentCat;
   symbols: string[];
   text: string;
   poll?: PollInput | null;

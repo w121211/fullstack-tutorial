@@ -39,7 +39,7 @@
     "test": "craco test",
     "eject": "react-scripts eject",
     "run:ios-demo": "npx artillery run apollo-internal-demos/ios-workload.yml",
-    "codegen": "apollo client:codegen ./src/store/queryTypes.ts --target typescript --outputFlat",
+    "codegen": "apollo client:codegen ./src/store/queryTypes.ts --target=typescript --outputFlat",
     "download": "apollo service:download --endpoint=http://localhost:4000/"
   },
   "eslintConfig": {
