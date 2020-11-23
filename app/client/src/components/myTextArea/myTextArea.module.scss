@@ -13,24 +13,14 @@
 .TextArea {
   &:global(.ant-input) {
     resize: none;
-    background-color: $natual;
-    // border: {
-    //   left: none;
-    //   right: none;
-    //   top: none;
-    //   bottom: 1px solid $natual2;
-    //   radius: 0;
-    // }
+    line-height: inherit;
+    background-color: $natual-hover;
     border: none;
+    padding-bottom: 0;
     font-size: inherit;
-
-    &:hover {
-      //   border-bottom: 1px solid $black;
-    }
 
     &:focus {
       box-shadow: none;
-      // border-bottom: 1px solid $black;
     }
 
     // &:focus {
@@ -39,5 +29,25 @@
     // &:hover {
     //   border-bottom: 1px solid #000;
     // }
+  }
+}
+.small {
+  &:global(.ant-input) {
+    min-width: 100px;
+    max-width: 20%;
+    background: none;
+    border: {
+      left: none;
+      right: none;
+      top: none;
+      bottom: 1px solid $natual2;
+      radius: 0;
+    }
+    &:hover {
+      border-bottom: 1px solid $black;
+    }
+    &:focus {
+      border-bottom: 1px solid $black;
+    }
   }
 }

@@ -28,7 +28,7 @@ import { LineChart } from '../components/charts'
 import { SomeTable } from '../components/tables'
 import { CssBlockCard } from '../pages/block'
 import CommentListSmall from '../components/commentListSmall/commentListSmall';
-import MyTextAreaSmall from '../components/myTextAreaSmall/myTextAreaSmall';
+
 
 
 const { Header, Sider, Content } = Layout
@@ -224,7 +224,7 @@ function TickerPage({ path }: { path: string }) {
               <Tag content="現金量低" />
               <Tag content="虧損中" />
               <Tag content="未來前景不明" />
-              <MyTextAreaSmall />
+              <MyTextArea size='sm' placeHolder='[+]Tag' />
             </span>
           </li>
           <li>
@@ -233,7 +233,7 @@ function TickerPage({ path }: { path: string }) {
               <Tag content="買入" />
               <Tag content="持有" />
               <Tag content="賣出" />
-              <MyTextAreaSmall />
+              <MyTextArea size='sm' placeHolder='[+]Tag' />
               <p>
                 (買入)因疫情關係處在低點，明年恢復正常後會強勢反彈
             </p>

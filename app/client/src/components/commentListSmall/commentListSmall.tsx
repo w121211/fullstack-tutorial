@@ -85,7 +85,7 @@ const CommentList = () => {
     <List
       className={classes.List}
       size="large"
-      header={`討論`}
+
       pagination={{
         onChange: (page) => {
           console.log(page)

@@ -1,7 +1,7 @@
 @import '../../style/global.module.scss';
 
 .List {
-  min-width: 70%;
+  width: 40%;
   &:global(.ant-list) {
     :global(.ant-list-header) {
       padding: 20px 0 10px;
@@ -21,7 +21,7 @@
   :global(.ant-comment) {
     width: 100%;
     min-height: 30px;
-    border-bottom: 1px solid $natual2;
+    border-bottom: 1px solid $natual;
     background-color: transparent;
   }
   .commentRoot {
@@ -50,9 +50,12 @@
     display: flex;
     align-items: center;
     font-size: $font-sm;
+    // &:hover {
+    //   background-color: $natual-hover;
+    // }
   }
   :global(.ant-comment-content-detail) {
-    margin: 0 16px 0 10px;
+    // margin: 0 16px 0 10px;
     word-wrap: break-word;
     word-break: break-all;
   }

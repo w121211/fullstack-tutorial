@@ -5,7 +5,12 @@ import classes from './myTextArea.module.scss'
 
 const { TextArea } = Input
 
-const MyTextArea = () => {
+interface props {
+  size?: string
+  placeHolder?: string
+}
+
+const MyTextArea: React.FC<props> = (props) => {
   const [commentValue, setValue] = useState('')
 
   const [buttonDisable, setButtonState] = useState(true)
@@ -29,11 +34,20 @@ const MyTextArea = () => {
 
   //   const { value } = commentValue
 
+  const classLister = (oldClass: string) => {
+    const classname = [oldClass]
+
+    if (props.size == "sm") classname.push(classes.small)
+    return classname.join(' ')
+
+  }
+
+
   return (
     <div className={classes.Wrapper} onClick={onClickHandler}>
       <TextArea
-        className={classes.TextArea}
-        placeholder="留言..."
+        className={classLister(classes.TextArea)}
+        placeholder={props.placeHolder ? props.placeHolder : '留言...'}
         autoSize
         onChange={onChangeHandler}
 
