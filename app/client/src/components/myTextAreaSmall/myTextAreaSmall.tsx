@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Input, Button } from 'antd'
 
-import classes from './myTextArea.module.scss'
+import classes from './myTextAreaSmall.module.scss'
 
 const { TextArea } = Input
 

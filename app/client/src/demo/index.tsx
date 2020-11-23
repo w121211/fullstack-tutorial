@@ -27,6 +27,8 @@ import CssCommentList from '../components/commentList/commentList'
 import { LineChart } from '../components/charts'
 import { SomeTable } from '../components/tables'
 import { CssBlockCard } from '../pages/block'
+import CommentListSmall from '../components/commentListSmall/commentListSmall';
+import MyTextAreaSmall from '../components/myTextAreaSmall/myTextAreaSmall';
 
 
 const { Header, Sider, Content } = Layout
@@ -222,7 +224,7 @@ function TickerPage({ path }: { path: string }) {
               <Tag content="現金量低" />
               <Tag content="虧損中" />
               <Tag content="未來前景不明" />
-              [____________]
+              <MyTextAreaSmall />
             </span>
           </li>
           <li>
@@ -231,7 +233,7 @@ function TickerPage({ path }: { path: string }) {
               <Tag content="買入" />
               <Tag content="持有" />
               <Tag content="賣出" />
-              [____________]
+              <MyTextAreaSmall />
               <p>
                 (買入)因疫情關係處在低點，明年恢復正常後會強勢反彈
             </p>
@@ -268,10 +270,9 @@ function TickerPage({ path }: { path: string }) {
           </li>
           <li>
             <span className={BlockMetaCss.span}>討論</span>
-            <span>
-              Q:這是一個comment<br />
-              Q:這是另一個comment<br />
-            </span>
+
+            <CommentListSmall />
+
           </li>
         </ul>
       </CssBlockCard>
