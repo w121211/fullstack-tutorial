@@ -4,6 +4,7 @@
   display: flex;
   padding-bottom: 10px;
   padding-left: 6px;
+  padding-top: 10px;
 
   button {
     font-size: inherit;
@@ -31,10 +32,11 @@
     // }
   }
 }
-.small {
-  &:global(.ant-input) {
-    min-width: 100px;
-    max-width: 20%;
+.Wrapper.small {
+  padding-top: 0;
+  padding-left: 0;
+  :global(.ant-input) {
+    width: 100px;
     background: none;
     border: {
       left: none;

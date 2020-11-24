@@ -396,7 +396,7 @@ export const BlockMetaPage: React.FC<BlockPageProps> = ({ id, me }) => {
           </li>
           <li>
             <span className={BlockMetaCss.span}>關聯事件</span>
-            <Tag content="~COVI-19~" />
+            <Tag content={["~COVI-19~"]} />
           </li>
           <li>
             <span className={BlockMetaCss.span}>簡介</span>
