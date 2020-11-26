@@ -12,11 +12,11 @@ const BlockMeta = (props: any) => {
       <ul>
         <li>
           <span className={classes.span}>關聯標籤</span>
-          <Tag content="$BA" />
+          <Tag content={["$BA"]} />
         </li>
         <li>
           <span className={classes.span}>關聯事件</span>
-          <Tag content="~COVI-19~" />
+          <Tag content={["~COVI-19~"]} />
         </li>
         <li>
           <span className={classes.span}>簡介</span>
