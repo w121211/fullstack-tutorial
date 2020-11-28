@@ -10,8 +10,8 @@ import blur from '../assets/download.jpeg'
 import count from '../../assets/ticker_count.json'
 
 const ticker = "BA"
-const keywords = count["BA"]["co_keywords"]
-const tickers = count["BA"]["co_tickers"]
+// const keywords = count["BA"]["co_keywords"]
+// const tickers = count["BA"]["co_tickers"]
 
 const demoCard0 =
   <Card>
@@ -316,12 +316,12 @@ function _Ticker() {
   const [showComments, setShowComments] = useState<boolean>(false)
   const [showOppCard, setShowOppCard] = useState<boolean>(false)
 
-  const kws = Object.entries(keywords)
-    .sort((a, b) => b[1] - a[1])
-    .map(e => e[0])
-  const tks = Object.entries(tickers)
-    .sort((a, b) => b[1] - a[1])
-    .map(e => e[0])
+  // const kws = Object.entries(keywords)
+  //   .sort((a, b) => b[1] - a[1])
+  //   .map(e => e[0])
+  // const tks = Object.entries(tickers)
+  //   .sort((a, b) => b[1] - a[1])
+  //   .map(e => e[0])
 
 
 
@@ -480,17 +480,17 @@ function _Ticker() {
 
       <Card>
         <Typography.Title level={4}>Tickers</Typography.Title>
-        <div>
+        {/* <div>
           {tks.map((e, i) => <Button key={i} size="small" shape="round" type="text">${e}</Button>)}
-        </div>
+        </div> */}
       </Card>
 
 
       <Card>
         <Typography.Title level={4}>屬性</Typography.Title>
-        <div>
+        {/* <div>
           {kws.map((e, i) => <Button key={i} size="small" shape="round" type="text">#{e}</Button>)}
-        </div>
+        </div> */}
       </Card>
 
 

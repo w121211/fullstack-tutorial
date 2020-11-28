@@ -26,7 +26,9 @@ import MyTextArea from '../components/myTextArea/myTextArea'
 import CssCommentList from '../components/commentList/commentList'
 import { LineChart } from '../components/charts'
 import { SomeTable } from '../components/tables'
-import { CssBlockCard } from '../components/block'
+import { CssBlockCard } from '../pages/block'
+import CommentListSmall from '../components/commentListSmall/commentListSmall';
+
 
 
 const { Header, Sider, Content } = Layout
@@ -125,6 +127,26 @@ function HomePage({ path }: { path: string }) {
 }
 
 function TickerPage({ path }: { path: string }) {
+  const bullishTag = ["競爭對手少 (21+)", "產業領頭", "因疫情過度低估", "軍工產業"]
+  const bearishTag = ["現金量低",
+    "虧損中",
+    "未來前景不明",
+    "現金量低",
+    "虧損中",
+    "未來前景不明",
+    "現金量低",
+    "虧損中",
+    "未來前景不明",
+    "現金量低",
+    "虧損中",
+    "未來前景不明",
+    "現金量低",
+    "虧損中",
+    "未來前景不明",
+    "現金量低",
+    "虧損中",
+    "未來前景不明",]
+  const operation = ["買入", '持有', '賣出']
   return (
     <Content className="site-layout-background content" style={{ minHeight: 280, }}>
       <h1>波音, Boeing ($BA)</h1>
@@ -158,48 +180,29 @@ function TickerPage({ path }: { path: string }) {
           </li>
           <li>
             <span className={BlockMetaCss.span}>產業</span>
-            <Tag content="民航機" />
-            <Tag content="軍工" />
+            {/* <Tag content="民航機" />
+            <Tag content="軍工" /> */}
           </li>
           <li>
             <span className={BlockMetaCss.span}>利多</span>
-            <Tag content="競爭對手少 (21+)" />
-            <Tag content="產業領頭" />
-            <Tag content="因疫情過度低估" />
-            <Tag content="軍工產業" />
+            <Tag content={bullishTag} />
+
             <a>...more</a>
           </li>
           <li>
             <span className={BlockMetaCss.span}>利空</span>
             <span>
-              <Tag content="現金量低" />
-              <Tag content="虧損中" />
-              <Tag content="未來前景不明" />
-              <Tag content="現金量低" />
-              <Tag content="虧損中" />
-              <Tag content="未來前景不明" />
-              <Tag content="現金量低" />
-              <Tag content="虧損中" />
-              <Tag content="未來前景不明" />
-              <Tag content="現金量低" />
-              <Tag content="虧損中" />
-              <Tag content="未來前景不明" />
-              <Tag content="現金量低" />
-              <Tag content="虧損中" />
-              <Tag content="未來前景不明" />
-              <Tag content="現金量低" />
-              <Tag content="虧損中" />
-              <Tag content="未來前景不明" />
-              [____________]
+              <Tag content={bearishTag} />
+
+
             </span>
           </li>
           <li>
             <span className={BlockMetaCss.span}>操作判斷</span>
             <span>
-              <Tag content="買入" />
-              <Tag content="持有" />
-              <Tag content="賣出" />
-              [____________]
+              <Tag content={operation} newTag={false} />
+
+              <MyTextArea />
               <p>
                 (買入)因疫情關係處在低點，明年恢復正常後會強勢反彈
             </p>
@@ -236,10 +239,9 @@ function TickerPage({ path }: { path: string }) {
           </li>
           <li>
             <span className={BlockMetaCss.span}>討論</span>
-            <span>
-              Q:這是一個comment<br />
-              Q:這是另一個comment<br />
-            </span>
+
+            <CommentListSmall />
+
           </li>
         </ul>
       </CssBlockCard>
@@ -255,18 +257,18 @@ function TickerPage({ path }: { path: string }) {
         <ul>
           <li>
             <span className={BlockMetaCss.span}>依價格</span>
-            #1 <Tag content="$AA (空巴)" />
-            #2 <Tag content="$BB (雷神)" />
+            {/* #1 <Tag content="$AA (空巴)" />
+            #2 <Tag content="$BB (雷神)" /> */}
           </li>
           <li>
             <span className={BlockMetaCss.span}>依航空產業</span>
-            #1 <Tag content="$BA (波音)" />
-            #2 <Tag content="$AA (空巴))" />
+            {/* #1 <Tag content="$BA (波音)" />
+            #2 <Tag content="$AA (空巴))" /> */}
           </li>
           <li>
             <span className={BlockMetaCss.span}>依軍工產業</span>
-            #1 <Tag content="$BA (Boeing)" />
-            #2 <Tag content="$AA (Airbus)" />
+            {/* #1 <Tag content="$BA (Boeing)" />
+            #2 <Tag content="$AA (Airbus)" /> */}
           </li>
         </ul>
       </CssBlockCard>
@@ -313,17 +315,17 @@ function JustCreatedTopicPage({ path }: { path: string }) {
           <li>
             <span className={BlockMetaCss.span}>Tickers</span>
             <span>
-              <Tag content="AAA ($AA)" />
+              {/* <Tag content="AAA ($AA)" />
               <Tag content="BBB ($BB)" />
-              <Tag content="CCC ($CC)" />
+              <Tag content="CCC ($CC)" /> */}
             </span>
           </li>
           <li>
             <span className={BlockMetaCss.span}>短期</span>
             <span>
-              <Tag content="看好" />
+              {/* <Tag content="看好" />
               <Tag content="看壞" />
-              <Tag content="中立" />
+              <Tag content="中立" /> */}
               [____________]
               <p>
                 (看好)因疫情關係處在低點，明年恢復正常後會強勢反彈
@@ -333,9 +335,9 @@ function JustCreatedTopicPage({ path }: { path: string }) {
           <li>
             <span className={BlockMetaCss.span}>長期</span>
             <span>
-              <Tag content="看好" />
+              {/* <Tag content="看好" />
               <Tag content="看壞" />
-              <Tag content="中立" />
+              <Tag content="中立" /> */}
               [____________]
               <p>
                 (中立)因疫情關係處在低點，明年恢復正常後會強勢反彈
@@ -407,17 +409,17 @@ function TopicPage({ path }: { path: string }) {
           <li>
             <span className={BlockMetaCss.span}>Tickers</span>
             <span>
-              <Tag content="AAA ($AA)" />
+              {/* <Tag content="AAA ($AA)" />
               <Tag content="BBB ($BB)" />
-              <Tag content="CCC ($CC)" />
+              <Tag content="CCC ($CC)" /> */}
             </span>
           </li>
           <li>
             <span className={BlockMetaCss.span}>短期</span>
             <span>
-              <Tag content="看好" />
+              {/* <Tag content="看好" />
               <Tag content="看壞" />
-              <Tag content="中立" />
+              <Tag content="中立" /> */}
               [____________]
               <p>
                 (看好)因疫情關係處在低點，明年恢復正常後會強勢反彈
@@ -427,9 +429,9 @@ function TopicPage({ path }: { path: string }) {
           <li>
             <span className={BlockMetaCss.span}>長期</span>
             <span>
-              <Tag content="看好" />
+              {/* <Tag content="看好" />
               <Tag content="看壞" />
-              <Tag content="中立" />
+              <Tag content="中立" /> */}
               [____________]
               <p>
                 (中立)因疫情關係處在低點，明年恢復正常後會強勢反彈
