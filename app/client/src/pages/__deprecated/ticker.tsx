@@ -3,11 +3,11 @@ import { RouteComponentProps, Link } from '@reach/router'
 import { useQuery } from '@apollo/client'
 import { Form, Button, Card, Descriptions, Radio, Space, List, Typography, Result, Divider, Row, Col, Input } from 'antd'
 import { LikeOutlined, DislikeOutlined } from '@ant-design/icons'
-import { Pane } from '../components/layout'
-import { LineChart, BarChart } from '../components/charts'
+import { Pane } from '../../components/layout'
+import { LineChart, BarChart } from '../../components/charts'
 import blur from '../assets/download.jpeg'
 
-import count from '../assets/ticker_count.json'
+import count from '../../assets/ticker_count.json'
 
 const ticker = "BA"
 const keywords = count["BA"]["co_keywords"]

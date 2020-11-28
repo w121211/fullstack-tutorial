@@ -5,12 +5,15 @@ import _, { includes } from 'lodash'
 import dayjs from 'dayjs'
 import { compare, hash } from 'bcryptjs'
 import { sign, JsonWebTokenError } from 'jsonwebtoken'
+import { GraphQLScalarType, Kind } from 'graphql'
 import { GraphQLResolverMap } from 'apollo-graphql'
 import { GraphQLDateTime } from 'graphql-iso-date'
 import * as PA from '@prisma/client'
 import { Context } from './context'
 import { APP_SECRET } from '.'
-import { fillBlock, PrismaBlockProperties } from './models/block'
+// import { fillBlock, PrismaBlockProperties } from './models/block'
+import { fillPage } from './services/page'
+import { searchAll, searchPage } from './services/search'
 
 // function mapPostInput(post: ST.PostInput) {
 //   let content
@@ -86,42 +89,83 @@ function deltaLike(like: PA.CommentLike, oldLike?: PA.CommentLike) {
 }
 
 export const resolvers: GraphQLResolverMap<Context> = {
-  DateTime: GraphQLDateTime, // custom scalar, 目前的error似乎是typescript的bug
+  DateTime: GraphQLDateTime as GraphQLScalarType,
 
   Query: {
-    block: async (parent, { id, path }, { prisma }) => {
+    // block: async (parent, { id, path }, { prisma }) => {
+    //   if (id) {
+    //     const bk = await prisma.block.findOne({
+    //       where: { id: parseInt(id) },
+    //       include: {
+    //         propComments: { include: { count: true, replies: true } },
+    //         comments: { where: { isSpot: true }, include: { count: true } },
+    //         children: {
+    //           include: {
+    //             propComments: { include: { count: true, replies: true } },
+    //             comments: { where: { isSpot: true }, include: { count: true } },
+    //           },
+    //         },
+    //       },
+    //     })
+    //     // console.log(bk)
+    //     if (bk === null)
+    //       return null
+    //     return await fillBlock(bk)
+    //   }
+    //   if (path)
+    //     return null
+    //   throw new Error('Require block ID or path')
+    // },
+
+    page: async (parent, { id, title }, { prisma }) => {
       if (id) {
-        const bk = await prisma.block.findOne({
+        const pg = await prisma.page.findOne({
           where: { id: parseInt(id) },
           include: {
             propComments: { include: { count: true, replies: true } },
-            comments: { where: { isSpot: true }, include: { count: true } },
-            children: {
-              include: {
-                propComments: { include: { count: true, replies: true } },
-                comments: { where: { isSpot: true }, include: { count: true } },
-              },
-            },
+            // comments: { where: { isSpot: true }, include: { count: true } },
           },
         })
         // console.log(bk)
-        if (bk === null)
+        if (pg === null)
           return null
-        return await fillBlock(bk)
+        return fillPage(pg)
       }
-      if (path)
+      if (title)
         return null
       throw new Error('Require block ID or path')
     },
 
-    comments: (parent, { blockId, afterId }, { prisma }) => {
+    latestPages: function (parent, { afterId }, { prisma }) {
+      // return prisma.comment.findMany({
+      //   where: { pageId: parseInt(pageId), isProp: false},
+      //   orderBy: { createdAt: "desc" },
+      //   include: { count: true, replies: true },
+      //   cursor: afterId ? { id: parseInt(afterId) } : undefined,
+      //   take: 20
+      // })
+      throw new Error('Not implemented yet')
+    },
+
+    comments: (parent, { pageId, afterId }, { prisma }) => {
       return prisma.comment.findMany({
-        where: { blockId: parseInt(blockId) },
+        where: { pageId: parseInt(pageId), isProp: false },
         orderBy: { createdAt: "desc" },
         include: { count: true, replies: true },
         cursor: afterId ? { id: parseInt(afterId) } : undefined,
         take: 20
       })
+    },
+
+    commentsBySymbol: function (parent, { pageTitle, symbol, afterId }, { prisma }) {
+      // return prisma.comment.findMany({
+      //   where: { pageId: parseInt(pageId), isProp: false},
+      //   orderBy: { createdAt: "desc" },
+      //   include: { count: true, replies: true },
+      //   cursor: afterId ? { id: parseInt(afterId) } : undefined,
+      //   take: 20
+      // })
+      throw new Error('Not implemented yet')
     },
 
     replies: (parent, { commentId, afterId }, { prisma }) => {
@@ -310,20 +354,20 @@ export const resolvers: GraphQLResolverMap<Context> = {
       return prisma.user.findOne({ where: { id: req.userId } })
     },
 
-    // myPostLikes: (parent, { after }, { prisma, req }) => {
-    //   return prisma.postLike.findMany({ where: { userId: req.userId }, take: 50 })
-    // },
-
     myCommentLikes: (parent, { after }, { prisma, req }) => {
       return prisma.commentLike.findMany({ where: { userId: req.userId }, take: 50 })
     },
 
-    // myVotes: (parent, { after }, { prisma, req }) => {
-    //   return prisma.vote.findMany({
-    //     take: 50,
-    //     where: { userId: req.userId },
-    //   })
-    // },
+    myReplyLikes: (parent, { after }, { prisma, req }) => {
+      return prisma.replyLike.findMany({ where: { userId: req.userId }, take: 50 })
+    },
+
+    myVotes: (parent, { after }, { prisma, req }) => {
+      return prisma.vote.findMany({
+        take: 50,
+        where: { userId: req.userId },
+      })
+    },
 
     // myFollows: (parent, { after }, { prisma, req }) => {
     //   return prisma.follow.findMany({ where: { userId: req.userId, followed: true } })
@@ -348,9 +392,16 @@ export const resolvers: GraphQLResolverMap<Context> = {
     //   return null
     // },
 
+    searchAll: (parent, { term }, { prisma, req }) => {
+      return searchAll(term)
+    },
+
+    searchPage: (parent, { url }, { prisma, req }) => {
+      return searchPage(url)
+    },
+
   },
   Mutation: {
-
     signup: async (parent, { email, password }, { prisma, res }) => {
       res.clearCookie('token')
       const hashedPassword = await hash(password, 10)
@@ -392,13 +443,13 @@ export const resolvers: GraphQLResolverMap<Context> = {
       return true
     },
 
-    createComment: async function (parent, { data, blockId }, { prisma, req }) {
+    createComment: async function (parent, { data, pageId }, { prisma, req }) {
       // Check can comment
-      const bk = await prisma.block.findOne({ where: { id: parseInt(blockId) } })
-      if (bk === null)
-        throw new Error('Block not exist')
-      if (!(bk.props as PrismaBlockProperties).canComment)
-        throw new Error('Block not allow to comment')
+      const pg = await prisma.page.findOne({ where: { id: parseInt(pageId) } })
+      if (pg === null)
+        throw new Error('Page not exist')
+      // if (!(bk.props as PrismaBlockProperties).canComment)
+      //   throw new Error('Block not allow to comment')
 
       // TODO: Create poll
       return prisma.comment.create({
@@ -406,7 +457,7 @@ export const resolvers: GraphQLResolverMap<Context> = {
           text: data.text,
           // cat: data.cat,
           user: { connect: { id: req.userId } },
-          block: { connect: { id: parseInt(blockId) } },
+          page: { connect: { id: parseInt(pageId) } },
           // symbols: { connect: (data.symbolIds as string[]).map(x => ({ name: x })) },
           count: { create: {} },
           // poll: data.poll ? { create: {} } : undefined,

@@ -7,10 +7,10 @@ import { useQuery, useMutation } from '@apollo/client'
 import { Alert, AutoComplete, Form, Input, Button, Layout, Row, Col, Card, Typography, Radio, Popover, Space } from 'antd'
 import { FormInstance } from 'antd/lib/form'
 import { MinusCircleOutlined, PlusOutlined, SwapLeftOutlined } from '@ant-design/icons'
-import * as queries from '../store/queries'
-import * as QT from '../store/queryTypes'
-import { Pane } from '../components/layout'
-import { SymbolAutoComplete } from '../components/symbolHint'
+import * as queries from '../../store/queries'
+import * as QT from '../../store/queryTypes'
+import { Pane } from '../../components/layout'
+import { SymbolAutoComplete } from '../../components/symbolHint'
 
 dayjs.extend(localizedFormat)
 

@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
-import { ReplyLike, ReplyDislike, CommentLike, CommentDislike } from './tileLikes'
+import { ReplyLike, ReplyDislike, CommentLike, CommentDislike } from './tileUpndowns'
 
 export function ReplyPanel({ reply, meAuthor }: { reply: QT.replies_replies, meAuthor: boolean }) {
     const [count, setCount] = useState<QT.reply_count>(reply.count)

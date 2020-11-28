@@ -1,11 +1,74 @@
 import React, { useState } from 'react'
 import { RouteComponentProps } from '@reach/router'
 import { useQuery } from '@apollo/client'
-import { Form, Button, Card, Descriptions, Radio, Space, List, Typography, Result, Divider, Row, Col, Input } from 'antd'
+import { Form, Button, Card, Descriptions, Radio, List, Typography, Result, Divider, Row, Col, Input, Table, Tag, Space } from 'antd'
 import { LikeOutlined } from '@ant-design/icons'
-import { Pane } from '../components/layout'
-import { LineChart, BarChart } from '../components/charts'
+import { Pane } from '../../components/layout'
+import { LineChart, BarChart } from '../../components/charts'
 import blur from '../assets/download.jpeg'
+
+const columns = [
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
+    render: (text: string) => <a>{text}</a>,
+  },
+  {
+    title: 'Age',
+    dataIndex: 'age',
+    key: 'age',
+  },
+  {
+    title: 'Address',
+    dataIndex: 'address',
+    key: 'address',
+  },
+  {
+    title: 'Tags',
+    key: 'tags',
+    dataIndex: 'tags',
+    render: (tags: string[]) => (
+      <>
+        {tags.map(tag => {
+          let color = tag.length > 5 ? 'geekblue' : 'green';
+          if (tag === 'loser') {
+            color = 'volcano';
+          }
+          return (
+            <Tag color={color} key={tag}>
+              {tag.toUpperCase()}
+            </Tag>
+          );
+        })}
+      </>
+    ),
+  }
+];
+
+const data = [
+  {
+    key: '1',
+    name: 'John Brown',
+    age: 32,
+    address: 'New York No. 1 Lake Park',
+    tags: ['nice', 'developer'],
+  },
+  {
+    key: '2',
+    name: 'Jim Green',
+    age: 42,
+    address: 'London No. 1 Lake Park',
+    tags: ['loser'],
+  },
+  {
+    key: '3',
+    name: 'Joe Black',
+    age: 32,
+    address: 'Sidney No. 1 Lake Park',
+    tags: ['cool', 'teacher'],
+  },
+];
 
 
 const demoRight =
@@ -33,12 +96,19 @@ interface Props extends RouteComponentProps {
   id?: any
 }
 
-function Tag() {
+function Compare() {
   const [showChoiceForm, setShowChoiceForm] = useState<boolean>(false)
   const [showComments, setShowComments] = useState<boolean>(false)
 
   return (
     <Space direction="vertical" style={{ width: "100%" }}>
+      <Table dataSource={data} columns={columns} />
+
+      <Card>
+        比較 $AAA $BBB $CCC <br />
+        [Chart]
+      </Card>
+
       <Typography>
         <Typography.Title level={3}>
           <Space size="large">
@@ -47,28 +117,14 @@ function Tag() {
           </Space>
         </Typography.Title>
         <Typography.Paragraph>
-          （無法有tickers的tag？ eg：#反傾銷 #美國 #熱榜）<br />
-          個股：$AAA $BBB $CCC [看好] [看壞] [比較] [新增] <br />
-          鄰近：#觀光 #飯店 [比較] [新增]<br />
+          類股：$AAA $BBB $CCC [比較] [指標] [新增]<br />
+          相關：#觀光 #飯店 [比較] [新增]<br />
           組合（＋）：#線上 # [新增]<br />
-
-          事件（近3個月）：#COVID-19# <br />
-          判斷：看多、看空、題目不適合<br />
-
-          [數據統計/chart] 話題熱度（週變化-2.3%）、類股價格變動（+3.1%）、<br />
-
-          [新增欄位] - [機會] [風險] <br />
-
+          社群判斷：有潛力、穩定、<br />
+          [數據統計]<br />
+          熱度：週變化-2.3% <br />
         </Typography.Paragraph>
       </Typography>
-
-      <Card>
-        個股：#博弈＋$AAA 相關新聞？
-      </Card>
-
-      <Card>
-        個股比較：熱度高的股票？
-      </Card>
 
       <Card>
         <Typography.Paragraph>
@@ -180,38 +236,118 @@ function Tag() {
         <Button size="small" type="text">看多</Button>
       </Card>
 
-      <Card>
-        <Typography.Title level={4}>比較類股</Typography.Title>
-        $AAA $BBB $CCC [候選：$DDD $EEE (新增)] <br />
-        [chart] [經營數據] [與大盤相比] [與其他類股相比] [加入類股平均指數]
-        [3個月] [半年] [1年]
-        <Button size="small" type="dashed">看空</Button>
-        <Button size="small" type="text">看多</Button>
-      </Card>
 
-      <Card>
-        <Typography.Title level={4}>群組間比較</Typography.Title>
-        #博弈 #觀光 #網購 [候選：#郵輪 #航空 (新增)] <br />
-        [chart] [經營數據] [與大盤相比] [與其他類股相比] [加入類股平均指數] [3個月] [半年] [1年]
-        <Button size="small" type="dashed">看空</Button>
-        <Button size="small" type="text">看多</Button>
-      </Card>
+      <Divider />
 
       <Typography.Title level={4}>擂台</Typography.Title>
-      <Card>which 博弈類股可以投資哪隻？</Card>
-      <Card>事件 疫情會影響博弈嗎？ #COVID-19# </Card>
-      <Card>現在是買入博弈股的好時機嗎？</Card>
+      <Card>新產品將進一步推升＄AAA股價</Card>
+      <Card>後疫情時代，實體服務業將持續萎縮</Card>
 
-      <div>
-        發起討論
-        <Button>博弈類股可以投資哪隻？</Button>
-        <Button>疫情會影響博弈嗎？</Button>
-      </div>
+      <Typography.Title level={4}>事件</Typography.Title>
+      <Card>OO產品發表 5W1H（想知道）</Card>
+      <Card>南北韓衝突</Card>
+      <Card>OOO積欠工資</Card>
+      <Card>發放消費券</Card>
+
+      {/* <LineChart /> */}
+
+      {/* <div>
+      風向標 / 股價預測 <Button size="small">解鎖</Button>
+      <br />
+      <img src={blur} alt="" />
+    </div> */}
+      <Card>
+        <Typography.Paragraph>
+          <Typography.Text strong>新產品將進一步推升$AAA股價[開放式回答]</Typography.Text>
+          &nbsp;#hash #tag
+          <br />
+          <Space>
+            <Button size="small" shape="round">同意</Button>
+            <Button size="small" shape="round">不同意</Button>
+            <Button size="small" shape="round">不知道</Button>
+            {/* <Button size="small" type="link">不知道</Button> */}
+          </Space>
+
+        </Typography.Paragraph>
+      </Card>
+
+      <Card>
+        <Typography.Paragraph>
+          <Typography.Text strong>新產品將進一步推升＄AAA股價[開放式回答]</Typography.Text>
+          &nbsp;#hash #tag
+          <br />
+          <Space>
+            <Button size="small" shape="round">同意</Button>
+            <Button size="small" shape="round">不同意</Button>
+            <Button size="small" shape="round">不知道</Button>
+            {/* <Button size="small" type="link">不知道</Button> */}
+          </Space>
+
+        </Typography.Paragraph>
+
+        {/* <BarChart /> */}
+
+        <Typography.Paragraph>
+          針對於投票的一些資訊
+        </Typography.Paragraph>
+
+        <Typography.Paragraph>
+          新產品將進一步推升＄AAA股價新產品將進一步推升＄AAA股價新產品將進一步推升＄AAA股價新產品將進一步推升＄AAA股價
+          <Button size="small" type="link" >全文</Button>
+        </Typography.Paragraph>
+        [up] [down]
+
+        <Divider />
+
+        <Space>
+          <Button size="small" shape="round">同意</Button>
+          <Button size="small" shape="round">不同意</Button>
+          <Button size="small" shape="round" type="primary">不知道</Button>
+          <Button size="small" type="link">新增</Button>
+        </Space>
+        <List
+          // bordered
+          size="small"
+          dataSource={[
+            "產品有競爭力產品有競爭力產品有競爭力產品有競爭力產品有競爭力",
+            "產品有競爭力產品有競爭力產品有競爭力產品有競爭力產品有競爭力",
+          ]}
+          renderItem={e => (
+            <List.Item>
+              {/* <Button size="small" shape="round">產品有競爭力</Button><br /> */}
+                [產品有競爭力]<br />
+              {e}<br />
+                [up] [down]
+            </List.Item>
+          )}
+        />
+
+        <Card size="small">
+          <Form size="small">
+            <Form.Item label="選項" required>
+              [同意]
+              {/* <Input /> */}
+            </Form.Item>
+            <Form.Item label="說明" required>
+              <Input.TextArea autoSize={{ minRows: 1 }} />
+            </Form.Item>
+            <Form.Item>
+              <Button>投票</Button>
+            </Form.Item>
+          </Form>
+        </Card>
+      </Card>
+
+
+      <Card>
+        [預測] Buy Hold Sell
+        [貢獻] 你熟悉$AAA嗎？ Yes No
+    </Card>
 
     </Space>
   )
 }
 
-export const TagPage: React.FC<Props> = ({ id }) => {
-  return <Pane left={<Tag />} />
+export const ComparePage: React.FC<Props> = ({ id }) => {
+  return <Pane left={<Compare />} />
 }

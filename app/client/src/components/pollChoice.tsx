@@ -26,124 +26,113 @@ dayjs.extend(localizedFormat)
 //   choices: React.ReactNode
 // }
 
-// export const VotePostForm: React.FC<FormProps> = ({ poll, choices }) => {
-//   const [createVote, createVoteResult] = useMutation<QT.createVote, QT.createVoteVariables>(
-//     queries.CREATE_VOTE, {
-//     update(cache, { data }) {
-//       const res = cache.readQuery<QT.myVotes>({
-//         query: queries.MY_VOTES,
-//       })
-//       if (data?.createVote && res?.myVotes) {
-//         cache.writeQuery<QT.myVotes>({
-//           query: queries.MY_VOTES,
-//           data: {
-//             myVotes: res?.myVotes.concat([data?.createVote]),
-//           },
-//         })
-//       }
-//     },
-//   })
-//   const [createPost, createPostResult] = useMutation<QT.createPost, QT.createPostVariables>(
-//     queries.BLOCK,
-//     // queries.CREATE_POST, {
-//     // update(cache, { data }) {
-//     // console.log(typeof data?.createPost.poll?.start)
-//     // console.log(data?.createPost)
-//     // try {
-//     //   const res = cache.readQuery<QT.latestPosts>({ query: queries.LATEST_POLLS })
-//     //   if (data?.createPost && res?.latestPolls) {
-//     //     cache.writeQuery<QT.latestPolls>({
-//     //       query: queries.LATEST_POLLS,
-//     //       data: {
-//     //         latestPolls: res.latestPolls.concat([data.createPoll]),
-//     //       },
-//     //     })
-//     //   }
-//     // } catch (e) {
-//     //   if (e instanceof InvariantError) { }
-//     //   else { console.error(e) }
-//     // }
-//     // },
-//     // }
-//   )
-//   const [addChoice, setAddChoice] = useState<Boolean>(false)
+function PollForm({ poll, choices, initialValues }: { poll: QT.poll, choices: React.ReactNode, initialValues: { choice: number | null } }) {
+    const [createVote, createVoteResult] = useMutation<QT.createVote, QT.createVoteVariables>(
+        queries.CREATE_VOTE, {
+        update(cache, { data }) {
+            const res = cache.readQuery<QT.myVotes>({
+                query: queries.MY_VOTES,
+            })
+            if (data?.createVote && res?.myVotes) {
+                cache.writeQuery<QT.myVotes>({
+                    query: queries.MY_VOTES,
+                    data: {
+                        myVotes: res?.myVotes.concat([data?.createVote]),
+                    },
+                })
+            }
+        },
+    })
+    const [createReply, createPostResult] = useMutation<QT.createReply, QT.createReplyVariables>(
+        queries.CREATE_REPLY,
+        // queries.CREATE_POST, {
+        // update(cache, { data }) {
+        // console.log(typeof data?.createPost.poll?.start)
+        // console.log(data?.createPost)
+        // try {
+        //   const res = cache.readQuery<QT.latestPosts>({ query: queries.LATEST_POLLS })
+        //   if (data?.createPost && res?.latestPolls) {
+        //     cache.writeQuery<QT.latestPolls>({
+        //       query: queries.LATEST_POLLS,
+        //       data: {
+        //         latestPolls: res.latestPolls.concat([data.createPoll]),
+        //       },
+        //     })
+        //   }
+        // } catch (e) {
+        //   if (e instanceof InvariantError) { }
+        //   else { console.error(e) }
+        // }
+        // },
+        // }
+    )
+    const [addChoice, setAddChoice] = useState<Boolean>(false)
 
-//   async function onFinish(values: any) {
-//     console.log(values)
-//     const result = await createPost({
-//       variables: {
-//         data: {
-//           cat: QT.PostCat.REPLY,
-//           text: values.text,
-//           symbolIds: [],
-//         },
-//         pollId: poll.id,
-//       }
-//     })
+    async function onFinish(values: any) {
+        console.log(values)
+        if (values.text) {
+            const result = await createReply({
+                variables: {
+                    data: {
+                        // cat: QT.PostCat.REPLY,
+                        // symbolIds: [],
+                        text: values.text,
+                    },
+                    commentId: poll.commentId,
+                }
+            })
+        }
+        createVote({
+            variables: {
+                pollId: poll.id,
+                choiceIdx: values.choice,
+                // postId: result.data?.createPost.id,
+            }
+        })
+    }
 
-//     createVote({
-//       variables: {
-//         pollId: poll.id,
-//         choiceId: values.choice,
-//         postId: result.data?.createPost.id,
-//       }
-//     })
+    return (
+        <Form onFinish={onFinish} initialValues={initialValues}>
+            <Form.Item name="choice" required={!addChoice}>
+                {choices}
+            </Form.Item>
+            {/* {
+                poll.cat !== QT.PollCat.FIXED &&
+                <Form.Item>
+                    <Button onClick={() => { setAddChoice(!addChoice) }}>新增選項</Button>
+                </Form.Item>
+            } */}
+            {/* {
+                addChoice &&
+                <Form.Item label="選項" name="choiceText" required>
+                    <Input placeholder="新增一個選項" />
+                </Form.Item>
+            } */}
+            <Form.Item label="意見" name="text">
+                <Input.TextArea placeholder="意見（非強制）" autoSize={{ minRows: 3 }} />
+            </Form.Item>
+            <Form.Item>
+                {createVoteResult.loading || createPostResult.loading
+                    ? <Spin />
+                    : <Button shape="round" htmlType="submit">送出</Button>}
+            </Form.Item>
+            {/* 
+      TODO: shouldUpdate 會被大量呼叫 -> 慢 
+      <Form.Item shouldUpdate>
+        {() => {
+          console.log("touched")
+          if (form.isFieldTouched("choice"))
+            return <Button type="primary" htmlType="submit">送出</Button>
+          else if (loading)
+            return <Spin />
+          return null
+        }}
+      </Form.Item> 
+      */}
+        </Form>
+    )
 
-//   }
-
-//   return (
-//     <Form
-//       // layout="inline"
-//       onFinish={onFinish}
-//       size="small"
-//     >
-
-//       <Form.Item name="choice" required={!addChoice}>
-//         {choices}
-//       </Form.Item>
-
-//       {
-//         poll.cat !== QT.PollCat.FIXED &&
-//         <Form.Item>
-//           <Button onClick={() => { setAddChoice(!addChoice) }}>新增選項</Button>
-//         </Form.Item>
-//       }
-
-//       {
-//         addChoice &&
-//         <Form.Item label="選項" name="choiceText" required>
-//           <Input placeholder="新增一個選項" />
-//         </Form.Item>
-//       }
-
-//       <Form.Item label="意見" name="text">
-//         <Input.TextArea placeholder="意見（非強制）" autoSize={{ minRows: 3 }} />
-//       </Form.Item>
-
-//       <Form.Item>
-//         {createVoteResult.loading || createPostResult.loading
-//           ? <Spin />
-//           : <Button shape="round" htmlType="submit">送出</Button>}
-//       </Form.Item>
-
-//       {/* 
-//       TODO: shouldUpdate 會被大量呼叫 -> 慢 
-//       <Form.Item shouldUpdate>
-//         {() => {
-//           console.log("touched")
-//           if (form.isFieldTouched("choice"))
-//             return <Button type="primary" htmlType="submit">送出</Button>
-//           else if (loading)
-//             return <Spin />
-//           return null
-//         }}
-//       </Form.Item> 
-//       */}
-
-//     </Form>
-//   )
-
-// }
+}
 
 // export const VoteForm: React.FC<FormProps> = ({ poll, choices }) => {
 //   const [createVote, { loading }] = useMutation<QT.createVote, QT.createVoteVariables>(
@@ -447,3 +436,192 @@ dayjs.extend(localizedFormat)
 //     </>
 //   )
 // }
+
+
+
+export function PollChoicesAndForm({ poll, count, setShowReplies, setFilterRepliesPattern }: {
+    poll: QT.poll, count: any, setShowReplies(a: boolean): void, setFilterRepliesPattern(a: string | null): void
+}) {
+    // const meJudgement = {
+    //   __typename: "PollJudge",
+    //   id: "1234",
+    //   postId: "2234",
+    //   choice: null
+    // }
+    // const meJudgment = undefined
+
+    const [showResult, setShowResult] = useState<boolean>(false)
+    const [showForm, setShowForm] = useState<boolean>(false)
+    const [choiceIdx, setChoiceIdx] = useState<number | null>(null)
+    const myVotes = useQuery<QT.myVotes>(
+        queries.MY_VOTES, {
+        fetchPolicy: "cache-only"
+    })
+    const meVote = myVotes.data?.myVotes.find((e) => e.pollId === poll.id)
+
+    function onClickChoice(i: number) {
+        setChoiceIdx(i)
+        setFilterRepliesPattern(`(${i})`)
+        setShowReplies(true)
+        setShowForm(true)
+    }
+    function choice(i: number, text: string, count?: number) {
+        // if (!me) return <Radio key={id} value={id} onClick={toLogin}>{text}</Radio>
+        // me有投票
+        if (meVote) {
+            // 是me選的選項，粗體
+            if (meVote.choiceIdx === i)
+                return (
+                    <Radio key={i} value={i} onClick={function () { onClickChoice(i) }} checked>
+                        <Typography.Text mark>{text}</Typography.Text>
+                    </Radio>
+                )
+            // 非me選的選項
+            if (meVote.choiceIdx !== i)
+                return <Radio key={i} value={i} onClick={function () { onClickChoice(i) }} >{text}</Radio>
+        }
+        // return <Radio key={i} onClick={() => { setShowDetail(true) }}>{text} [{count}]</Radio>
+        // if (showResult) return <Radio key={i} value={i}>{text} [{count}]</Radio>
+        return <Radio key={i} value={i} onClick={function () { onClickChoice(i) }}>{text}</Radio>
+    }
+    const choices = <Radio.Group>{poll.choices.map((e, i) => choice(i, e))}</Radio.Group>
+    // const judgeChoices = (
+    //     <Radio.Group>
+    //         {poll.choices.map((c, i) => <Radio key={i} value={i}>{c}</Radio>)}
+    //         <Radio key={poll.choices.length} value={-1}>無法判定</Radio>
+    //     </Radio.Group>
+    // )
+
+    // let main
+    // if (poll.status === QT.PollStatus.CLOSE_FAIL) {
+    //     main =
+    //         <>
+    //             <br />
+    //             {choices}
+    //             {/* 投票已結束，因{count.verdict?.failedMsg}原因判定為無效投票 */}
+    //             <Typography.Text type="secondary">你已經投票</Typography.Text>
+    //     投票已結束，經...判定為無效投票
+    //         </>
+
+    // } else if (poll.status === QT.PollStatus.CLOSE_SUCCESS && meVote && count.verdictChoice) {
+    //     main =
+    //         <>
+    //             <br />
+    //             {choices}
+    //     投票已結束，你的選擇為：{meVote.choiceId}，判定結果為：{poll.choices[count.verdictChoice]}
+    //             {/* 你預測成功，贏過71%的預測者，獲得獎勵： */}
+    //         </>
+
+    // } else if (poll.status === QT.PollStatus.CLOSE_SUCCESS && count.verdictChoice) {
+    //     main =
+    //         <>
+    //             <br />
+    //             {choices}
+    //             <Typography.Text type="secondary">你已經投票</Typography.Text>
+    //     投票已結束，判定結果為：{poll.choices[count.verdictChoice]}<br />
+    //         </>
+
+    // } else if (poll.status === QT.PollStatus.CLOSE_SUCCESS) {
+    //     main =
+    //         <>
+    //             <br />
+    //             {choices}
+    //             <Typography.Text type="secondary">投票已結束</Typography.Text>
+    //             <Button size="small" type="link" onClick={() => { setShowResult(!showResult) }}>查看結果</Button>
+    //         </>
+
+    // } else if (poll.status === QT.PollStatus.JUDGE && meJudgment) {
+    //     main =
+    //         <>
+    //             投票已結束，你被邀請加入評審團，請評斷實際的結果：
+    //             <PollJudgeForm poll={poll} choices={judgeChoices} />
+    //         </>
+
+    // } else if (poll.status === QT.PollStatus.JUDGE) {
+    //     main =
+    //         <>
+    //             <br />
+    //             {choices}
+    //             <Typography.Text type="secondary">投票已結束，判定結果中</Typography.Text>
+    //             <Button size="small" type="link" onClick={() => { setShowResult(!showResult) }}>查看投票數</Button>
+    //         </>
+
+    // } else if (poll.status === QT.PollStatus.OPEN && meVote) {
+    //     main =
+    //         <>
+    //             <br />
+    //             {choices}
+    //             <Typography.Text type="secondary">你已經投票</Typography.Text>
+    //             <Button size="small" type="link" onClick={() => { setShowResult(!showResult) }}>查看投票數</Button>
+    //         </>
+
+    // } else if (poll.status === QT.PollStatus.OPEN && me) {
+    //     // main = <VoteForm pollId={poll.id} choices={choices} />
+    //     // main = <VotePostForm pollId={poll.id} choices={choices} />
+    //     main =
+    // <>
+    //     {
+    //         showForm ?
+    //             <Card>
+    //                 <VotePostForm poll={poll} choices={choices} />
+    //             </Card>
+    //             :
+    //             choices
+    //     }
+    // </>
+
+    // } else if (poll.status === QT.PollStatus.OPEN) {
+    //     main = choices
+
+    // } else {
+    //     throw new Error("不應該有漏掉的case")
+    // }
+
+    function onFinish(values: any) {
+        console.log(values)
+        // if (values.text) {
+        //     const result = await createReply({
+        //         variables: {
+        //             data: {
+        //                 // cat: QT.PostCat.REPLY,
+        //                 // symbolIds: [],
+        //                 text: values.text,
+        //             },
+        //             commentId: poll.commentId,
+        //         }
+        //     })
+        // }
+        // createVote({
+        //     variables: {
+        //         pollId: poll.id,
+        //         choiceIdx: values.choice,
+        //         // postId: result.data?.createPost.id,
+        //     }
+        // })
+    }
+
+    return (
+        <>
+            {/* <Form onFinish={onFinish} size="small" initialValues={{ choice: 1 }}>
+                <Form.Item name="choice" required={true}>
+                    {choices}
+                </Form.Item>
+                <Form.Item shouldUpdate={showForm}>
+                    {({ getFieldValue }) => (
+                        <Button shape="round" htmlType="submit">送出</Button>
+                    )}
+                </Form.Item>
+            </Form> */}
+            {/* {main} */}
+            {showForm ?
+                <PollForm poll={poll} choices={choices} initialValues={{ choice: choiceIdx }} /> :
+                choices
+            }
+            {
+                showResult ??
+                // <BarChart />
+                <p>chart</p>
+            }
+        </>
+    )
+}

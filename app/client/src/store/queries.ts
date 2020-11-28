@@ -4,7 +4,7 @@ import { gql } from '@apollo/client'
 // Fragment
 // ----------------------------
 
-export const VOTE = gql`
+const VOTE = gql`
   fragment vote on Vote {
     __typename
     id
@@ -13,7 +13,18 @@ export const VOTE = gql`
   }
 `
 
-export const REPLY_COUNT = gql`
+const POLL = gql`
+  fragment poll on Poll {
+    __typename
+    id
+    commentId
+    choices
+    nVotes
+    createdAt
+  }
+`
+
+const REPLY_COUNT = gql`
   fragment replyCount on ReplyCount {
     __typename
     id
@@ -24,7 +35,7 @@ export const REPLY_COUNT = gql`
   }
 `
 
-export const COMMENT_COUNT = gql`
+const COMMENT_COUNT = gql`
   fragment commentCount on CommentCount {
     __typename
     id
@@ -35,7 +46,7 @@ export const COMMENT_COUNT = gql`
   }
 `
 
-export const REPLY = gql`
+const REPLY = gql`
   fragment reply on Reply {
     __typename
     id
@@ -50,7 +61,7 @@ export const REPLY = gql`
   ${REPLY_COUNT}
 `
 
-export const COMMENT = gql`
+const COMMENT = gql`
   fragment comment on Comment {
     __typename
     id
@@ -62,14 +73,22 @@ export const COMMENT = gql`
     # replies {
     #   ...reply
     # }
+    spotReplies {
+      ...reply
+    }
+    poll {
+      ...poll
+    }
     count { 
       ...commentCount
     }
   }
+  ${REPLY}
+  ${POLL}
   ${COMMENT_COUNT}
 `
 
-export const COMMENT_LIKE = gql`
+const COMMENT_LIKE = gql`
   fragment commentLike on CommentLike {
     __typename
     id
@@ -79,7 +98,7 @@ export const COMMENT_LIKE = gql`
   }
 `
 
-export const REPLY_LIKE = gql`
+const REPLY_LIKE = gql`
   fragment replyLike on ReplyLike {
     __typename
     id
@@ -89,7 +108,7 @@ export const REPLY_LIKE = gql`
   }
 `
 
-export const BLOCK_FRAGMENT = gql`
+const BLOCK_FRAGMENT = gql`
   fragment blockFragment on Block {
     __typename
     id
@@ -123,6 +142,14 @@ export const BLOCK_FRAGMENT = gql`
     comments {
       ...comment
     }
+    link {
+      id
+      url
+      domain
+      contentType
+      contentId
+      contentAuthorId
+    }
   }
   ${COMMENT}
 `
@@ -149,6 +176,15 @@ export const BLOCK = gql`
 export const COMMENTS = gql`
   query comments($blockId: ID!, $afterId: ID) {
     comments(blockId: $blockId, afterId: $afterId) {
+      ...comment
+    }
+  }
+  ${COMMENT}
+`
+
+export const COMMENTS_BY_SYMBOL = gql`
+  query commentsBySymbol($blockPath: String!, $symbol: String!, $afterId: ID) {
+    commentsBySymbol(blockPath: $blockPath, symbol: $symbol, afterId: $afterId) {
       ...comment
     }
   }
@@ -202,6 +238,35 @@ export const ME = gql`
     me {
       id
     }
+  }
+`
+export const LATEST_PAGES = gql`
+  query latestPages($afterId: ID) {
+    latestPages(afterId: $afterId) {
+      ...blockFragment
+    }
+  }
+  ${BLOCK_FRAGMENT}
+`
+
+export const SEARCH_ALL = gql`
+  query searchAll($term: String!) {
+    searchAll(term: $term)
+  }
+`
+
+export const SEARCH_PAGE = gql`
+  query searchPage($url: String!) {
+    searchPage(url: $url) {
+      ...blockFragment
+    }
+  }
+  ${BLOCK_FRAGMENT}
+`
+
+export const AUTOMARK = gql`
+  query automark($text: String!) {
+    automark(text: $text)
   }
 `
 

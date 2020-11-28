@@ -5,20 +5,12 @@ import { useApolloClient, useMutation, useQuery } from '@apollo/client'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 import { PageContainer, Pane } from '../components/layout'
-import { BoardPage } from './board'
-import { PostThreadPage } from './postThread'
-// import { SubmitPage } from './submit'
-// import { SymbolPage } from './symbol'
 import { ProtectedRoute, LoginPage, AutoLogin } from './login'
-import { Ticker } from './ticker'
-import { EventPage } from './event'
-import { StackPage } from './stack'
-import { StagePage } from './stage'
-import { CreditPage } from './credit'
-import { CreatePollPage } from './createPoll'
-import { TagPage } from './tag'
-import { ComparePage } from './compare'
-import { BlockPage, BlockMetaPage } from './block'
+import { HomePage } from './homePage'
+import { TickerPage } from './tickerPage'
+import { TopicPage } from './topicPage'
+import { AuthorPage } from './authorPage'
+import { WebpagePage } from './webpagePage'
 
 import '../appLayout/appLayout.less'
 import Anchor from '../components/anchor/tickerAnchor'
@@ -26,13 +18,13 @@ import Anchor from '../components/anchor/tickerAnchor'
 
 interface NotFoundProps extends RouteComponentProps { }
 
-const NotFound: React.FC<NotFoundProps> = () => {
+const NotFoundPage: React.FC<NotFoundProps> = function () {
   return <h1>Page not found</h1>
 }
 
 const { Header, Sider, Content } = Layout
 
-export function LayoutPages() {
+function LayoutPages() {
   // useQuery<QT.myCommentLikes>(queries.MY_COMMENT_LIKES)
   // useQuery<QT.myPostLikes>(queries.MY_POST_LIKES)
   // useQuery<QT.myVotes>(queries.MY_VOTES)
@@ -74,9 +66,7 @@ export function LayoutPages() {
         </div> */}
 
         <Router primary={false} component={Fragment}>
-          {/* <BlockMetaPage path="/" /> */}
-          <BlockPage path="block/:id" me={data?.me} />
-          {/* <BlockMeta path="/" /> */}
+          {/* <BlockPage path="block/:id" me={data?.me} /> */}
 
           {/* <ProsCons />
             <TickerComment />
@@ -88,9 +78,10 @@ export function LayoutPages() {
 }
 
 export function Pages() {
+  // 為了存cache
   useQuery<QT.myCommentLikes>(queries.MY_COMMENT_LIKES)
-  // useQuery<QT.myPostLikes>(queries.MY_POST_LIKES)
-  // useQuery<QT.myVotes>(queries.MY_VOTES)
+  useQuery<QT.myReplyLikes>(queries.MY_REPLY_LIKES)
+  useQuery<QT.myVotes>(queries.MY_VOTES)
   const { data, loading } = useQuery<QT.me>(queries.ME)
   const isLoggedIn = !!data?.me
 
@@ -102,53 +93,24 @@ export function Pages() {
       {/* {!isLoggedIn && <Redirect from="" to="/login" noThrow />} */}
 
       <Router primary={false} component={Fragment}>
+        {/* <BlockPage path="block/:id" me={data?.me} /> */}
+        <HomePage path="/" />
+        <TickerPage path="ticker/:symbol" />
+        <TopicPage path="topic/:title" />
+        <AuthorPage path="author/:symbol" />
+        <WebpagePage path="webpage/:id" />
 
-        <BlockPage path="block/:id" me={data?.me} />
-
-        {/* <BlockPage path="block/*path" me={data?.me} /> */}
-
-        {/* <SubmitPage path="submit" /> */}
-
-        {/* <ProtectedRoute path="submit" isLoggedIn={isLoggedIn} as={<SubmitPage />} /> */}
-
-        <PostThreadPage path="post/:id" me={data?.me} />
-
-        {/* <PostThreadPage path="post/:id" /> */}
+        {/* <BlockPage path="block/*path" me={data?.me} /> path可以為'/aaa/bbb/ccc' */}
 
         <PageContainer path="/" isLoggedIn={isLoggedIn}>
-
-          {/* <BoardPage path="/" me={data?.me} /> */}
-
-          <StagePage path="/" me={data?.me} />
-
-          {/* <SymbolPage path="symbol/:name" /> */}
-
-          <Ticker path="ticker" />
-
-          {/* <EventPage path="event/:name" /> */}
-          <EventPage path="event" />
-          <StackPage path="stack" />
-          <CreditPage path="credit" />
-          <CreatePollPage path="cpoll" />
-          <TagPage path="tag" />
-          <ComparePage path="compare" />
-
           {/* <ProtectedRoute as={Feed} isLoggedIn={isLoggedIn} default /> */}
           {/* <Pane left={<Board me={data?.me} />} right={<BoardRightPane />} default /> */}
-
           <LoginPage path="login" />
-
-          <NotFound default />
-
+          <NotFoundPage default />
         </PageContainer>
 
         {/* <Pane path="/" left={<Feeds />} right={undefined} /> */}
-        {/* <EventPage path="event/:name" /> */}
-        {/* <CommitCreate path="commit/new" /> */}
-        {/* <Ticker path="ticker" /> */}
         {/* <Pane path="feeds" left={Feeds} right={Tracks} /> */}
-        {/* <Feeds path="feeds" /> */}
-
       </Router>
     </>
   )

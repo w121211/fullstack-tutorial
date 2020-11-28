@@ -3,11 +3,11 @@ import { RouteComponentProps, Redirect, Link, navigate } from '@reach/router'
 import { useQuery } from '@apollo/client'
 import { Badge, Button, Card, Radio, Space, List, Typography, Result, Divider } from 'antd'
 import { LinkOutlined, ExportOutlined, SwapLeftOutlined, QuestionCircleOutlined, InfoCircleOutlined, SwapRightOutlined } from '@ant-design/icons'
-import * as queries from '../store/queries'
-import * as QT from '../store/queryTypes'
-import { Pane } from '../components/layout'
+import * as queries from '../../store/queries'
+import * as QT from '../../store/queryTypes'
+import { Pane } from '../../components/layout'
 // import { PostList } from '../components/postList'
-import { Chart, Chart2 } from '../components/lightweightChart'
+import { Chart, Chart2 } from '../../components/_lightweightChart'
 
 // %24AADR
 

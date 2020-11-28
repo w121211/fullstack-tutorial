@@ -7,6 +7,33 @@
 // GraphQL query operation: block
 // ====================================================
 
+export interface block_block_props_commentIntro_spotReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface block_block_props_commentIntro_spotReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: block_block_props_commentIntro_spotReplies_count;
+}
+
+export interface block_block_props_commentIntro_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  nVotes: number[];
+  createdAt: any;
+}
+
 export interface block_block_props_commentIntro_count {
   __typename: "CommentCount";
   id: string;
@@ -22,7 +49,36 @@ export interface block_block_props_commentIntro {
   isSpot: boolean | null;
   text: string | null;
   createdAt: any;
+  spotReplies: block_block_props_commentIntro_spotReplies[] | null;
+  poll: block_block_props_commentIntro_poll | null;
   count: block_block_props_commentIntro_count;
+}
+
+export interface block_block_props_commentSymbols_spotReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface block_block_props_commentSymbols_spotReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: block_block_props_commentSymbols_spotReplies_count;
+}
+
+export interface block_block_props_commentSymbols_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  nVotes: number[];
+  createdAt: any;
 }
 
 export interface block_block_props_commentSymbols_count {
@@ -40,6 +96,8 @@ export interface block_block_props_commentSymbols {
   isSpot: boolean | null;
   text: string | null;
   createdAt: any;
+  spotReplies: block_block_props_commentSymbols_spotReplies[] | null;
+  poll: block_block_props_commentSymbols_poll | null;
   count: block_block_props_commentSymbols_count;
 }
 
@@ -63,6 +121,33 @@ export interface block_block_body_ticks {
   at: any;
 }
 
+export interface block_block_body_blocks_props_commentIntro_spotReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface block_block_body_blocks_props_commentIntro_spotReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: block_block_body_blocks_props_commentIntro_spotReplies_count;
+}
+
+export interface block_block_body_blocks_props_commentIntro_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  nVotes: number[];
+  createdAt: any;
+}
+
 export interface block_block_body_blocks_props_commentIntro_count {
   __typename: "CommentCount";
   id: string;
@@ -78,7 +163,36 @@ export interface block_block_body_blocks_props_commentIntro {
   isSpot: boolean | null;
   text: string | null;
   createdAt: any;
+  spotReplies: block_block_body_blocks_props_commentIntro_spotReplies[] | null;
+  poll: block_block_body_blocks_props_commentIntro_poll | null;
   count: block_block_body_blocks_props_commentIntro_count;
+}
+
+export interface block_block_body_blocks_props_commentSymbols_spotReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface block_block_body_blocks_props_commentSymbols_spotReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: block_block_body_blocks_props_commentSymbols_spotReplies_count;
+}
+
+export interface block_block_body_blocks_props_commentSymbols_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  nVotes: number[];
+  createdAt: any;
 }
 
 export interface block_block_body_blocks_props_commentSymbols_count {
@@ -96,6 +210,8 @@ export interface block_block_body_blocks_props_commentSymbols {
   isSpot: boolean | null;
   text: string | null;
   createdAt: any;
+  spotReplies: block_block_body_blocks_props_commentSymbols_spotReplies[] | null;
+  poll: block_block_body_blocks_props_commentSymbols_poll | null;
   count: block_block_body_blocks_props_commentSymbols_count;
 }
 
@@ -127,6 +243,33 @@ export interface block_block_body_blocks_body {
   chart: number[] | null;
 }
 
+export interface block_block_body_blocks_comments_spotReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface block_block_body_blocks_comments_spotReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: block_block_body_blocks_comments_spotReplies_count;
+}
+
+export interface block_block_body_blocks_comments_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  nVotes: number[];
+  createdAt: any;
+}
+
 export interface block_block_body_blocks_comments_count {
   __typename: "CommentCount";
   id: string;
@@ -142,7 +285,19 @@ export interface block_block_body_blocks_comments {
   isSpot: boolean | null;
   text: string | null;
   createdAt: any;
+  spotReplies: block_block_body_blocks_comments_spotReplies[] | null;
+  poll: block_block_body_blocks_comments_poll | null;
   count: block_block_body_blocks_comments_count;
+}
+
+export interface block_block_body_blocks_link {
+  __typename: "Link";
+  id: string;
+  url: string;
+  domain: string;
+  contentType: string;
+  contentId: string | null;
+  contentAuthorId: string | null;
 }
 
 export interface block_block_body_blocks {
@@ -152,6 +307,7 @@ export interface block_block_body_blocks {
   props: block_block_body_blocks_props;
   body: block_block_body_blocks_body;
   comments: block_block_body_blocks_comments[] | null;
+  link: block_block_body_blocks_link | null;
 }
 
 export interface block_block_body {
@@ -161,6 +317,33 @@ export interface block_block_body {
   table: number[] | null;
   chart: number[] | null;
   blocks: block_block_body_blocks[] | null;
+}
+
+export interface block_block_comments_spotReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface block_block_comments_spotReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: block_block_comments_spotReplies_count;
+}
+
+export interface block_block_comments_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  nVotes: number[];
+  createdAt: any;
 }
 
 export interface block_block_comments_count {
@@ -178,7 +361,19 @@ export interface block_block_comments {
   isSpot: boolean | null;
   text: string | null;
   createdAt: any;
+  spotReplies: block_block_comments_spotReplies[] | null;
+  poll: block_block_comments_poll | null;
   count: block_block_comments_count;
+}
+
+export interface block_block_link {
+  __typename: "Link";
+  id: string;
+  url: string;
+  domain: string;
+  contentType: string;
+  contentId: string | null;
+  contentAuthorId: string | null;
 }
 
 export interface block_block {
@@ -188,6 +383,7 @@ export interface block_block {
   props: block_block_props;
   body: block_block_body;
   comments: block_block_comments[] | null;
+  link: block_block_link | null;
 }
 
 export interface block {
@@ -208,6 +404,33 @@ export interface blockVariables {
 // GraphQL query operation: comments
 // ====================================================
 
+export interface comments_comments_spotReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface comments_comments_spotReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: comments_comments_spotReplies_count;
+}
+
+export interface comments_comments_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  nVotes: number[];
+  createdAt: any;
+}
+
 export interface comments_comments_count {
   __typename: "CommentCount";
   id: string;
@@ -223,6 +446,8 @@ export interface comments_comments {
   isSpot: boolean | null;
   text: string | null;
   createdAt: any;
+  spotReplies: comments_comments_spotReplies[] | null;
+  poll: comments_comments_poll | null;
   count: comments_comments_count;
 }
 
@@ -232,6 +457,72 @@ export interface comments {
 
 export interface commentsVariables {
   blockId: string;
+  afterId?: string | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: commentsBySymbol
+// ====================================================
+
+export interface commentsBySymbol_commentsBySymbol_spotReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface commentsBySymbol_commentsBySymbol_spotReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: commentsBySymbol_commentsBySymbol_spotReplies_count;
+}
+
+export interface commentsBySymbol_commentsBySymbol_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  nVotes: number[];
+  createdAt: any;
+}
+
+export interface commentsBySymbol_commentsBySymbol_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface commentsBySymbol_commentsBySymbol {
+  __typename: "Comment";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string | null;
+  createdAt: any;
+  spotReplies: commentsBySymbol_commentsBySymbol_spotReplies[] | null;
+  poll: commentsBySymbol_commentsBySymbol_poll | null;
+  count: commentsBySymbol_commentsBySymbol_count;
+}
+
+export interface commentsBySymbol {
+  commentsBySymbol: commentsBySymbol_commentsBySymbol[];
+}
+
+export interface commentsBySymbolVariables {
+  blockPath: string;
+  symbol: string;
   afterId?: string | null;
 }
 
@@ -257,7 +548,7 @@ export interface replies_replies {
   id: string;
   userId: string;
   isSpot: boolean | null;
-  text: string | null;
+  text: string;
   updatedAt: any;
   count: replies_replies_count;
 }
@@ -370,8 +661,481 @@ export interface me {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: latestPages
+// ====================================================
+
+export interface latestPages_latestPages_props_commentIntro_spotReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface latestPages_latestPages_props_commentIntro_spotReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: latestPages_latestPages_props_commentIntro_spotReplies_count;
+}
+
+export interface latestPages_latestPages_props_commentIntro_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  nVotes: number[];
+  createdAt: any;
+}
+
+export interface latestPages_latestPages_props_commentIntro_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface latestPages_latestPages_props_commentIntro {
+  __typename: "Comment";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string | null;
+  createdAt: any;
+  spotReplies: latestPages_latestPages_props_commentIntro_spotReplies[] | null;
+  poll: latestPages_latestPages_props_commentIntro_poll | null;
+  count: latestPages_latestPages_props_commentIntro_count;
+}
+
+export interface latestPages_latestPages_props_commentSymbols_spotReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface latestPages_latestPages_props_commentSymbols_spotReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: latestPages_latestPages_props_commentSymbols_spotReplies_count;
+}
+
+export interface latestPages_latestPages_props_commentSymbols_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  nVotes: number[];
+  createdAt: any;
+}
+
+export interface latestPages_latestPages_props_commentSymbols_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface latestPages_latestPages_props_commentSymbols {
+  __typename: "Comment";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string | null;
+  createdAt: any;
+  spotReplies: latestPages_latestPages_props_commentSymbols_spotReplies[] | null;
+  poll: latestPages_latestPages_props_commentSymbols_poll | null;
+  count: latestPages_latestPages_props_commentSymbols_count;
+}
+
+export interface latestPages_latestPages_props {
+  __typename: "BlockProperties";
+  name: string | null;
+  longName: string | null;
+  path: string | null;
+  symbol: string | null;
+  canComment: boolean | null;
+  canOpenAsPage: boolean | null;
+  commentIntro: latestPages_latestPages_props_commentIntro | null;
+  commentSymbols: latestPages_latestPages_props_commentSymbols | null;
+}
+
+export interface latestPages_latestPages_body_ticks {
+  __typename: "Tick";
+  id: string;
+  symbolId: string;
+  value: number;
+  at: any;
+}
+
+export interface latestPages_latestPages_body {
+  __typename: "BlockBody";
+  text: string | null;
+  ticks: latestPages_latestPages_body_ticks[] | null;
+  table: number[] | null;
+  chart: number[] | null;
+}
+
+export interface latestPages_latestPages_comments_spotReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface latestPages_latestPages_comments_spotReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: latestPages_latestPages_comments_spotReplies_count;
+}
+
+export interface latestPages_latestPages_comments_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  nVotes: number[];
+  createdAt: any;
+}
+
+export interface latestPages_latestPages_comments_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface latestPages_latestPages_comments {
+  __typename: "Comment";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string | null;
+  createdAt: any;
+  spotReplies: latestPages_latestPages_comments_spotReplies[] | null;
+  poll: latestPages_latestPages_comments_poll | null;
+  count: latestPages_latestPages_comments_count;
+}
+
+export interface latestPages_latestPages_link {
+  __typename: "Link";
+  id: string;
+  url: string;
+  domain: string;
+  contentType: string;
+  contentId: string | null;
+  contentAuthorId: string | null;
+}
+
+export interface latestPages_latestPages {
+  __typename: "Block";
+  id: string;
+  template: string;
+  props: latestPages_latestPages_props;
+  body: latestPages_latestPages_body;
+  comments: latestPages_latestPages_comments[] | null;
+  link: latestPages_latestPages_link | null;
+}
+
+export interface latestPages {
+  latestPages: latestPages_latestPages[];
+}
+
+export interface latestPagesVariables {
+  afterId?: string | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: searchAll
+// ====================================================
+
+export interface searchAll {
+  searchAll: string[];
+}
+
+export interface searchAllVariables {
+  term: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: searchPage
+// ====================================================
+
+export interface searchPage_searchPage_props_commentIntro_spotReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface searchPage_searchPage_props_commentIntro_spotReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: searchPage_searchPage_props_commentIntro_spotReplies_count;
+}
+
+export interface searchPage_searchPage_props_commentIntro_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  nVotes: number[];
+  createdAt: any;
+}
+
+export interface searchPage_searchPage_props_commentIntro_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface searchPage_searchPage_props_commentIntro {
+  __typename: "Comment";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string | null;
+  createdAt: any;
+  spotReplies: searchPage_searchPage_props_commentIntro_spotReplies[] | null;
+  poll: searchPage_searchPage_props_commentIntro_poll | null;
+  count: searchPage_searchPage_props_commentIntro_count;
+}
+
+export interface searchPage_searchPage_props_commentSymbols_spotReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface searchPage_searchPage_props_commentSymbols_spotReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: searchPage_searchPage_props_commentSymbols_spotReplies_count;
+}
+
+export interface searchPage_searchPage_props_commentSymbols_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  nVotes: number[];
+  createdAt: any;
+}
+
+export interface searchPage_searchPage_props_commentSymbols_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface searchPage_searchPage_props_commentSymbols {
+  __typename: "Comment";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string | null;
+  createdAt: any;
+  spotReplies: searchPage_searchPage_props_commentSymbols_spotReplies[] | null;
+  poll: searchPage_searchPage_props_commentSymbols_poll | null;
+  count: searchPage_searchPage_props_commentSymbols_count;
+}
+
+export interface searchPage_searchPage_props {
+  __typename: "BlockProperties";
+  name: string | null;
+  longName: string | null;
+  path: string | null;
+  symbol: string | null;
+  canComment: boolean | null;
+  canOpenAsPage: boolean | null;
+  commentIntro: searchPage_searchPage_props_commentIntro | null;
+  commentSymbols: searchPage_searchPage_props_commentSymbols | null;
+}
+
+export interface searchPage_searchPage_body_ticks {
+  __typename: "Tick";
+  id: string;
+  symbolId: string;
+  value: number;
+  at: any;
+}
+
+export interface searchPage_searchPage_body {
+  __typename: "BlockBody";
+  text: string | null;
+  ticks: searchPage_searchPage_body_ticks[] | null;
+  table: number[] | null;
+  chart: number[] | null;
+}
+
+export interface searchPage_searchPage_comments_spotReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface searchPage_searchPage_comments_spotReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: searchPage_searchPage_comments_spotReplies_count;
+}
+
+export interface searchPage_searchPage_comments_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  nVotes: number[];
+  createdAt: any;
+}
+
+export interface searchPage_searchPage_comments_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface searchPage_searchPage_comments {
+  __typename: "Comment";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string | null;
+  createdAt: any;
+  spotReplies: searchPage_searchPage_comments_spotReplies[] | null;
+  poll: searchPage_searchPage_comments_poll | null;
+  count: searchPage_searchPage_comments_count;
+}
+
+export interface searchPage_searchPage_link {
+  __typename: "Link";
+  id: string;
+  url: string;
+  domain: string;
+  contentType: string;
+  contentId: string | null;
+  contentAuthorId: string | null;
+}
+
+export interface searchPage_searchPage {
+  __typename: "Block";
+  id: string;
+  template: string;
+  props: searchPage_searchPage_props;
+  body: searchPage_searchPage_body;
+  comments: searchPage_searchPage_comments[] | null;
+  link: searchPage_searchPage_link | null;
+}
+
+export interface searchPage {
+  searchPage: searchPage_searchPage | null;
+}
+
+export interface searchPageVariables {
+  url: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: automark
+// ====================================================
+
+export interface automark {
+  automark: string;
+}
+
+export interface automarkVariables {
+  text: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: createComment
 // ====================================================
+
+export interface createComment_createComment_spotReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface createComment_createComment_spotReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: createComment_createComment_spotReplies_count;
+}
+
+export interface createComment_createComment_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  nVotes: number[];
+  createdAt: any;
+}
 
 export interface createComment_createComment_count {
   __typename: "CommentCount";
@@ -388,6 +1152,8 @@ export interface createComment_createComment {
   isSpot: boolean | null;
   text: string | null;
   createdAt: any;
+  spotReplies: createComment_createComment_spotReplies[] | null;
+  poll: createComment_createComment_poll | null;
   count: createComment_createComment_count;
 }
 
@@ -422,7 +1188,7 @@ export interface createReply_createReply {
   id: string;
   userId: string;
   isSpot: boolean | null;
-  text: string | null;
+  text: string;
   updatedAt: any;
   count: createReply_createReply_count;
 }
@@ -701,6 +1467,24 @@ export interface vote {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: poll
+// ====================================================
+
+export interface poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  nVotes: number[];
+  createdAt: any;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: replyCount
 // ====================================================
 
@@ -751,7 +1535,7 @@ export interface reply {
   id: string;
   userId: string;
   isSpot: boolean | null;
-  text: string | null;
+  text: string;
   updatedAt: any;
   count: reply_count;
 }
@@ -764,6 +1548,33 @@ export interface reply {
 // ====================================================
 // GraphQL fragment: comment
 // ====================================================
+
+export interface comment_spotReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface comment_spotReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: comment_spotReplies_count;
+}
+
+export interface comment_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  nVotes: number[];
+  createdAt: any;
+}
 
 export interface comment_count {
   __typename: "CommentCount";
@@ -780,6 +1591,8 @@ export interface comment {
   isSpot: boolean | null;
   text: string | null;
   createdAt: any;
+  spotReplies: comment_spotReplies[] | null;
+  poll: comment_poll | null;
   count: comment_count;
 }
 
@@ -826,6 +1639,33 @@ export interface replyLike {
 // GraphQL fragment: blockFragment
 // ====================================================
 
+export interface blockFragment_props_commentIntro_spotReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface blockFragment_props_commentIntro_spotReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: blockFragment_props_commentIntro_spotReplies_count;
+}
+
+export interface blockFragment_props_commentIntro_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  nVotes: number[];
+  createdAt: any;
+}
+
 export interface blockFragment_props_commentIntro_count {
   __typename: "CommentCount";
   id: string;
@@ -841,7 +1681,36 @@ export interface blockFragment_props_commentIntro {
   isSpot: boolean | null;
   text: string | null;
   createdAt: any;
+  spotReplies: blockFragment_props_commentIntro_spotReplies[] | null;
+  poll: blockFragment_props_commentIntro_poll | null;
   count: blockFragment_props_commentIntro_count;
+}
+
+export interface blockFragment_props_commentSymbols_spotReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface blockFragment_props_commentSymbols_spotReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: blockFragment_props_commentSymbols_spotReplies_count;
+}
+
+export interface blockFragment_props_commentSymbols_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  nVotes: number[];
+  createdAt: any;
 }
 
 export interface blockFragment_props_commentSymbols_count {
@@ -859,6 +1728,8 @@ export interface blockFragment_props_commentSymbols {
   isSpot: boolean | null;
   text: string | null;
   createdAt: any;
+  spotReplies: blockFragment_props_commentSymbols_spotReplies[] | null;
+  poll: blockFragment_props_commentSymbols_poll | null;
   count: blockFragment_props_commentSymbols_count;
 }
 
@@ -890,6 +1761,33 @@ export interface blockFragment_body {
   chart: number[] | null;
 }
 
+export interface blockFragment_comments_spotReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface blockFragment_comments_spotReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isSpot: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: blockFragment_comments_spotReplies_count;
+}
+
+export interface blockFragment_comments_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  nVotes: number[];
+  createdAt: any;
+}
+
 export interface blockFragment_comments_count {
   __typename: "CommentCount";
   id: string;
@@ -905,7 +1803,19 @@ export interface blockFragment_comments {
   isSpot: boolean | null;
   text: string | null;
   createdAt: any;
+  spotReplies: blockFragment_comments_spotReplies[] | null;
+  poll: blockFragment_comments_poll | null;
   count: blockFragment_comments_count;
+}
+
+export interface blockFragment_link {
+  __typename: "Link";
+  id: string;
+  url: string;
+  domain: string;
+  contentType: string;
+  contentId: string | null;
+  contentAuthorId: string | null;
 }
 
 export interface blockFragment {
@@ -915,6 +1825,7 @@ export interface blockFragment {
   props: blockFragment_props;
   body: blockFragment_body;
   comments: blockFragment_comments[] | null;
+  link: blockFragment_link | null;
 }
 
 /* tslint:disable */

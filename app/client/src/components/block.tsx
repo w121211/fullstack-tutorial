@@ -1,48 +1,73 @@
 import React, { useState } from 'react'
 import { RouteComponentProps, Redirect, Link, navigate } from '@reach/router'
 import { useQuery } from '@apollo/client'
-import { Row, Col, Badge, Button, Card, Space, List, Typography, Layout, Divider, Drawer, Modal, Input } from 'antd'
+import { AutoComplete, Card, Space, List, Typography, Layout, Divider, Drawer, Modal, Input } from 'antd'
+import { SelectProps } from 'antd/es/select'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 // import { RepliedPostList } from '../components/postList'
-import { CommentForm } from '../components/tileForms'
-import { CommentList, QueryCommentList, QuerySpotCommentList } from '../components/tileList'
-import { Reply, Comment } from '../components/tile'
+import { CommentList, QueryCommentList, QuerySpotCommentList } from './tileList'
+import { Reply, Comment, CommentWithPoll } from './tile'
+// import { CommentForm } from '../components/tileForms'
+import { CommentForm, SearchAllForm, SearchPageForm, NoteForm } from './forms'
+// import { CommentForm } from '../components/tileForms'
+// import { SymbolAutoComplete } from '../components/symbolHint'
 
-import { LineChart } from '../components/charts'
-import ProsCons from '../components/prosCons/prosCons'
-import Anchor from '../components/anchor/tickerAnchor'
-import Tag from '../components/tag/tag'
+import { LineChart } from './charts'
+import ProsCons from './prosCons/prosCons'
+import Anchor from './anchor/tickerAnchor'
+import Tag from './tag/tag'
 import BlockCss from '../components/block/block.module.scss'
 import BlockMetaCss from '../components/blockMeta/blockMeta.module.scss'
-import Radio from '../components/radios/radios'
-import CommenTemplate from '../components/commentTemplate/commentTemplate'
-import MyTextArea from '../components/myTextArea/myTextArea'
-import CssCommentList from '../components/commentList/commentList'
-import { SomeTable } from '../components/tables'
+import Radio from './radios/radios'
+import CommenTemplate from './commentTemplate/commentTemplate'
+import MyTextArea from './myTextArea/myTextArea'
+import CssCommentList from './commentList/commentList'
+import { SomeTable } from './tables'
 
 const { Header, Sider, Content } = Layout
 
+// function SymbolLink() { }
+// function SyntaxText() { }
 
-/**
- * 1. comment, reply: list, form
- * 2. block: body
- * 3. front-page: search, latest comments
- * 
- * Block <- queryBlock(id?, path?)
- * - header: name, symbols, path
- * - BlockBody <- props
- *   - Text
- *   - Ticks <- ticks(symbol, start, end)
- *   - Table <- table(symbol, start, end)
- *   - Blocks
- * - Comments <- moreComments(blockId, after), replies & moreReplies, 
- *   - TextComment
- *   - PropComment (fold/unfold)
- *   - PollComment
- * - NewComment
- */
+// function Like() { }
+// function Dislike() { }
+// function Panel() { }
+
+// function Reply() { }
+// function ReplyList() { }
+// function QueryReplies() { }
+// function ReplyForm() { }
+
+// function PollCountChart() {}
+// function Choices() { }
+// function Poll() { }
+// function VoteForm() { }
+
+// function Comment(withTopReplies: boolean, direction: string) { }
+// function CommentList() { }
+// function QueryComments(symbol: string) { }
+// function CommentForm() { }
+
+// function PageTile() { }
+// function PageTileList() { }
+// function QueryLatestPages() { } 
+// function NewPageForm() { }
+// function NoteForm() { }
+
+// function SearchForm() { }
+
+// -- functional blocks ---
+// function Chart() {}
+// function CompareTickerTable() { }
+
+// function WebpagePage() { }
+// function AuthorPage() { }
+// function TopicPage() { }
+// function TickerPage() { }
+// function HomePage() { }
+
 
 const props = {
   name: "",
@@ -271,79 +296,83 @@ function BlockAsPage({ id, path }: { id: string, path?: string }) {
       {bk.props.canComment ? <QueryCommentList blockId={id} /> : <p>不允許comment</p>}
 
       <h3>3. new comment (若允許comment的話)</h3>
-      {bk.props.canComment
+      {/* {bk.props.canComment
         ? <CommentForm blockId={bk.id} toAddCommentCountByOne={() => { }} />
-        : <p>不允許comment</p>}
+        : <p>不允許comment</p>} */}
     </Content>
   )
 }
 
-function TickerPage({ id, path }: { id: string, path?: string }) {
-  /**
-   * TODO: `block.props`需定義是否需要顯示、怎麼顯示，這裡就不考慮個別property
-   * 需要考慮template？
-   */
-  const queryBlock = useQuery<QT.block, QT.blockVariables>(
-    queries.BLOCK, { variables: { id } }
-  )
-  if (id === null && path === null)
-    throw new Error("Should provide either id or path")
-  if (queryBlock.loading)
-    return null
-  if (!queryBlock.data)
-    return <p>something goes wrong</p>
-  const bk = queryBlock.data.block
-  if (!bk)
-    return <h1>Null block</h1>
+// ------------------
 
+function AlternativesBlock({ ticker }: { ticker: string }) {
+  const byTopics = []
+  return null
+}
+
+function CommentsBlock() {
+  return null
+}
+
+interface IReplyMeta {
+  link?: string
+}
+
+interface IReply {
+  text: string
+  nUps?: number
+  nDowns?: number
+  meta: IReplyMeta
+}
+
+interface IComment {
+  text: string
+  replies: IReply[]
+  nUps?: number
+  nDowns?: number
+}
+
+enum RepliesDirection {
+  HORIZONTAL,
+  VERTICAL,
+}
+
+function KeyValueComment({ comment, direction }: { comment: IComment, direction: RepliesDirection }) {
+  const [folded, setFolded] = useState(true)
+  if (comment.replies.length === 0) {
+    return (
+      <>
+        <span className={BlockMetaCss.span}>{comment.text}</span>
+        <span>[new]</span>
+      </>
+    )
+  }
+  if (direction === RepliesDirection.HORIZONTAL) {
+    return (
+      <>
+        <span className={BlockMetaCss.span}>{comment.text}</span>
+        {comment.replies.map((e, i) => <span key={i}>{e.text}[{e.meta.link}]</span>)}
+      </>
+    )
+  }
   return (
-    <Content
-      className="site-layout-background content"
-      style={{ minHeight: 280, }}
-    >
-      <h2>Ticker page: Path</h2>
-      {/* <BlockPath path={bk.props.path} /> */}
-
-
-      {/* {bk.props.longName ? bk.props.longName : bk.props.name}
-      symbol: {bk.props.symbol ? bk.props.symbol : "null"}<br />
-      symbols: {bk.props?.commentSymbols ? <Comment comment={bk.props?.commentSymbols} /> : null}<br />
-      intro: {bk.props?.commentIntro ? <Comment comment={bk.props?.commentIntro} /> : null}<br />  */}
-
-
-      <h2>Block Body (含nested blocks)</h2>
-      <BlockBody body={bk.body} />
-
-      <h2>Block Comments</h2>
-      <h3>1. spot comments</h3>
-      {bk.comments ? <CommentList comments={bk.comments} /> : <p>null spot comments</p>}
-
-      <h3>2. comments (若允許comment的話)</h3>
-      {bk.props.canComment ? <QueryCommentList blockId={id} /> : <p>不允許comment</p>}
-
-      <h3>3. new comment (若允許comment的話)</h3>
-      {bk.props.canComment
-        ? <CommentForm blockId={bk.id} toAddCommentCountByOne={() => { }} />
-        : <p>不允許comment</p>}
-    </Content>
+    <>
+      <span className={BlockMetaCss.span}>{comment.text}</span>
+      {comment.replies.map((e, i) => <div key={i}>{e.text}[{e.meta.link}]</div>)}
+    </>
   )
 }
-
-
 
 // ----------------------------------------------------------------------
 
-interface BlockProps {
-  id: string
-  me?: QT.me_me
-}
-
-
+// interface BlockProps {
+//   id: string
+//   me?: QT.me_me
+// }
 // const _Block: React.FC<BlockProps> = ({ me, id }) => {
 //   return (
 //     <>
 //       <Post post={queryPost.data.post} me={me} folded={false} choice="choice" />
-
 //       {/* <div style={{ textAlign: "center" }}>
 //         <Typography.Title level={4}>Replies</Typography.Title>
 //       </div> */}
@@ -353,7 +382,6 @@ interface BlockProps {
 //     </>
 //   )
 // }
-
 
 interface BlockPageProps extends RouteComponentProps<{ id: string }> {
   me?: QT.me_me
@@ -365,55 +393,8 @@ export const BlockPage: React.FC<BlockPageProps> = ({ id, me }) => {
   // if (!id) return <Redirect to="/" />
   // if (!location?.state.id) return <Redirect to="/" />
   // return <Symbol name={decodeURIComponent(name)} />
-  // return <Block me={me} id="123" />
   // return <BlockAsPage id={id} me={me} />
-  return <BlockAsPage id={id} />
+  // return <BlockAsPage id={id} />
+  return null
 }
 
-
-interface BlockPageProps extends RouteComponentProps<{ id: string }> {
-  me?: QT.me_me
-}
-
-export const BlockMetaPage: React.FC<BlockPageProps> = ({ id, me }) => {
-  return (
-    <Content
-      className="site-layout-background content"
-      style={{ minHeight: 280, }}
-    >
-      <h1>Boeing ($BA)</h1>
-      <CssBlockCard title="">
-        <ul>
-          <li>
-            <span className={BlockMetaCss.span}>標籤</span>
-            <p>[新增]</p>
-            {/* <Tag content="$BA" /> */}
-          </li>
-          <li>
-            <span className={BlockMetaCss.span}>標籤</span>
-            <p>[新增]</p>
-            {/* <Tag content="$BA" /> */}
-          </li>
-          <li>
-            <span className={BlockMetaCss.span}>關聯事件</span>
-            <Tag content="~COVI-19~" />
-          </li>
-          <li>
-            <span className={BlockMetaCss.span}>簡介</span>
-            <p>
-              波音公司（英語：The Boeing
-              Company）是美國一家開發、生產及销售固定翼飛機、旋翼
-              机、运载火箭、导弹和人造卫星等產品，為世界最大的航天航空器製造商。
-          </p>
-          </li>
-        </ul>
-      </CssBlockCard>
-      <CssBlockCard title="Community">
-        {/* {radioList} */}
-        <MyTextArea />
-        <CssCommentList />
-      </CssBlockCard>
-
-    </Content>
-  )
-}

@@ -346,7 +346,6 @@ async function saveBlockToDB(botUserId: string, block: Block, parentBlockId?: nu
 }
 
 
-
 // --- Main ---
 
 async function main() {

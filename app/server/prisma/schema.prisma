@@ -170,13 +170,16 @@ model Comment {
   user      User          @relation(fields: [userId], references: [id])
   userId    String
   symbols   Symbol[]
-  block     Block         @relation("Comments", fields: [blockId], references: [id])
-  blockId   Int
-  propFor   Block?        @relation("PropComments", fields: [propForId], references: [id])
+  // 確保每一個comment一定在page下
+  page      Page          @relation("Comments", fields: [pageId], references: [id])
+  pageId    Int
+  // propForId和pageId會相同
+  propFor   Page?         @relation("PropComments", fields: [propForId], references: [id])
   propForId Int?
   // status    PostStatus    @default(ACTIVE)
-  isSpot    Boolean       @default(false)
-  // meta Json
+  isTop     Boolean       @default(false)
+  isProp    Boolean       @default(false)
+  props     Json?
   text      String
   count     CommentCount
   likes     CommentLike[]
@@ -186,21 +189,60 @@ model Comment {
   poll      Poll?
 }
 
-model Block {
+// Ref
+// 分成1.personal-page (facebook, twitter, etc), 2.third-content(news)
+// 一定會有author(open-user)，mentioned-open-users不考慮（因為可用voteCommits來表示）
+model Link {
+  id              Int             @id @default(autoincrement())
+  // 將link登陸至網站的user
+  // user       User     @relation(fields: [userId], references: [id])
+  // userId     String
+  // link內容的author
+  // openUser   OpenUser @relation(fields: [openUserId], references: [id])
+  // openUserId String
+  url             String          @unique
+  domain          String
+  contentType     LinkContentType @default(OTHER)
+  contentId       String?
+  contentAuthorId String?
+  // 圖片存擋位址 or byte64?
+  // snapshot String
+  // 連結端的文字，用於NLP，不顯示
+  // title    String?
+  // text     String
+  pageId          Int
+  page            Page            @relation(fields: [pageId], references: [id])
+}
+
+model Page {
   id           Int       @id @default(autoincrement())
-  parentId     Int?
-  parent       Block?    @relation("ParentChildren", fields: [parentId], references: [id])
-  children     Block[]   @relation("ParentChildren")
   // status       PostStatus   @default(ACTIVE)
+  title        String    @unique
   template     String
-  path         String    @unique
   props        Json
-  body         Json
   propComments Comment[] @relation("PropComments")
   comments     Comment[] @relation("Comments")
+  link         Link?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 }
+
+// model Block {
+//   id           Int       @id @default(autoincrement())
+//   parentId     Int?
+//   parent       Block?    @relation("ParentChildren", fields: [parentId], references: [id])
+//   children     Block[]   @relation("ParentChildren")
+//   // status       PostStatus   @default(ACTIVE)
+//   template     String
+//   path         String    @unique
+//   props        Json
+//   body         Json
+//   propComments Comment[] @relation("PropComments")
+//   comments     Comment[] @relation("Comments")
+//   link         Link?
+//   createdAt    DateTime  @default(now())
+//   updatedAt    DateTime  @updatedAt
+// }
 
 // -----------------------
 
@@ -240,7 +282,7 @@ enum PostCat {
 enum PostStatus {
   // 不能comment、edit,
   ACTIVE
-  // 可以comment，不���edit
+  // ���以comment，不���edit
   LOCK
   DELETED
   REPORTED
@@ -292,6 +334,9 @@ enum SymbolCat {
   TAG
   TICKER
   EVENT
+  AUTHOR
+  DOMAIN
+  // ?
   SYS_TICKER_FOLLOWERS
 }
 
@@ -319,6 +364,13 @@ enum LikeChoice {
   UP
   DOWN
   NEUTRAL
+}
+
+enum LinkContentType {
+  VIDEO
+  POST
+  AUTHOR
+  OTHER
 }
 
 // entity? dummy? external user? usersymbol?
@@ -367,26 +419,6 @@ enum LikeChoice {
 //   // Commit      Commit[]
 //   votes       Vote[]
 //   voteCommits VoteCommit[]
-// }
-
-// Ref
-// 分成1.personal-page (facebook, twitter, etc), 2.third-content(news)
-// 一定會有author(open-user)，mentioned-open-users不考慮（因為可用voteCommits來表示）
-// model Link {
-//   id         Int      @id @default(autoincrement())
-//   // 將link登陸至網站的user
-//   user       User     @relation(fields: [userId], references: [id])
-//   userId     String
-//   // link內容的author
-//   openUser   OpenUser @relation(fields: [openUserId], references: [id])
-//   openUserId String
-//   url        String
-//   // 圖片存擋位址 or byte64?
-//   snapshot   String
-//   // 連結端的文字，用於NLP，不顯示
-//   title      String?
-//   text       String
-//   post       Post
 // }
 
 // model Choice {

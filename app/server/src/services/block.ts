@@ -17,16 +17,44 @@ enum Template {
   Price = "PRICE",
 }
 
+type CommentConnector = {
+  create: any
+  id?: number
+}
+
 export type PrismaBlockProperties = {
   name: string
   path: string
   fullName?: string
-  symbol?: string
+  selfSymbol?: string
   linkedSymbols?: string[]
   canComment?: boolean
   canOpenAlone?: boolean
-  commentIntro?: { create: any, id?: number }
-  commentSymbols?: { create: any, id?: number }
+
+  pollCreate?: CommentConnector
+  pollTemplate?: CommentConnector
+
+  commentIntro?: CommentConnector
+  commentWiki?: CommentConnector
+  commentSymbols?: CommentConnector
+  commentTopics?: CommentConnector
+
+  pollShortFeel?: CommentConnector
+  pollLongFeel?: CommentConnector
+
+  // pollCreate: { poll: { choices: ["Yes", "No"] } }
+  // pollTemplate: { poll: { choices: ["主題", "事件"] } }
+  // 需要逆向連結
+  // commentTopics: { text: "Topics", replies: [], meta: { validater: "IS_TICKER" } },
+  // commentTickers: { text: "Tickers", replies: [], meta: { validater: "IS_TICKER" } },
+  // commentWiki: { text: "Wiki", replies: [], meta: { validater: "IS_WIKI_URL" } },
+  // commentIntro: { text: "簡介", replies: [] },
+  // pollShortFeel: {
+  //   text: "短期", poll: { choices: ["看好", "看壞", "中立"] },
+  // },
+  // pollLongFeel: {
+  //   text: "長期", poll: { choices: ["看好", "看壞", "中立"] },
+  // },
 }
 
 type SchemaBlockProperties = PrismaBlockProperties & {
@@ -88,7 +116,7 @@ export async function fillBlock(block: PrismaBlockWithComments): Promise<any> {
     }
     case Template.Price:
       body.ticks = await prisma.tick.findMany({
-        where: { symbol: { name: props.symbol } }
+        where: { symbol: { name: props.selfSymbol } }
       })
       break
     case Template.View:
@@ -115,7 +143,7 @@ export async function fillBlock(block: PrismaBlockWithComments): Promise<any> {
           symbols: {
             every: {
               cat: PA.SymbolCat.TICKER,
-              name: (props as SchemaBlockProperties).symbol,
+              name: (props as SchemaBlockProperties).selfSymbol,
             }
           }
         },

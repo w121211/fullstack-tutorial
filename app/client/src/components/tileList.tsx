@@ -10,28 +10,27 @@ import * as QT from '../store/queryTypes'
 // import { PollChoiceRadioGroup } from './pollChoice'
 // import { PollFooter, PostFooter } from './tileFooter'
 // import { VotePostForm, NewChoicePostForm } from './postForm'
-import { Reply, Comment } from './tile'
+import { Reply, Comment, WebpageTile } from './tile'
 
-export function ReplyList({ replies, pattern }: { replies: QT.replies_replies[], pattern?: string }) {
+export function ReplyList({ replies, pattern = null }: { replies: QT.replies_replies[], pattern?: string | null }) {
   /** 
    * args:
    * - pattern（還沒實裝） : 依照reply的vote（會嵌進text）做filter，
    *     `pattern=null`的情況，就是一個普通的reply list 
    * */
-  // const list = replies.map((e, i) => {
+  // const filtered = replies.map((e, i) => {
   //   if (pattern === null)
-  //     return <span key={i}>{e}, </span>
-  //   else if (e.indexOf(pattern) >= 0)
-  //     return <span key={i}>{e}</span>
+  //     return <Reply key={i} reply={e} />
+  //   // TODO: 非常naive的pattern search
+  //   else if (e.text.indexOf(pattern) >= 0)
+  //     return <Reply key={i} reply={e} />
   //   return null
   // })
-  // return <p>{list}</p>
+  const filtered = replies.filter((e) => pattern === null || e.text.indexOf(pattern) >= 0)
   return (
-    <>
-      {replies.map(function (e, i) {
-        return <Reply reply={e} key={i} />
-      })}
-    </>
+    <div>
+      {filtered.map((e, i) => <Reply key={i} reply={e} />)}
+    </div>
   )
 }
 
@@ -50,54 +49,6 @@ interface CommentListProps extends QT.commentsVariables {
   blockId: string
   toAddCommentCountByOne: () => void
 }
-
-// const a = <List
-//   className={classes.List}
-//   size="large"
-//   // header={`${list.length} 條討論`}
-//   // pagination={{
-//   //   onChange: (page) => {
-//   //     console.log(page)
-//   //   },
-//   //   pageSize: 5,
-//   // }}
-//   dataSource={list}
-//   // footer={
-//   //   //   <div>
-//   //   //     <b>ant design</b> footer part
-//   //   //   </div>
-//   // }
-//   renderItem={(item) => (
-//     <li
-//       className={classes.commentRoot}
-//       onClick={() => parentCommentClickHandler(item.id)}
-//     >
-//       <CommentTemplate
-//         id={item.id}
-//         content={item.content}
-//         clicked={item.clicked}
-//         parent={true}
-//       >
-//         {item.clicked ? (
-//           <>
-//             <CommentTemplate
-//               id={item.id}
-//               content="fsjd;flkja;lksdjf"
-//               clicked={item.clicked}
-//               parent={false}
-//             />
-//             <CommentTemplate
-//               id={item.id}
-//               content="fsjd;flkja;lksdjf"
-//               clicked={item.clicked}
-//               parent={false}
-//             />
-//           </>
-//         ) : null}
-//       </CommentTemplate>
-//     </li>
-//   )}
-// />
 
 export function CommentList({ comments }: { comments: QT.comment[] }) {
   const spotComments = comments.filter(e => e.isSpot)
@@ -124,11 +75,6 @@ export function QueryCommentList({ me, blockId }: { me?: QT.me_me, blockId: stri
   if (error) return <p>ERROR: {error.message}</p>
   if (!data) return null
   return <CommentList comments={data.comments} />
-}
-
-
-export function QuerySpotCommentList() {
-
 }
 
 const LoadMoreCommentList: React.FC<CommentListProps> = ({ me, blockId, toAddCommentCountByOne }) => {
@@ -160,10 +106,47 @@ const LoadMoreCommentList: React.FC<CommentListProps> = ({ me, blockId, toAddCom
   )
 }
 
-interface SymbolListProps {
-  // symbols: QT.pollFragment_symbols[] | null
-  symbols: null
+
+export function WebpageList({ webpages }: { webpages: QT.latestPages_latestPages[] }) {
+  return (
+    <>
+      {webpages.map(e => <WebpageTile page={e} />)}
+    </>
+  )
 }
+
+export function QueryLatestWebpageList() {
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
+  const { data, loading, error, fetchMore } = useQuery<QT.latestPages, QT.latestPagesVariables>(
+    queries.LATEST_PAGES, { variables: { afterId: null } }
+  )
+  async function onClick() {
+    setIsLoadingMore(true)
+    await fetchMore({ variables: { afterId: data?.latestPages[-1].id } })
+    setIsLoadingMore(false)
+  }
+  if (loading)
+    return null
+  if (error)
+    return <p>ERROR: {error.message}</p>
+  if (!data)
+    return null
+  return (
+    <>
+      <WebpageList webpages={data.latestPages} />
+      {
+        isLoadingMore ?
+          <button onClick={onClick}>Load more</button> : "loading"
+      }
+    </>
+  )
+}
+
+
+// interface SymbolListProps {
+//   // symbols: QT.pollFragment_symbols[] | null
+//   symbols: null
+// }
 
 // const SymbolList: React.FC<SymbolListProps> = ({ symbols }) => {
 //   if (symbols === null) return null

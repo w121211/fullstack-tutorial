@@ -2,10 +2,10 @@ import React from 'react'
 import { RouteComponentProps, Link } from '@reach/router'
 import { useQuery } from '@apollo/client'
 import { Badge, Button, Card, Descriptions, Radio, Space, List, Typography, Input, Form } from 'antd'
-import * as queries from '../store/queries'
-import * as QT from '../store/queryTypes'
-import { Pane } from '../components/layout'
-import { PollList } from '../components/pollList'
+import * as queries from '../../store/queries'
+import * as QT from '../../store/queryTypes'
+import { Pane } from '../../components/layout'
+import { PollList } from '../../components/_pollList'
 
 interface StageProps {
   me?: QT.me_me

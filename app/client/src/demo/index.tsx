@@ -26,42 +26,10 @@ import MyTextArea from '../components/myTextArea/myTextArea'
 import CssCommentList from '../components/commentList/commentList'
 import { LineChart } from '../components/charts'
 import { SomeTable } from '../components/tables'
-import { CssBlockCard } from '../pages/block'
+import { CssBlockCard } from '../components/block'
 
 
 const { Header, Sider, Content } = Layout
-
-function NoteInput() {
-  const [value, setValue] = useState("")
-  const [isHash, setIsHash] = useState(false)
-
-  function onChange({ target: { value } }: { target: { value: string } }) {
-    if (value.charAt(0) === "#") {
-      setIsHash(true)
-      setValue(value.replace(/(\n\n|\n[^#]|\n$)/, "\n# "))
-    }
-    else {
-      setIsHash(false)
-      setValue(value)
-    }
-  }
-  return (
-    <>
-      {isHash ? <span>[Note mode]</span> : null}
-      <Input.TextArea rows={4} onChange={onChange} value={value} />
-      {/* <div>{ }</div> */}
-    </>
-  )
-  // return (
-  //   <>
-  //     <pre>this is a test</pre>
-  //     <textarea>
-  //       this is a test
-  //       this is line 2
-  //     </textarea>
-  //   </>
-  // )
-}
 
 function HomePage({ path }: { path: string }) {
   return (

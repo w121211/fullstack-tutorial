@@ -21,7 +21,6 @@ post-spin{ },
 chart, symbol-page{ ticker, event },
 post-success-remind
 
-
 3. bet, 相關tags/tickers, 推薦系統, 社群過濾, notices, social-login, lv
 
 alpha

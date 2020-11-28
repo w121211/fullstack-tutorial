@@ -2,10 +2,10 @@ import React from 'react'
 import { RouteComponentProps } from '@reach/router'
 import { useQuery } from '@apollo/client'
 import { Badge, Button, Card, Radio, Space, List, Typography, Result, Divider } from 'antd'
-import * as queries from '../store/queries'
-import * as QT from '../store/queryTypes'
-import { Pane } from '../components/layout'
-import { LineChart } from '../components/charts'
+import * as queries from '../../store/queries'
+import * as QT from '../../store/queryTypes'
+import { Pane } from '../../components/layout'
+import { LineChart } from '../../components/charts'
 
 const demo0 = (
   <>

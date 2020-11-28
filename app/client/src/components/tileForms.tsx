@@ -122,11 +122,9 @@ export function CommentForm({ blockId, toAddCommentCountByOne }: { blockId: stri
       >
         <Input placeholder="Your comment..." />
       </Form.Item>
-
       <Form.Item>
         <Button type="primary" htmlType="submit">送出</Button>
       </Form.Item>
-
     </Form>
   )
 }

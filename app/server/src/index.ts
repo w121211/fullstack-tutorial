@@ -113,7 +113,6 @@ const server = new ApolloServer({
   // plugins: [ logError],
 })
 
-
 // allow CORS (dev only)
 server.applyMiddleware({
   app, cors: {

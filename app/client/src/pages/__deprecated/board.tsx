@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { RouteComponentProps, Link } from '@reach/router';
 import { useQuery, useMutation } from '@apollo/client';
 import { Button, Card, Space, List } from 'antd'
-import * as queries from '../store/queries'
-import * as QT from '../store/queryTypes'
+import * as queries from '../../store/queries'
+import * as QT from '../../store/queryTypes'
 // import { PostList } from '../components/postList'
-import { Pane } from '../components/layout'
-import { BarChart, CandleChart } from '../components/charts'
+import { Pane } from '../../components/layout'
+import { BarChart, CandleChart } from '../../components/charts'
 
 function TrendingList() {
   const [showList, setShowList] = useState<boolean>(false)

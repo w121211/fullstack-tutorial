@@ -3,40 +3,51 @@ import gql from 'graphql-tag'
 export const typeDefs = gql`
 type Query {
   # 會包含comments & nestedBlockComments，這裡的comments(含spot, new, spotReplies...)用於顯示
-  block(id: ID, path: String): Block
-  
+  page(id: ID, title: String): Page
+  # 最新加入的page，加入條件：被comment, 被bot捕捉
+  latestPages(afterId: ID): [Page!]!
+
   # 會有找不到的情況，需要注意sanitize(?)
   # searchBlock(symbolName: String): Block!
 
   # 所有的comments（含spot），幫助cache，僅含spotReplies
-  comments(blockId: ID!, afterId: ID): [Comment!]!
-  
-  # 專用於顯示
-  # spotComments(blockId: ID!, afterId: ID): [CommentWithReplies!]!
-  
+  comments(pageId: ID!, afterId: ID): [Comment!]!
   # 用於filter comments的情形（例如：/q, /stage, ...)
-  commentsBySymbol(blockPath: String!, symbol: String!, afterId: ID): [Comment!]!
+  commentsBySymbol(pageTitle: String!, symbol: String!, afterId: ID): [Comment!]!
 
+  # 專用於顯示
+  # topComments(blockId: ID!, afterId: ID): [CommentWithReplies!]!
+  
   replies(commentId: ID!, afterId: ID): [Reply!]!
 
   ticks(symbolId: ID!, after: String): [Tick!]!
+
+  me: User!
 
   myCommentLikes(after: String): [CommentLike!]!
   myReplyLikes(after: String): [ReplyLike!]!
   myVotes(after: String): [Vote!]!
 
-  me: User!
+  # 搜尋ticker, topics，近似字搜尋（ElasticSearch？）
+  searchAll(term: String!): [String!]!
+  # 用url搜尋page，看是否已建立？
+  searchPage(url: String!): Page
 
-  # ---------
+  # 自動標註可能的topic, tickers
+  automark(text: String!): String!
 
-  roboPolls(symbolName: String): [Poll!]!
+  # --- NEXT ---
+  trendTopics: [String!]!
+  newTopics: [String!]!
+  newTickers: [String!]!
+
+  botPolls(symbolName: String): [Poll!]!
   latestPolls(symbolId: ID, afterId: String): [Poll!]!
   pollHints(symbols: [String], title: String): [Poll!]!
   poll(id: ID!): Poll!
 
-  myPollLikes(afterId: ID): [PollLike!]!
+  # myPollLikes(afterId: ID): [PollLike!]!
 
-  post(id: ID!): Post!
 
   latestPosts(symbolId: ID, afterId: String): [Post!]!
   repliedPosts(parentId: ID!, afterId: String): [Post!]!
@@ -45,17 +56,18 @@ type Query {
 
   symbol(name: String!): Symbol!
   
+  # post(id: ID!): Post!
   # event(id: ID!): Event!
   # ticker(id: ID, name: String): Ticker!
-  commit(id: ID!): Commit!
-  commits(symbolId: ID!, after: String): [Commit!]!
+  # commit(id: ID!): Commit!
+  # commits(symbolId: ID!, after: String): [Commit!]!
   
-  # myComments(after: String): [ID!]!
-  # myPosts(afterId: String): [Post!]!
-
+  
   # myPostLikes(after: String): [PostLike!]!
   # myCommentLikes(after: String): [CommentLike!]!
 
+  # myComments(after: String): [ID!]!
+  # myPosts(afterId: String): [Post!]!
   myFollows: [Follow!]!
   myCommits(after: String): [ID!]!
   myCommitReviews(after: String): [CommitReview!]!
@@ -65,7 +77,6 @@ type Query {
   tickerHints(term: String): [String!]!
   eventHints(term: String): [String!]!
 
-  ### upcoming ###
   # fetchPage(url: String!): Page!
 
   # myBets: [Bet!]!
@@ -76,8 +87,8 @@ type Query {
   # groupPosts(groupId: ID): [Post]
 }
 
-type Mutation {    
-  createComment(blockId: ID!, data: CommentInput!): Comment!
+type Mutation {
+  createComment(pageId: ID!, data: CommentInput!): Comment!
   # updateComment(id: ID!, data: CommentInput!): Comment!
 
   createReply(commentId: ID!, data: ReplyInput!): Reply!
@@ -131,6 +142,18 @@ type Mutation {
   # inviteJoin(groupId: ID, criteria: String): Boolean
 }
 
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
+type User {
+  id: ID!
+  email: String!
+  # profileImage: String
+  # trips: [Launch]!
+}
+
 # type Choice {
 #   id: ID!
 #   userId: ID!
@@ -176,13 +199,20 @@ type ReplyCount {
   # updatedAt: DateTime!
 }
 
+type ReplyProps {
+  label: String
+  disableUpndown: Boolean
+}
+
 type Reply {
   id: ID!
   userId: ID!
   isSpot: Boolean
-  text: String
+  text: String!
   count: ReplyCount!
   updatedAt: DateTime!
+  
+  props: ReplyProps
 }
 
 type CommentCount {
@@ -194,33 +224,49 @@ type CommentCount {
   # updatedAt: DateTime!
 }
 
+type CommentProps {
+  # 'TOPIC', 'TICKER', 'WEBLINK'
+  validator: String
+  # 'K_1_V', 'K_N_V', 'K_ONLY', 'CM'
+  showAs: String
+  # 'HOR', 'VER'
+  showReplyDir: String
+  
+  disableReply: Boolean
+  # suggestedReplies?: string[],
+}
+
 type Comment {
   id: ID!
   userId: ID!
   symbols: [Symbol!]
+  # null表示無需spotReplies
+  topReplies: [Reply!]
   # replies: [Reply!]!
   # cat: CommentCat!
-  isSpot: Boolean
+  isTop: Boolean
   text: String
   count: CommentCount!
   createdAt: DateTime!
   # updatedAt: DateTime!
   poll: Poll
+
+  props: CommentProps
 }
 
-type CommentWithReplies {
-  id: ID!
-  userId: ID!
-  symbols: [Symbol!]
-  replies: [Reply!]!
-  # cat: CommentCat!
-  isSpot: Boolean
-  text: String
-  count: CommentCount!
-  createdAt: DateTime!
-  # updatedAt: DateTime!
-  poll: Poll
-}
+# type CommentWithSpotReplies {
+#   id: ID!
+#   userId: ID!
+#   symbols: [Symbol!]
+#   spotReplies: [Reply!]!
+#   # cat: CommentCat!
+#   isSpot: Boolean
+#   text: String
+#   count: CommentCount!
+#   createdAt: DateTime!
+#   # updatedAt: DateTime!
+#   poll: Poll
+# }
 
 type Tick {
   id: ID!
@@ -229,34 +275,81 @@ type Tick {
   at: DateTime!
 }
 
-type BlockBody {
-  blocks: [Block!]
-  text: String
-  ticks: [Tick!]
-  table: [Int!]
-  chart: [Int!]
-  json: String
-  # json不應該在正常情況下作為傳輸，但考慮到可能會有許多不確定的資料(chart, table)
-}
-
-type BlockProperties {
-  name: String
-  longName: String
-  path: String
-  symbol: String
-  canComment: Boolean
-  canOpenAsPage: Boolean
-  commentIntro: Comment
-  commentSymbols: Comment
-}
-
-type Block {
+type Link {
   id: ID!
+  url: String!
+  domain: String!
+  contentType: String!
+  contentId: String
+  contentAuthorId: String
+}
+
+# type BlockBody {
+#   blocks: [Block!]
+#   text: String
+#   ticks: [Tick!]
+#   table: [Int!]
+#   chart: [Int!]
+#   json: String
+#   # json不應該在正常情況下作為傳輸，但考慮到可能會有許多不確定的資料(chart, table)
+# }
+
+type corrTicker {
+  ticker: String
+  corr: Float
+  createdAt: DateTime
+}
+
+type PageProps {
+  tickers: Comment
+  topics: Comment
+
+  # for ticker
+  links: Comment
+  pros: Comment
+  cons: Comment
+  act: Comment
+
+  # for topic, ticker
+  wiki: String
+  intro: Comment
+  shortView: Comment
+  longView: Comment
+  # type: Comment
+
+  # for webpage
+  srcAuthor: String
+  srcTitle: String
+
+  # status poll
+  voteCreate: Comment
+  # reportDuplicate: Comment
+
+  # for homepage -> 直接用query寫（為了靈活調度）
+  # focusPolls: [Comment!]
+  # trendTopics: [String!]
+  # newTopics: [String!]
+
+  # @deprecated
+  # name: String
+  # longName: String
+  # path: String
+  # canComment: Boolean
+  # canOpenAsPage: Boolean
+  # commentIntro: Comment
+  # commentSymbols: Comment
+}
+
+type Page {
+  id: ID!
+  # 取代path，也代表selfSymbol(若適用的話)
+  title: String!
   template: String!
-  props: BlockProperties!
-  body: BlockBody!
-  propComments: [Comment!]
+  props: PageProps!
+  # body: BlockBody!
+  # topComments可以從comments中filter出來
   comments: [Comment!]
+  link: Link
 }
 
 type CommentLike {
@@ -390,7 +483,6 @@ input PollJudgmentInput {
   choice: Int!
 }
 
-
 # type Page {
 #   id: ID!
 #   # null if not existed
@@ -411,17 +503,6 @@ input PollJudgmentInput {
 #   equalEvents: [String!]!
 # }
 
-type AuthPayload {
-  token: String!
-  user: User!
-}
-
-type User {
-  id: ID!
-  email: String!
-  # profileImage: String
-  # trips: [Launch]!
-}
 
   # type PostLink {
 #   url: String!

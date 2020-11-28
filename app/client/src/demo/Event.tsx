@@ -2,7 +2,7 @@ import React from 'react'
 import { RouteComponentProps } from "@reach/router"
 import { Card, Typography, Tag, Input, Button, List, Skeleton, Descriptions, Collapse, Divider } from 'antd'
 
-import { Chart } from '../components/lightweightChart'
+import { Chart } from '../components/_lightweightChart'
 
 export function Event(props: RouteComponentProps) {
   return (
