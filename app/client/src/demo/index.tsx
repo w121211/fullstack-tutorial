@@ -28,7 +28,7 @@ import { LineChart } from '../components/charts'
 import { SomeTable } from '../components/tables'
 import { CssBlockCard } from '../pages/block'
 import CommentListSmall from '../components/commentListSmall/commentListSmall';
-
+import Modal from '../components/modal/modal';
 
 
 const { Header, Sider, Content } = Layout
@@ -127,7 +127,7 @@ function HomePage({ path }: { path: string }) {
 }
 
 function TickerPage({ path }: { path: string }) {
-  const bullishTag = ["競爭對手少 (21+)", "產業領頭", "因疫情過度低估", "軍工產業"]
+  const bullishTag = ["競爭對手少 ", "產業領頭", "因疫情過度低估", "軍工產業"]
   const bearishTag = ["現金量低",
     "虧損中",
     "未來前景不明",
@@ -201,8 +201,8 @@ function TickerPage({ path }: { path: string }) {
             <span className={BlockMetaCss.span}>操作判斷</span>
             <span>
               <Tag content={operation} newTag={false} />
-
-              <MyTextArea />
+              <Modal />
+              {/* <MyTextArea /> */}
               <p>
                 (買入)因疫情關係處在低點，明年恢復正常後會強勢反彈
             </p>
