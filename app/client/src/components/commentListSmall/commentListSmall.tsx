@@ -23,7 +23,6 @@ const CommentList = () => {
     parent: boolean
     content: string
     floor: string
-
     clicked: boolean
   }
 

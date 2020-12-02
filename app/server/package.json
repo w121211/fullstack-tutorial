@@ -17,6 +17,7 @@
     "cron": "npx ts-node src/cronjobs.ts"
   },
   "dependencies": {
+    "@elastic/elasticsearch": "^7.10.0",
     "@prisma/client": "^2.11.0",
     "@types/faker": "^4.1.12",
     "@types/graphql-iso-date": "^3.3.3",

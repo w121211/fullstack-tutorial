@@ -24,6 +24,21 @@ model User {
   ReplyLike    ReplyLike[]
 }
 
+model Symbol {
+  id        Int          @id @default(autoincrement())
+  name      String       @unique
+  cat       SymbolCat
+  status    SymbolStatus @default(ACTIVE)
+  ticks     Tick[]
+  comments  Comment[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  // follows   Follow[]
+  // bets      Bet[]
+  // roboPolls RoboPoll[]
+  Page      Page?
+}
+
 // model Profile {
 //   id               Int    @id @default(autoincrement())
 //   user             User   @relation(fields: [userId], references: [id])
@@ -84,7 +99,7 @@ model Poll {
   // nDaysJudge   Int        @default(5)
   // minJudgments Int        @default(5)
   votes     Vote[]
-  count     PollCount
+  count     PollCount?
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 }
@@ -133,7 +148,7 @@ model Reply {
   userId    String
   // status         PostStatus    @default(ACTIVE)
   text      String
-  count     ReplyCount
+  count     ReplyCount?
   likes     ReplyLike[]
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
@@ -181,7 +196,7 @@ model Comment {
   isProp    Boolean       @default(false)
   props     Json?
   text      String
-  count     CommentCount
+  count     CommentCount?
   likes     CommentLike[]
   replies   Reply[]
   createdAt DateTime      @default(now())
@@ -220,11 +235,14 @@ model Page {
   title        String    @unique
   template     String
   props        Json
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
   propComments Comment[] @relation("PropComments")
   comments     Comment[] @relation("Comments")
   link         Link?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  // 用於symbol page的情況，而非關聯symbols（寫入props）
+  symbol       Symbol?   @relation(fields: [symbolName], references: [name])
+  symbolName   String?   @unique
 }
 
 // model Block {
@@ -245,20 +263,6 @@ model Page {
 // }
 
 // -----------------------
-
-model Symbol {
-  id        Int          @id @default(autoincrement())
-  name      String       @unique
-  cat       SymbolCat
-  status    SymbolStatus @default(ACTIVE)
-  ticks     Tick[]
-  comments  Comment[]
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
-  // follows   Follow[]
-  // bets      Bet[]
-  // roboPolls RoboPoll[]
-}
 
 model Tick {
   id            Int      @id @default(autoincrement())

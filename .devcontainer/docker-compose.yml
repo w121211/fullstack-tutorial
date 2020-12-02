@@ -23,6 +23,10 @@ services:
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
 
+    networks:
+      - default
+      - twint_default
+
   pg:
     image: postgres:latest
     # container_name: pg01
@@ -42,3 +46,9 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: pgadmin@example.com
       PGADMIN_DEFAULT_PASSWORD: admin
+
+networks:
+  default: # this network
+    driver: bridge
+  twint_default: # external network
+    external: true

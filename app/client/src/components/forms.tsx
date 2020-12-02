@@ -185,12 +185,12 @@ const PLACEHOLDER = {
 }
 
 interface CommentFormProps {
-  blockId: string
+  pageId: string
   // cat?: QT.PollCat
   // choice?: QT.pollFragment_choices
 }
 
-export const CommentForm: React.FC<CommentFormProps> = ({ blockId }) => {
+export const CommentForm: React.FC<CommentFormProps> = ({ pageId }) => {
   const [form] = Form.useForm()
   const [createPost] = useMutation<QT.createComment, QT.createCommentVariables>(
     queries.CREATE_COMMENT,
@@ -221,7 +221,7 @@ export const CommentForm: React.FC<CommentFormProps> = ({ blockId }) => {
 
     createPost({
       variables: {
-        blockId,
+        pageId,
         data: {
           // cat: values.cat,
           symbols: values.symbols,

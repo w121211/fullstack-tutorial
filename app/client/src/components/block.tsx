@@ -7,7 +7,7 @@ import { ArrowLeftOutlined } from '@ant-design/icons'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 // import { RepliedPostList } from '../components/postList'
-import { CommentList, QueryCommentList, QuerySpotCommentList } from './tileList'
+import { CommentList, QueryCommentList } from './tileList'
 import { Reply, Comment, CommentWithPoll } from './tile'
 // import { CommentForm } from '../components/tileForms'
 import { CommentForm, SearchAllForm, SearchPageForm, NoteForm } from './forms'
@@ -58,7 +58,7 @@ const { Header, Sider, Content } = Layout
 
 // function SearchForm() { }
 
-// -- functional blocks ---
+// // -- functional blocks ---
 // function Chart() {}
 // function CompareTickerTable() { }
 
@@ -137,27 +137,6 @@ const fakeTickerBlock = {
   ]
 }
 
-// --- CSS support UI ---
-
-export function CssBlockCard({ title, children }: { title: string, children: React.ReactNode }) {
-  // const [isloadding, setLoadding] = useState(true)
-  // useEffect(() => {
-  //   setTimeout(() => setLoadding(false), 1000)
-  // }, [])
-  return (
-    <Card
-      title={title}
-      className={BlockCss.card}
-      hoverable
-      // loading={isloadding}
-      bordered={false}
-    >
-      {children}
-    </Card>
-  )
-}
-
-
 // ---------------------------------------------------------------
 
 function Poll({ poll, pattern, setPattern }: { poll: { choices: string[] }, pattern: null | string, setPattern: (a: string | null) => void }) {
@@ -203,105 +182,105 @@ function BlockPath({ path }: { path: string | null }) {
   )
 }
 
-function NestedBlockBody({ body }: { body: QT.block_block_body_blocks_body }) {
-  // 假定body只能是其中一個
-  if (body.table)
-    return <SomeTable />
-  if (body.ticks)
-    return <SomeChart data={body.ticks} />
-  // throw new Error("應該要被處理但沒處理的body")
-  return null
-}
+// function NestedBlockBody({ body }: { body: QT.block_block_body_blocks_body }) {
+//   // 假定body只能是其中一個
+//   if (body.table)
+//     return <SomeTable />
+//   if (body.ticks)
+//     return <SomeChart data={body.ticks} />
+//   // throw new Error("應該要被處理但沒處理的body")
+//   return null
+// }
 
-function NestedBlock({ block }: { block: QT.block_block_body_blocks }) {
-  // const { data, loading, error, refetch } = useQuery<QT.comments, QT.commentsVariables>(
-  //   queries.COMMENTS, { variables: { blockId: block.id } }
-  // )
-  // if (loading)
-  //   return null
-  // console.log(data?.comments)
-  // const data = fakeViewBlock
-  // if (block.body.blocks) throw new Error("Block card cannot have blocks as body")
-  return (
-    <CssBlockCard title={block.props.name ?? ""}>
-      {/* {data.props.canOpenAlone ? <a href={data.props.path}>{data.props.name}</a> : data.props.name} */}
-      {/* <CommentList spotComments={data.spotComments} /> */}
-      <BlockPath path={block.props.path} />
+// function NestedBlock({ block }: { block: QT.block_block_body_blocks }) {
+//   // const { data, loading, error, refetch } = useQuery<QT.comments, QT.commentsVariables>(
+//   //   queries.COMMENTS, { variables: { blockId: block.id } }
+//   // )
+//   // if (loading)
+//   //   return null
+//   // console.log(data?.comments)
+//   // const data = fakeViewBlock
+//   // if (block.body.blocks) throw new Error("Block card cannot have blocks as body")
+//   return (
+//     <CssBlockCard title={block.props.name ?? ""}>
+//       {/* {data.props.canOpenAlone ? <a href={data.props.path}>{data.props.name}</a> : data.props.name} */}
+//       {/* <CommentList spotComments={data.spotComments} /> */}
+//       <BlockPath path={block.props.path} />
 
-      <h2>Block Body</h2>
-      <NestedBlockBody body={block.body} />
+//       <h2>Block Body</h2>
+//       <NestedBlockBody body={block.body} />
 
-      {/* <h2>Comments (NestedBlock 只會給spot comments)</h2>
-      {block.comments ? <CommentList comments={block.comments} /> : <p>null spot comments</p>} */}
+//       {/* <h2>Comments (NestedBlock 只會給spot comments)</h2>
+//       {block.comments ? <CommentList comments={block.comments} /> : <p>null spot comments</p>} */}
 
-      <CssCommentList />
-      <MyTextArea />
-    </CssBlockCard>
-  )
-}
+//       <CssCommentList />
+//       <MyTextArea />
+//     </CssBlockCard>
+//   )
+// }
 
-function BlockBody({ body }: { body: QT.block_block_body }) {
-  // 假定body只能是其中一個
-  if (body.blocks)
-    return <>{body.blocks.map((e, i) => <NestedBlock key={i} block={e} />)}</>
-  if (body.table)
-    return <SomeTable />
-  if (body.ticks)
-    return <SomeChart data={body.ticks} />
-  // throw new Error("應該要被處理但沒處理的body")
-  return null
-}
+// function BlockBody({ body }: { body: QT.block_block_body }) {
+//   // 假定body只能是其中一個
+//   if (body.blocks)
+//     return <>{body.blocks.map((e, i) => <NestedBlock key={i} block={e} />)}</>
+//   if (body.table)
+//     return <SomeTable />
+//   if (body.ticks)
+//     return <SomeChart data={body.ticks} />
+//   // throw new Error("應該要被處理但沒處理的body")
+//   return null
+// }
 
-function BlockAsPage({ id, path }: { id: string, path?: string }) {
-  /**
-   * TODO: `block.props`需定義是否需要顯示、怎麼顯示，這裡就不考慮個別property
-   * 需要考慮template？
-   */
-  const queryBlock = useQuery<QT.block, QT.blockVariables>(
-    queries.BLOCK, { variables: { id } }
-  )
-  if (id === null && path === null)
-    throw new Error("Should provide either id or path")
-  if (queryBlock.loading)
-    return null
-  if (!queryBlock.data)
-    return <p>something goes wrong</p>
-  const bk = queryBlock.data.block
-  if (!bk)
-    return <h1>Null block</h1>
+// function BlockAsPage({ id, path }: { id: string, path?: string }) {
+//   /**
+//    * TODO: `block.props`需定義是否需要顯示、怎麼顯示，這裡就不考慮個別property
+//    * 需要考慮template？
+//    */
+//   const queryBlock = useQuery<QT.block, QT.blockVariables>(
+//     queries.BLOCK, { variables: { id } }
+//   )
+//   if (id === null && path === null)
+//     throw new Error("Should provide either id or path")
+//   if (queryBlock.loading)
+//     return null
+//   if (!queryBlock.data)
+//     return <p>something goes wrong</p>
+//   const bk = queryBlock.data.block
+//   if (!bk)
+//     return <h1>Null block</h1>
 
-  return (
-    <Content
-      className="site-layout-background content"
-      style={{ minHeight: 280, }}
-    >
-      <h2>Block as page: Path</h2>
-      <BlockPath path={bk.props.path} />
+//   return (
+//     <Content
+//       className="site-layout-background content"
+//       style={{ minHeight: 280, }}
+//     >
+//       <h2>Block as page: Path</h2>
+//       <BlockPath path={bk.props.path} />
 
-      {/* 
-      {bk.props.longName ? bk.props.longName : bk.props.name}
-      symbol: {bk.props.symbol ? bk.props.symbol : "null"}<br />
-      symbols: {bk.props?.commentSymbols ? <Comment comment={bk.props?.commentSymbols} /> : null}<br />
-      intro: {bk.props?.commentIntro ? <Comment comment={bk.props?.commentIntro} /> : null}<br /> 
-      */}
+//       {/* 
+//       {bk.props.longName ? bk.props.longName : bk.props.name}
+//       symbol: {bk.props.symbol ? bk.props.symbol : "null"}<br />
+//       symbols: {bk.props?.commentSymbols ? <Comment comment={bk.props?.commentSymbols} /> : null}<br />
+//       intro: {bk.props?.commentIntro ? <Comment comment={bk.props?.commentIntro} /> : null}<br /> 
+//       */}
 
-      <h2>Block Body (含nested blocks)</h2>
-      <BlockBody body={bk.body} />
+//       <h2>Block Body (含nested blocks)</h2>
+//       <BlockBody body={bk.body} />
 
-      <h2>Block Comments</h2>
-      <h3>1. spot comments</h3>
-      {bk.comments ? <CommentList comments={bk.comments} /> : <p>null spot comments</p>}
+//       <h2>Block Comments</h2>
+//       <h3>1. spot comments</h3>
+//       {bk.comments ? <CommentList comments={bk.comments} /> : <p>null spot comments</p>}
 
-      <h3>2. comments (若允許comment的話)</h3>
-      {bk.props.canComment ? <QueryCommentList blockId={id} /> : <p>不允許comment</p>}
+//       <h3>2. comments (若允許comment的話)</h3>
+//       {bk.props.canComment ? <QueryCommentList blockId={id} /> : <p>不允許comment</p>}
 
-      <h3>3. new comment (若允許comment的話)</h3>
-      {/* {bk.props.canComment
-        ? <CommentForm blockId={bk.id} toAddCommentCountByOne={() => { }} />
-        : <p>不允許comment</p>} */}
-    </Content>
-  )
-}
+//       <h3>3. new comment (若允許comment的話)</h3>
+//       {/* {bk.props.canComment
+//         ? <CommentForm blockId={bk.id} toAddCommentCountByOne={() => { }} />
+//         : <p>不允許comment</p>} */}
+//     </Content>
+//   )
+// }
 
 // ------------------
 
@@ -398,3 +377,21 @@ export const BlockPage: React.FC<BlockPageProps> = ({ id, me }) => {
   return null
 }
 
+
+export function CssBlockCard({ title, children }: { title: string, children: React.ReactNode }) {
+  // const [isloadding, setLoadding] = useState(true)
+  // useEffect(() => {
+  //   setTimeout(() => setLoadding(false), 1000)
+  // }, [])
+  return (
+    <Card
+      title={title}
+      className={BlockCss.card}
+      hoverable
+      // loading={isloadding}
+      bordered={false}
+    >
+      {children}
+    </Card>
+  )
+}

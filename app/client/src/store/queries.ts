@@ -51,7 +51,7 @@ const REPLY = gql`
     __typename
     id
     userId
-    isSpot
+    isTop
     text
     updatedAt
     count { 
@@ -66,14 +66,14 @@ const COMMENT = gql`
     __typename
     id
     userId
-    isSpot
+    isTop
     text
     # updatedAt
     createdAt
     # replies {
     #   ...reply
     # }
-    spotReplies {
+    topReplies {
       ...reply
     }
     poll {
@@ -108,36 +108,47 @@ const REPLY_LIKE = gql`
   }
 `
 
-const BLOCK_FRAGMENT = gql`
-  fragment blockFragment on Block {
+const PAGE_FRAGMENT = gql`
+  fragment pageFragment on Page {
     __typename
     id
+    title
     template
     props {
-      name
-      longName
-      path
-      symbol
-      canComment
-      canOpenAsPage
-      commentIntro {
+      selfSymbol
+      tickers {
         ...comment
       }
-      commentSymbols {
+      topics {
         ...comment
       }
-    }
-    body {
-      text
-      ticks {
-        __typename
-        id
-        symbolId
-        value
-        at
+      links {
+        ...comment
       }
-      table
-      chart
+      pros {
+        ...comment
+      }
+      cons {
+        ...comment
+      }
+      act {
+        ...comment
+      }
+      wiki
+      intro {
+        ...comment
+      }
+      shortView {
+        ...comment
+      }
+      longView {
+        ...comment
+      }
+      srcAuthor
+      srcTitle
+      voteCreate {
+        ...comment
+      }
     }
     comments {
       ...comment
@@ -158,24 +169,18 @@ const BLOCK_FRAGMENT = gql`
 // Query
 // ----------------------------
 
-export const BLOCK = gql`
-  query block($id: ID,  $path: String) {
-    block(id: $id, path: $path) {
-      ...blockFragment
-      body {
-        blocks {
-          ...blockFragment
-        }
-      }
+export const PAGE = gql`
+  query page($id: ID, $title: String, $symbolName: String, $symbolId: Int) {
+    page(id: $id, title: $title, symbolName: $symbolName, symbolId: $symbolId,) {
+      ...pageFragment
     }
   }
-  ${COMMENT}
-  ${BLOCK_FRAGMENT}
+  ${PAGE_FRAGMENT}
 `
 
 export const COMMENTS = gql`
-  query comments($blockId: ID!, $afterId: ID) {
-    comments(blockId: $blockId, afterId: $afterId) {
+  query comments($pageId: ID!, $afterId: ID) {
+    comments(pageId: $pageId, afterId: $afterId) {
       ...comment
     }
   }
@@ -183,8 +188,8 @@ export const COMMENTS = gql`
 `
 
 export const COMMENTS_BY_SYMBOL = gql`
-  query commentsBySymbol($blockPath: String!, $symbol: String!, $afterId: ID) {
-    commentsBySymbol(blockPath: $blockPath, symbol: $symbol, afterId: $afterId) {
+  query commentsBySymbol($pageTitle: String!, $symbol: String!, $afterId: ID) {
+    commentsBySymbol(pageTitle: $pageTitle, symbol: $symbol, afterId: $afterId) {
       ...comment
     }
   }
@@ -243,10 +248,10 @@ export const ME = gql`
 export const LATEST_PAGES = gql`
   query latestPages($afterId: ID) {
     latestPages(afterId: $afterId) {
-      ...blockFragment
+      ...pageFragment
     }
   }
-  ${BLOCK_FRAGMENT}
+  ${PAGE_FRAGMENT}
 `
 
 export const SEARCH_ALL = gql`
@@ -258,10 +263,10 @@ export const SEARCH_ALL = gql`
 export const SEARCH_PAGE = gql`
   query searchPage($url: String!) {
     searchPage(url: $url) {
-      ...blockFragment
+      ...pageFragment
     }
   }
-  ${BLOCK_FRAGMENT}
+  ${PAGE_FRAGMENT}
 `
 
 export const AUTOMARK = gql`
@@ -275,8 +280,8 @@ export const AUTOMARK = gql`
 // ----------------------------
 
 export const CREATE_COMMENT = gql`
-  mutation createComment($blockId: ID!, $data: CommentInput!) {
-    createComment(blockId: $blockId,  data: $data) {
+  mutation createComment($pageId: ID!, $data: CommentInput!) {
+    createComment(pageId: $pageId,  data: $data) {
       ...comment
     }
   }

@@ -77,3 +77,26 @@ const demo = (
 ```
 
 4. 瀏覽器會自動更新頁面資訊
+
+
+### Deployment
+
+1. 有兩個project需要同時啟用（使用兩個不同的docker-compose)
+  - twint (爬蟲)，包括elasticsearch
+  - fullstack (這個)，包括postgres
+
+```bash
+cd .../fullstack
+sudo docker-compose up -f .devcontainer/docker-compose.yml
+
+# 進入app container
+sudo docker exec -it OOOOOOOO zsh
+# 測試elasticsearch連線(external container)
+curl http://es:9200
+# 測試pgadmin連線(internal container)
+curl http://pgadmin:80
+```
+
+# TODO
+
+- 把port改回3000（.env、docker-compose）

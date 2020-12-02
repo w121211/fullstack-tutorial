@@ -49,7 +49,7 @@ type CommentTemplate = {
   id?: number
 }
 
-type PagePropsTemplate = {
+export type PagePropsTemplate = {
   selfSymbol?: string | null
   tickers?: CommentTemplate
   topics?: CommentTemplate
@@ -176,6 +176,7 @@ export async function insertPage(botUserId: string, temp: PageTemplate, link?: P
       title: temp.title,
       template: temp.template,
       props: {},
+      symbol: { connect: { name: temp.props.selfSymbol ?? undefined } }
       // link: {connect: {link.id}}
     },
   })
@@ -206,7 +207,7 @@ export async function insertPage(botUserId: string, temp: PageTemplate, link?: P
       }
       v.id = propComment.id
     }
-    // Update block.props
+    // Update props json
     // console.log(props)
     await prisma.page.update({
       data: { props },
@@ -241,6 +242,3 @@ export function fillPage(page: PrismaPageWithComments): any {
   }
   return page
 }
-
-
-

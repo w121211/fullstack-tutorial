@@ -2,8 +2,9 @@ import dayjs from 'dayjs'
 import React, { useState } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
 import { Link } from '@reach/router'
-import { Button, Card, Divider, Typography, Space, Form, Input, List } from 'antd'
+import { Comment as AntdComment, Tag, Tooltip, Button, Card, Divider, Typography, Space, Form, Input, List } from 'antd'
 import { CoffeeOutlined, SwapLeftOutlined, SwapRightOutlined } from '@ant-design/icons'
+import { DislikeOutlined, LikeOutlined, DislikeFilled, LikeFilled, } from '@ant-design/icons'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 // import { CommentList } from './commentList'
@@ -14,6 +15,11 @@ import { ReplyPanel, CommentPanel } from './tilePanel'
 import { ReplyList, QueryReplyList, CommentList, QueryCommentList } from './tileList'
 import { ReplyForm } from './tileForms'
 import { NoteForm } from './forms'
+import CommentTemplate from '../components/commentTemplate/commentTemplate'
+import blockMetaCss from '../components/blockMeta/blockMeta.module.scss'
+import tagCss from '../components/tag/tag.module.scss'
+import commentListSmallCss from '../components/commentListSmall/commentListSmall.module.scss'
+// import Tag from '../components/tag/tag'
 
 
 // interface SymbolListProps {
@@ -282,20 +288,81 @@ import { NoteForm } from './forms'
 //   }
 // }
 
-export function Reply({ reply, me }: { reply: QT.replies_replies, me?: QT.me_me }) {
+
+export interface TileOptions {
+  dispTopReplies?: boolean
+  dispCommentAs?: 'comment' | 'key-value'
+  dispReplyAs?: 'line' | 'tag' | 'tile'
+  swapText?: string
+  swapChoices?: string[]
+}
+
+export const defaultTileOptions: TileOptions = {
+  dispTopReplies: true,
+  dispCommentAs: 'comment',
+  dispReplyAs: 'line',
+}
+
+export function Reply({ reply, me, options = defaultTileOptions }: { reply: QT.replies_replies, me?: QT.me_me, options?: TileOptions }) {
   // const edit = me?.id === post.userId
   //   ? <Link to={`/post/${post.id}?update`}>edit</Link>
   //   : null
+  const actions = [
+    <Tooltip key="comment-basic-like" title="Like">
+      <span onClick={function () { }}>
+        {/* {React.createElement(action === 'liked' ? LikeFilled : LikeOutlined)} */}
+        <LikeOutlined />
+        <span className="comment-action">10</span>
+      </span>
+    </Tooltip>,
+    <Tooltip key="comment-basic-dislike" title="Dislike">
+      <span onClick={function () { }}>
+        {/* {React.createElement(action === 'disliked' ? DislikeFilled : DislikeOutlined)} */}
+        <DislikeOutlined />
+        <span className="comment-action">3</span>
+      </span>
+    </Tooltip>,
+    // props.parent ? (
+    //   <span
+    //     id={`1`}
+    //     key="comment-basic-reply-to"
+    //     onClick={toggleTextAreaHandler}
+    //   >
+    //     回覆
+    //   </span>
+    // ) : null,
+  ]
+  switch (options.dispReplyAs) {
+    case 'tag':
+      return (
+        <span>
+          <Tag className={tagCss.tag}>{reply.text}</Tag>
+          <ReplyPanel reply={reply} meAuthor={me?.id === reply.userId} />
+        </span>
+      )
+    case 'tile':
+      return (
+        <span>
+          <span>{reply.text}</span>
+          <ReplyPanel reply={reply} meAuthor={me?.id === reply.userId} />
+        </span>
+      )
+  }
   return (
-    <div>
-      {/* <TextMarker text={reply.text} /> */}
-      <p>{reply.text}</p>
-      <ReplyPanel reply={reply} meAuthor={me?.id === reply.userId} />
-    </div>
+    <li className={commentListSmallCss.commentRoot}>
+      <AntdComment actions={actions} content={reply.text} />
+    </li>
   )
+  // return (
+  //   <li>
+  //     <TextMarker text={reply.text} />
+  //     <p>{reply.text}</p>
+  //     <ReplyPanel reply={reply} meAuthor={me?.id === reply.userId} />
+  //   </li>
+  // )
 }
 
-export function Comment({ comment, showSpotReplies = true }: { comment: QT.comment, showSpotReplies?: boolean }) {
+export function Comment({ comment, options = defaultTileOptions }: { comment: QT.comment, options?: TileOptions }) {
   /**
    *        | 折疊時                      | 展開時
    * - Text | 只顯示text                  | text + replies(as-list) 
@@ -334,14 +401,43 @@ export function Comment({ comment, showSpotReplies = true }: { comment: QT.comme
   // const spotReplies = comment.replies.filter(e => e.isSpot)
   if (comment.poll)
     return <CommentWithPoll comment={comment} poll={comment.poll} />
+
+  if (options.dispCommentAs === 'key-value') {
+    if (folded)
+      return (
+        <li>
+          <span className={blockMetaCss.span}>{options.swapText ? options.swapText : comment.text}</span>
+          {comment.topReplies && <ReplyList replies={comment.topReplies} options={{ dispReplyAs: options.dispReplyAs }} />}
+          <span>[新增]</span>
+          {/* <p>{options.replacedText ? options.replacedText : comment.text}</p>
+          <CommentPanel comment={comment} />
+          <h4>-Spot Replies-</h4>
+          {comment.topReplies ? <ReplyList replies={comment.topReplies} /> : null}
+          <button onClick={function (e) { setFolded(!folded) }}>展開</button>
+          <br /> */}
+        </li>
+      )
+    return (
+      <li>
+        ------Comment-------
+        <p>{options.swapText ? options.swapText : comment.text}</p>
+        <CommentPanel comment={comment} />
+        <h4>-Queried Replies-</h4>
+        <QueryReplyList commentId={comment.id} />
+        <ReplyForm commentId={comment.id} addReplyCountByOne={function () { }} />
+        <button onClick={function (e) { setFolded(!folded) }}>折疊</button>
+      -------------
+      </li>
+    )
+  }
   if (folded)
     return (
       <div>
         ------Comment-------
-        <p>{comment.text}</p>
+        <p>{options.swapText ? options.swapText : comment.text}</p>
         <CommentPanel comment={comment} />
         <h4>-Spot Replies-</h4>
-        {comment.spotReplies ? <ReplyList replies={comment.spotReplies} /> : null}
+        {comment.topReplies ? <ReplyList replies={comment.topReplies} /> : null}
         <button onClick={function (e) { setFolded(!folded) }}>展開</button>
         <br />
         -------------
@@ -350,7 +446,7 @@ export function Comment({ comment, showSpotReplies = true }: { comment: QT.comme
   return (
     <div>
       ------Comment-------
-      <p>{comment.text}</p>
+      <p>{options.swapText ? options.swapText : comment.text}</p>
       <CommentPanel comment={comment} />
       <h4>-Queried Replies-</h4>
       <QueryReplyList commentId={comment.id} />
@@ -361,17 +457,16 @@ export function Comment({ comment, showSpotReplies = true }: { comment: QT.comme
   )
 }
 
-export function CommentWithPoll({ comment, poll }: { comment: QT.comment, poll: QT.poll }) {
+export function CommentWithPoll({ comment, poll, options = defaultTileOptions }: { comment: QT.comment, poll: QT.poll, options?: TileOptions }) {
   const [pattern, setPattern] = useState<string | null>(null)
   {/* {data.poll ? <Poll poll={poll} pattern={pattern} setPattern={setPattern} /> : null} */ }
-
   const spotReplies = [
     {
       __typename: "Reply" as const,
       id: "111",
       userId: "222",
       meta: { choice: 0 },
-      isSpot: true,
+      isTop: true,
       text: "(0) a poll reply",
       updatedAt: "August 19, 1975 23:15:30",
       count: {
@@ -387,7 +482,7 @@ export function CommentWithPoll({ comment, poll }: { comment: QT.comment, poll: 
       id: "111",
       userId: "222",
       meta: { choice: 1 },
-      isSpot: true,
+      isTop: true,
       text: "(1) a poll reply",
       updatedAt: "August 19, 1975 23:15:30",
       count: {
@@ -404,7 +499,7 @@ export function CommentWithPoll({ comment, poll }: { comment: QT.comment, poll: 
   return (
     <div>
       ---- CommentWithPoll ---------
-      <p>{comment.text}</p>
+      <p>{options.swapText ? options.swapText : comment.text}</p>
       {/* {poll.choices.map} */}
       <PollChoicesAndForm poll={poll} count={null} setShowReplies={function (a: boolean) { }} setFilterRepliesPattern={setPattern} />
       <CommentPanel comment={comment} />
@@ -441,7 +536,7 @@ export function WebpageTile({ page, showSpotReplies = true }: { page: QT.latestP
     <div>
       ------PageTile-------
       author:domain - title // top notes
-      <QueryCommentList blockId="123" />
+      <QueryCommentList pageId="123" />
       <NoteForm />
       <button onClick={function (e) { setFolded(!folded) }}>折疊</button>
       -------------

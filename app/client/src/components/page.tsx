@@ -15,7 +15,7 @@ import { ReplyList, QueryReplyList, CommentList, QueryCommentList } from './tile
 import { ReplyForm } from './tileForms'
 import { NoteForm } from './forms'
 
-export function PageProps({ page, showSpotReplies = true }: { page: QT.block_block, showSpotReplies?: boolean }) {
+export function PageProps({ page, showSpotReplies = true }: { page: QT.page_page, showSpotReplies?: boolean }) {
   const [folded, setFolded] = useState<boolean>(true)
   // const spotReplies = comment.replies.filter(e => e.isSpot)
   if (folded)
@@ -37,7 +37,7 @@ export function PageProps({ page, showSpotReplies = true }: { page: QT.block_blo
     <div>
       ------PageTile-------
       author:domain - title // top notes
-      <QueryCommentList blockId="123" />
+      <QueryCommentList pageId="123" />
       <NoteForm />
       <button onClick={function (e) { setFolded(!folded) }}>折疊</button>
       -------------
@@ -46,14 +46,14 @@ export function PageProps({ page, showSpotReplies = true }: { page: QT.block_blo
 }
 
 export function QueryPage({ id }: { id: string }) {
-  const queryBlock = useQuery<QT.block, QT.blockVariables>(
-    queries.BLOCK, { variables: { id } }
+  const queryBlock = useQuery<QT.page, QT.pageVariables>(
+    queries.PAGE, { variables: { id } }
   )
   if (queryBlock.loading)
     return null
   if (!queryBlock.data)
     return <p>something goes wrong</p>
-  const bk = queryBlock.data.block
+  const bk = queryBlock.data.page
   if (!bk)
     return <h1>Page not found</h1>
   return (

@@ -3,7 +3,7 @@ import gql from 'graphql-tag'
 export const typeDefs = gql`
 type Query {
   # 會包含comments & nestedBlockComments，這裡的comments(含spot, new, spotReplies...)用於顯示
-  page(id: ID, title: String): Page
+  page(id: ID, title: String, symbolName: String, symbolId: Int): Page
   # 最新加入的page，加入條件：被comment, 被bot捕捉
   latestPages(afterId: ID): [Page!]!
 
@@ -47,7 +47,6 @@ type Query {
   poll(id: ID!): Poll!
 
   # myPollLikes(afterId: ID): [PollLike!]!
-
 
   latestPosts(symbolId: ID, afterId: String): [Post!]!
   repliedPosts(parentId: ID!, afterId: String): [Post!]!
@@ -207,7 +206,7 @@ type ReplyProps {
 type Reply {
   id: ID!
   userId: ID!
-  isSpot: Boolean
+  isTop: Boolean
   text: String!
   count: ReplyCount!
   updatedAt: DateTime!
@@ -301,6 +300,7 @@ type corrTicker {
 }
 
 type PageProps {
+  selfSymbol: String
   tickers: Comment
   topics: Comment
 

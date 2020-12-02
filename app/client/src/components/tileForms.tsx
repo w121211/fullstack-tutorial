@@ -47,6 +47,9 @@ export function ReplyForm({ commentId, addReplyCountByOne }: { commentId: string
       >
         <Input placeholder="Your reply..." />
       </Form.Item>
+      <Form.Item>
+        Suggestions: [a], [b], [c]
+      </Form.Item>
       <Form.Item style={{ textAlign: "right" }}>
         <Button type="primary" htmlType="submit">送出</Button>
       </Form.Item>
@@ -54,7 +57,7 @@ export function ReplyForm({ commentId, addReplyCountByOne }: { commentId: string
   )
 }
 
-export function CommentForm({ blockId, toAddCommentCountByOne }: { blockId: string, toAddCommentCountByOne: () => void }) {
+export function CommentForm({ pageId, toAddCommentCountByOne }: { pageId: string, toAddCommentCountByOne: () => void }) {
   const [form] = Form.useForm()
   const [createComment] = useMutation<QT.createComment, QT.createCommentVariables>(
     queries.CREATE_COMMENT, {
@@ -79,12 +82,12 @@ export function CommentForm({ blockId, toAddCommentCountByOne }: { blockId: stri
 
       const res = cache.readQuery<QT.comments, QT.commentsVariables>({
         query: queries.COMMENTS,
-        variables: { blockId },
+        variables: { pageId },
       })
       if (data?.createComment && res?.comments) {
         cache.writeQuery<QT.comments, QT.commentsVariables>({
           query: queries.COMMENTS,
-          variables: { blockId },
+          variables: { pageId },
           data: { comments: res?.comments.concat([data?.createComment]) },
         })
         toAddCommentCountByOne()
@@ -95,7 +98,7 @@ export function CommentForm({ blockId, toAddCommentCountByOne }: { blockId: stri
   const onFinish = (values: any) => {
     createComment({
       variables: {
-        blockId,
+        pageId,
         data: {
           text: values.text,
           symbols: [],

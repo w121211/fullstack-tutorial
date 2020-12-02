@@ -1,53 +1,45 @@
 import React, { useState } from 'react'
 import { RouteComponentProps, Redirect, Link, navigate } from '@reach/router'
 import { useQuery } from '@apollo/client'
-import { AutoComplete, Card, Space, List, Typography, Layout, Divider, Drawer, Modal, Input } from 'antd'
-import { SelectProps } from 'antd/es/select'
-import { ArrowLeftOutlined } from '@ant-design/icons'
+import { Layout } from 'antd'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
-// import { RepliedPostList } from '../components/postList'
-import { CommentList, QueryCommentList, QuerySpotCommentList } from '../components/tileList'
-import { Reply, Comment, CommentWithPoll } from '../components/tile'
-// import { CommentForm } from '../components/tileForms'
-import { CommentForm, SearchAllForm, SearchPageForm, NoteForm } from '../components/forms'
-// import { CommentForm } from '../components/tileForms'
-// import { SymbolAutoComplete } from '../components/symbolHint'
 
-import { LineChart } from '../components/charts'
-import ProsCons from '../components/prosCons/prosCons'
-import Anchor from '../components/anchor/tickerAnchor'
-import Tag from '../components/tag/tag'
-import BlockCss from '../components/block/block.module.scss'
-import BlockMetaCss from '../components/blockMeta/blockMeta.module.scss'
-import Radio from '../components/radios/radios'
-import CommenTemplate from '../components/commentTemplate/commentTemplate'
-import MyTextArea from '../components/myTextArea/myTextArea'
-import CssCommentList from '../components/commentList/commentList'
-import { SomeTable } from '../components/tables'
+import { Comment } from '../components/tile'
+import { CssBlockCard } from '../components/block'
+import blockMetaCss from '../components/blockMeta/blockMeta.module.scss'
+
 
 interface RouteProps extends RouteComponentProps<{ symbol: string }> {
   me?: QT.me_me
 }
 
 export const AuthorPage: React.FC<RouteProps> = function ({ symbol, me }) {
-  const queryBlock = useQuery<QT.block, QT.blockVariables>(
-    queries.BLOCK, { variables: { path: symbol } }
+  const queryPage = useQuery<QT.page, QT.pageVariables>(
+    queries.PAGE, { variables: { symbolName: symbol } }
   )
-  if (queryBlock.loading)
+  if (queryPage.loading)
     return null
-  if (!queryBlock.data)
+  if (!queryPage.data)
     return <p>something goes wrong</p>
-  const bk = queryBlock.data.block
-  if (!bk)
-    return <h1>Null block</h1>
+  const pg = queryPage.data.page
+  if (!pg)
+    return <h1>Null page</h1>
   return (
-    <pre>
-      [[Author]]
-      (NEXT)ranks
-      links:comment
-      feeds:queryWebpageTileList(by author)
-      comments:commentList
-    </pre>
+    <Layout.Content className="site-layout-background content" style={{ minHeight: 280, }}>
+      {pg.title} ({pg.props.srcAuthor})
+      <CssBlockCard title="">
+        <ul>
+          {pg.props.links &&
+            <Comment comment={pg.props.links} options={{ dispCommentAs: 'key-value', dispReplyAs: 'tag', swapText: 'Links' }} />}
+          <li>
+            <span className={blockMetaCss.span}>Publish</span>
+            {pg.props.wiki}
+          </li>
+        </ul>
+      </CssBlockCard>
+      <pre>(NEXT) Ranks</pre>
+      <pre>(NEXT) Comments: by filter</pre>
+    </Layout.Content>
   )
 }

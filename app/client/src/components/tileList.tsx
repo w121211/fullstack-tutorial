@@ -10,14 +10,18 @@ import * as QT from '../store/queryTypes'
 // import { PollChoiceRadioGroup } from './pollChoice'
 // import { PollFooter, PostFooter } from './tileFooter'
 // import { VotePostForm, NewChoicePostForm } from './postForm'
-import { Reply, Comment, WebpageTile } from './tile'
+import { Reply, Comment, WebpageTile, TileOptions, defaultTileOptions } from './tile'
 
-export function ReplyList({ replies, pattern = null }: { replies: QT.replies_replies[], pattern?: string | null }) {
+export function ReplyList(
+  { replies, pattern = null, options = defaultTileOptions }: { replies: QT.replies_replies[], pattern?: string | null, options?: TileOptions }) {
   /** 
    * args:
    * - pattern（還沒實裝） : 依照reply的vote（會嵌進text）做filter，
    *     `pattern=null`的情況，就是一個普通的reply list 
    * */
+  if (replies.length === 0)
+    return <span>[新增]</span>
+
   // const filtered = replies.map((e, i) => {
   //   if (pattern === null)
   //     return <Reply key={i} reply={e} />
@@ -28,9 +32,9 @@ export function ReplyList({ replies, pattern = null }: { replies: QT.replies_rep
   // })
   const filtered = replies.filter((e) => pattern === null || e.text.indexOf(pattern) >= 0)
   return (
-    <div>
-      {filtered.map((e, i) => <Reply key={i} reply={e} />)}
-    </div>
+    <span>
+      {filtered.map((e, i) => <Reply key={i} reply={e} options={options} />)}
+    </span>
   )
 }
 
@@ -51,8 +55,8 @@ interface CommentListProps extends QT.commentsVariables {
 }
 
 export function CommentList({ comments }: { comments: QT.comment[] }) {
-  const spotComments = comments.filter(e => e.isSpot)
-  const otherComments = comments.filter(e => !e.isSpot)
+  const spotComments = comments.filter(e => e.isTop)
+  const otherComments = comments.filter(e => !e.isTop)
   return (
     <>
       <h3>Spot Comments</h3>
@@ -67,9 +71,9 @@ export function CommentList({ comments }: { comments: QT.comment[] }) {
   )
 }
 
-export function QueryCommentList({ me, blockId }: { me?: QT.me_me, blockId: string }) {
+export function QueryCommentList({ me, pageId }: { me?: QT.me_me, pageId: string }) {
   const { data, loading, error, refetch } = useQuery<QT.comments, QT.commentsVariables>(
-    queries.COMMENTS, { variables: { blockId } }
+    queries.COMMENTS, { variables: { pageId } }
   )
   if (loading) return null
   if (error) return <p>ERROR: {error.message}</p>
@@ -77,9 +81,9 @@ export function QueryCommentList({ me, blockId }: { me?: QT.me_me, blockId: stri
   return <CommentList comments={data.comments} />
 }
 
-const LoadMoreCommentList: React.FC<CommentListProps> = ({ me, blockId, toAddCommentCountByOne }) => {
+const LoadMoreCommentList: React.FC<CommentListProps> = ({ me, pageId, toAddCommentCountByOne }) => {
   const { data, loading, error, refetch } = useQuery<QT.comments, QT.commentsVariables>(
-    queries.COMMENTS, { variables: { blockId } }
+    queries.COMMENTS, { variables: { pageId } }
   )
   const [hasMore, setHasMore] = useState<boolean>(false)
   if (loading) return null

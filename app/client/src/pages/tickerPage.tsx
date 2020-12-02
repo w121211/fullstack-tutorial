@@ -1,33 +1,20 @@
 import React, { useState } from 'react'
 import { RouteComponentProps, Redirect, Link, navigate } from '@reach/router'
 import { useQuery } from '@apollo/client'
-import { AutoComplete, Card, Space, List, Typography, Layout, Divider, Drawer, Modal, Input } from 'antd'
+import { Popover, Tag, AutoComplete, Card, Space, List, Typography, Layout, Divider, Drawer, Modal, Input } from 'antd'
 import { SelectProps } from 'antd/es/select'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 // import { RepliedPostList } from '../components/postList'
-import { CommentList, QueryCommentList, QuerySpotCommentList } from '../components/tileList'
+import { CommentList, QueryCommentList } from '../components/tileList'
 import { Reply, Comment, CommentWithPoll } from '../components/tile'
 // import { CommentForm } from '../components/tileForms'
 import { ReplyForm } from '../components/tileForms'
 import { CommentForm, SearchAllForm, SearchPageForm, NoteForm } from '../components/forms'
 // import { CommentForm } from '../components/tileForms'
 // import { SymbolAutoComplete } from '../components/symbolHint'
-
-import { LineChart } from '../components/charts'
-import ProsCons from '../components/prosCons/prosCons'
-import Anchor from '../components/anchor/tickerAnchor'
-import Tag from '../components/tag/tag'
-import BlockCss from '../components/block/block.module.scss'
-import BlockMetaCss from '../components/blockMeta/blockMeta.module.scss'
-import Radio from '../components/radios/radios'
-import CommenTemplate from '../components/commentTemplate/commentTemplate'
-import MyTextArea from '../components/myTextArea/myTextArea'
-import CssCommentList from '../components/commentList/commentList'
-import { SomeTable } from '../components/tables'
-
-const { Header, Sider, Content } = Layout
+import { CssBlockCard } from '../components/block'
 
 // ------------------
 
@@ -61,32 +48,6 @@ interface IComment {
 enum RepliesDirection {
   HORIZONTAL,
   VERTICAL,
-}
-
-function KeyValueComment({ comment, direction }: { comment: IComment, direction: RepliesDirection }) {
-  const [folded, setFolded] = useState(true)
-  if (comment.replies.length === 0) {
-    return (
-      <>
-        <span className={BlockMetaCss.span}>{comment.text}</span>
-        <span>[new]</span>
-      </>
-    )
-  }
-  if (direction === RepliesDirection.HORIZONTAL) {
-    return (
-      <>
-        <span className={BlockMetaCss.span}>{comment.text}</span>
-        {comment.replies.map((e, i) => <span key={i}>{e.text}[{e.meta.link}]</span>)}
-      </>
-    )
-  }
-  return (
-    <>
-      <span className={BlockMetaCss.span}>{comment.text}</span>
-      {comment.replies.map((e, i) => <div key={i}>{e.text}[{e.meta.link}]</div>)}
-    </>
-  )
 }
 
 const fakeComments = {
@@ -200,38 +161,58 @@ interface RouteProps extends RouteComponentProps<{ symbol: string }> {
 }
 
 export const TickerPage: React.FC<RouteProps> = function ({ symbol, me }) {
-  const queryBlock = useQuery<QT.block, QT.blockVariables>(
-    queries.BLOCK, { variables: { path: symbol } }
+  const queryPage = useQuery<QT.page, QT.pageVariables>(
+    queries.PAGE, { variables: { symbolName: symbol } }
   )
-  // if (symbol === null && path === null)
-  //   throw new Error("Should provide either id or path")
-  if (queryBlock.loading)
+  const [text, setText] = useState<string>("aaa")
+
+  if (queryPage.loading)
     return null
-  if (!queryBlock.data)
+  if (!queryPage.data)
     return <p>something goes wrong</p>
-  const bk = queryBlock.data.block
-  if (!bk)
-    return <h1>Null block</h1>
+  const pg = queryPage.data.page
+  if (!pg)
+    return <h1>Null Page</h1>
+
+  // const popover = <a onClick={function () { setText("bbb") }}>{text}</a>
+  // return (
+  //   <Popover content={popover}>
+  //     <Tag>
+  //       123<b>{text}</b>
+  //     </Tag>
+  //   </Popover>
+  // )
+
   return (
-    <Content className="site-layout-background content" style={{ minHeight: 280, }}>
-      <SearchPageForm />
+    <Layout.Content className="site-layout-background content" style={{ minHeight: 280, }}>
+
+      {/* <SearchPageForm /> */}
+      {/* <ReplyForm commentId="123" addReplyCountByOne={function () { }} /> */}
+
+      Title: {pg.title} {pg.props.selfSymbol}
+
+      <CssBlockCard title="">
+        <ul>
+          {pg.props.topics &&
+            <Comment comment={pg.props.topics} options={{ dispCommentAs: 'key-value', dispReplyAs: 'tag', swapText: 'Topics' }} />}
+          {pg.props.links &&
+            <Comment comment={pg.props.links} options={{ dispCommentAs: 'key-value', dispReplyAs: 'tag', swapText: 'Links' }} />}
+          {pg.props.intro &&
+            <Comment comment={pg.props.intro} options={{ dispCommentAs: 'key-value', swapText: '簡介' }} />}
+          {pg.props.pros &&
+            <Comment comment={pg.props.pros} options={{ dispCommentAs: 'key-value', dispReplyAs: 'tag', swapText: '利多' }} />}
+          {pg.props.cons &&
+            <Comment comment={pg.props.cons} options={{ dispCommentAs: 'key-value', dispReplyAs: 'tag', swapText: '利空' }} />}
+          {pg.props.act &&
+            <Comment comment={pg.props.act} options={{ dispCommentAs: 'key-value', swapText: '操作判斷', swapChoices: ['買入', '持有', '賣出'] }} />}
+        </ul>
+      </CssBlockCard>
 
       <pre>
-        ticker name: {bk.props.name} {bk.props.symbol}
-        symbols: {bk.props?.commentSymbols ? <Comment comment={bk.props?.commentSymbols} /> : null}
-        intro: {bk.props?.commentIntro ? <Comment comment={bk.props?.commentIntro} /> : null}
-        {/* links: {bk.props?.links ? <Comment comment={bk.props?.links} /> : null} */}
-        {/* 
-        利多: <Comment comment={bk.props?.commentPros} />
-        利空: <Comment comment={bk.props?.commentCons} />
-        操作: <CommentWithPoll comment={bk.props?.commentPredict} poll={bk.props?.commentPredict.poll} /> 
-        */}
+        (NEXT) Alternative Block
       </pre>
       <pre>
-        Alternative Block
-      </pre>
-      <pre>
-        Battle Block
+        (NEXT) Battle Block
       </pre>
       <pre>
         Comments Filter
@@ -254,7 +235,8 @@ export const TickerPage: React.FC<RouteProps> = function ({ symbol, me }) {
       {bk.props.canComment
         ? <CommentForm blockId={bk.id} toAddCommentCountByOne={() => { }} />
         : <p>不允許comment</p>} */}
-    </Content>
+    </Layout.Content>
   )
 }
+
 

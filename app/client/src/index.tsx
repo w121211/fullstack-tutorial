@@ -31,8 +31,8 @@ const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
 
 ReactDOM.render(
   <ApolloProvider client={client}>
-    <SyntaxText />
-    {/* <Pages /> */}
+    {/* <SyntaxText /> */}
+    <Pages />
     {/* <TestCommentList /> */}
     {/* <DemoPages /> */}
     {/* <AppLayout /> */}

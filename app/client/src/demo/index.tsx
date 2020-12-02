@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react'
 import { Router } from '@reach/router'
-import { Layout, Input } from 'antd'
+import { Card, Layout, Input } from 'antd'
 
 import { Board } from './Board2'
 import { Event } from './Event'
@@ -26,12 +26,29 @@ import MyTextArea from '../components/myTextArea/myTextArea'
 import CssCommentList from '../components/commentList/commentList'
 import { LineChart } from '../components/charts'
 import { SomeTable } from '../components/tables'
-import { CssBlockCard } from '../pages/block'
 import CommentListSmall from '../components/commentListSmall/commentListSmall';
 
 
-
 const { Header, Sider, Content } = Layout
+
+function CssBlockCard({ title, children }: { title: string, children: React.ReactNode }) {
+  // const [isloadding, setLoadding] = useState(true)
+  // useEffect(() => {
+  //   setTimeout(() => setLoadding(false), 1000)
+  // }, [])
+  return (
+    <Card
+      title={title}
+      className={BlockCss.card}
+      hoverable
+      // loading={isloadding}
+      bordered={false}
+    >
+      {children}
+    </Card>
+  )
+}
+
 
 function HomePage({ path }: { path: string }) {
   return (

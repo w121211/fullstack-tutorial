@@ -12,8 +12,8 @@ import * as PA from '@prisma/client'
 import { Context } from './context'
 import { APP_SECRET } from '.'
 // import { fillBlock, PrismaBlockProperties } from './models/block'
-import { fillPage } from './services/page'
-import { searchAll, searchPage } from './services/search'
+import { fillPage } from './models/page'
+import { searchAll, searchPage } from './models/search'
 
 // function mapPostInput(post: ST.PostInput) {
 //   let content
@@ -117,23 +117,35 @@ export const resolvers: GraphQLResolverMap<Context> = {
     //   throw new Error('Require block ID or path')
     // },
 
-    page: async (parent, { id, title }, { prisma }) => {
+    page: async (parent, { id, title, symbolName, symbolId }, { prisma }) => {
+      let where
       if (id) {
-        const pg = await prisma.page.findOne({
-          where: { id: parseInt(id) },
-          include: {
-            propComments: { include: { count: true, replies: true } },
-            // comments: { where: { isSpot: true }, include: { count: true } },
-          },
+        where = { id: parseInt(id) }
+      } else if (title) {
+        where = { title }
+      } else if (symbolName) {
+        where = { symbolName }
+      } else if (symbolId) {
+        // TODO: 先用記憶體查找 & fallback才搜資料庫
+        const sb = await prisma.symbol.findOne({
+          where: { id: symbolId }
         })
-        // console.log(bk)
-        if (pg === null)
+        if (sb === null)
           return null
-        return fillPage(pg)
+        where = { symbolName: sb.name }
+      } else {
+        throw new Error('Require block ID or path')
       }
-      if (title)
+      const pg = await prisma.page.findOne({
+        where,
+        include: {
+          propComments: { include: { count: true, replies: true } },
+          // comments: { where: { isSpot: true }, include: { count: true } },
+        },
+      })
+      if (pg === null)
         return null
-      throw new Error('Require block ID or path')
+      return fillPage(pg)
     },
 
     latestPages: function (parent, { afterId }, { prisma }) {
