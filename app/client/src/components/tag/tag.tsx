@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Tag, Input } from 'antd'
+import { Tag, Input, Popover } from 'antd'
 import { PlusOutlined } from '@ant-design/icons';
 
 import classes from './tag.module.scss'
+import TagPopover from '../tagPopover/tagPopover';
 
 interface props {
   content: string[]
@@ -22,12 +23,6 @@ const Tags: React.FC<props> = ({ content, newTag = true }) => {
   )
 
   const inputRef = useRef<Input>(null)
-
-  // useEffect(() => {
-  //   if (state.inputVisible) {
-  //     inputRef.current.focus();
-  //   }
-  // }, [isEditing]);
 
   const showInput = () => {
     // if (!inputRef.current) return
@@ -63,19 +58,9 @@ const Tags: React.FC<props> = ({ content, newTag = true }) => {
       {state.tags.map((tag, index) => {
 
         return (
-          // <Input
-          //   ref={inputRef}
-          //   key={tag}
-          //   size="small"
-          //   className="tag-input"
-          //   value={state.editInputValue}
-          //   onChange={handleEditInputChange}
-          //   onBlur={handleEditInputConfirm}
-          //   onPressEnter={handleEditInputConfirm}
-          // />
 
-          // })}
-          <Tag className={classes.tag} key={index}>{tag}</Tag>
+          <TagPopover index={index} tagClassName={classes.tag} tagContent={tag} />
+
         )
       })}
       {state.inputVisible && (
@@ -95,7 +80,6 @@ const Tags: React.FC<props> = ({ content, newTag = true }) => {
           <PlusOutlined /> New Tag
         </Tag>
       )}
-
     </>
   )
 }
