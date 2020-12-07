@@ -25,7 +25,7 @@ const dataSources = () => ({
 const context = async ({ req }) => {
   // simple auth check on every request
   const auth = (req.headers && req.headers.authorization) || '';
-  const email = new Buffer(auth, 'base64').toString('ascii');
+  const email = Buffer.from(auth, 'base64').toString('ascii');
 
   // if the email isn't formatted validly, return null for user
   if (!isEmail.validate(email)) return { user: null };
@@ -53,11 +53,13 @@ const server = new ApolloServer({
 // Start our server if we're not in a test env.
 // if we're in a test env, we'll manually start it in a test
 if (process.env.NODE_ENV !== 'test') {
-  server
-    .listen({ port: process.env.PORT || 4000 })
-    .then(({ url }) => {
-      console.log(`🚀 app running at ${url}`)
-    });
+  server.listen().then(() => {
+    console.log(`
+      Server is running!
+      Listening on port 4000
+      Query at https://studio.apollographql.com/dev
+    `);
+  });
 }
 
 // export all the important pieces for integration/e2e tests to use
