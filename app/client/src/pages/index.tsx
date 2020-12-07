@@ -88,31 +88,37 @@ export function Pages() {
   if (loading)
     return null
   return (
-    <>
+    <Layout className="my-app">
       <AutoLogin />
-      {/* {!isLoggedIn && <Redirect from="" to="/login" noThrow />} */}
 
-      <Router primary={false} component={Fragment}>
-        {/* <BlockPage path="block/:id" me={data?.me} /> */}
-        <HomePage path="/" />
-        <TickerPage path="ticker/:symbol" />
-        <TopicPage path="topic/:title" />
-        <AuthorPage path="author/:symbol" />
-        <WebpagePage path="webpage/:id" />
+      <Layout className="site-layout" style={{ position: 'relative' }}>
+        {/* {!isLoggedIn && <Redirect from="" to="/login" noThrow />} */}
 
-        {/* <BlockPage path="block/*path" me={data?.me} /> path可以為'/aaa/bbb/ccc' */}
+        <Router primary={false} component={Fragment}>
+          {/* <BlockPage path="block/:id" me={data?.me} /> */}
+          <HomePage path="/" />
+          <TickerPage path="ticker/:symbol" />
+          <TopicPage path="topic/:title" />
+          <AuthorPage path="author/:symbol" />
+          <WebpagePage path="webpage/:id" />
 
-        <PageContainer path="/" isLoggedIn={isLoggedIn}>
-          {/* <ProtectedRoute as={Feed} isLoggedIn={isLoggedIn} default /> */}
-          {/* <Pane left={<Board me={data?.me} />} right={<BoardRightPane />} default /> */}
-          <LoginPage path="login" />
-          <NotFoundPage default />
-        </PageContainer>
+          {/* <BlockPage path="block/*path" me={data?.me} /> path可以為'/aaa/bbb/ccc' */}
 
-        {/* <Pane path="/" left={<Feeds />} right={undefined} /> */}
-        {/* <Pane path="feeds" left={Feeds} right={Tracks} /> */}
-      </Router>
-    </>
+          <PageContainer path="/" isLoggedIn={isLoggedIn}>
+            {/* <ProtectedRoute as={Feed} isLoggedIn={isLoggedIn} default /> */}
+            {/* <Pane left={<Board me={data?.me} />} right={<BoardRightPane />} default /> */}
+            <LoginPage path="login" />
+            <NotFoundPage default />
+          </PageContainer>
+
+          {/* <Pane path="/" left={<Feeds />} right={undefined} /> */}
+          {/* <Pane path="feeds" left={Feeds} right={Tracks} /> */}
+        </Router>
+
+      </Layout>
+
+    </Layout>
+
   )
 }
 

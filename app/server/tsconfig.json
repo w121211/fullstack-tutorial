@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDirs": [
+      "src",
+      "prisma",
+    ],
     "lib": [
       "esnext",
       "dom"

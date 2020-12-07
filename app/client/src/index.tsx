@@ -5,8 +5,7 @@ import { ApolloClient, ApolloProvider, NormalizedCacheObject } from '@apollo/cli
 import { typeDefs } from './store/resolvers'
 import { cache } from './cache'
 import { Pages } from './pages'
-import { DemoPages } from './demo'
-import { SyntaxText } from './components/syntaxText'
+import { MdText } from './components/markdown'
 // import AppLayout from './appLayout/appLayout'
 import './index.less'
 

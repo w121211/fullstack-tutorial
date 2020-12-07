@@ -19,7 +19,9 @@ const POLL = gql`
     id
     commentId
     choices
-    nVotes
+    count {
+      nVotes
+    }
     createdAt
   }
 `
@@ -70,9 +72,9 @@ const COMMENT = gql`
     text
     # updatedAt
     createdAt
-    # replies {
-    #   ...reply
-    # }
+    replies {
+      ...reply
+    }
     topReplies {
       ...reply
     }

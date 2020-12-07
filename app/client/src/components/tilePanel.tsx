@@ -5,6 +5,7 @@ import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 import { ReplyLike, ReplyDislike, CommentLike, CommentDislike } from './tileUpndowns'
 
+
 export function ReplyPanel({ reply, meAuthor }: { reply: QT.replies_replies, meAuthor: boolean }) {
     const [count, setCount] = useState<QT.reply_count>(reply.count)
     const [createReplyLike] = useMutation<QT.createReplyLike, QT.createReplyLikeVariables>(
@@ -21,7 +22,7 @@ export function ReplyPanel({ reply, meAuthor }: { reply: QT.replies_replies, meA
         },
     })
     const [updateReplyLike] = useMutation<QT.updateReplyLike, QT.updateReplyLikeVariables>(
-        queries.UPDATE_COMMENT_LIKE, {
+        queries.UPDATE_REPLY_LIKE, {
         update(cache, { data }) {
             const res = cache.readQuery<QT.myReplyLikes>({ query: queries.MY_REPLY_LIKES, })
             if (data?.updateReplyLike && res?.myReplyLikes) {
@@ -39,19 +40,26 @@ export function ReplyPanel({ reply, meAuthor }: { reply: QT.replies_replies, meA
     })
     const myReplyLikes = useQuery<QT.myReplyLikes>(queries.MY_REPLY_LIKES, { fetchPolicy: "cache-only" })
     const meLike = myReplyLikes.data?.myReplyLikes.find(e => e.replyId === reply.id)
+    console.log(meLike)
     return (
         <span>
-            {meAuthor ? "@me" : "@anonymous"}
-            <span>{dayjs(reply.updatedAt).format("H:mm")}</span>
             <ReplyLike {...{ replyId: reply.id, count, meLike, createReplyLike, updateReplyLike }} />
             <ReplyDislike {...{ replyId: reply.id, count, meLike, createReplyLike, updateReplyLike }} />
-            {/* <span
-            key="comments"
-            onClick={() => { setShowComments(!showComments) }}>
-            <CoffeeOutlined />{commentCount}
-            </span> */}
         </span>
     )
+    // return (
+    //     <span>
+    //         {meAuthor ? "@me" : "@anonymous"}
+    //         <span>{dayjs(reply.updatedAt).format("H:mm")}</span>
+    //         <ReplyLike {...{ replyId: reply.id, count, meLike, createReplyLike, updateReplyLike }} />
+    //         <ReplyDislike {...{ replyId: reply.id, count, meLike, createReplyLike, updateReplyLike }} />
+    //         {/* <span
+    //         key="comments"
+    //         onClick={() => { setShowComments(!showComments) }}>
+    //         <CoffeeOutlined />{commentCount}
+    //         </span> */}
+    //     </span>
+    // )
 }
 
 interface CommentPanelProps {

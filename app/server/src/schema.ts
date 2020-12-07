@@ -30,6 +30,8 @@ type Query {
 
   # 搜尋ticker, topics，近似字搜尋（ElasticSearch？）
   searchAll(term: String!): [String!]!
+  searchTopic(term: String!): [String!]!
+  # searchTopic(term: String!): [String!]!
   # 用url搜尋page，看是否已建立？
   searchPage(url: String!): Page
 
@@ -159,6 +161,31 @@ type User {
 #   text: String!
 # }
 
+type Vote {
+  id: ID!
+  pollId: ID!
+  choiceIdx: Int!
+  # reward: Float
+  # createdAt: DateTime!
+  # updatedAt: DateTime!
+}
+
+type PollCount {
+  id: ID!
+  # nViews: Int!
+  # nUps: Int!
+  # nDowns: Int!
+  # nComments: Int!
+  nVotes: [Int!]!
+  # nJudgements: [Int]
+  # judgeStartedAt: DateTime
+  # judgeEndedAt: DateTime
+  # verdictValid: Boolean
+  # verdictChoice: Int
+  # updatedAt: DateTime!
+  # failedMsg: String
+}
+
 type Poll {
   id: ID!
   commentId: ID!
@@ -166,7 +193,8 @@ type Poll {
   # cat: PollCat!
   # status: PollStatus!
   choices: [String!]!
-  nVotes: [Int!]!
+  # nVotes: [Int!]!
+  count: PollCount!
   # title: String!
   # text: String
   # start: DateTime!
@@ -178,15 +206,6 @@ type Poll {
   # count: PollCount!
   # posts: [Post!]!
   createdAt: DateTime!
-}
-
-type Vote {
-  id: ID!
-  pollId: ID!
-  choiceIdx: Int!
-  # reward: Float
-  # createdAt: DateTime!
-  # updatedAt: DateTime!
 }
 
 type ReplyCount {
@@ -239,9 +258,9 @@ type Comment {
   id: ID!
   userId: ID!
   symbols: [Symbol!]
-  # null表示無需spotReplies
+  # null表示無需topReplies
   topReplies: [Reply!]
-  # replies: [Reply!]!
+  replies: [Reply!]!
   # cat: CommentCat!
   isTop: Boolean
   text: String
@@ -435,22 +454,6 @@ type Post {
   updatedAt: DateTime
   votes: [Vote!]!
   # voteCommits: [VoteCommit!]!
-}
-
-type PollCount {
-  id: ID!
-  nViews: Int!
-  nUps: Int!
-  nDowns: Int!
-  nComments: Int!
-  nVotes: [Int!]!
-  # nJudgements: [Int]
-  # judgeStartedAt: DateTime
-  # judgeEndedAt: DateTime
-  # verdictValid: Boolean
-  # verdictChoice: Int
-  # updatedAt: DateTime!
-  # failedMsg: String
 }
 
 type PollLike {

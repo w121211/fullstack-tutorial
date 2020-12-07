@@ -2,18 +2,6 @@ import React, { Fragment, useState } from 'react'
 import { Router } from '@reach/router'
 import { Card, Layout, Input } from 'antd'
 
-import { Board } from './Board2'
-import { Event } from './Event'
-import { Ticker } from './Ticker'
-import { FeedCreate } from './UrlToFeed'
-import { TrackingEvents } from './TrackingEvents'
-import { CommitEvent } from './CommitEvent'
-import { CommitEventReview } from './CommitEventReview'
-import { Post } from './Post'
-import { Me } from './Me'
-import { Pane, PageContainer } from './Container'
-import { Signup } from './Signup'
-
 import '../appLayout/appLayout.less'
 import BlockMetaCss from '../components/blockMeta/blockMeta.module.scss'
 import Tag from '../components/tag/tag'
@@ -48,7 +36,6 @@ function CssBlockCard({ title, children }: { title: string, children: React.Reac
     </Card>
   )
 }
-
 
 function HomePage({ path }: { path: string }) {
   return (
@@ -536,9 +523,9 @@ function AuthorPage({ path }: { path: string }) {
 
 
 export function DemoPages() {
-  const signup = <Signup />
-  const post = <Post />
-  const form = <FeedCreate />
+  // const signup = <Signup />
+  // const post = <Post />
+  // const form = <FeedCreate />
 
   return (
     <Layout className="my-app">

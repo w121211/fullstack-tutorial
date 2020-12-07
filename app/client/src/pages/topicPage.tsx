@@ -6,14 +6,7 @@ import { SelectProps } from 'antd/es/select'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
-// import { RepliedPostList } from '../components/postList'
-import { CommentList, QueryCommentList } from '../components/tileList'
-import { Reply, Comment, CommentWithPoll } from '../components/tile'
-// import { CommentForm } from '../components/tileForms'
-import { CommentForm, SearchAllForm, SearchPageForm, NoteForm } from '../components/forms'
-// import { CommentForm } from '../components/tileForms'
-// import { SymbolAutoComplete } from '../components/symbolHint'
-
+import { Comment } from '../components/tile'
 import { CssBlockCard } from '../components/block'
 import blockMetaCss from '../components/blockMeta/blockMeta.module.scss'
 
@@ -32,9 +25,12 @@ export const TopicPage: React.FC<RouteProps> = function ({ title, me }) {
   const pg = queryPage.data.page
   if (!pg)
     return <h1>Null block</h1>
+
+  console.log(pg)
+
   return (
     <Layout.Content className="site-layout-background content" style={{ minHeight: 280, }}>
-      {pg.title}
+      <h1>{pg.title}</h1>
       <CssBlockCard title="">
         <ul>
           {pg.props.voteCreate &&

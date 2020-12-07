@@ -286,7 +286,7 @@ export const CommentForm: React.FC<CommentFormProps> = ({ pageId }) => {
 
 export function SearchAllForm() {
   const [value, setValue] = useState('');
-  const [options, setOptions] = useState<{ value: string }[]>([]);
+  const [options, setOptions] = useState<{ value: string }[]>([{ value: "aaa" }, { value: "bbb" }]);
   const [searchAll, { loading, data }] = useLazyQuery<QT.searchAll, QT.searchAllVariables>(queries.SEARCH_ALL)
 
   function onChange(data: string) {

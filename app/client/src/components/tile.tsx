@@ -1,25 +1,257 @@
-import dayjs from 'dayjs'
 import React, { useState } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
 import { Link } from '@reach/router'
-import { Comment as AntdComment, Tag, Tooltip, Button, Card, Divider, Typography, Space, Form, Input, List } from 'antd'
-import { CoffeeOutlined, SwapLeftOutlined, SwapRightOutlined } from '@ant-design/icons'
-import { DislikeOutlined, LikeOutlined, DislikeFilled, LikeFilled, } from '@ant-design/icons'
+import { Button, Comment as AntdComment, Modal, Popover, Tag, Tooltip, Radio, Form, Space } from 'antd'
+import { PlusOutlined } from '@ant-design/icons'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 // import { CommentList } from './commentList'
-import { PollChoicesAndForm } from './pollChoice'
-// import { PollFooter, PostFooter } from './tileFooter'
-// import { VotePostForm, NewChoicePostForm } from './postForm'
+import { PollChoices, PollForm } from './pollChoice'
 import { ReplyPanel, CommentPanel } from './tilePanel'
 import { ReplyList, QueryReplyList, CommentList, QueryCommentList } from './tileList'
 import { ReplyForm } from './tileForms'
-import { NoteForm } from './forms'
-import CommentTemplate from '../components/commentTemplate/commentTemplate'
-import blockMetaCss from '../components/blockMeta/blockMeta.module.scss'
-import tagCss from '../components/tag/tag.module.scss'
-import commentListSmallCss from '../components/commentListSmall/commentListSmall.module.scss'
-// import Tag from '../components/tag/tag'
+import { NoteForm, SearchAllForm } from './forms'
+import tagCss from './tag/tag.module.scss'
+import tagPopoverCss from './tagPopover/tagPopover.module.scss'
+import commentListSmallCss from './commentListSmall/commentListSmall.module.scss'
+import blockMetaCss from './blockMeta/blockMeta.module.scss'
+// import modalCss from '../components/modal.module.scss'
+import { MdText } from './markdown'
+
+export interface TileOptions {
+  dispTopReplies?: boolean
+  dispCommentAs?: 'comment' | 'key-value'
+  dispReplyAs?: 'line' | 'tag' | 'tile'
+  swapText?: string
+  swapChoices?: string[]
+  suggestReplies?: string[]
+}
+
+export const defaultTileOptions: TileOptions = {
+  dispTopReplies: true,
+  dispCommentAs: 'comment',
+  dispReplyAs: 'line',
+}
+
+export function Reply({ reply, me, options = defaultTileOptions }: { reply: QT.replies_replies, me?: QT.me_me, options?: TileOptions }) {
+  // const edit = me?.id === post.userId ? <Link to={`/post/${post.id}?update`}>edit</Link> : null
+  const panel = <ReplyPanel reply={reply} meAuthor={me?.id === reply.userId} />
+  // return <MdText text={reply.text} />
+  if (options.dispReplyAs === 'tag') {
+    return (
+      <span>
+        <Popover className={tagPopoverCss.popover} content={panel}>
+          <Tag className={tagCss.tag}>
+            <MdText text={reply.text} />
+            <span>({reply.count.nUps - reply.count.nDowns})</span>
+          </Tag>
+        </Popover>
+      </span>
+    )
+  } else if (options.dispReplyAs === 'tile') {
+    return (
+      <span>
+        <Popover className={tagPopoverCss.popover} content={panel}>
+          <MdText text={reply.text} />
+          <span>({reply.count.nUps - reply.count.nDowns})</span>
+        </Popover>
+        {/* {panel} */}
+      </span>
+    )
+  } else {
+    return (
+      <li className={commentListSmallCss.commentRoot}>
+        <AntdComment content={reply.text} />
+        {panel}
+      </li>
+    )
+  }
+  // return (
+  //   <li>
+  //     <TextMarker text={reply.text} />
+  //     <p>{reply.text}</p>
+  //     <ReplyPanel reply={reply} meAuthor={me?.id === reply.userId} />
+  //   </li>
+  // )
+}
+
+export function SuggestReply({
+  text, onClick = function () { }, options = defaultTileOptions }: {
+    text: string, onClick(): void, options?: TileOptions
+  }) {
+  return (
+    <Tag style={{ background: "#fff", borderStyle: "dashed" }}
+      onClick={onClick}>
+      {text}
+    </Tag>
+  )
+}
+
+
+export function Comment({ comment, options = defaultTileOptions }: { comment: QT.comment, options?: TileOptions }) {
+  // TODO: 增加fold/unfold
+  // const [folded, setFolded] = useState<boolean>(true)
+  const [showModal, setShowModal] = useState<boolean>(false)
+  const [suggestReply, setSuggestReply] = useState<string | undefined>()
+
+  function onClickFactory(text: string) {
+    return function () {
+      setSuggestReply(text)
+      setShowModal(true)
+    }
+  }
+  if (comment.poll)
+    return <PollComment comment={comment} poll={comment.poll} options={options} />
+  if (options.dispCommentAs === 'key-value') {
+    // if (folded)
+    //   return (
+    //     <li>
+    //       <span className={blockMetaCss.span}>{options.swapText ? options.swapText : comment.text}</span>
+    //       {/* TODO: 為了replyForm的cache而叫，但每個comment都叫太花費資源 */}
+    //       {<QueryReplyList commentId={comment.id} />}
+    //       {/* {comment.topReplies && <ReplyList replies={comment.topReplies} options={{ dispReplyAs: options.dispReplyAs }} />} */}
+    //       <Button type="link" onClick={function () { setShowModal(true) }}>
+    //         新增
+    //       </Button>
+    //       <Modal title="Reply" visible={showModal} footer={null} onCancel={function () { setShowModal(false) }}>
+    //         <ReplyForm commentId={comment.id} addReplyCountByOne={function () { }} onFinish={function () { setShowModal(false) }} />
+    //       </Modal>
+    //       {/* <p>{options.replacedText ? options.replacedText : comment.text}</p>
+    //       <CommentPanel comment={comment} />
+    //       <h4>-Spot Replies-</h4>
+    //       {comment.topReplies ? <ReplyList replies={comment.topReplies} /> : null}
+    //       <button onClick={function (e) { setFolded(!folded) }}>展開</button>
+    //       <br /> */}
+    //     </li>
+    //   )
+    return (
+      <li >
+        <span className={blockMetaCss.span}>{options.swapText ? options.swapText : comment.text}</span>
+
+        {/* TODO: 暫時不考慮topReplies */}
+        {/* {comment.topReplies && <ReplyList replies={comment.topReplies} options={{ dispReplyAs: options.dispReplyAs }} />} */}
+
+        {/* TODO: 為了replyForm的cache而叫，但每個comment都叫太花費資源 */}
+        <Space>
+          <QueryReplyList commentId={comment.id} options={options} />
+          {
+            options.suggestReplies && options.suggestReplies.map(
+              (e, i) => <SuggestReply key={i} text={e} onClick={onClickFactory(e)} />
+            )
+          }
+          {/* <Button type="link" onClick={() => { setShowModal(true) }}>新增</Button> */}
+          <Button shape="circle" icon={<PlusOutlined />} size="small" onClick={() => { setShowModal(true) }} />
+        </Space>
+
+
+        <Modal title="Reply" visible={showModal} footer={null} onCancel={() => { setShowModal(false) }}>
+          <ReplyForm commentId={comment.id}
+            suggestText={suggestReply}
+            addReplyCountByOne={() => { }} onFinish={() => { setShowModal(false) }} />
+          {/* <SearchAllForm /> */}
+        </Modal>
+      </li>
+    )
+  }
+  // if (folded)
+  //   return (
+  //     <div>
+  //       ------Comment-------
+  //       <p>{options.swapText ? options.swapText : comment.text}</p>
+  //       <CommentPanel comment={comment} />
+  //       <h4>-Spot Replies-</h4>
+  //       {comment.topReplies ? <ReplyList replies={comment.topReplies} /> : null}
+  //       <button onClick={function (e) { setFolded(!folded) }}>展開</button>
+  //       <br />
+  //       -------------
+  //     </div>
+  //   )
+  return (
+    <div>
+      ------Comment-------
+      <p>{options.swapText ? options.swapText : comment.text}</p>
+      <CommentPanel comment={comment} />
+      <h4>-Queried Replies-</h4>
+      <QueryReplyList commentId={comment.id} />
+      <ReplyForm commentId={comment.id} addReplyCountByOne={function () { }} />
+      {/* <button onClick={function (e) { setFolded(!folded) }}>折疊</button> */}
+      -------------
+    </div>
+  )
+}
+
+export function PollComment({ comment, poll, options = defaultTileOptions }: { comment: QT.comment, poll: QT.poll, options?: TileOptions }) {
+  const [pattern, setPattern] = useState<string | null>(null)
+  const [showModal, setShowModal] = useState<boolean>(false)
+  const [choiceIdx, setChoiceIdx] = useState<number | null>(null);
+  const choices = options.swapChoices ? options.swapChoices : poll.choices
+
+  if (options.dispCommentAs === 'key-value') {
+    return (
+      <li >
+        <span className={blockMetaCss.span}>{options.swapText ? options.swapText : comment.text}</span>
+        <ul>
+          <li>
+            <PollChoices pollId={poll.id} choices={choices} count={null} setFilterRepliesPattern={setPattern} setChoiceIdx={setChoiceIdx} />
+            {choiceIdx !== null && <Button type="link" onClick={() => { setShowModal(true) }}>投票</Button>}
+          </li>
+          <QueryReplyList commentId={comment.id} options={options} />
+        </ul>
+
+        <Modal title="Reply" visible={showModal} footer={null} onCancel={() => { setShowModal(false) }}>
+          <PollForm poll={poll} choices={choices} choiceIdx={choiceIdx} setShowModal={setShowModal} />
+          {/* <ReplyForm commentId={comment.id} addReplyCountByOne={() => { }} onFinish={() => { setShowModal(false) }} /> */}
+        </Modal>
+      </li>
+    )
+  }
+  return (
+    <div>
+      ---- CommentWithPoll ---------
+      <p>{options.swapText ? options.swapText : comment.text}</p>
+      {/* {poll.choices.map} */}
+      {/* <PollChoices pollId={poll.id} choices={choices} count={null} setShowReplies={function (a: boolean) { }} setFilterRepliesPattern={setPattern} /> */}
+      <CommentPanel comment={comment} />
+      <br />
+      <b>Spot Replies</b>
+      {/* <ReplyList replies={spotReplies} pattern={pattern} /> */}
+      {/* {comment.spotReplies ? <ReplyList replies={comment.spotReplies} /> : null} */}
+      {/* <button onClick={function (e) { setFolded(!folded) }}>展開</button> */}
+      -------------
+    </div>
+  )
+}
+
+
+export function WebpageTile({ page, showSpotReplies = true }: { page: QT.latestPages_latestPages, showSpotReplies?: boolean }) {
+  const [folded, setFolded] = useState<boolean>(true)
+  // const spotReplies = comment.replies.filter(e => e.isSpot)
+  if (folded)
+    return (
+      <div>
+        ------PageTile-------
+        author:domain - title // top notes
+        {/* <CommentList comments={page.topReplies} /> */}
+        {/* <p>{comment.text}</p>
+        <CommentPanel comment={comment} />
+        <h4>-Spot Replies-</h4> */}
+        {/* {comment.spotReplies ? <ReplyList replies={comment.spotReplies} /> : null} */}
+        <button onClick={function (e) { setFolded(!folded) }}>展開</button>
+        <br />
+        -------------
+      </div>
+    )
+  return (
+    <div>
+      ------PageTile-------
+      author:domain - title // top notes
+      <QueryCommentList pageId="123" />
+      <NoteForm />
+      <button onClick={function (e) { setFolded(!folded) }}>折疊</button>
+      -------------
+    </div>
+  )
+}
 
 
 // interface SymbolListProps {
@@ -287,259 +519,3 @@ import commentListSmallCss from '../components/commentListSmall/commentListSmall
 //       return <PostCard post={post} me={me} toLogin={toLogin} folded={folded} noHeader={noHeader} noThread noSpin choice="choice" />
 //   }
 // }
-
-
-export interface TileOptions {
-  dispTopReplies?: boolean
-  dispCommentAs?: 'comment' | 'key-value'
-  dispReplyAs?: 'line' | 'tag' | 'tile'
-  swapText?: string
-  swapChoices?: string[]
-}
-
-export const defaultTileOptions: TileOptions = {
-  dispTopReplies: true,
-  dispCommentAs: 'comment',
-  dispReplyAs: 'line',
-}
-
-export function Reply({ reply, me, options = defaultTileOptions }: { reply: QT.replies_replies, me?: QT.me_me, options?: TileOptions }) {
-  // const edit = me?.id === post.userId
-  //   ? <Link to={`/post/${post.id}?update`}>edit</Link>
-  //   : null
-  const actions = [
-    <Tooltip key="comment-basic-like" title="Like">
-      <span onClick={function () { }}>
-        {/* {React.createElement(action === 'liked' ? LikeFilled : LikeOutlined)} */}
-        <LikeOutlined />
-        <span className="comment-action">10</span>
-      </span>
-    </Tooltip>,
-    <Tooltip key="comment-basic-dislike" title="Dislike">
-      <span onClick={function () { }}>
-        {/* {React.createElement(action === 'disliked' ? DislikeFilled : DislikeOutlined)} */}
-        <DislikeOutlined />
-        <span className="comment-action">3</span>
-      </span>
-    </Tooltip>,
-    // props.parent ? (
-    //   <span
-    //     id={`1`}
-    //     key="comment-basic-reply-to"
-    //     onClick={toggleTextAreaHandler}
-    //   >
-    //     回覆
-    //   </span>
-    // ) : null,
-  ]
-  switch (options.dispReplyAs) {
-    case 'tag':
-      return (
-        <span>
-          <Tag className={tagCss.tag}>{reply.text}</Tag>
-          <ReplyPanel reply={reply} meAuthor={me?.id === reply.userId} />
-        </span>
-      )
-    case 'tile':
-      return (
-        <span>
-          <span>{reply.text}</span>
-          <ReplyPanel reply={reply} meAuthor={me?.id === reply.userId} />
-        </span>
-      )
-  }
-  return (
-    <li className={commentListSmallCss.commentRoot}>
-      <AntdComment actions={actions} content={reply.text} />
-    </li>
-  )
-  // return (
-  //   <li>
-  //     <TextMarker text={reply.text} />
-  //     <p>{reply.text}</p>
-  //     <ReplyPanel reply={reply} meAuthor={me?.id === reply.userId} />
-  //   </li>
-  // )
-}
-
-export function Comment({ comment, options = defaultTileOptions }: { comment: QT.comment, options?: TileOptions }) {
-  /**
-   *        | 折疊時                      | 展開時
-   * - Text | 只顯示text                  | text + replies(as-list) 
-   * - Poll | 顯示Text, PollChoices       | text + replies(as-list) 
-   * - Prop | 同時展現text & spotReplies  | prop-text + replies(as-list)
-   */
-  // const [replyCount, setReplyCount] = useState<number>(comment.count.nReplies)
-  // function addCommentCountByOne() { setCommentCount(commentCount + 1) }
-
-  // const edit = me?.id === post.userId
-  //   ? <Link to={`/post/${post.id}?update`}>edit</Link>
-  //   : null
-
-  // getReplies, addReply, voteComment, voteReply
-  // const data = {
-  //   id: 11,
-  //   type: "PROP",  // "TEXT", "POLL"
-  //   text: "a comment here",
-  //   replies: [{ id: 11, text: "aaa" }, { id: 12, text: "bbb" }, { id: 13, text: "ccc" }],
-  //   spotReplies: [{ id: 11, text: "aaa" }, { id: 12, text: "bbb" }],
-  //   // poll: { id: 11, choices: ["aaa", "bbb"], nVotes: [10, 20], },
-  // }
-
-  // let text
-  // switch (data.type) {
-  //   case "PROP":
-  //     text = <p>{data.text}: {data.spotReplies.map(e => e.text)}</p>
-  //     break
-  //   // case "POLL":
-  //   //   text = <p>{data.text}</p>
-  //   default:
-  //     text = <p>{data.text}</p>
-  //     break
-  // }
-  const [folded, setFolded] = useState<boolean>(true)
-  // const spotReplies = comment.replies.filter(e => e.isSpot)
-  if (comment.poll)
-    return <CommentWithPoll comment={comment} poll={comment.poll} />
-
-  if (options.dispCommentAs === 'key-value') {
-    if (folded)
-      return (
-        <li>
-          <span className={blockMetaCss.span}>{options.swapText ? options.swapText : comment.text}</span>
-          {comment.topReplies && <ReplyList replies={comment.topReplies} options={{ dispReplyAs: options.dispReplyAs }} />}
-          <span>[新增]</span>
-          {/* <p>{options.replacedText ? options.replacedText : comment.text}</p>
-          <CommentPanel comment={comment} />
-          <h4>-Spot Replies-</h4>
-          {comment.topReplies ? <ReplyList replies={comment.topReplies} /> : null}
-          <button onClick={function (e) { setFolded(!folded) }}>展開</button>
-          <br /> */}
-        </li>
-      )
-    return (
-      <li>
-        ------Comment-------
-        <p>{options.swapText ? options.swapText : comment.text}</p>
-        <CommentPanel comment={comment} />
-        <h4>-Queried Replies-</h4>
-        <QueryReplyList commentId={comment.id} />
-        <ReplyForm commentId={comment.id} addReplyCountByOne={function () { }} />
-        <button onClick={function (e) { setFolded(!folded) }}>折疊</button>
-      -------------
-      </li>
-    )
-  }
-  if (folded)
-    return (
-      <div>
-        ------Comment-------
-        <p>{options.swapText ? options.swapText : comment.text}</p>
-        <CommentPanel comment={comment} />
-        <h4>-Spot Replies-</h4>
-        {comment.topReplies ? <ReplyList replies={comment.topReplies} /> : null}
-        <button onClick={function (e) { setFolded(!folded) }}>展開</button>
-        <br />
-        -------------
-      </div>
-    )
-  return (
-    <div>
-      ------Comment-------
-      <p>{options.swapText ? options.swapText : comment.text}</p>
-      <CommentPanel comment={comment} />
-      <h4>-Queried Replies-</h4>
-      <QueryReplyList commentId={comment.id} />
-      <ReplyForm commentId={comment.id} addReplyCountByOne={function () { }} />
-      <button onClick={function (e) { setFolded(!folded) }}>折疊</button>
-      -------------
-    </div>
-  )
-}
-
-export function CommentWithPoll({ comment, poll, options = defaultTileOptions }: { comment: QT.comment, poll: QT.poll, options?: TileOptions }) {
-  const [pattern, setPattern] = useState<string | null>(null)
-  {/* {data.poll ? <Poll poll={poll} pattern={pattern} setPattern={setPattern} /> : null} */ }
-  const spotReplies = [
-    {
-      __typename: "Reply" as const,
-      id: "111",
-      userId: "222",
-      meta: { choice: 0 },
-      isTop: true,
-      text: "(0) a poll reply",
-      updatedAt: "August 19, 1975 23:15:30",
-      count: {
-        __typename: "ReplyCount" as const,
-        id: "333",
-        nViews: 10,
-        nUps: 11,
-        nDowns: 12,
-      },
-    },
-    {
-      __typename: "Reply" as const,
-      id: "111",
-      userId: "222",
-      meta: { choice: 1 },
-      isTop: true,
-      text: "(1) a poll reply",
-      updatedAt: "August 19, 1975 23:15:30",
-      count: {
-        __typename: "ReplyCount" as const,
-        id: "333",
-        nViews: 10,
-        nUps: 11,
-        nDowns: 12,
-      },
-    },
-    // { text: "BBB", meta: { choice: 2 }, }
-  ]
-
-  return (
-    <div>
-      ---- CommentWithPoll ---------
-      <p>{options.swapText ? options.swapText : comment.text}</p>
-      {/* {poll.choices.map} */}
-      <PollChoicesAndForm poll={poll} count={null} setShowReplies={function (a: boolean) { }} setFilterRepliesPattern={setPattern} />
-      <CommentPanel comment={comment} />
-      <br />
-      <b>Spot Replies</b>
-      <ReplyList replies={spotReplies} pattern={pattern} />
-      {/* {comment.spotReplies ? <ReplyList replies={comment.spotReplies} /> : null} */}
-      {/* <button onClick={function (e) { setFolded(!folded) }}>展開</button> */}
-      -------------
-    </div>
-  )
-}
-
-
-export function WebpageTile({ page, showSpotReplies = true }: { page: QT.latestPages_latestPages, showSpotReplies?: boolean }) {
-  const [folded, setFolded] = useState<boolean>(true)
-  // const spotReplies = comment.replies.filter(e => e.isSpot)
-  if (folded)
-    return (
-      <div>
-        ------PageTile-------
-        author:domain - title // top notes
-        {/* <CommentList comments={page.topReplies} /> */}
-        {/* <p>{comment.text}</p>
-        <CommentPanel comment={comment} />
-        <h4>-Spot Replies-</h4> */}
-        {/* {comment.spotReplies ? <ReplyList replies={comment.spotReplies} /> : null} */}
-        <button onClick={function (e) { setFolded(!folded) }}>展開</button>
-        <br />
-        -------------
-      </div>
-    )
-  return (
-    <div>
-      ------PageTile-------
-      author:domain - title // top notes
-      <QueryCommentList pageId="123" />
-      <NoteForm />
-      <button onClick={function (e) { setFolded(!folded) }}>折疊</button>
-      -------------
-    </div>
-  )
-}

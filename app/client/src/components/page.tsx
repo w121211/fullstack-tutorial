@@ -6,13 +6,7 @@ import { Button, Card, Divider, Typography, Space, Form, Input, List } from 'ant
 import { CoffeeOutlined, SwapLeftOutlined, SwapRightOutlined } from '@ant-design/icons'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
-// import { CommentList } from './commentList'
-import { PollChoicesAndForm } from './pollChoice'
-// import { PollFooter, PostFooter } from './tileFooter'
-// import { VotePostForm, NewChoicePostForm } from './postForm'
-import { ReplyPanel, CommentPanel } from './tilePanel'
-import { ReplyList, QueryReplyList, CommentList, QueryCommentList } from './tileList'
-import { ReplyForm } from './tileForms'
+import { QueryCommentList } from './tileList'
 import { NoteForm } from './forms'
 
 export function PageProps({ page, showSpotReplies = true }: { page: QT.page_page, showSpotReplies?: boolean }) {

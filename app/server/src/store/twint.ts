@@ -2,17 +2,15 @@
  * 抓elasticsearch的資料（twint project），用cronjob執行（與server-node分開）
  * 
  * Run:
- * cd .../src/webpages && npx ts-node youtube.ts
+ * cd .../src && npx ts-node twint.ts
  */
 import { Client, ApiResponse, RequestParams } from '@elastic/elasticsearch'
 import * as PA from '@prisma/client'
-import { PagePropsTemplate } from '../models/page'
+import { initAuthorPage, initWebpagePage, insertPage, } from '../models/page'
+import { getLink, createLink, getOrCreateLink } from '../models/link'
+import { getOrCreateSymbol } from '../models/symbols'
 
 const es = new Client({ node: 'http://es:9200' })
-const prisma = new PA.PrismaClient({
-  errorFormat: "pretty",
-  log: ['query', 'info', 'warn'],
-})
 
 const commonScanParams = {
   youtube: "*youtube*"
@@ -23,97 +21,96 @@ async function scanPages(params: string, afterAt?: Date) {
 }
 
 // --- Youtube (author, video)
-async function saveYoutubePages(lastImportAt) {
-  // channels -> author page
 
-
-  // videos -> webpage
-  for (const v of await scanPages()) {
-    prisma.page.create()
+async function _saveYtChannelPage(botEmail: string, hit: any) {
+  /** 依序建立: 1. author-symbol 2. page 3. link */
+  const j = JSON.parse(hit['_source']['entry_meta'])
+  const d = {
+    // id: j["id"],
+    url: hit["_id"],
+    // contentId: j["yt_channelid"],
+    contentId: j["id"],
+    symbol: `@${j["yt_channelid"]}:youtube`,
+    srcTitle: j["title"],
   }
+  // 若已有author-symbol，則返回
+  const [symbol, created] = await getOrCreateSymbol(PA.SymbolCat.AUTHOR, d.symbol)
+  if (!created) {
+    console.log(`Page:${d.symbol}已經建立，跳過`)
+    return
+  }
+  const page = await insertPage(botEmail, initAuthorPage(d.symbol, d.srcTitle))
+  console.log(page)
+  const [link, _] = await getOrCreateLink(d.url, page, PA.LinkContentType.AUTHOR, d.contentId)
 }
 
-function scanYoutubePages() {
-  const pages: string[] = []
-  pages.map(function (e) {
-    return "null"
-  })
+async function _saveYtVideoPage(botEmail: string, hit: any) {
+  /** 依序建立: 1. page 2. link */
+  const j = JSON.parse(hit['_source']['entry_meta'])
+  const d = {
+    url: hit['_id'],
+    contentId: j['id'],
+    contentAuthorId: j['yt_channelid'],
+    srcAuthor: `@${j["yt_channelid"]}:youtube`,
+    srcTitle: j["title"],
+  }
+  // 若已有page，則返回
+  const [res, parsed] = await getLink(d.url)
+  if (res !== null) {
+    console.log(`Link:${d.url}已經建立，跳過`)
+    return
+  }
+  // 建立page、link
+  const page = await insertPage(botEmail, initWebpagePage(parsed.url, d.srcAuthor, d.srcTitle))
+  const link = await createLink(parsed, page, PA.LinkContentType.AUTHOR, d.contentId, d.contentAuthorId)
+}
 
-  // insert into database
-
-  const params: RequestParams.Search = {
-    index: 'game-of-thrones',
+async function saveYoutubePages(botEmail: string, after: Date = new Date(2020, 1, 1)) {
+  // 抓channel
+  const prams1: RequestParams.Search = {
+    index: 'scraper-page',
     body: {
       query: {
-        match: {
-          quote: 'winter'
+        bool: {
+          must: [
+            { wildcard: { from_url: "*youtube*" } },
+            { wildcard: { from_url: "*channel*" } },
+            { range: { created_at: { gte: after.toISOString() } } }
+          ]
         }
-      }
+      },
     }
   }
-}
+  const res1: ApiResponse = await es.search(prams1)
+  // console.log(chRes.body.hits.total)
+  for (const h of res1.body.hits.hits) {
+    // console.log(h)
+    await _saveYtChannelPage(botEmail, h)
+  }
 
-function runEvery() {
-
+  // 抓videos
+  const params2: RequestParams.Search = {
+    index: 'scraper-page',
+    body: {
+      query: {
+        bool: {
+          must: [
+            { wildcard: { from_url: "*youtube*" } },
+            { range: { created_at: { gte: after.toISOString() } } }
+          ]
+        }
+      },
+    }
+  }
+  const res2: ApiResponse = await es.search(params2)
+  for (const h of res2.body.hits.hits) {
+    await _saveYtVideoPage(botEmail, h)
+  }
 }
 
 async function run(): Promise<void> {
-  // // Let's start by indexing some data
-  // const doc1: RequestParams.Index = {
-  //   index: 'game-of-thrones',
-  //   body: {
-  //     character: 'Ned Stark',
-  //     quote: 'Winter is coming.'
-  //   }
-  // }
-  // await client.index(doc1)
-
-  // const doc2: RequestParams.Index = {
-  //   index: 'game-of-thrones',
-  //   body: {
-  //     character: 'Daenerys Targaryen',
-  //     quote: 'I am the blood of the dragon.'
-  //   }
-  // }
-  // await client.index(doc2)
-
-  // const doc3: RequestParams.Index = {
-  //   index: 'game-of-thrones',
-  //   // here we are forcing an index refresh,
-  //   // otherwise we will not get any result
-  //   // in the consequent search
-  //   refresh: true,
-  //   body: {
-  //     character: 'Tyrion Lannister',
-  //     quote: 'A mind needs books like a sword needs a whetstone.'
-  //   }
-  // }
-  // await client.index(doc3)
-
-  const result: ApiResponse = await client
-    .search({
-      index: 'scraper-page',
-      body: {
-        query: {
-          bool: {
-            must: [
-              { wildcard: { from_url: "*youtube*" } },
-              { range: { created_at: { gt: "2020-01-01T00:00:00" } } }
-            ]
-          }
-        },
-      }
-    })
-  console.log(result.body.hits.hits[0])
-  for (const h of result.body.hits.hits[0]) {
-    const j = JSON.parse(h["entry_meta"])
-    const d = {
-      author: j["author_detail"]["href"],
-      publishedAt: j["entry_published_at"],
-      title: j["title_detail"],
-    }
-  }
-
+  const botEmail = "bot@bot.bot"
+  await saveYoutubePages(botEmail)
 }
 
 run()

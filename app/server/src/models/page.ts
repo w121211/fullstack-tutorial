@@ -1,3 +1,6 @@
+/** 
+ * TODO：目前的template非常不直覺、也不好擴展，需從頭設計
+ */
 import _ from 'lodash'
 import dayjs from 'dayjs'
 import * as PA from '@prisma/client'
@@ -12,7 +15,7 @@ enum PageType {
   Author
 }
 
-enum Template {
+export enum Template {
   Ticker = "TICKER",
   Topic = "TOPIC",
   Author = "AUTHOR",
@@ -45,6 +48,7 @@ type CommentTemplate = {
   text: string
   poll?: PollTemplate
   props?: CommentProps
+  replies?: string[]
   // 為了事後增加
   id?: number
 }
@@ -109,54 +113,71 @@ const defaultProps: PagePropsTemplate = {
   voteCreate: { text: "voteCreate", poll: { choices: ["yes", "no"] } },
 }
 
-export function initTickerPage(title: string, symbol: string): PageTemplate {
-  const { topics, links, pros, cons, act, intro } = defaultProps
+function _initProps(keys: string[], replies?: Record<string, string[]>) {
+  let props: Record<string, any> = {}
+  for (const k of keys) {
+    if (k in defaultProps) {
+      props[k] = defaultProps[k as keyof PagePropsTemplate]
+      if (replies && k in replies)
+        props[k]['replies'] = replies[k]
+    } else {
+      throw new Error(`No key found in props: ${k}`)
+    }
+  }
+  return props
+}
+
+export function initTickerPage(title: string, symbol: string, wiki?: string, replies?: Record<string, string[]>): PageTemplate {
+  const props = _initProps(['topics', 'links', 'pros', 'cons', 'act', 'intro'], replies) as PagePropsTemplate
   const temp = {
     title,
     template: Template.Ticker,
     props: {
+      ...props,
       selfSymbol: symbol,
-      topics, links, pros, cons, act, intro
-    },
+      wiki,
+    }
   }
   // validateBlock(template)  // If not valid, throw error
   return temp
 }
 
-export function initTopicPage(title: string, wikiEnTitle: string): PageTemplate {
-  const { tickers, topics, links, intro, shortView, longView } = defaultProps
+export function initTopicPage(title: string, wiki: string, replies?: Record<string, string[]>): PageTemplate {
+  const props = _initProps(['voteCreate', 'tickers', 'topics', 'links', 'intro', 'shortView', 'longView'], replies) as PagePropsTemplate
   const temp = {
-    title: `${title}`,
+    title,
     template: Template.Topic,
     props: {
-      wiki: wikiEnTitle,
-      tickers, topics, links, intro, shortView, longView,
+      ...props,
+      wiki,
     },
   }
   // validateBlock(template)  // If not valid, throw error
   return temp
 }
 
-export function initAuthorPage(symbol: string): PageTemplate {
+export function initAuthorPage(symbol: string, srcTitle?: string): PageTemplate {
   const { links } = defaultProps
   const temp = {
     title: `${symbol}`,
     template: Template.Author,
-    props: { links },
+    props: {
+      // author name
+      selfSymbol: symbol,
+      srcTitle: srcTitle ?? null,
+      links,
+    },
   }
   // validateBlock(template)  // If not valid, throw error
   return temp
 }
 
-export function initWebpagePage(link: PA.Link, srcAuthor: string, srcTitle: string): PageTemplate {
-  // TODO
+export function initWebpagePage(url: string, srcAuthor: string, srcTitle: string): PageTemplate {
+  const { tickers, topics, intro } = defaultProps
   const temp = {
-    title: `${link.url}`,
+    title: `${url}`,
     template: Template.Webpage,
-    props: {
-      srcAuthor,
-      srcTitle,
-    },
+    props: { srcAuthor, srcTitle, tickers, topics, intro, },
   }
   // validateBlock(template)  // If not valid, throw error
   return temp
@@ -169,51 +190,73 @@ const prisma = new PA.PrismaClient({
   log: ['query', 'info', 'warn'],
 })
 
-export async function insertPage(botUserId: string, temp: PageTemplate, link?: PA.Link) {
+export async function insertPage(botEmail: string, temp: PageTemplate): Promise<PA.Page> {
   // insert page （取得pageId)
   const page = await prisma.page.create({
     data: {
       title: temp.title,
       template: temp.template,
       props: {},
-      symbol: { connect: { name: temp.props.selfSymbol ?? undefined } }
+      symbol: temp.props.selfSymbol ? { connect: { name: temp.props.selfSymbol } } : undefined,
       // link: {connect: {link.id}}
     },
   })
 
-  // insert propComments
+  // insert propComments & replies (if any)
   const props = _.cloneDeep(temp.props)
   for (const k in props) {
     let v = props[k as keyof PagePropsTemplate]
     if (v !== null && typeof v === 'object' && !Array.isArray(v)) {
-      const propComment = await prisma.comment.create({
+      const comment = await prisma.comment.create({
         data: {
           text: v.text,
           isProp: true,
-          user: { connect: { id: botUserId } },
+          // user: { connect: { id: botUserId } },
+          user: { connect: { email: botEmail } },
           page: { connect: { id: page.id } },
           propFor: { connect: { id: page.id } },
           count: { create: {} }
         }
       })
+      v.id = comment.id
+
       if (v.poll) {
         await prisma.poll.create({
           data: {
             choices: v.poll.choices,
-            user: { connect: { id: botUserId } },
-            comment: { connect: { id: propComment.id } }
+            user: { connect: { email: botEmail } },
+            comment: { connect: { id: comment.id } },
+            count: {
+              create: {
+                nVotes: v.poll.choices.map(e => 0),
+                nJudgments: v.poll.choices.map(e => 0),
+              }
+            }
           }
         })
       }
-      v.id = propComment.id
+      if (v.replies) {
+        for (const e of v.replies) {
+          await prisma.reply.create({
+            data: {
+              text: e,
+              user: { connect: { email: botEmail } },
+              comment: { connect: { id: comment.id } },
+              count: { create: {} }
+            }
+          })
+        }
+      }
     }
-    // Update props json
-    // console.log(props)
-    await prisma.page.update({
-      data: { props },
-      where: { id: page.id }
-    })
+
   }
+  // Update props json
+  // console.log(props)
+  return await prisma.page.update({
+    data: { props },
+    where: { id: page.id },
+    include: { propComments: true },
+  })
 }
 
 // --- Services

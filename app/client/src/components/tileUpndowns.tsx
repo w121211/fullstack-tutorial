@@ -28,9 +28,10 @@ interface ReplyLikeProps {
   meLike?: QT.replyLike
   createReplyLike: (a: { variables: QT.createReplyLikeVariables }) => void
   updateReplyLike: (a: { variables: QT.updateReplyLikeVariables }) => void
+  showCount?: boolean
 }
 
-export const ReplyLike: React.FC<ReplyLikeProps> = ({ replyId, count, meLike, createReplyLike, updateReplyLike }) => {
+export const ReplyLike: React.FC<ReplyLikeProps> = ({ replyId, count, meLike, createReplyLike, updateReplyLike, showCount = false }) => {
   let onClick
   let liked = false
   if (meLike && meLike.choice !== QT.LikeChoice.UP) {
@@ -50,19 +51,18 @@ export const ReplyLike: React.FC<ReplyLikeProps> = ({ replyId, count, meLike, cr
   return (
     <span onClick={onClick}>
       {liked ? <LikeFilled /> : <LikeOutlined />}
-      {count.nUps}
+      {showCount && count.nUps}
     </span>
   )
 }
 
-export const ReplyDislike: React.FC<ReplyLikeProps> = ({ replyId, count, meLike, createReplyLike, updateReplyLike }) => {
+export const ReplyDislike: React.FC<ReplyLikeProps> = ({ replyId, count, meLike, createReplyLike, updateReplyLike, showCount = false }) => {
   let onClick
   let disliked = false
   if (meLike && meLike.choice !== QT.LikeChoice.DOWN) {
     onClick = function () {
       updateReplyLike({ variables: { id: meLike.id, data: { choice: QT.LikeChoice.DOWN } } })
     }
-
   } else if (meLike && meLike.choice === QT.LikeChoice.DOWN) {
     onClick = function () {
       updateReplyLike({ variables: { id: meLike.id, data: { choice: QT.LikeChoice.NEUTRAL } } })
@@ -73,11 +73,10 @@ export const ReplyDislike: React.FC<ReplyLikeProps> = ({ replyId, count, meLike,
       createReplyLike({ variables: { replyId, data: { choice: QT.LikeChoice.DOWN } } })
     }
   }
-
   return (
     <span onClick={onClick}>
       {disliked ? <DislikeFilled /> : <DislikeOutlined />}
-      {count.nDowns}
+      {showCount && count.nDowns}
     </span>
   )
 }

@@ -31,7 +31,7 @@ const MyModal = () => {
         <div className={classes.Modal}>
             <Button type="primary" onClick={showModal}>
                 新增留言
-        </Button>
+            </Button>
             <Modal
                 title="留言"
                 visible={state.visible}

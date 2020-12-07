@@ -42,7 +42,7 @@ function _parser(text: string) {
 }
 
 
-export function SyntaxText({ text = "this is a simple test" }: { text?: string }) {
+export function MdText({ text }: { text: string }) {
   /**
    * 將markdown轉成components
    * - [[topic with blank]] -> /topic/topic_with_blank
@@ -50,35 +50,26 @@ export function SyntaxText({ text = "this is a simple test" }: { text?: string }
    * - $ticker -> /ticker/$ticker
    * - [external link](http://...) -> <a href="...">...</a>
    */
-
-  // var unified = require('unified')
-  // var markdown = require('remark-parse')
-  // var tree = unified().use(markdown).parse('# Hello world!')
-  // console.log(tree)
-
   const renderers = {
-    // inlineMath: ({ value }) => <InlineMath math={value} />,
-    // math: ({ value }) => <BlockMath math={value} />
     paragraph: function ({ value, children }: any) {
       return <span>{children}</span>
     },
     link: function (a: any) {
-      console.log('~~~')
       console.log(a)
       console.log(a.href)
       return <h3>{a.children}</h3>
       // <h1>{value}</h1>
     },
-    wikiLink: function ({ value }: any) {
-      // console.log(a)
-      return <b>{value}</b>
+    wikiLink: function ({ value }: { value: string }) {
+      if (value.startsWith("$"))
+        return <Link to={`/ticker/${value}`}>{value}</Link>
+      return <Link to={`/topic/${value}`}>{value}</Link>
     }
   }
-
   return <ReactMarkdown
     plugins={[wikiLinkPlugin]}
     allowedTypes={['text', 'paragraph', 'link']}
-    children={`The [[lift]] [[@coefficient|this is a]] ($C_L$) is a [I'm an inline-style link](https://www.google.com).`}
+    children={text}
     renderers={renderers}
   />
 }

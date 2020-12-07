@@ -7,26 +7,28 @@
 import { hash } from 'bcryptjs'
 import * as PA from '@prisma/client'
 import * as PageOps from './models/page'
+import { indexTitle } from './store/es'
+
+// Dummy-data for test
 
 const BOT = { email: "bot@bot.bot", password: "robo" }
 const TESTUSER = { email: "aaa@aaa.com", password: "aaa" }
 const TICKERS = [
-    { title: "Boeing", symbol: "$BA", wiki: "Boeing", topics: ["Airplane"], }
+    { title: "Boeing", symbol: "$BA", wiki: "Boeing", topics: ["[[Airplane]]"], },
+    { title: "Google", symbol: "$GOOG", wiki: "Google", topics: ["[[Internet]]"], },
+    { title: "Apple", symbol: "$AAPL", wiki: "Apple", topics: ["[[Internet]]"], }
 ]
 const TOPICS = [
-    { title: "Airplane", wiki: "Airplane", tickers: ["$BA"] },
+    { title: "Airplane", wiki: "Airplane", tickers: ["[[$BA]]"] },
+    { title: "Internet", wiki: "Internet", tickers: ["[[$GOOG]]", "[[$AAPL]]"] },
 ]
+
+// Main
 
 const prisma = new PA.PrismaClient({
     errorFormat: "pretty",
     log: ['query', 'info', 'warn'],
 })
-
-const ticker = {
-    symbol: "$BA",
-    wiki: "",
-    links: [],
-}
 
 async function main() {
     console.log("-- 將Databse清空")
@@ -52,19 +54,21 @@ async function main() {
         }
     })
 
-    console.log("-- 依template生成ticker")
-    const pg = PageOps.initTickerPage("波音", "$BA")
+    console.log("-- 依template生成ticker & 存入資料庫")
+    for (const e of TICKERS) {
+        const pg = await PageOps.insertPage(bot.email, PageOps.initTickerPage(e.title, e.symbol, e.wiki, { topics: e.topics }))
+        const filled = PageOps.fillPage(pg)
+    }
+    for (const e of TOPICS) {
+        const pg = await PageOps.insertPage(bot.email, PageOps.initTopicPage(e.title, e.wiki, { tickers: e.tickers }))
+        const filled = PageOps.fillPage(pg)
+    }
+
     // console.log(JSON.stringify(bk, null, 2))
 
     console.log("-- Insert ticker page")
-    await PageOps.insertPage(bot.id, pg)
 
     console.log("-- 補充數據，例如propComments的values")
-
-
-
-
-
     // const user = "bot"
     // const data = {
     //   name: "$BA",
@@ -77,14 +81,53 @@ async function main() {
     //   const comment = bk.propComments.filter(id)
     //   prisma.create({ reply: { text: "test", isSpot: true, user } })
     // }
+
+    // await prisma.comment.create({
+    //     data: {
+    //         text: "test",
+    //         user: { connect: { id: bot.id } },
+    //         page: { connect: { id: page.id } },
+    //         poll: {
+    //             create: {
+    //                 choices: ["a", "b", "c", "d"],
+    //                 user: { connect: { id: bot.id } },
+    //                 count: {
+    //                     create: {
+    //                         nVotes: [1, 2, 3, 4],
+    //                         nJudgments: [1, 2, 3, 4],
+    //                     }
+    //                 },
+    //             }
+    //         }
+    //     }
+    // })
+
+    // console.log("-- Index titles (elasticsearch)")
+    // const pages = await prisma.page.findMany({
+    //     include: { symbol: true }
+    // })
+    // for (const e of pages) {
+    //     if (e.template === PageOps.Template.Webpage)
+    //         continue
+    //     if (e.template === PageOps.Template.Topic)
+    //         await indexTitle({ name: e.title, template: PageOps.Template.Topic })
+    //     else if (e.template === PageOps.Template.Ticker) {
+    //         await indexTitle({ name: e.title, template: PageOps.Template.Topic })
+    //         if (e.symbol?.name) {
+    //             await indexTitle({ name: e.symbol?.name, template: PageOps.Template.Ticker })
+    //         }
+    //     }
+    // }
+
+    console.log("-- All done!")
 }
 
 
 main()
-    .catch(e => {
+    .catch(function (e) {
         console.error(e)
-        process.exit(1)
     })
-    .finally(async () => {
+    .finally(async function () {
         await prisma.$disconnect()
+        process.exit(1)
     })

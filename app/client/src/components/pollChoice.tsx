@@ -2,7 +2,8 @@ import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import React, { useState, useEffect } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
-import { Button, Card, Tooltip, Form, Radio, Spin, Input, Typography } from 'antd'
+import { Button, Form, Radio, Spin, Input, Typography, } from 'antd'
+import { RadioChangeEvent } from 'antd/lib/radio/interface'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 
@@ -26,7 +27,9 @@ dayjs.extend(localizedFormat)
 //   choices: React.ReactNode
 // }
 
-function PollForm({ poll, choices, initialValues }: { poll: QT.poll, choices: React.ReactNode, initialValues: { choice: number | null } }) {
+// export function PollForm({ poll, choices, initialValues }: { poll: QT.poll, choices: React.ReactNode, initialValues: { choice: number | null } }) {
+export function PollForm({ poll, choices, choiceIdx, setShowModal }: { poll: QT.poll, choices: string[], choiceIdx: number | null, setShowModal(a: boolean): void }) {
+    const [form] = Form.useForm()
     const [createVote, createVoteResult] = useMutation<QT.createVote, QT.createVoteVariables>(
         queries.CREATE_VOTE, {
         update(cache, { data }) {
@@ -41,95 +44,59 @@ function PollForm({ poll, choices, initialValues }: { poll: QT.poll, choices: Re
                     },
                 })
             }
+            setShowModal(false)
         },
     })
-    const [createReply, createPostResult] = useMutation<QT.createReply, QT.createReplyVariables>(
-        queries.CREATE_REPLY,
-        // queries.CREATE_POST, {
-        // update(cache, { data }) {
-        // console.log(typeof data?.createPost.poll?.start)
-        // console.log(data?.createPost)
-        // try {
-        //   const res = cache.readQuery<QT.latestPosts>({ query: queries.LATEST_POLLS })
-        //   if (data?.createPost && res?.latestPolls) {
-        //     cache.writeQuery<QT.latestPolls>({
-        //       query: queries.LATEST_POLLS,
-        //       data: {
-        //         latestPolls: res.latestPolls.concat([data.createPoll]),
-        //       },
-        //     })
-        //   }
-        // } catch (e) {
-        //   if (e instanceof InvariantError) { }
-        //   else { console.error(e) }
-        // }
-        // },
-        // }
-    )
-    const [addChoice, setAddChoice] = useState<Boolean>(false)
-
-    async function onFinish(values: any) {
-        console.log(values)
+    const [createReply, createReplyResult] = useMutation<QT.createReply, QT.createReplyVariables>(
+        queries.CREATE_REPLY, {
+        update(cache, { data }) {
+            const res = cache.readQuery<QT.replies, QT.repliesVariables>({
+                query: queries.REPLIES,
+                variables: { commentId: poll.commentId },
+            })
+            if (data?.createReply && res?.replies) {
+                cache.writeQuery<QT.replies, QT.repliesVariables>({
+                    query: queries.REPLIES,
+                    variables: { commentId: poll.commentId },
+                    data: { replies: res?.replies.concat([data?.createReply]) },
+                })
+                // addReplyCountByOne()
+                form.resetFields()
+            }
+        }
+    })
+    function onFinish(values: any) {
+        // console.log(values)
+        if (choiceIdx === null)
+            return
+        createVote({
+            variables: {
+                pollId: poll.id,
+                choiceIdx: choiceIdx,
+            }
+        })
         if (values.text) {
-            const result = await createReply({
+            createReply({
                 variables: {
-                    data: {
-                        // cat: QT.PostCat.REPLY,
-                        // symbolIds: [],
-                        text: values.text,
-                    },
+                    data: { text: `[${choices[choiceIdx]}]${values.text}`, },
                     commentId: poll.commentId,
                 }
             })
         }
-        createVote({
-            variables: {
-                pollId: poll.id,
-                choiceIdx: values.choice,
-                // postId: result.data?.createPost.id,
-            }
-        })
     }
-
+    if (choiceIdx === null)
+        return <p>需要選取一個選項</p>
     return (
-        <Form onFinish={onFinish} initialValues={initialValues}>
-            <Form.Item name="choice" required={!addChoice}>
-                {choices}
-            </Form.Item>
-            {/* {
-                poll.cat !== QT.PollCat.FIXED &&
-                <Form.Item>
-                    <Button onClick={() => { setAddChoice(!addChoice) }}>新增選項</Button>
-                </Form.Item>
-            } */}
-            {/* {
-                addChoice &&
-                <Form.Item label="選項" name="choiceText" required>
-                    <Input placeholder="新增一個選項" />
-                </Form.Item>
-            } */}
-            <Form.Item label="意見" name="text">
-                <Input.TextArea placeholder="意見（非強制）" autoSize={{ minRows: 3 }} />
+        <Form form={form} onFinish={onFinish}>
+            <Form.Item>[{choices[choiceIdx]}]</Form.Item>
+            <Form.Item name="text">
+                <Input.TextArea placeholder="意見（可留空）" autoSize={{ minRows: 3 }} />
             </Form.Item>
             <Form.Item>
-                {createVoteResult.loading || createPostResult.loading
-                    ? <Spin />
-                    : <Button shape="round" htmlType="submit">送出</Button>}
+                {createVoteResult.loading || createReplyResult.loading
+                    ? <Spin /> : <Button shape="round" htmlType="submit">送出</Button>}
             </Form.Item>
-            {/* 
-      TODO: shouldUpdate 會被大量呼叫 -> 慢 
-      <Form.Item shouldUpdate>
-        {() => {
-          console.log("touched")
-          if (form.isFieldTouched("choice"))
-            return <Button type="primary" htmlType="submit">送出</Button>
-          else if (loading)
-            return <Spin />
-          return null
-        }}
-      </Form.Item> 
-      */}
-        </Form>
+        </Form >
     )
 
 }
@@ -437,11 +404,70 @@ function PollForm({ poll, choices, initialValues }: { poll: QT.poll, choices: Re
 //   )
 // }
 
+export function PollChoices({ pollId, choices, count, setShowReplies, setFilterRepliesPattern, setChoiceIdx }: {
+    pollId: string,
+    choices: string[],
+    count: any,
+    setShowReplies?(a: boolean): void,
+    setFilterRepliesPattern?(a: string | null): void,
+    setChoiceIdx(a: number | null): void,
+}) {
+    const myVotes = useQuery<QT.myVotes>(queries.MY_VOTES, { fetchPolicy: "cache-only" })
+    const meVote = myVotes.data?.myVotes.find((e) => e.pollId === pollId)
+    const [selectedIdx, setSelectedIdx] = useState<number | null>()
+    function onChange(e: RadioChangeEvent) {
+        // console.log('radio checked', e.target.value)
+        if (!meVote) {
+            setChoiceIdx(e.target.value)
+            setSelectedIdx(e.target.value)
+        }
+        //     setFilterRepliesPattern(`(${i})`)
+        //     setShowReplies(true)
+        //     setShowForm(true)
+    }
+    function _choice(i: number, text: string, count?: number) {
+        // if (!me) return <Radio key={id} value={id} onClick={toLogin}>{text}</Radio>
+        // me有投票
+        if (meVote) {
+            // 是me選的選項，粗體
+            if (meVote.choiceIdx === i)
+                return (
+                    <Radio key={i} value={i} checked>
+                        <Typography.Text mark>{text}</Typography.Text>
+                    </Radio>
+                )
+            // 非me選的選項
+            if (meVote.choiceIdx !== i)
+                return <Radio key={i} value={i}>{text}</Radio>
+        }
+        // return <Radio key={i} onClick={() => { setShowDetail(true) }}>{text} [{count}]</Radio>
+        // if (showResult) return <Radio key={i} value={i}>{text} [{count}]</Radio>
+        return <Radio key={i} value={i}>{text}</Radio>
+    }
+    return (
+        <Radio.Group onChange={onChange} value={meVote?.choiceIdx ?? selectedIdx}>{choices.map((e, i) => _choice(i, e))}</Radio.Group>
+    )
+    // return (
+    //     <>
+    //         {showForm ?
+    //             <PollForm poll={poll} choices={choices} initialValues={{ choice: choiceIdx }} /> :
+    //             choices
+    //         }
+    //         {
+    //             showResult ??
+    //             // <BarChart />
+    //             <p>chart</p>
+    //         }
+    //     </>
+    // )
+}
 
 
-export function PollChoicesAndForm({ poll, count, setShowReplies, setFilterRepliesPattern }: {
+
+function _PollChoicesAndForm({ poll, count, setShowReplies, setFilterRepliesPattern }: {
     poll: QT.poll, count: any, setShowReplies(a: boolean): void, setFilterRepliesPattern(a: string | null): void
 }) {
+    /** @deprecated */
     // const meJudgement = {
     //   __typename: "PollJudge",
     //   id: "1234",
@@ -578,7 +604,7 @@ export function PollChoicesAndForm({ poll, count, setShowReplies, setFilterRepli
     // }
 
     function onFinish(values: any) {
-        console.log(values)
+        // console.log(values)
         // if (values.text) {
         //     const result = await createReply({
         //         variables: {
@@ -613,10 +639,7 @@ export function PollChoicesAndForm({ poll, count, setShowReplies, setFilterRepli
                 </Form.Item>
             </Form> */}
             {/* {main} */}
-            {showForm ?
-                <PollForm poll={poll} choices={choices} initialValues={{ choice: choiceIdx }} /> :
-                choices
-            }
+            {/* {showForm ? <PollForm poll={poll} choices={choices} initialValues={{ choice: choiceIdx }} /> : choices} */}
             {
                 showResult ??
                 // <BarChart />

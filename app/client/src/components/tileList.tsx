@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import React, { useState } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
 import { Link } from '@reach/router'
-import { Button, Card, Divider, Typography, Space, Form, Input, List } from 'antd'
+import { Button, Card, Divider, Typography, Space, Form, Input, List, Comment as AntdComment, Tag } from 'antd'
 import { CoffeeOutlined, SwapLeftOutlined, SwapRightOutlined } from '@ant-design/icons'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
@@ -11,17 +11,15 @@ import * as QT from '../store/queryTypes'
 // import { PollFooter, PostFooter } from './tileFooter'
 // import { VotePostForm, NewChoicePostForm } from './postForm'
 import { Reply, Comment, WebpageTile, TileOptions, defaultTileOptions } from './tile'
+import commentListSmallCss from './commentListSmall/commentListSmall.module.scss'
+
 
 export function ReplyList(
   { replies, pattern = null, options = defaultTileOptions }: { replies: QT.replies_replies[], pattern?: string | null, options?: TileOptions }) {
   /** 
    * args:
-   * - pattern（還沒實裝） : 依照reply的vote（會嵌進text）做filter，
-   *     `pattern=null`的情況，就是一個普通的reply list 
+   * - pattern（還沒實裝）: 依照reply的vote（會嵌進text）做filter，`pattern=null`的情況，就是一個普通的reply list 
    * */
-  if (replies.length === 0)
-    return <span>[新增]</span>
-
   // const filtered = replies.map((e, i) => {
   //   if (pattern === null)
   //     return <Reply key={i} reply={e} />
@@ -30,28 +28,45 @@ export function ReplyList(
   //     return <Reply key={i} reply={e} />
   //   return null
   // })
-  const filtered = replies.filter((e) => pattern === null || e.text.indexOf(pattern) >= 0)
-  return (
-    <span>
-      {filtered.map((e, i) => <Reply key={i} reply={e} options={options} />)}
-    </span>
-  )
+  const filteredReplies = replies
+    .filter((e) => pattern === null || e.text.indexOf(pattern) >= 0)
+    .map((e, i) => <Reply key={i} reply={e} options={options} />)
+  // return (
+  //   <List className={commentListSmallCss.List} size="large"
+  //     // pagination={{
+  //     //   onChange: (page) => {
+  //     //     console.log(page)
+  //     //   },
+  //     //   pageSize: 5,
+  //     // }}
+  //     dataSource={filteredReplies}
+  //     renderItem={(e) => (
+  //       // <Reply reply={e} options={options} />
+  //       <li
+  //         className={commentListSmallCss.commentRoot}
+  //       // onClick={() => parentCommentClickHandler(item.id)}
+  //       >
+  //         <AntdComment content={"test"} />
+  //       </li>
+  //     )}
+  //   />
+  // )
+  if (options.dispReplyAs === 'tile')
+    return <Space>{filteredReplies}</Space>
+  if (options.dispReplyAs === 'line')
+    return <ul className={commentListSmallCss.List}>{filteredReplies}</ul>
+  // return <ul>{filteredReplies}</ul>
+  return <>{filteredReplies} </>
 }
 
-export function QueryReplyList({ commentId }: { commentId: string }) {
+export function QueryReplyList({ commentId, pattern = null, options = defaultTileOptions }: { commentId: string, pattern?: string | null, options?: TileOptions }) {
   const { data, loading, error, refetch } = useQuery<QT.replies, QT.repliesVariables>(
     queries.REPLIES, { variables: { commentId } }
   )
-  if (loading) return null
+  if (loading) return <span>loading...</span>
   if (error) return <p>ERROR: {error.message}</p>
   if (!data) return null
-  return <ReplyList replies={data.replies} />
-}
-
-interface CommentListProps extends QT.commentsVariables {
-  me?: QT.me_me
-  blockId: string
-  toAddCommentCountByOne: () => void
+  return <ReplyList replies={data.replies} pattern={pattern} options={options} />
 }
 
 export function CommentList({ comments }: { comments: QT.comment[] }) {
@@ -79,6 +94,12 @@ export function QueryCommentList({ me, pageId }: { me?: QT.me_me, pageId: string
   if (error) return <p>ERROR: {error.message}</p>
   if (!data) return null
   return <CommentList comments={data.comments} />
+}
+
+interface CommentListProps extends QT.commentsVariables {
+  me?: QT.me_me
+  blockId: string
+  toAddCommentCountByOne: () => void
 }
 
 const LoadMoreCommentList: React.FC<CommentListProps> = ({ me, pageId, toAddCommentCountByOne }) => {

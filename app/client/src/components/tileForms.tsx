@@ -5,7 +5,9 @@ import { Form, Button, Input } from 'antd'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 
-export function ReplyForm({ commentId, addReplyCountByOne }: { commentId: string, addReplyCountByOne: () => void }) {
+export function ReplyForm({ commentId, addReplyCountByOne, suggestText, onFinish, onFinishFailed, }: {
+  commentId: string, addReplyCountByOne(): void, suggestText?: string, onFinish?(): void, onFinishFailed?(): void,
+}) {
   const [form] = Form.useForm()
   const [createReply] = useMutation<QT.createReply, QT.createReplyVariables>(
     queries.CREATE_REPLY, {
@@ -25,21 +27,26 @@ export function ReplyForm({ commentId, addReplyCountByOne }: { commentId: string
       }
     }
   })
-  const onFinish = (values: any) => {
+  function _onFinish(values: any) {
     createReply({ variables: { commentId, data: values } })
+    if (onFinish)
+      onFinish()
   }
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
+  function _onFinishFailed(errorInfo: any) {
+    console.log('Failed:', errorInfo)
+    if (onFinishFailed)
+      onFinishFailed()
   }
   return (
     <Form
       form={form}
       name="reply-form"
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
+      onFinish={_onFinish}
+      onFinishFailed={_onFinishFailed}
     >
       <Form.Item
         name="text"
+        initialValue={suggestText}
         rules={[{
           required: true,
           message: 'comment cannot be empty'

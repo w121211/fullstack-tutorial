@@ -7,6 +7,24 @@
 // GraphQL query operation: page
 // ====================================================
 
+export interface page_page_props_tickers_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface page_page_props_tickers_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: page_page_props_tickers_replies_count;
+}
+
 export interface page_page_props_tickers_topReplies_count {
   __typename: "ReplyCount";
   id: string;
@@ -25,12 +43,17 @@ export interface page_page_props_tickers_topReplies {
   count: page_page_props_tickers_topReplies_count;
 }
 
+export interface page_page_props_tickers_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface page_page_props_tickers_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: page_page_props_tickers_poll_count;
   createdAt: any;
 }
 
@@ -49,9 +72,28 @@ export interface page_page_props_tickers {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: page_page_props_tickers_replies[];
   topReplies: page_page_props_tickers_topReplies[] | null;
   poll: page_page_props_tickers_poll | null;
   count: page_page_props_tickers_count;
+}
+
+export interface page_page_props_topics_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface page_page_props_topics_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: page_page_props_topics_replies_count;
 }
 
 export interface page_page_props_topics_topReplies_count {
@@ -72,12 +114,17 @@ export interface page_page_props_topics_topReplies {
   count: page_page_props_topics_topReplies_count;
 }
 
+export interface page_page_props_topics_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface page_page_props_topics_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: page_page_props_topics_poll_count;
   createdAt: any;
 }
 
@@ -96,9 +143,28 @@ export interface page_page_props_topics {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: page_page_props_topics_replies[];
   topReplies: page_page_props_topics_topReplies[] | null;
   poll: page_page_props_topics_poll | null;
   count: page_page_props_topics_count;
+}
+
+export interface page_page_props_links_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface page_page_props_links_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: page_page_props_links_replies_count;
 }
 
 export interface page_page_props_links_topReplies_count {
@@ -119,12 +185,17 @@ export interface page_page_props_links_topReplies {
   count: page_page_props_links_topReplies_count;
 }
 
+export interface page_page_props_links_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface page_page_props_links_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: page_page_props_links_poll_count;
   createdAt: any;
 }
 
@@ -143,9 +214,28 @@ export interface page_page_props_links {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: page_page_props_links_replies[];
   topReplies: page_page_props_links_topReplies[] | null;
   poll: page_page_props_links_poll | null;
   count: page_page_props_links_count;
+}
+
+export interface page_page_props_pros_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface page_page_props_pros_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: page_page_props_pros_replies_count;
 }
 
 export interface page_page_props_pros_topReplies_count {
@@ -166,12 +256,17 @@ export interface page_page_props_pros_topReplies {
   count: page_page_props_pros_topReplies_count;
 }
 
+export interface page_page_props_pros_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface page_page_props_pros_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: page_page_props_pros_poll_count;
   createdAt: any;
 }
 
@@ -190,9 +285,28 @@ export interface page_page_props_pros {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: page_page_props_pros_replies[];
   topReplies: page_page_props_pros_topReplies[] | null;
   poll: page_page_props_pros_poll | null;
   count: page_page_props_pros_count;
+}
+
+export interface page_page_props_cons_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface page_page_props_cons_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: page_page_props_cons_replies_count;
 }
 
 export interface page_page_props_cons_topReplies_count {
@@ -213,12 +327,17 @@ export interface page_page_props_cons_topReplies {
   count: page_page_props_cons_topReplies_count;
 }
 
+export interface page_page_props_cons_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface page_page_props_cons_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: page_page_props_cons_poll_count;
   createdAt: any;
 }
 
@@ -237,9 +356,28 @@ export interface page_page_props_cons {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: page_page_props_cons_replies[];
   topReplies: page_page_props_cons_topReplies[] | null;
   poll: page_page_props_cons_poll | null;
   count: page_page_props_cons_count;
+}
+
+export interface page_page_props_act_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface page_page_props_act_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: page_page_props_act_replies_count;
 }
 
 export interface page_page_props_act_topReplies_count {
@@ -260,12 +398,17 @@ export interface page_page_props_act_topReplies {
   count: page_page_props_act_topReplies_count;
 }
 
+export interface page_page_props_act_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface page_page_props_act_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: page_page_props_act_poll_count;
   createdAt: any;
 }
 
@@ -284,9 +427,28 @@ export interface page_page_props_act {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: page_page_props_act_replies[];
   topReplies: page_page_props_act_topReplies[] | null;
   poll: page_page_props_act_poll | null;
   count: page_page_props_act_count;
+}
+
+export interface page_page_props_intro_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface page_page_props_intro_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: page_page_props_intro_replies_count;
 }
 
 export interface page_page_props_intro_topReplies_count {
@@ -307,12 +469,17 @@ export interface page_page_props_intro_topReplies {
   count: page_page_props_intro_topReplies_count;
 }
 
+export interface page_page_props_intro_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface page_page_props_intro_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: page_page_props_intro_poll_count;
   createdAt: any;
 }
 
@@ -331,9 +498,28 @@ export interface page_page_props_intro {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: page_page_props_intro_replies[];
   topReplies: page_page_props_intro_topReplies[] | null;
   poll: page_page_props_intro_poll | null;
   count: page_page_props_intro_count;
+}
+
+export interface page_page_props_shortView_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface page_page_props_shortView_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: page_page_props_shortView_replies_count;
 }
 
 export interface page_page_props_shortView_topReplies_count {
@@ -354,12 +540,17 @@ export interface page_page_props_shortView_topReplies {
   count: page_page_props_shortView_topReplies_count;
 }
 
+export interface page_page_props_shortView_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface page_page_props_shortView_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: page_page_props_shortView_poll_count;
   createdAt: any;
 }
 
@@ -378,9 +569,28 @@ export interface page_page_props_shortView {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: page_page_props_shortView_replies[];
   topReplies: page_page_props_shortView_topReplies[] | null;
   poll: page_page_props_shortView_poll | null;
   count: page_page_props_shortView_count;
+}
+
+export interface page_page_props_longView_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface page_page_props_longView_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: page_page_props_longView_replies_count;
 }
 
 export interface page_page_props_longView_topReplies_count {
@@ -401,12 +611,17 @@ export interface page_page_props_longView_topReplies {
   count: page_page_props_longView_topReplies_count;
 }
 
+export interface page_page_props_longView_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface page_page_props_longView_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: page_page_props_longView_poll_count;
   createdAt: any;
 }
 
@@ -425,9 +640,28 @@ export interface page_page_props_longView {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: page_page_props_longView_replies[];
   topReplies: page_page_props_longView_topReplies[] | null;
   poll: page_page_props_longView_poll | null;
   count: page_page_props_longView_count;
+}
+
+export interface page_page_props_voteCreate_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface page_page_props_voteCreate_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: page_page_props_voteCreate_replies_count;
 }
 
 export interface page_page_props_voteCreate_topReplies_count {
@@ -448,12 +682,17 @@ export interface page_page_props_voteCreate_topReplies {
   count: page_page_props_voteCreate_topReplies_count;
 }
 
+export interface page_page_props_voteCreate_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface page_page_props_voteCreate_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: page_page_props_voteCreate_poll_count;
   createdAt: any;
 }
 
@@ -472,6 +711,7 @@ export interface page_page_props_voteCreate {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: page_page_props_voteCreate_replies[];
   topReplies: page_page_props_voteCreate_topReplies[] | null;
   poll: page_page_props_voteCreate_poll | null;
   count: page_page_props_voteCreate_count;
@@ -495,6 +735,24 @@ export interface page_page_props {
   voteCreate: page_page_props_voteCreate | null;
 }
 
+export interface page_page_comments_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface page_page_comments_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: page_page_comments_replies_count;
+}
+
 export interface page_page_comments_topReplies_count {
   __typename: "ReplyCount";
   id: string;
@@ -513,12 +771,17 @@ export interface page_page_comments_topReplies {
   count: page_page_comments_topReplies_count;
 }
 
+export interface page_page_comments_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface page_page_comments_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: page_page_comments_poll_count;
   createdAt: any;
 }
 
@@ -537,6 +800,7 @@ export interface page_page_comments {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: page_page_comments_replies[];
   topReplies: page_page_comments_topReplies[] | null;
   poll: page_page_comments_poll | null;
   count: page_page_comments_count;
@@ -582,6 +846,24 @@ export interface pageVariables {
 // GraphQL query operation: comments
 // ====================================================
 
+export interface comments_comments_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface comments_comments_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: comments_comments_replies_count;
+}
+
 export interface comments_comments_topReplies_count {
   __typename: "ReplyCount";
   id: string;
@@ -600,12 +882,17 @@ export interface comments_comments_topReplies {
   count: comments_comments_topReplies_count;
 }
 
+export interface comments_comments_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface comments_comments_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: comments_comments_poll_count;
   createdAt: any;
 }
 
@@ -624,6 +911,7 @@ export interface comments_comments {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: comments_comments_replies[];
   topReplies: comments_comments_topReplies[] | null;
   poll: comments_comments_poll | null;
   count: comments_comments_count;
@@ -647,6 +935,24 @@ export interface commentsVariables {
 // GraphQL query operation: commentsBySymbol
 // ====================================================
 
+export interface commentsBySymbol_commentsBySymbol_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface commentsBySymbol_commentsBySymbol_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: commentsBySymbol_commentsBySymbol_replies_count;
+}
+
 export interface commentsBySymbol_commentsBySymbol_topReplies_count {
   __typename: "ReplyCount";
   id: string;
@@ -665,12 +971,17 @@ export interface commentsBySymbol_commentsBySymbol_topReplies {
   count: commentsBySymbol_commentsBySymbol_topReplies_count;
 }
 
+export interface commentsBySymbol_commentsBySymbol_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface commentsBySymbol_commentsBySymbol_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: commentsBySymbol_commentsBySymbol_poll_count;
   createdAt: any;
 }
 
@@ -689,6 +1000,7 @@ export interface commentsBySymbol_commentsBySymbol {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: commentsBySymbol_commentsBySymbol_replies[];
   topReplies: commentsBySymbol_commentsBySymbol_topReplies[] | null;
   poll: commentsBySymbol_commentsBySymbol_poll | null;
   count: commentsBySymbol_commentsBySymbol_count;
@@ -842,6 +1154,24 @@ export interface me {
 // GraphQL query operation: latestPages
 // ====================================================
 
+export interface latestPages_latestPages_props_tickers_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface latestPages_latestPages_props_tickers_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: latestPages_latestPages_props_tickers_replies_count;
+}
+
 export interface latestPages_latestPages_props_tickers_topReplies_count {
   __typename: "ReplyCount";
   id: string;
@@ -860,12 +1190,17 @@ export interface latestPages_latestPages_props_tickers_topReplies {
   count: latestPages_latestPages_props_tickers_topReplies_count;
 }
 
+export interface latestPages_latestPages_props_tickers_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface latestPages_latestPages_props_tickers_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: latestPages_latestPages_props_tickers_poll_count;
   createdAt: any;
 }
 
@@ -884,9 +1219,28 @@ export interface latestPages_latestPages_props_tickers {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: latestPages_latestPages_props_tickers_replies[];
   topReplies: latestPages_latestPages_props_tickers_topReplies[] | null;
   poll: latestPages_latestPages_props_tickers_poll | null;
   count: latestPages_latestPages_props_tickers_count;
+}
+
+export interface latestPages_latestPages_props_topics_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface latestPages_latestPages_props_topics_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: latestPages_latestPages_props_topics_replies_count;
 }
 
 export interface latestPages_latestPages_props_topics_topReplies_count {
@@ -907,12 +1261,17 @@ export interface latestPages_latestPages_props_topics_topReplies {
   count: latestPages_latestPages_props_topics_topReplies_count;
 }
 
+export interface latestPages_latestPages_props_topics_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface latestPages_latestPages_props_topics_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: latestPages_latestPages_props_topics_poll_count;
   createdAt: any;
 }
 
@@ -931,9 +1290,28 @@ export interface latestPages_latestPages_props_topics {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: latestPages_latestPages_props_topics_replies[];
   topReplies: latestPages_latestPages_props_topics_topReplies[] | null;
   poll: latestPages_latestPages_props_topics_poll | null;
   count: latestPages_latestPages_props_topics_count;
+}
+
+export interface latestPages_latestPages_props_links_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface latestPages_latestPages_props_links_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: latestPages_latestPages_props_links_replies_count;
 }
 
 export interface latestPages_latestPages_props_links_topReplies_count {
@@ -954,12 +1332,17 @@ export interface latestPages_latestPages_props_links_topReplies {
   count: latestPages_latestPages_props_links_topReplies_count;
 }
 
+export interface latestPages_latestPages_props_links_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface latestPages_latestPages_props_links_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: latestPages_latestPages_props_links_poll_count;
   createdAt: any;
 }
 
@@ -978,9 +1361,28 @@ export interface latestPages_latestPages_props_links {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: latestPages_latestPages_props_links_replies[];
   topReplies: latestPages_latestPages_props_links_topReplies[] | null;
   poll: latestPages_latestPages_props_links_poll | null;
   count: latestPages_latestPages_props_links_count;
+}
+
+export interface latestPages_latestPages_props_pros_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface latestPages_latestPages_props_pros_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: latestPages_latestPages_props_pros_replies_count;
 }
 
 export interface latestPages_latestPages_props_pros_topReplies_count {
@@ -1001,12 +1403,17 @@ export interface latestPages_latestPages_props_pros_topReplies {
   count: latestPages_latestPages_props_pros_topReplies_count;
 }
 
+export interface latestPages_latestPages_props_pros_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface latestPages_latestPages_props_pros_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: latestPages_latestPages_props_pros_poll_count;
   createdAt: any;
 }
 
@@ -1025,9 +1432,28 @@ export interface latestPages_latestPages_props_pros {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: latestPages_latestPages_props_pros_replies[];
   topReplies: latestPages_latestPages_props_pros_topReplies[] | null;
   poll: latestPages_latestPages_props_pros_poll | null;
   count: latestPages_latestPages_props_pros_count;
+}
+
+export interface latestPages_latestPages_props_cons_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface latestPages_latestPages_props_cons_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: latestPages_latestPages_props_cons_replies_count;
 }
 
 export interface latestPages_latestPages_props_cons_topReplies_count {
@@ -1048,12 +1474,17 @@ export interface latestPages_latestPages_props_cons_topReplies {
   count: latestPages_latestPages_props_cons_topReplies_count;
 }
 
+export interface latestPages_latestPages_props_cons_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface latestPages_latestPages_props_cons_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: latestPages_latestPages_props_cons_poll_count;
   createdAt: any;
 }
 
@@ -1072,9 +1503,28 @@ export interface latestPages_latestPages_props_cons {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: latestPages_latestPages_props_cons_replies[];
   topReplies: latestPages_latestPages_props_cons_topReplies[] | null;
   poll: latestPages_latestPages_props_cons_poll | null;
   count: latestPages_latestPages_props_cons_count;
+}
+
+export interface latestPages_latestPages_props_act_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface latestPages_latestPages_props_act_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: latestPages_latestPages_props_act_replies_count;
 }
 
 export interface latestPages_latestPages_props_act_topReplies_count {
@@ -1095,12 +1545,17 @@ export interface latestPages_latestPages_props_act_topReplies {
   count: latestPages_latestPages_props_act_topReplies_count;
 }
 
+export interface latestPages_latestPages_props_act_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface latestPages_latestPages_props_act_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: latestPages_latestPages_props_act_poll_count;
   createdAt: any;
 }
 
@@ -1119,9 +1574,28 @@ export interface latestPages_latestPages_props_act {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: latestPages_latestPages_props_act_replies[];
   topReplies: latestPages_latestPages_props_act_topReplies[] | null;
   poll: latestPages_latestPages_props_act_poll | null;
   count: latestPages_latestPages_props_act_count;
+}
+
+export interface latestPages_latestPages_props_intro_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface latestPages_latestPages_props_intro_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: latestPages_latestPages_props_intro_replies_count;
 }
 
 export interface latestPages_latestPages_props_intro_topReplies_count {
@@ -1142,12 +1616,17 @@ export interface latestPages_latestPages_props_intro_topReplies {
   count: latestPages_latestPages_props_intro_topReplies_count;
 }
 
+export interface latestPages_latestPages_props_intro_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface latestPages_latestPages_props_intro_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: latestPages_latestPages_props_intro_poll_count;
   createdAt: any;
 }
 
@@ -1166,9 +1645,28 @@ export interface latestPages_latestPages_props_intro {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: latestPages_latestPages_props_intro_replies[];
   topReplies: latestPages_latestPages_props_intro_topReplies[] | null;
   poll: latestPages_latestPages_props_intro_poll | null;
   count: latestPages_latestPages_props_intro_count;
+}
+
+export interface latestPages_latestPages_props_shortView_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface latestPages_latestPages_props_shortView_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: latestPages_latestPages_props_shortView_replies_count;
 }
 
 export interface latestPages_latestPages_props_shortView_topReplies_count {
@@ -1189,12 +1687,17 @@ export interface latestPages_latestPages_props_shortView_topReplies {
   count: latestPages_latestPages_props_shortView_topReplies_count;
 }
 
+export interface latestPages_latestPages_props_shortView_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface latestPages_latestPages_props_shortView_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: latestPages_latestPages_props_shortView_poll_count;
   createdAt: any;
 }
 
@@ -1213,9 +1716,28 @@ export interface latestPages_latestPages_props_shortView {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: latestPages_latestPages_props_shortView_replies[];
   topReplies: latestPages_latestPages_props_shortView_topReplies[] | null;
   poll: latestPages_latestPages_props_shortView_poll | null;
   count: latestPages_latestPages_props_shortView_count;
+}
+
+export interface latestPages_latestPages_props_longView_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface latestPages_latestPages_props_longView_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: latestPages_latestPages_props_longView_replies_count;
 }
 
 export interface latestPages_latestPages_props_longView_topReplies_count {
@@ -1236,12 +1758,17 @@ export interface latestPages_latestPages_props_longView_topReplies {
   count: latestPages_latestPages_props_longView_topReplies_count;
 }
 
+export interface latestPages_latestPages_props_longView_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface latestPages_latestPages_props_longView_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: latestPages_latestPages_props_longView_poll_count;
   createdAt: any;
 }
 
@@ -1260,9 +1787,28 @@ export interface latestPages_latestPages_props_longView {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: latestPages_latestPages_props_longView_replies[];
   topReplies: latestPages_latestPages_props_longView_topReplies[] | null;
   poll: latestPages_latestPages_props_longView_poll | null;
   count: latestPages_latestPages_props_longView_count;
+}
+
+export interface latestPages_latestPages_props_voteCreate_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface latestPages_latestPages_props_voteCreate_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: latestPages_latestPages_props_voteCreate_replies_count;
 }
 
 export interface latestPages_latestPages_props_voteCreate_topReplies_count {
@@ -1283,12 +1829,17 @@ export interface latestPages_latestPages_props_voteCreate_topReplies {
   count: latestPages_latestPages_props_voteCreate_topReplies_count;
 }
 
+export interface latestPages_latestPages_props_voteCreate_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface latestPages_latestPages_props_voteCreate_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: latestPages_latestPages_props_voteCreate_poll_count;
   createdAt: any;
 }
 
@@ -1307,6 +1858,7 @@ export interface latestPages_latestPages_props_voteCreate {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: latestPages_latestPages_props_voteCreate_replies[];
   topReplies: latestPages_latestPages_props_voteCreate_topReplies[] | null;
   poll: latestPages_latestPages_props_voteCreate_poll | null;
   count: latestPages_latestPages_props_voteCreate_count;
@@ -1330,6 +1882,24 @@ export interface latestPages_latestPages_props {
   voteCreate: latestPages_latestPages_props_voteCreate | null;
 }
 
+export interface latestPages_latestPages_comments_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface latestPages_latestPages_comments_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: latestPages_latestPages_comments_replies_count;
+}
+
 export interface latestPages_latestPages_comments_topReplies_count {
   __typename: "ReplyCount";
   id: string;
@@ -1348,12 +1918,17 @@ export interface latestPages_latestPages_comments_topReplies {
   count: latestPages_latestPages_comments_topReplies_count;
 }
 
+export interface latestPages_latestPages_comments_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface latestPages_latestPages_comments_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: latestPages_latestPages_comments_poll_count;
   createdAt: any;
 }
 
@@ -1372,6 +1947,7 @@ export interface latestPages_latestPages_comments {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: latestPages_latestPages_comments_replies[];
   topReplies: latestPages_latestPages_comments_topReplies[] | null;
   poll: latestPages_latestPages_comments_poll | null;
   count: latestPages_latestPages_comments_count;
@@ -1431,6 +2007,24 @@ export interface searchAllVariables {
 // GraphQL query operation: searchPage
 // ====================================================
 
+export interface searchPage_searchPage_props_tickers_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface searchPage_searchPage_props_tickers_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: searchPage_searchPage_props_tickers_replies_count;
+}
+
 export interface searchPage_searchPage_props_tickers_topReplies_count {
   __typename: "ReplyCount";
   id: string;
@@ -1449,12 +2043,17 @@ export interface searchPage_searchPage_props_tickers_topReplies {
   count: searchPage_searchPage_props_tickers_topReplies_count;
 }
 
+export interface searchPage_searchPage_props_tickers_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface searchPage_searchPage_props_tickers_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: searchPage_searchPage_props_tickers_poll_count;
   createdAt: any;
 }
 
@@ -1473,9 +2072,28 @@ export interface searchPage_searchPage_props_tickers {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: searchPage_searchPage_props_tickers_replies[];
   topReplies: searchPage_searchPage_props_tickers_topReplies[] | null;
   poll: searchPage_searchPage_props_tickers_poll | null;
   count: searchPage_searchPage_props_tickers_count;
+}
+
+export interface searchPage_searchPage_props_topics_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface searchPage_searchPage_props_topics_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: searchPage_searchPage_props_topics_replies_count;
 }
 
 export interface searchPage_searchPage_props_topics_topReplies_count {
@@ -1496,12 +2114,17 @@ export interface searchPage_searchPage_props_topics_topReplies {
   count: searchPage_searchPage_props_topics_topReplies_count;
 }
 
+export interface searchPage_searchPage_props_topics_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface searchPage_searchPage_props_topics_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: searchPage_searchPage_props_topics_poll_count;
   createdAt: any;
 }
 
@@ -1520,9 +2143,28 @@ export interface searchPage_searchPage_props_topics {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: searchPage_searchPage_props_topics_replies[];
   topReplies: searchPage_searchPage_props_topics_topReplies[] | null;
   poll: searchPage_searchPage_props_topics_poll | null;
   count: searchPage_searchPage_props_topics_count;
+}
+
+export interface searchPage_searchPage_props_links_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface searchPage_searchPage_props_links_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: searchPage_searchPage_props_links_replies_count;
 }
 
 export interface searchPage_searchPage_props_links_topReplies_count {
@@ -1543,12 +2185,17 @@ export interface searchPage_searchPage_props_links_topReplies {
   count: searchPage_searchPage_props_links_topReplies_count;
 }
 
+export interface searchPage_searchPage_props_links_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface searchPage_searchPage_props_links_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: searchPage_searchPage_props_links_poll_count;
   createdAt: any;
 }
 
@@ -1567,9 +2214,28 @@ export interface searchPage_searchPage_props_links {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: searchPage_searchPage_props_links_replies[];
   topReplies: searchPage_searchPage_props_links_topReplies[] | null;
   poll: searchPage_searchPage_props_links_poll | null;
   count: searchPage_searchPage_props_links_count;
+}
+
+export interface searchPage_searchPage_props_pros_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface searchPage_searchPage_props_pros_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: searchPage_searchPage_props_pros_replies_count;
 }
 
 export interface searchPage_searchPage_props_pros_topReplies_count {
@@ -1590,12 +2256,17 @@ export interface searchPage_searchPage_props_pros_topReplies {
   count: searchPage_searchPage_props_pros_topReplies_count;
 }
 
+export interface searchPage_searchPage_props_pros_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface searchPage_searchPage_props_pros_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: searchPage_searchPage_props_pros_poll_count;
   createdAt: any;
 }
 
@@ -1614,9 +2285,28 @@ export interface searchPage_searchPage_props_pros {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: searchPage_searchPage_props_pros_replies[];
   topReplies: searchPage_searchPage_props_pros_topReplies[] | null;
   poll: searchPage_searchPage_props_pros_poll | null;
   count: searchPage_searchPage_props_pros_count;
+}
+
+export interface searchPage_searchPage_props_cons_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface searchPage_searchPage_props_cons_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: searchPage_searchPage_props_cons_replies_count;
 }
 
 export interface searchPage_searchPage_props_cons_topReplies_count {
@@ -1637,12 +2327,17 @@ export interface searchPage_searchPage_props_cons_topReplies {
   count: searchPage_searchPage_props_cons_topReplies_count;
 }
 
+export interface searchPage_searchPage_props_cons_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface searchPage_searchPage_props_cons_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: searchPage_searchPage_props_cons_poll_count;
   createdAt: any;
 }
 
@@ -1661,9 +2356,28 @@ export interface searchPage_searchPage_props_cons {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: searchPage_searchPage_props_cons_replies[];
   topReplies: searchPage_searchPage_props_cons_topReplies[] | null;
   poll: searchPage_searchPage_props_cons_poll | null;
   count: searchPage_searchPage_props_cons_count;
+}
+
+export interface searchPage_searchPage_props_act_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface searchPage_searchPage_props_act_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: searchPage_searchPage_props_act_replies_count;
 }
 
 export interface searchPage_searchPage_props_act_topReplies_count {
@@ -1684,12 +2398,17 @@ export interface searchPage_searchPage_props_act_topReplies {
   count: searchPage_searchPage_props_act_topReplies_count;
 }
 
+export interface searchPage_searchPage_props_act_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface searchPage_searchPage_props_act_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: searchPage_searchPage_props_act_poll_count;
   createdAt: any;
 }
 
@@ -1708,9 +2427,28 @@ export interface searchPage_searchPage_props_act {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: searchPage_searchPage_props_act_replies[];
   topReplies: searchPage_searchPage_props_act_topReplies[] | null;
   poll: searchPage_searchPage_props_act_poll | null;
   count: searchPage_searchPage_props_act_count;
+}
+
+export interface searchPage_searchPage_props_intro_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface searchPage_searchPage_props_intro_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: searchPage_searchPage_props_intro_replies_count;
 }
 
 export interface searchPage_searchPage_props_intro_topReplies_count {
@@ -1731,12 +2469,17 @@ export interface searchPage_searchPage_props_intro_topReplies {
   count: searchPage_searchPage_props_intro_topReplies_count;
 }
 
+export interface searchPage_searchPage_props_intro_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface searchPage_searchPage_props_intro_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: searchPage_searchPage_props_intro_poll_count;
   createdAt: any;
 }
 
@@ -1755,9 +2498,28 @@ export interface searchPage_searchPage_props_intro {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: searchPage_searchPage_props_intro_replies[];
   topReplies: searchPage_searchPage_props_intro_topReplies[] | null;
   poll: searchPage_searchPage_props_intro_poll | null;
   count: searchPage_searchPage_props_intro_count;
+}
+
+export interface searchPage_searchPage_props_shortView_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface searchPage_searchPage_props_shortView_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: searchPage_searchPage_props_shortView_replies_count;
 }
 
 export interface searchPage_searchPage_props_shortView_topReplies_count {
@@ -1778,12 +2540,17 @@ export interface searchPage_searchPage_props_shortView_topReplies {
   count: searchPage_searchPage_props_shortView_topReplies_count;
 }
 
+export interface searchPage_searchPage_props_shortView_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface searchPage_searchPage_props_shortView_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: searchPage_searchPage_props_shortView_poll_count;
   createdAt: any;
 }
 
@@ -1802,9 +2569,28 @@ export interface searchPage_searchPage_props_shortView {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: searchPage_searchPage_props_shortView_replies[];
   topReplies: searchPage_searchPage_props_shortView_topReplies[] | null;
   poll: searchPage_searchPage_props_shortView_poll | null;
   count: searchPage_searchPage_props_shortView_count;
+}
+
+export interface searchPage_searchPage_props_longView_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface searchPage_searchPage_props_longView_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: searchPage_searchPage_props_longView_replies_count;
 }
 
 export interface searchPage_searchPage_props_longView_topReplies_count {
@@ -1825,12 +2611,17 @@ export interface searchPage_searchPage_props_longView_topReplies {
   count: searchPage_searchPage_props_longView_topReplies_count;
 }
 
+export interface searchPage_searchPage_props_longView_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface searchPage_searchPage_props_longView_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: searchPage_searchPage_props_longView_poll_count;
   createdAt: any;
 }
 
@@ -1849,9 +2640,28 @@ export interface searchPage_searchPage_props_longView {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: searchPage_searchPage_props_longView_replies[];
   topReplies: searchPage_searchPage_props_longView_topReplies[] | null;
   poll: searchPage_searchPage_props_longView_poll | null;
   count: searchPage_searchPage_props_longView_count;
+}
+
+export interface searchPage_searchPage_props_voteCreate_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface searchPage_searchPage_props_voteCreate_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: searchPage_searchPage_props_voteCreate_replies_count;
 }
 
 export interface searchPage_searchPage_props_voteCreate_topReplies_count {
@@ -1872,12 +2682,17 @@ export interface searchPage_searchPage_props_voteCreate_topReplies {
   count: searchPage_searchPage_props_voteCreate_topReplies_count;
 }
 
+export interface searchPage_searchPage_props_voteCreate_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface searchPage_searchPage_props_voteCreate_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: searchPage_searchPage_props_voteCreate_poll_count;
   createdAt: any;
 }
 
@@ -1896,6 +2711,7 @@ export interface searchPage_searchPage_props_voteCreate {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: searchPage_searchPage_props_voteCreate_replies[];
   topReplies: searchPage_searchPage_props_voteCreate_topReplies[] | null;
   poll: searchPage_searchPage_props_voteCreate_poll | null;
   count: searchPage_searchPage_props_voteCreate_count;
@@ -1919,6 +2735,24 @@ export interface searchPage_searchPage_props {
   voteCreate: searchPage_searchPage_props_voteCreate | null;
 }
 
+export interface searchPage_searchPage_comments_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface searchPage_searchPage_comments_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: searchPage_searchPage_comments_replies_count;
+}
+
 export interface searchPage_searchPage_comments_topReplies_count {
   __typename: "ReplyCount";
   id: string;
@@ -1937,12 +2771,17 @@ export interface searchPage_searchPage_comments_topReplies {
   count: searchPage_searchPage_comments_topReplies_count;
 }
 
+export interface searchPage_searchPage_comments_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface searchPage_searchPage_comments_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: searchPage_searchPage_comments_poll_count;
   createdAt: any;
 }
 
@@ -1961,6 +2800,7 @@ export interface searchPage_searchPage_comments {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: searchPage_searchPage_comments_replies[];
   topReplies: searchPage_searchPage_comments_topReplies[] | null;
   poll: searchPage_searchPage_comments_poll | null;
   count: searchPage_searchPage_comments_count;
@@ -2020,6 +2860,24 @@ export interface automarkVariables {
 // GraphQL mutation operation: createComment
 // ====================================================
 
+export interface createComment_createComment_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface createComment_createComment_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: createComment_createComment_replies_count;
+}
+
 export interface createComment_createComment_topReplies_count {
   __typename: "ReplyCount";
   id: string;
@@ -2038,12 +2896,17 @@ export interface createComment_createComment_topReplies {
   count: createComment_createComment_topReplies_count;
 }
 
+export interface createComment_createComment_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface createComment_createComment_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: createComment_createComment_poll_count;
   createdAt: any;
 }
 
@@ -2062,6 +2925,7 @@ export interface createComment_createComment {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: createComment_createComment_replies[];
   topReplies: createComment_createComment_topReplies[] | null;
   poll: createComment_createComment_poll | null;
   count: createComment_createComment_count;
@@ -2380,12 +3244,17 @@ export interface vote {
 // GraphQL fragment: poll
 // ====================================================
 
+export interface poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: poll_count;
   createdAt: any;
 }
 
@@ -2459,6 +3328,24 @@ export interface reply {
 // GraphQL fragment: comment
 // ====================================================
 
+export interface comment_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface comment_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: comment_replies_count;
+}
+
 export interface comment_topReplies_count {
   __typename: "ReplyCount";
   id: string;
@@ -2477,12 +3364,17 @@ export interface comment_topReplies {
   count: comment_topReplies_count;
 }
 
+export interface comment_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface comment_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: comment_poll_count;
   createdAt: any;
 }
 
@@ -2501,6 +3393,7 @@ export interface comment {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: comment_replies[];
   topReplies: comment_topReplies[] | null;
   poll: comment_poll | null;
   count: comment_count;
@@ -2549,6 +3442,24 @@ export interface replyLike {
 // GraphQL fragment: pageFragment
 // ====================================================
 
+export interface pageFragment_props_tickers_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface pageFragment_props_tickers_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: pageFragment_props_tickers_replies_count;
+}
+
 export interface pageFragment_props_tickers_topReplies_count {
   __typename: "ReplyCount";
   id: string;
@@ -2567,12 +3478,17 @@ export interface pageFragment_props_tickers_topReplies {
   count: pageFragment_props_tickers_topReplies_count;
 }
 
+export interface pageFragment_props_tickers_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface pageFragment_props_tickers_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: pageFragment_props_tickers_poll_count;
   createdAt: any;
 }
 
@@ -2591,9 +3507,28 @@ export interface pageFragment_props_tickers {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: pageFragment_props_tickers_replies[];
   topReplies: pageFragment_props_tickers_topReplies[] | null;
   poll: pageFragment_props_tickers_poll | null;
   count: pageFragment_props_tickers_count;
+}
+
+export interface pageFragment_props_topics_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface pageFragment_props_topics_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: pageFragment_props_topics_replies_count;
 }
 
 export interface pageFragment_props_topics_topReplies_count {
@@ -2614,12 +3549,17 @@ export interface pageFragment_props_topics_topReplies {
   count: pageFragment_props_topics_topReplies_count;
 }
 
+export interface pageFragment_props_topics_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface pageFragment_props_topics_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: pageFragment_props_topics_poll_count;
   createdAt: any;
 }
 
@@ -2638,9 +3578,28 @@ export interface pageFragment_props_topics {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: pageFragment_props_topics_replies[];
   topReplies: pageFragment_props_topics_topReplies[] | null;
   poll: pageFragment_props_topics_poll | null;
   count: pageFragment_props_topics_count;
+}
+
+export interface pageFragment_props_links_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface pageFragment_props_links_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: pageFragment_props_links_replies_count;
 }
 
 export interface pageFragment_props_links_topReplies_count {
@@ -2661,12 +3620,17 @@ export interface pageFragment_props_links_topReplies {
   count: pageFragment_props_links_topReplies_count;
 }
 
+export interface pageFragment_props_links_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface pageFragment_props_links_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: pageFragment_props_links_poll_count;
   createdAt: any;
 }
 
@@ -2685,9 +3649,28 @@ export interface pageFragment_props_links {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: pageFragment_props_links_replies[];
   topReplies: pageFragment_props_links_topReplies[] | null;
   poll: pageFragment_props_links_poll | null;
   count: pageFragment_props_links_count;
+}
+
+export interface pageFragment_props_pros_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface pageFragment_props_pros_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: pageFragment_props_pros_replies_count;
 }
 
 export interface pageFragment_props_pros_topReplies_count {
@@ -2708,12 +3691,17 @@ export interface pageFragment_props_pros_topReplies {
   count: pageFragment_props_pros_topReplies_count;
 }
 
+export interface pageFragment_props_pros_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface pageFragment_props_pros_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: pageFragment_props_pros_poll_count;
   createdAt: any;
 }
 
@@ -2732,9 +3720,28 @@ export interface pageFragment_props_pros {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: pageFragment_props_pros_replies[];
   topReplies: pageFragment_props_pros_topReplies[] | null;
   poll: pageFragment_props_pros_poll | null;
   count: pageFragment_props_pros_count;
+}
+
+export interface pageFragment_props_cons_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface pageFragment_props_cons_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: pageFragment_props_cons_replies_count;
 }
 
 export interface pageFragment_props_cons_topReplies_count {
@@ -2755,12 +3762,17 @@ export interface pageFragment_props_cons_topReplies {
   count: pageFragment_props_cons_topReplies_count;
 }
 
+export interface pageFragment_props_cons_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface pageFragment_props_cons_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: pageFragment_props_cons_poll_count;
   createdAt: any;
 }
 
@@ -2779,9 +3791,28 @@ export interface pageFragment_props_cons {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: pageFragment_props_cons_replies[];
   topReplies: pageFragment_props_cons_topReplies[] | null;
   poll: pageFragment_props_cons_poll | null;
   count: pageFragment_props_cons_count;
+}
+
+export interface pageFragment_props_act_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface pageFragment_props_act_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: pageFragment_props_act_replies_count;
 }
 
 export interface pageFragment_props_act_topReplies_count {
@@ -2802,12 +3833,17 @@ export interface pageFragment_props_act_topReplies {
   count: pageFragment_props_act_topReplies_count;
 }
 
+export interface pageFragment_props_act_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface pageFragment_props_act_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: pageFragment_props_act_poll_count;
   createdAt: any;
 }
 
@@ -2826,9 +3862,28 @@ export interface pageFragment_props_act {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: pageFragment_props_act_replies[];
   topReplies: pageFragment_props_act_topReplies[] | null;
   poll: pageFragment_props_act_poll | null;
   count: pageFragment_props_act_count;
+}
+
+export interface pageFragment_props_intro_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface pageFragment_props_intro_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: pageFragment_props_intro_replies_count;
 }
 
 export interface pageFragment_props_intro_topReplies_count {
@@ -2849,12 +3904,17 @@ export interface pageFragment_props_intro_topReplies {
   count: pageFragment_props_intro_topReplies_count;
 }
 
+export interface pageFragment_props_intro_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface pageFragment_props_intro_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: pageFragment_props_intro_poll_count;
   createdAt: any;
 }
 
@@ -2873,9 +3933,28 @@ export interface pageFragment_props_intro {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: pageFragment_props_intro_replies[];
   topReplies: pageFragment_props_intro_topReplies[] | null;
   poll: pageFragment_props_intro_poll | null;
   count: pageFragment_props_intro_count;
+}
+
+export interface pageFragment_props_shortView_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface pageFragment_props_shortView_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: pageFragment_props_shortView_replies_count;
 }
 
 export interface pageFragment_props_shortView_topReplies_count {
@@ -2896,12 +3975,17 @@ export interface pageFragment_props_shortView_topReplies {
   count: pageFragment_props_shortView_topReplies_count;
 }
 
+export interface pageFragment_props_shortView_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface pageFragment_props_shortView_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: pageFragment_props_shortView_poll_count;
   createdAt: any;
 }
 
@@ -2920,9 +4004,28 @@ export interface pageFragment_props_shortView {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: pageFragment_props_shortView_replies[];
   topReplies: pageFragment_props_shortView_topReplies[] | null;
   poll: pageFragment_props_shortView_poll | null;
   count: pageFragment_props_shortView_count;
+}
+
+export interface pageFragment_props_longView_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface pageFragment_props_longView_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: pageFragment_props_longView_replies_count;
 }
 
 export interface pageFragment_props_longView_topReplies_count {
@@ -2943,12 +4046,17 @@ export interface pageFragment_props_longView_topReplies {
   count: pageFragment_props_longView_topReplies_count;
 }
 
+export interface pageFragment_props_longView_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface pageFragment_props_longView_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: pageFragment_props_longView_poll_count;
   createdAt: any;
 }
 
@@ -2967,9 +4075,28 @@ export interface pageFragment_props_longView {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: pageFragment_props_longView_replies[];
   topReplies: pageFragment_props_longView_topReplies[] | null;
   poll: pageFragment_props_longView_poll | null;
   count: pageFragment_props_longView_count;
+}
+
+export interface pageFragment_props_voteCreate_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface pageFragment_props_voteCreate_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: pageFragment_props_voteCreate_replies_count;
 }
 
 export interface pageFragment_props_voteCreate_topReplies_count {
@@ -2990,12 +4117,17 @@ export interface pageFragment_props_voteCreate_topReplies {
   count: pageFragment_props_voteCreate_topReplies_count;
 }
 
+export interface pageFragment_props_voteCreate_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface pageFragment_props_voteCreate_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: pageFragment_props_voteCreate_poll_count;
   createdAt: any;
 }
 
@@ -3014,6 +4146,7 @@ export interface pageFragment_props_voteCreate {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: pageFragment_props_voteCreate_replies[];
   topReplies: pageFragment_props_voteCreate_topReplies[] | null;
   poll: pageFragment_props_voteCreate_poll | null;
   count: pageFragment_props_voteCreate_count;
@@ -3037,6 +4170,24 @@ export interface pageFragment_props {
   voteCreate: pageFragment_props_voteCreate | null;
 }
 
+export interface pageFragment_comments_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface pageFragment_comments_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: pageFragment_comments_replies_count;
+}
+
 export interface pageFragment_comments_topReplies_count {
   __typename: "ReplyCount";
   id: string;
@@ -3055,12 +4206,17 @@ export interface pageFragment_comments_topReplies {
   count: pageFragment_comments_topReplies_count;
 }
 
+export interface pageFragment_comments_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
 export interface pageFragment_comments_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  nVotes: number[];
+  count: pageFragment_comments_poll_count;
   createdAt: any;
 }
 
@@ -3079,6 +4235,7 @@ export interface pageFragment_comments {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
+  replies: pageFragment_comments_replies[];
   topReplies: pageFragment_comments_topReplies[] | null;
   poll: pageFragment_comments_poll | null;
   count: pageFragment_comments_count;

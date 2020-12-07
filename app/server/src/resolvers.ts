@@ -13,7 +13,7 @@ import { Context } from './context'
 import { APP_SECRET } from '.'
 // import { fillBlock, PrismaBlockProperties } from './models/block'
 import { fillPage } from './models/page'
-import { searchAll, searchPage } from './models/search'
+import { searchTopic } from './store/fuzzy'
 
 // function mapPostInput(post: ST.PostInput) {
 //   let content
@@ -63,9 +63,8 @@ import { searchAll, searchPage } from './models/search'
 // type Like = PA.PostLike | PA.CommentLike | PA.PollLike
 // function deltaLike(like: Like, oldLike?: Like) {
 
-function deltaLike(like: PA.CommentLike, oldLike?: PA.CommentLike) {
+function deltaLike(like: PA.CommentLike | PA.ReplyLike, oldLike?: PA.CommentLike | PA.ReplyLike) {
   let dUps = 0, dDowns = 0
-
   if (oldLike) {
     switch (oldLike.choice) {
       case PA.LikeChoice.DOWN:
@@ -84,7 +83,6 @@ function deltaLike(like: PA.CommentLike, oldLike?: PA.CommentLike) {
       dUps += 1
       break
   }
-
   return { dDowns, dUps }
 }
 
@@ -136,13 +134,23 @@ export const resolvers: GraphQLResolverMap<Context> = {
       } else {
         throw new Error('Require block ID or path')
       }
+      // Query
       const pg = await prisma.page.findOne({
         where,
         include: {
-          propComments: { include: { count: true, replies: true } },
+          propComments: {
+            include: {
+              count: true,
+              poll: { include: { count: true } },
+              replies: { include: { count: true } }
+            }
+          },
+          symbol: true,
           // comments: { where: { isSpot: true }, include: { count: true } },
         },
       })
+      // console.log(JSON.stringify(pg, null, 4));
+      // 若沒找到，直接返回null
       if (pg === null)
         return null
       return fillPage(pg)
@@ -405,11 +413,13 @@ export const resolvers: GraphQLResolverMap<Context> = {
     // },
 
     searchAll: (parent, { term }, { prisma, req }) => {
-      return searchAll(term)
+      return searchTopic(term)
+      // return searchAll(term)
     },
 
     searchPage: (parent, { url }, { prisma, req }) => {
-      return searchPage(url)
+      return searchTopic(url)
+      // return searchPage(url)
     },
 
   },
@@ -484,56 +494,6 @@ export const resolvers: GraphQLResolverMap<Context> = {
       })
     },
 
-    createCommentLike: async (parent, { commentId, data }, { prisma, req }) => {
-      const like = await prisma.commentLike.create({
-        data: {
-          choice: data.choice,
-          user: { connect: { id: req.userId } },
-          comment: { connect: { id: parseInt(commentId) } },
-        }
-      })
-      const count = await prisma.commentCount.findOne({ where: { commentId: like.commentId } })
-      if (count === null) throw new Error('Something went wrong')
-
-      const delta = deltaLike(like)
-
-      const updatedCount = await prisma.commentCount.update({
-        data: {
-          nUps: count.nUps + delta.dUps,
-          nDowns: count.nDowns + delta.dDowns,
-        },
-        where: { commentId: like.commentId }
-      })
-      return { like, count: updatedCount }
-    },
-
-    updateCommentLike: async (parent, { id, data }, { prisma, req }) => {
-      const oldLike = await prisma.commentLike.findOne({
-        where: { id: parseInt(id) }
-      })
-      if (oldLike === null || data.choice === oldLike.choice)
-        throw new Error('No matched data')
-
-      const like = await prisma.commentLike.update({
-        data: { choice: data.choice },
-        where: { id: oldLike.id }
-      })
-
-      const delta = deltaLike(like, oldLike)
-
-      const count = await prisma.commentCount.findOne({ where: { commentId: like.commentId } })
-      if (count === null) throw new Error('Something went wrong')
-
-      const updatedCount = await prisma.commentCount.update({
-        data: {
-          nUps: count.nUps + delta.dUps,
-          nDowns: count.nDowns + delta.dDowns,
-        },
-        where: { commentId: like.commentId }
-      })
-      return { like, count: updatedCount }
-    },
-
     createReply: async (parent, { commentId, data }, { prisma, req }) => {
       const comment = await prisma.comment.findOne({
         where: { id: parseInt(commentId) },
@@ -556,6 +516,94 @@ export const resolvers: GraphQLResolverMap<Context> = {
         },
         include: { count: true }
       })
+    },
+
+    createCommentLike: async (parent, { commentId, data }, { prisma, req }) => {
+      const like = await prisma.commentLike.create({
+        data: {
+          choice: data.choice,
+          user: { connect: { id: req.userId } },
+          comment: { connect: { id: parseInt(commentId) } },
+        }
+      })
+      const count = await prisma.commentCount.findOne({ where: { commentId: like.commentId } })
+      if (count === null)
+        throw new Error('Something went wrong')
+      const delta = deltaLike(like)
+      const updatedCount = await prisma.commentCount.update({
+        data: {
+          nUps: count.nUps + delta.dUps,
+          nDowns: count.nDowns + delta.dDowns,
+        },
+        where: { commentId: like.commentId }
+      })
+      return { like, count: updatedCount }
+    },
+
+    updateCommentLike: async (parent, { id, data }, { prisma, req }) => {
+      const oldLike = await prisma.commentLike.findOne({ where: { id: parseInt(id) } })
+      if (oldLike === null || data.choice === oldLike.choice)
+        throw new Error('No matched data')
+      const like = await prisma.commentLike.update({
+        data: { choice: data.choice },
+        where: { id: oldLike.id }
+      })
+      const delta = deltaLike(like, oldLike)
+      const count = await prisma.commentCount.findOne({ where: { commentId: like.commentId } })
+      if (count === null)
+        throw new Error('Something went wrong')
+      const updatedCount = await prisma.commentCount.update({
+        data: {
+          nUps: count.nUps + delta.dUps,
+          nDowns: count.nDowns + delta.dDowns,
+        },
+        where: { commentId: like.commentId }
+      })
+      return { like, count: updatedCount }
+    },
+
+    createReplyLike: async (parent, { replyId, data }, { prisma, req }) => {
+      const like = await prisma.replyLike.create({
+        data: {
+          choice: data.choice,
+          user: { connect: { id: req.userId } },
+          reply: { connect: { id: parseInt(replyId) } },
+        }
+      })
+      const count = await prisma.replyCount.findOne({ where: { replyId: like.replyId } })
+      if (count === null)
+        throw new Error('Something went wrong')
+      const delta = deltaLike(like)
+      const updatedCount = await prisma.replyCount.update({
+        data: {
+          nUps: count.nUps + delta.dUps,
+          nDowns: count.nDowns + delta.dDowns,
+        },
+        where: { replyId: like.replyId }
+      })
+      return { like, count: updatedCount }
+    },
+
+    updateReplyLike: async (parent, { id, data }, { prisma, req }) => {
+      const oldLike = await prisma.replyLike.findOne({ where: { id: parseInt(id) } })
+      if (oldLike === null || data.choice === oldLike.choice)
+        throw new Error('No matched data')
+      const like = await prisma.replyLike.update({
+        data: { choice: data.choice },
+        where: { id: oldLike.id }
+      })
+      const delta = deltaLike(like, oldLike)
+      const count = await prisma.replyCount.findOne({ where: { replyId: like.replyId } })
+      if (count === null)
+        throw new Error('Something went wrong')
+      const updatedCount = await prisma.replyCount.update({
+        data: {
+          nUps: count.nUps + delta.dUps,
+          nDowns: count.nDowns + delta.dDowns,
+        },
+        where: { replyId: like.replyId }
+      })
+      return { like, count: updatedCount }
     },
 
     createVote: (parent, { pollId, choiceIdx }, { prisma, req }) => {

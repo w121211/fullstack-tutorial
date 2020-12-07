@@ -1,11 +1,10 @@
 /**
- * Fuzzy search for page title, ticker, etc
+ * Fuzzy search for page title, ticker, etc （用memory實現）
  */
 import _ from 'lodash'
 import dayjs from 'dayjs'
 import Fuse from 'fuse.js'
 import * as PA from '@prisma/client'
-
 
 // 將資料庫取出的資料存在記憶體中（定時更新），用於fuzzy search
 // TODO: 改存在Redis
@@ -93,3 +92,4 @@ export async function searchPage(url: string) {
 export function searchAll(term: string) {
   throw new Error("")
 }
+

@@ -134,7 +134,7 @@ model ReplyLike {
 model ReplyCount {
   id        Int      @id @default(autoincrement())
   reply     Reply    @relation(fields: [replyId], references: [id])
-  replyId   Int
+  replyId   Int      @unique
   nViews    Int      @default(0)
   nUps      Int      @default(0)
   nDowns    Int      @default(0)
