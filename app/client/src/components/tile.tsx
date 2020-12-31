@@ -10,7 +10,7 @@ import { PollChoices, PollForm } from './pollChoice'
 import { ReplyPanel, CommentPanel } from './tilePanel'
 import { ReplyList, QueryReplyList, CommentList, QueryCommentList } from './tileList'
 import { ReplyForm } from './tileForms'
-import { NoteForm, SearchAllForm } from './forms'
+import { SearchAllForm } from './forms'
 import tagCss from './tag/tag.module.scss'
 import tagPopoverCss from './tagPopover/tagPopover.module.scss'
 import commentListSmallCss from './commentListSmall/commentListSmall.module.scss'
@@ -19,6 +19,7 @@ import blockMetaCss from './blockMeta/blockMeta.module.scss'
 import { MdText } from './markdown'
 
 export interface TileOptions {
+  dispReplies?: boolean
   dispTopReplies?: boolean
   dispCommentAs?: 'comment' | 'key-value'
   dispReplyAs?: 'line' | 'tag' | 'tile'
@@ -28,6 +29,7 @@ export interface TileOptions {
 }
 
 export const defaultTileOptions: TileOptions = {
+  dispReplies: false,
   dispTopReplies: true,
   dispCommentAs: 'comment',
   dispReplyAs: 'line',
@@ -87,7 +89,6 @@ export function SuggestReply({
   )
 }
 
-
 export function Comment({ comment, options = defaultTileOptions }: { comment: QT.comment, options?: TileOptions }) {
   // TODO: 增加fold/unfold
   // const [folded, setFolded] = useState<boolean>(true)
@@ -142,8 +143,6 @@ export function Comment({ comment, options = defaultTileOptions }: { comment: QT
           {/* <Button type="link" onClick={() => { setShowModal(true) }}>新增</Button> */}
           <Button shape="circle" icon={<PlusOutlined />} size="small" onClick={() => { setShowModal(true) }} />
         </Space>
-
-
         <Modal title="Reply" visible={showModal} footer={null} onCancel={() => { setShowModal(false) }}>
           <ReplyForm commentId={comment.id}
             suggestText={suggestReply}
@@ -167,16 +166,15 @@ export function Comment({ comment, options = defaultTileOptions }: { comment: QT
   //     </div>
   //   )
   return (
-    <div>
-      ------Comment-------
-      <p>{options.swapText ? options.swapText : comment.text}</p>
+    <>
+      <span>{options.swapText ? options.swapText : comment.text}</span>
       <CommentPanel comment={comment} />
-      <h4>-Queried Replies-</h4>
-      <QueryReplyList commentId={comment.id} />
-      <ReplyForm commentId={comment.id} addReplyCountByOne={function () { }} />
+
+      {/* <h4>-Queried Replies-</h4> */}
+      {/* <QueryReplyList commentId={comment.id} /> */}
+      {/* <ReplyForm commentId={comment.id} addReplyCountByOne={function () { }} /> */}
       {/* <button onClick={function (e) { setFolded(!folded) }}>折疊</button> */}
-      -------------
-    </div>
+    </>
   )
 }
 
@@ -223,35 +221,34 @@ export function PollComment({ comment, poll, options = defaultTileOptions }: { c
 }
 
 
-export function WebpageTile({ page, showSpotReplies = true }: { page: QT.latestPages_latestPages, showSpotReplies?: boolean }) {
-  const [folded, setFolded] = useState<boolean>(true)
-  // const spotReplies = comment.replies.filter(e => e.isSpot)
-  if (folded)
-    return (
-      <div>
-        ------PageTile-------
-        author:domain - title // top notes
-        {/* <CommentList comments={page.topReplies} /> */}
-        {/* <p>{comment.text}</p>
-        <CommentPanel comment={comment} />
-        <h4>-Spot Replies-</h4> */}
-        {/* {comment.spotReplies ? <ReplyList replies={comment.spotReplies} /> : null} */}
-        <button onClick={function (e) { setFolded(!folded) }}>展開</button>
-        <br />
-        -------------
-      </div>
-    )
-  return (
-    <div>
-      ------PageTile-------
-      author:domain - title // top notes
-      <QueryCommentList pageId="123" />
-      <NoteForm />
-      <button onClick={function (e) { setFolded(!folded) }}>折疊</button>
-      -------------
-    </div>
-  )
-}
+// export function WebpageTile({ page, showSpotReplies = true }: { page: QT.latestPages_latestPages, showSpotReplies?: boolean }) {
+//   const [folded, setFolded] = useState<boolean>(true)
+//   // const spotReplies = comment.replies.filter(e => e.isSpot)
+//   if (folded)
+//     return (
+//       <div>
+//         ------PageTile-------
+//         author:domain - title // top notes
+//         {/* <CommentList comments={page.topReplies} /> */}
+//         {/* <p>{comment.text}</p>
+//         <CommentPanel comment={comment} />
+//         <h4>-Spot Replies-</h4> */}
+//         {/* {comment.spotReplies ? <ReplyList replies={comment.spotReplies} /> : null} */}
+//         <button onClick={function (e) { setFolded(!folded) }}>展開</button>
+//         <br />
+//         -------------
+//       </div>
+//     )
+//   return (
+//     <div>
+//       ------PageTile-------
+//       author:domain - title // top notes
+//       <QueryCommentList pageId="123" />
+//       <button onClick={function (e) { setFolded(!folded) }}>折疊</button>
+//       -------------
+//     </div>
+//   )
+// }
 
 
 // interface SymbolListProps {

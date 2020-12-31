@@ -1,23 +1,28 @@
 import gql from 'graphql-tag'
 
 export const typeDefs = gql`
-type Query {
-  # 會包含comments & nestedBlockComments，這裡的comments(含spot, new, spotReplies...)用於顯示
-  page(id: ID, title: String, symbolName: String, symbolId: Int): Page
-  # 最新加入的page，加入條件：被comment, 被bot捕捉
-  latestPages(afterId: ID): [Page!]!
 
-  # 會有找不到的情況，需要注意sanitize(?)
-  # searchBlock(symbolName: String): Block!
+type Query {
+  fetchLink(url: String!): Link!
+
+  # 可允許用id、symbolName來尋找
+  cocard(symbolName: String, linkUrl: String): Cocard
+  ocard(id: ID, oauthorName: String, symbolName: String): Ocard
+  selfcard(id: ID!): Selfcard
+  mycard(symbolName: String!): Selfcard
+
+  # 會包含comments & nestedBlockComments，這裡的comments(含spot, new, spotReplies...)用於顯示
+  # page(id: ID, title: String, symbolName: String, symbolId: Int): Page
+  # 最新加入的page，加入條件：被comment, 被bot捕捉
+  # latestPages(afterId: ID): [Page!]!
 
   # 所有的comments（含spot），幫助cache，僅含spotReplies
-  comments(pageId: ID!, afterId: ID): [Comment!]!
+  comments(cardId: ID!, afterId: ID): [Comment!]!
   # 用於filter comments的情形（例如：/q, /stage, ...)
   commentsBySymbol(pageTitle: String!, symbol: String!, afterId: ID): [Comment!]!
 
   # 專用於顯示
   # topComments(blockId: ID!, afterId: ID): [CommentWithReplies!]!
-  
   replies(commentId: ID!, afterId: ID): [Reply!]!
 
   ticks(symbolId: ID!, after: String): [Tick!]!
@@ -33,7 +38,7 @@ type Query {
   searchTopic(term: String!): [String!]!
   # searchTopic(term: String!): [String!]!
   # 用url搜尋page，看是否已建立？
-  searchPage(url: String!): Page
+  # searchPage(url: String!): Page
 
   # 自動標註可能的topic, tickers
   automark(text: String!): String!
@@ -89,8 +94,13 @@ type Query {
 }
 
 type Mutation {
-  createComment(pageId: ID!, data: CommentInput!): Comment!
+  createMycard(symbolName: String!, data: [CommentInput!]!): Selfcard!
+  createOcard(symbolName: String!, oauthorName: String!, data: [CommentInput!]!): Ocard!
+  # createOrGetCocard(url: String, data: [CommentInput!]!): Ocard!
+
+  createComments(cardId: ID!, cardType: String!,  data: [CommentInput!]!): [Comment!]!
   # updateComment(id: ID!, data: CommentInput!): Comment!
+  createComment(cardId: ID!, cardType: String!,  data: CommentInput!): Comment!
 
   createReply(commentId: ID!, data: ReplyInput!): Reply!
   # updateComment(id: ID!, data: CommentInput!): Comment!
@@ -254,13 +264,20 @@ type CommentProps {
   # suggestedReplies?: string[],
 }
 
+type CommentMeta {
+  seq: Int
+  mark: String
+  src: String
+  # commentIds: [Int!]
+}
+
 type Comment {
   id: ID!
-  userId: ID!
+  userId: String!
   symbols: [Symbol!]
   # null表示無需topReplies
   topReplies: [Reply!]
-  replies: [Reply!]!
+  replies: [Reply!]
   # cat: CommentCat!
   isTop: Boolean
   text: String
@@ -269,7 +286,10 @@ type Comment {
   # updatedAt: DateTime!
   poll: Poll
 
-  props: CommentProps
+  meta: CommentMeta
+  cocardId: Int
+  ocardId: Int
+  selfcardId: Int
 }
 
 # type CommentWithSpotReplies {
@@ -299,7 +319,7 @@ type Link {
   domain: String!
   contentType: String!
   contentId: String
-  contentAuthorId: String
+  oauthorName: String
 }
 
 # type BlockBody {
@@ -318,57 +338,87 @@ type corrTicker {
   createdAt: DateTime
 }
 
-type PageProps {
-  selfSymbol: String
-  tickers: Comment
-  topics: Comment
+# type PageProps {
+#   selfSymbol: String
+#   tickers: Comment
+#   topics: Comment
 
-  # for ticker
-  links: Comment
-  pros: Comment
-  cons: Comment
-  act: Comment
+#   # for ticker
+#   links: Comment
+#   pros: Comment
+#   cons: Comment
+#   act: Comment
 
-  # for topic, ticker
-  wiki: String
-  intro: Comment
-  shortView: Comment
-  longView: Comment
-  # type: Comment
+#   # for topic, ticker
+#   wiki: String
+#   intro: Comment
+#   shortView: Comment
+#   longView: Comment
+#   # type: Comment
 
-  # for webpage
-  srcAuthor: String
-  srcTitle: String
+#   # for webpage
+#   srcAuthor: String
+#   srcTitle: String
 
-  # status poll
-  voteCreate: Comment
-  # reportDuplicate: Comment
+#   # status poll
+#   voteCreate: Comment
+#   # reportDuplicate: Comment
 
-  # for homepage -> 直接用query寫（為了靈活調度）
-  # focusPolls: [Comment!]
-  # trendTopics: [String!]
-  # newTopics: [String!]
+#   # for homepage -> 直接用query寫（為了靈活調度）
+#   # focusPolls: [Comment!]
+#   # trendTopics: [String!]
+#   # newTopics: [String!]
 
-  # @deprecated
-  # name: String
-  # longName: String
-  # path: String
-  # canComment: Boolean
-  # canOpenAsPage: Boolean
-  # commentIntro: Comment
-  # commentSymbols: Comment
+#   # @deprecated
+#   # name: String
+#   # longName: String
+#   # path: String
+#   # canComment: Boolean
+#   # canOpenAsPage: Boolean
+#   # commentIntro: Comment
+#   # commentSymbols: Comment
+# }
+
+# type Page {
+#   id: ID!
+#   # 取代path，也代表selfSymbol(若適用的話)
+#   title: String!
+#   template: String!
+#   props: PageProps!
+#   # body: BlockBody!
+#   # topComments可以從comments中filter出來
+#   comments: [Comment!]
+#   link: Link
+# }
+
+type CardMeta {
+  tickers: [String!]
+  topics: [String!]
+  links: [String!]
 }
 
-type Page {
+type Cocard {
   id: ID!
-  # 取代path，也代表selfSymbol(若適用的話)
-  title: String!
-  template: String!
-  props: PageProps!
-  # body: BlockBody!
-  # topComments可以從comments中filter出來
-  comments: [Comment!]
-  link: Link
+  template: CardTemplate!
+  # meta: CardMeta!
+  comments: [Comment!]!
+  link: Link!
+}
+
+type Ocard {
+  id: ID!
+  template: CardTemplate!
+  comments: [Comment!]!
+  symbol: Symbol!
+  oauthorName: String!
+}
+
+type Selfcard {
+  id: ID!
+  template: CardTemplate!
+  comments: [Comment!]!
+  symbol: Symbol!
+  # user: User!
 }
 
 type CommentLike {
@@ -431,7 +481,9 @@ input CommentInput {
   # content: String!
   # symbolIds: [ID!]!
   # cat: CommentCat!
-  symbols: [String!]!
+  # symbols: [String!]!
+  mark: String!
+  src: String
   text: String!
   poll: PollInput
 }
@@ -571,8 +623,6 @@ input CommitReviewInput {
   choice: Int!
 }
 
-
-
 enum PostCat {
   LINK
   REPLY
@@ -593,10 +643,8 @@ enum PollCat {
 }
 
 enum SymbolCat {
-  TAG
   TICKER
-  EVENT
-  SYS_TICKER_FOLLOWERS
+  TOPIC
 }
 
 enum SymbolStatus {
@@ -624,6 +672,11 @@ enum PollStatus {
   JUDGE
   CLOSE_SUCCESS
   CLOSE_FAIL
+}
+
+enum CardTemplate {
+  TICKER
+  WEBPAGE
 }
 
 scalar DateTime

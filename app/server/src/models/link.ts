@@ -1,3 +1,5 @@
+// import * as request from 'request'
+import got from 'got'
 import * as PA from '@prisma/client'
 
 const prisma = new PA.PrismaClient({
@@ -30,23 +32,19 @@ export async function getLink(url: string): Promise<[PA.Link | null, ParsedUrl]>
     return [res, parsed]
 }
 
-
-
-export async function createLink(parsed: ParsedUrl, page: PA.Page, contentType?: PA.LinkContentType, contentId?: string, contentAuthorId?: string): Promise<PA.Link | null> {
+export async function createLink(parsed: ParsedUrl, contentType?: PA.LinkContentType, contentId?: string, contentAuthorId?: string): Promise<PA.Link | null> {
     return await prisma.link.create({
         data: {
             url: parsed.url,
             domain: parsed.domain,
             contentType,
             contentId,
-            contentAuthorId,
-            page: { connect: { id: page.id } }
+            // contentAuthorId,
         }
     })
 }
 
-
-export async function getOrCreateLink(url: string, page: PA.Page, contentType?: PA.LinkContentType, contentId?: string, contentAuthorId?: string): Promise<[PA.Link | null, boolean]> {
+export async function getOrCreateLink(url: string, contentType?: PA.LinkContentType, contentId?: string, contentAuthorId?: string): Promise<[PA.Link | null, boolean]> {
     const [res, parsed] = await getLink(url)
     if (res !== null)
         return [res, false]
@@ -56,11 +54,42 @@ export async function getOrCreateLink(url: string, page: PA.Page, contentType?: 
             domain: parsed.domain,
             contentType,
             contentId,
-            contentAuthorId,
-            page: { connect: { id: page.id } }
+            // contentAuthorId,
         }
     })
     return [link, true]
 }
 
+function toOauthorName(domain: string, domainAuthorName: string) {
+    return `@${domainAuthorName}:${domain}`
+}
 
+export async function fetchLink(url: string) {
+    /** 目前只支援youtube */
+    const domain = 'youtube'
+    const u = new URL(url)
+    const vid = new URLSearchParams(u.search).get('v')
+    // try {
+    // const resp = await got.get('https://youtube.com/get_video_info', { searchParams: { video_id: vid } })
+    // } catch (error) {
+    //     console.log(error.response.body)
+    // }
+    const resp = await got.get('https://youtube.com/get_video_info', { searchParams: { video_id: vid } })
+    const p = new URLSearchParams(resp.body).get('player_response')
+    if (p) {
+        const j = JSON.parse(p).microformat.playerMicroformatRenderer
+        return {
+            domain,
+            oauthorName: toOauthorName(domain, j.ownerChannelName),
+            contentId: vid,
+            // 可能會有redirect, short-url
+            resolvedUrl: url,
+            title: j.title.simpleText,
+            publishDate: new Date(j.publishDate).toISOString(),
+            // channelId: j.externalChannelId,
+            // channelName: j.ownerChannelName,
+            // viewCount: j.viewCount
+        }
+    }
+    throw new Error()
+}

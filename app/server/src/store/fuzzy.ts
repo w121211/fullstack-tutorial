@@ -8,8 +8,8 @@ import * as PA from '@prisma/client'
 
 // 將資料庫取出的資料存在記憶體中（定時更新），用於fuzzy search
 // TODO: 改存在Redis
-let topicTitles: string[] | null = null
-let topicFuse: Fuse<string>
+let symbols: PA.Symbol[] | null = null
+let symbolFuse: Fuse<PA.Symbol>
 let topicFuseUpdatedAt: Date | null = null
 let tickerTitles: string[] | null = null
 
@@ -17,34 +17,6 @@ const prisma = new PA.PrismaClient({
   errorFormat: "pretty",
   log: ['query', 'info', 'warn'],
 })
-
-async function getAllTopicTitles(): Promise<string[]> {
-  const titles: string[] = []
-  let cursor: number | null = null
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    let results
-    if (cursor !== null) {
-      results = await prisma.page.findMany({
-        take: 10,
-        where: { template: { equals: "TOPIC" } },
-        orderBy: { id: 'asc' },
-        cursor: { id: cursor },
-      })
-    } else {
-      results = await prisma.page.findMany({
-        take: 10,
-        where: { template: { equals: "TOPIC" } },
-        orderBy: { id: 'asc' }
-      })
-    }
-    if (results.length === 0)
-      break
-    titles.concat(results.map(e => e.title))
-    cursor = results[-1].id
-  }
-  return titles
-}
 
 async function getAllTickers() {
   const titles: string[] = []
@@ -74,22 +46,36 @@ async function getAllTickers() {
   return titles
 }
 
-export async function searchTopic(term: string) {
-  if (topicTitles === null) {
-    topicTitles = await getAllTopicTitles()
-    topicFuse = new Fuse(topicTitles, {
-      includeScore: true
+async function getAllSymbols(): Promise<PA.Symbol[]> {
+  let symbols: PA.Symbol[] = []
+  let cursor: number | undefined = undefined
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    let results
+    results = await prisma.symbol.findMany({
+      take: 10,
+      // skip cursor
+      skip: cursor ? 1 : undefined,
+      orderBy: { id: 'asc' },
+      cursor: cursor ? { id: cursor } : undefined,
+    })
+    console.log(results)
+    if (results.length === 0)
+      break
+    symbols = symbols.concat(results)
+    cursor = results[results.length - 1].id
+  }
+  return symbols
+}
+
+export async function searchAllSymbol(term: string): Promise<string[]> {
+  if (symbols === null) {
+    symbols = await getAllSymbols()
+    console.log(symbols)
+    symbolFuse = new Fuse(symbols, {
+      includeScore: true,
+      keys: ['name']
     })
   }
-  return topicFuse.search(term)
+  return symbolFuse.search(term).map(e => e.item.name)
 }
-
-export async function searchPage(url: string) {
-  /** 用url搜尋page，看是否已建立？ */
-  throw new Error("")
-}
-
-export function searchAll(term: string) {
-  throw new Error("")
-}
-

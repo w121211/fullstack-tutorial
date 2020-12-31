@@ -2,55 +2,42 @@ import React, { useState } from 'react'
 import { RouteComponentProps, Redirect, Link, navigate } from '@reach/router'
 import { useQuery } from '@apollo/client'
 import { Layout } from 'antd'
-import { SelectProps } from 'antd/es/select'
-import { ArrowLeftOutlined } from '@ant-design/icons'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
-import { Comment } from '../components/tile'
 import { CssBlockCard } from '../components/block'
-import blockMetaCss from '../components/blockMeta/blockMeta.module.scss'
+import { filterManyComments, filterOneComments, TopicCocardBody } from '../components/card'
 
 interface RouteProps extends RouteComponentProps<{ title: string }> {
   me?: QT.me_me
 }
 
 export const TopicPage: React.FC<RouteProps> = function ({ title, me }) {
-  const queryPage = useQuery<QT.page, QT.pageVariables>(
-    queries.PAGE, { variables: { title } }
+  const { loading, data, error } = useQuery<QT.cocard, QT.cocardVariables>(
+    queries.COCARD, { variables: { symbolName: title } }
   )
-  if (queryPage.loading)
+  if (loading)
     return null
-  if (!queryPage.data)
+  if (!data || error)
     return <p>something goes wrong</p>
-  const pg = queryPage.data.page
-  if (!pg)
-    return <h1>Null block</h1>
-
-  console.log(pg)
-
+  if (data.cocard === null)
+    return <p>Topic {title} not found</p>
   return (
     <Layout.Content className="site-layout-background content" style={{ minHeight: 280, }}>
-      <h1>{pg.title}</h1>
+      <h1>{title}</h1>
+      <p>
+        {filterOneComments('description', data.cocard.comments)}
+        <br />
+        {filterManyComments('link', data.cocard.comments).map(e => e.text)}
+        <br />
+        {filterManyComments('ticker', data.cocard.comments).map(e => e.text)}
+      </p>
+
       <CssBlockCard title="">
-        <ul>
-          {pg.props.voteCreate &&
-            <Comment comment={pg.props.voteCreate} options={{ dispCommentAs: 'key-value', dispReplyAs: 'tag', swapText: '同意建立' }} />}
-          {pg.props.tickers &&
-            <Comment comment={pg.props.tickers} options={{ dispCommentAs: 'key-value', dispReplyAs: 'tag', swapText: 'Tickers' }} />}
-          {pg.props.wiki &&
-            <li>
-              <span className={blockMetaCss.span}>Wiki</span>
-              {pg.props.wiki}
-            </li>
-          }
-          {pg.props.shortView &&
-            <Comment comment={pg.props.shortView} options={{ dispCommentAs: 'key-value', dispReplyAs: 'tag', swapText: '短線' }} />}
-          {pg.props.longView &&
-            <Comment comment={pg.props.longView} options={{ dispCommentAs: 'key-value', dispReplyAs: 'tag', swapText: '長線' }} />}
-        </ul>
+        <TopicCocardBody card={data.cocard} />
       </CssBlockCard>
+
       <pre>(NEXT) Compare tickers table</pre>
-      <pre>(NEXT) Comments: by filter</pre>
+      <pre>(NEXT) Discuss: by filter</pre>
     </Layout.Content>
   )
 }

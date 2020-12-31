@@ -56,7 +56,7 @@ const REPLY = gql`
     isTop
     text
     updatedAt
-    count { 
+    count {
       ...replyCount
     }
   }
@@ -68,6 +68,9 @@ const COMMENT = gql`
     __typename
     id
     userId
+    cocardId
+    ocardId
+    selfcardId
     isTop
     text
     # updatedAt
@@ -83,6 +86,11 @@ const COMMENT = gql`
     }
     count { 
       ...commentCount
+    }
+    meta {
+      seq
+      mark
+      src
     }
   }
   ${REPLY}
@@ -110,58 +118,63 @@ const REPLY_LIKE = gql`
   }
 `
 
-const PAGE_FRAGMENT = gql`
-  fragment pageFragment on Page {
-    __typename
-    id
-    title
-    template
-    props {
-      selfSymbol
-      tickers {
-        ...comment
-      }
-      topics {
-        ...comment
-      }
-      links {
-        ...comment
-      }
-      pros {
-        ...comment
-      }
-      cons {
-        ...comment
-      }
-      act {
-        ...comment
-      }
-      wiki
-      intro {
-        ...comment
-      }
-      shortView {
-        ...comment
-      }
-      longView {
-        ...comment
-      }
-      srcAuthor
-      srcTitle
-      voteCreate {
-        ...comment
-      }
-    }
-    comments {
-      ...comment
-    }
-    link {
+const LINK_FRAGMENT = gql`
+  fragment linkFragment on Link {
+      __typename
       id
       url
       domain
       contentType
       contentId
-      contentAuthorId
+      oauthorName
+    }
+`
+
+const COCARD_FRAGMENT = gql`
+  fragment cocardFragment on Cocard {
+    __typename
+    id
+    template
+    # meta
+    comments {
+      ...comment
+    }
+    link {
+      ...linkFragment
+    }
+  }
+  ${COMMENT}
+  ${LINK_FRAGMENT}
+`
+
+const OCARD_FRAGMENT = gql`
+  fragment ocardFragment on Ocard {
+    __typename
+    id
+    template
+    comments {
+      ...comment
+    }
+    symbol {
+      name
+      cat
+    }
+    oauthorName
+  }
+  ${COMMENT}
+`
+
+const SELFCARD_FRAGMENT = gql`
+  fragment selfcardFragment on Selfcard {
+    __typename
+    id
+    template
+    comments {
+      ...comment
+    }
+    symbol {
+      name
+      cat
     }
   }
   ${COMMENT}
@@ -171,18 +184,54 @@ const PAGE_FRAGMENT = gql`
 // Query
 // ----------------------------
 
-export const PAGE = gql`
-  query page($id: ID, $title: String, $symbolName: String, $symbolId: Int) {
-    page(id: $id, title: $title, symbolName: $symbolName, symbolId: $symbolId,) {
-      ...pageFragment
+export const FETCH_LINK = gql`
+  query fetchLink($url: String!) {
+    fetchLink(url: $url) {
+      ...linkFragment
     }
   }
-  ${PAGE_FRAGMENT}
+  ${LINK_FRAGMENT}
+`
+
+export const COCARD = gql`
+  query cocard($symbolName: String, $linkUrl: String) {
+    cocard(symbolName: $symbolName, linkUrl: $linkUrl) {
+      ...cocardFragment
+    }
+  }
+  ${COCARD_FRAGMENT}
+`
+
+export const OCARD = gql`
+  query ocard($id: ID, $oauthorName: String, $symbolName: String) {
+    ocard(id: $id, oauthorName: $oauthorName, symbolName: $symbolName) {
+      ...ocardFragment
+    }
+  }
+  ${OCARD_FRAGMENT}
+`
+
+export const SELFCARD = gql`
+  query selfcard($id: ID!) {
+    selfcard(id: $id) {
+      ...selfcardFragment
+    }
+  }
+  ${SELFCARD_FRAGMENT}
+`
+
+export const MYCARD = gql`
+  query mycard($symbolName: String!) {
+    mycard(symbolName: $symbolName) {
+      ...selfcardFragment
+    }
+  }
+  ${SELFCARD_FRAGMENT}
 `
 
 export const COMMENTS = gql`
-  query comments($pageId: ID!, $afterId: ID) {
-    comments(pageId: $pageId, afterId: $afterId) {
+  query comments($cardId: ID!, $afterId: ID) {
+    comments(cardId: $cardId, afterId: $afterId) {
       ...comment
     }
   }
@@ -247,28 +296,11 @@ export const ME = gql`
     }
   }
 `
-export const LATEST_PAGES = gql`
-  query latestPages($afterId: ID) {
-    latestPages(afterId: $afterId) {
-      ...pageFragment
-    }
-  }
-  ${PAGE_FRAGMENT}
-`
 
 export const SEARCH_ALL = gql`
   query searchAll($term: String!) {
     searchAll(term: $term)
   }
-`
-
-export const SEARCH_PAGE = gql`
-  query searchPage($url: String!) {
-    searchPage(url: $url) {
-      ...pageFragment
-    }
-  }
-  ${PAGE_FRAGMENT}
 `
 
 export const AUTOMARK = gql`
@@ -281,9 +313,36 @@ export const AUTOMARK = gql`
 // mutation
 // ----------------------------
 
+export const CREATE_MYCARD = gql`
+  mutation createMycard($symbolName: String!, $data: [CommentInput!]!) {
+    createMycard(symbolName: $symbolName, data: $data) {
+      ...selfcardFragment
+    }
+  }
+  ${SELFCARD_FRAGMENT}
+`
+
+export const CREATE_OCARD = gql`
+  mutation createOcard($symbolName: String!, $oauthorName: String!, $data: [CommentInput!]!) {
+    createOcard(symbolName: $symbolName, oauthorName: $oauthorName, data: $data)  {
+      ...ocardFragment
+    }
+  }
+  ${OCARD_FRAGMENT}
+`
+
+export const CREATE_COMMENTS = gql`
+  mutation createComments($cardId: ID!, $cardType: String! $data: [CommentInput!]!) {
+    createComments(cardId: $cardId,  cardType: $cardType, data: $data) {
+      ...comment
+    }
+  }
+  ${COMMENT}
+`
+
 export const CREATE_COMMENT = gql`
-  mutation createComment($pageId: ID!, $data: CommentInput!) {
-    createComment(pageId: $pageId,  data: $data) {
+  mutation createComment($cardId: ID!, $cardType: String! $data: CommentInput!) {
+    createComment(cardId: $cardId,  cardType: $cardType, data: $data) {
       ...comment
     }
   }

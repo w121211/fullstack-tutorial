@@ -4,837 +4,485 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: page
+// GraphQL query operation: fetchLink
 // ====================================================
 
-export interface page_page_props_tickers_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_tickers_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: page_page_props_tickers_replies_count;
-}
-
-export interface page_page_props_tickers_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_tickers_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: page_page_props_tickers_topReplies_count;
-}
-
-export interface page_page_props_tickers_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface page_page_props_tickers_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: page_page_props_tickers_poll_count;
-  createdAt: any;
-}
-
-export interface page_page_props_tickers_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_tickers {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: page_page_props_tickers_replies[];
-  topReplies: page_page_props_tickers_topReplies[] | null;
-  poll: page_page_props_tickers_poll | null;
-  count: page_page_props_tickers_count;
-}
-
-export interface page_page_props_topics_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_topics_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: page_page_props_topics_replies_count;
-}
-
-export interface page_page_props_topics_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_topics_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: page_page_props_topics_topReplies_count;
-}
-
-export interface page_page_props_topics_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface page_page_props_topics_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: page_page_props_topics_poll_count;
-  createdAt: any;
-}
-
-export interface page_page_props_topics_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_topics {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: page_page_props_topics_replies[];
-  topReplies: page_page_props_topics_topReplies[] | null;
-  poll: page_page_props_topics_poll | null;
-  count: page_page_props_topics_count;
-}
-
-export interface page_page_props_links_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_links_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: page_page_props_links_replies_count;
-}
-
-export interface page_page_props_links_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_links_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: page_page_props_links_topReplies_count;
-}
-
-export interface page_page_props_links_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface page_page_props_links_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: page_page_props_links_poll_count;
-  createdAt: any;
-}
-
-export interface page_page_props_links_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_links {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: page_page_props_links_replies[];
-  topReplies: page_page_props_links_topReplies[] | null;
-  poll: page_page_props_links_poll | null;
-  count: page_page_props_links_count;
-}
-
-export interface page_page_props_pros_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_pros_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: page_page_props_pros_replies_count;
-}
-
-export interface page_page_props_pros_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_pros_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: page_page_props_pros_topReplies_count;
-}
-
-export interface page_page_props_pros_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface page_page_props_pros_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: page_page_props_pros_poll_count;
-  createdAt: any;
-}
-
-export interface page_page_props_pros_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_pros {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: page_page_props_pros_replies[];
-  topReplies: page_page_props_pros_topReplies[] | null;
-  poll: page_page_props_pros_poll | null;
-  count: page_page_props_pros_count;
-}
-
-export interface page_page_props_cons_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_cons_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: page_page_props_cons_replies_count;
-}
-
-export interface page_page_props_cons_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_cons_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: page_page_props_cons_topReplies_count;
-}
-
-export interface page_page_props_cons_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface page_page_props_cons_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: page_page_props_cons_poll_count;
-  createdAt: any;
-}
-
-export interface page_page_props_cons_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_cons {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: page_page_props_cons_replies[];
-  topReplies: page_page_props_cons_topReplies[] | null;
-  poll: page_page_props_cons_poll | null;
-  count: page_page_props_cons_count;
-}
-
-export interface page_page_props_act_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_act_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: page_page_props_act_replies_count;
-}
-
-export interface page_page_props_act_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_act_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: page_page_props_act_topReplies_count;
-}
-
-export interface page_page_props_act_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface page_page_props_act_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: page_page_props_act_poll_count;
-  createdAt: any;
-}
-
-export interface page_page_props_act_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_act {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: page_page_props_act_replies[];
-  topReplies: page_page_props_act_topReplies[] | null;
-  poll: page_page_props_act_poll | null;
-  count: page_page_props_act_count;
-}
-
-export interface page_page_props_intro_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_intro_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: page_page_props_intro_replies_count;
-}
-
-export interface page_page_props_intro_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_intro_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: page_page_props_intro_topReplies_count;
-}
-
-export interface page_page_props_intro_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface page_page_props_intro_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: page_page_props_intro_poll_count;
-  createdAt: any;
-}
-
-export interface page_page_props_intro_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_intro {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: page_page_props_intro_replies[];
-  topReplies: page_page_props_intro_topReplies[] | null;
-  poll: page_page_props_intro_poll | null;
-  count: page_page_props_intro_count;
-}
-
-export interface page_page_props_shortView_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_shortView_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: page_page_props_shortView_replies_count;
-}
-
-export interface page_page_props_shortView_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_shortView_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: page_page_props_shortView_topReplies_count;
-}
-
-export interface page_page_props_shortView_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface page_page_props_shortView_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: page_page_props_shortView_poll_count;
-  createdAt: any;
-}
-
-export interface page_page_props_shortView_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_shortView {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: page_page_props_shortView_replies[];
-  topReplies: page_page_props_shortView_topReplies[] | null;
-  poll: page_page_props_shortView_poll | null;
-  count: page_page_props_shortView_count;
-}
-
-export interface page_page_props_longView_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_longView_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: page_page_props_longView_replies_count;
-}
-
-export interface page_page_props_longView_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_longView_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: page_page_props_longView_topReplies_count;
-}
-
-export interface page_page_props_longView_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface page_page_props_longView_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: page_page_props_longView_poll_count;
-  createdAt: any;
-}
-
-export interface page_page_props_longView_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_longView {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: page_page_props_longView_replies[];
-  topReplies: page_page_props_longView_topReplies[] | null;
-  poll: page_page_props_longView_poll | null;
-  count: page_page_props_longView_count;
-}
-
-export interface page_page_props_voteCreate_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_voteCreate_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: page_page_props_voteCreate_replies_count;
-}
-
-export interface page_page_props_voteCreate_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_voteCreate_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: page_page_props_voteCreate_topReplies_count;
-}
-
-export interface page_page_props_voteCreate_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface page_page_props_voteCreate_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: page_page_props_voteCreate_poll_count;
-  createdAt: any;
-}
-
-export interface page_page_props_voteCreate_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_props_voteCreate {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: page_page_props_voteCreate_replies[];
-  topReplies: page_page_props_voteCreate_topReplies[] | null;
-  poll: page_page_props_voteCreate_poll | null;
-  count: page_page_props_voteCreate_count;
-}
-
-export interface page_page_props {
-  __typename: "PageProps";
-  selfSymbol: string | null;
-  tickers: page_page_props_tickers | null;
-  topics: page_page_props_topics | null;
-  links: page_page_props_links | null;
-  pros: page_page_props_pros | null;
-  cons: page_page_props_cons | null;
-  act: page_page_props_act | null;
-  wiki: string | null;
-  intro: page_page_props_intro | null;
-  shortView: page_page_props_shortView | null;
-  longView: page_page_props_longView | null;
-  srcAuthor: string | null;
-  srcTitle: string | null;
-  voteCreate: page_page_props_voteCreate | null;
-}
-
-export interface page_page_comments_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_comments_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: page_page_comments_replies_count;
-}
-
-export interface page_page_comments_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_comments_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: page_page_comments_topReplies_count;
-}
-
-export interface page_page_comments_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface page_page_comments_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: page_page_comments_poll_count;
-  createdAt: any;
-}
-
-export interface page_page_comments_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface page_page_comments {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: page_page_comments_replies[];
-  topReplies: page_page_comments_topReplies[] | null;
-  poll: page_page_comments_poll | null;
-  count: page_page_comments_count;
-}
-
-export interface page_page_link {
+export interface fetchLink_fetchLink {
   __typename: "Link";
   id: string;
   url: string;
   domain: string;
   contentType: string;
   contentId: string | null;
-  contentAuthorId: string | null;
+  oauthorName: string | null;
 }
 
-export interface page_page {
-  __typename: "Page";
+export interface fetchLink {
+  fetchLink: fetchLink_fetchLink;
+}
+
+export interface fetchLinkVariables {
+  url: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: cocard
+// ====================================================
+
+export interface cocard_cocard_comments_replies_count {
+  __typename: "ReplyCount";
   id: string;
-  title: string;
-  template: string;
-  props: page_page_props;
-  comments: page_page_comments[] | null;
-  link: page_page_link | null;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
 }
 
-export interface page {
-  page: page_page | null;
+export interface cocard_cocard_comments_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: cocard_cocard_comments_replies_count;
 }
 
-export interface pageVariables {
-  id?: string | null;
-  title?: string | null;
+export interface cocard_cocard_comments_topReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface cocard_cocard_comments_topReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: cocard_cocard_comments_topReplies_count;
+}
+
+export interface cocard_cocard_comments_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
+export interface cocard_cocard_comments_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  count: cocard_cocard_comments_poll_count;
+  createdAt: any;
+}
+
+export interface cocard_cocard_comments_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface cocard_cocard_comments_meta {
+  __typename: "CommentMeta";
+  seq: number | null;
+  mark: string | null;
+  src: string | null;
+}
+
+export interface cocard_cocard_comments {
+  __typename: "Comment";
+  id: string;
+  userId: string;
+  cocardId: number | null;
+  ocardId: number | null;
+  selfcardId: number | null;
+  isTop: boolean | null;
+  text: string | null;
+  createdAt: any;
+  replies: cocard_cocard_comments_replies[] | null;
+  topReplies: cocard_cocard_comments_topReplies[] | null;
+  poll: cocard_cocard_comments_poll | null;
+  count: cocard_cocard_comments_count;
+  meta: cocard_cocard_comments_meta | null;
+}
+
+export interface cocard_cocard_link {
+  __typename: "Link";
+  id: string;
+  url: string;
+  domain: string;
+  contentType: string;
+  contentId: string | null;
+  oauthorName: string | null;
+}
+
+export interface cocard_cocard {
+  __typename: "Cocard";
+  id: string;
+  template: CardTemplate;
+  comments: cocard_cocard_comments[];
+  link: cocard_cocard_link;
+}
+
+export interface cocard {
+  cocard: cocard_cocard | null;
+}
+
+export interface cocardVariables {
   symbolName?: string | null;
-  symbolId?: number | null;
+  linkUrl?: string | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: ocard
+// ====================================================
+
+export interface ocard_ocard_comments_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface ocard_ocard_comments_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: ocard_ocard_comments_replies_count;
+}
+
+export interface ocard_ocard_comments_topReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface ocard_ocard_comments_topReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: ocard_ocard_comments_topReplies_count;
+}
+
+export interface ocard_ocard_comments_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
+export interface ocard_ocard_comments_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  count: ocard_ocard_comments_poll_count;
+  createdAt: any;
+}
+
+export interface ocard_ocard_comments_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface ocard_ocard_comments_meta {
+  __typename: "CommentMeta";
+  seq: number | null;
+  mark: string | null;
+  src: string | null;
+}
+
+export interface ocard_ocard_comments {
+  __typename: "Comment";
+  id: string;
+  userId: string;
+  cocardId: number | null;
+  ocardId: number | null;
+  selfcardId: number | null;
+  isTop: boolean | null;
+  text: string | null;
+  createdAt: any;
+  replies: ocard_ocard_comments_replies[] | null;
+  topReplies: ocard_ocard_comments_topReplies[] | null;
+  poll: ocard_ocard_comments_poll | null;
+  count: ocard_ocard_comments_count;
+  meta: ocard_ocard_comments_meta | null;
+}
+
+export interface ocard_ocard_symbol {
+  __typename: "Symbol";
+  name: string;
+  cat: SymbolCat;
+}
+
+export interface ocard_ocard {
+  __typename: "Ocard";
+  id: string;
+  template: CardTemplate;
+  comments: ocard_ocard_comments[];
+  symbol: ocard_ocard_symbol;
+  oauthorName: string;
+}
+
+export interface ocard {
+  ocard: ocard_ocard | null;
+}
+
+export interface ocardVariables {
+  id?: string | null;
+  oauthorName?: string | null;
+  symbolName?: string | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: selfcard
+// ====================================================
+
+export interface selfcard_selfcard_comments_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface selfcard_selfcard_comments_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: selfcard_selfcard_comments_replies_count;
+}
+
+export interface selfcard_selfcard_comments_topReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface selfcard_selfcard_comments_topReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: selfcard_selfcard_comments_topReplies_count;
+}
+
+export interface selfcard_selfcard_comments_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
+export interface selfcard_selfcard_comments_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  count: selfcard_selfcard_comments_poll_count;
+  createdAt: any;
+}
+
+export interface selfcard_selfcard_comments_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface selfcard_selfcard_comments_meta {
+  __typename: "CommentMeta";
+  seq: number | null;
+  mark: string | null;
+  src: string | null;
+}
+
+export interface selfcard_selfcard_comments {
+  __typename: "Comment";
+  id: string;
+  userId: string;
+  cocardId: number | null;
+  ocardId: number | null;
+  selfcardId: number | null;
+  isTop: boolean | null;
+  text: string | null;
+  createdAt: any;
+  replies: selfcard_selfcard_comments_replies[] | null;
+  topReplies: selfcard_selfcard_comments_topReplies[] | null;
+  poll: selfcard_selfcard_comments_poll | null;
+  count: selfcard_selfcard_comments_count;
+  meta: selfcard_selfcard_comments_meta | null;
+}
+
+export interface selfcard_selfcard_symbol {
+  __typename: "Symbol";
+  name: string;
+  cat: SymbolCat;
+}
+
+export interface selfcard_selfcard {
+  __typename: "Selfcard";
+  id: string;
+  template: CardTemplate;
+  comments: selfcard_selfcard_comments[];
+  symbol: selfcard_selfcard_symbol;
+}
+
+export interface selfcard {
+  selfcard: selfcard_selfcard | null;
+}
+
+export interface selfcardVariables {
+  id: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: mycard
+// ====================================================
+
+export interface mycard_mycard_comments_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface mycard_mycard_comments_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: mycard_mycard_comments_replies_count;
+}
+
+export interface mycard_mycard_comments_topReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface mycard_mycard_comments_topReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: mycard_mycard_comments_topReplies_count;
+}
+
+export interface mycard_mycard_comments_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
+export interface mycard_mycard_comments_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  count: mycard_mycard_comments_poll_count;
+  createdAt: any;
+}
+
+export interface mycard_mycard_comments_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface mycard_mycard_comments_meta {
+  __typename: "CommentMeta";
+  seq: number | null;
+  mark: string | null;
+  src: string | null;
+}
+
+export interface mycard_mycard_comments {
+  __typename: "Comment";
+  id: string;
+  userId: string;
+  cocardId: number | null;
+  ocardId: number | null;
+  selfcardId: number | null;
+  isTop: boolean | null;
+  text: string | null;
+  createdAt: any;
+  replies: mycard_mycard_comments_replies[] | null;
+  topReplies: mycard_mycard_comments_topReplies[] | null;
+  poll: mycard_mycard_comments_poll | null;
+  count: mycard_mycard_comments_count;
+  meta: mycard_mycard_comments_meta | null;
+}
+
+export interface mycard_mycard_symbol {
+  __typename: "Symbol";
+  name: string;
+  cat: SymbolCat;
+}
+
+export interface mycard_mycard {
+  __typename: "Selfcard";
+  id: string;
+  template: CardTemplate;
+  comments: mycard_mycard_comments[];
+  symbol: mycard_mycard_symbol;
+}
+
+export interface mycard {
+  mycard: mycard_mycard | null;
+}
+
+export interface mycardVariables {
+  symbolName: string;
 }
 
 /* tslint:disable */
@@ -904,17 +552,28 @@ export interface comments_comments_count {
   nDowns: number;
 }
 
+export interface comments_comments_meta {
+  __typename: "CommentMeta";
+  seq: number | null;
+  mark: string | null;
+  src: string | null;
+}
+
 export interface comments_comments {
   __typename: "Comment";
   id: string;
   userId: string;
+  cocardId: number | null;
+  ocardId: number | null;
+  selfcardId: number | null;
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
-  replies: comments_comments_replies[];
+  replies: comments_comments_replies[] | null;
   topReplies: comments_comments_topReplies[] | null;
   poll: comments_comments_poll | null;
   count: comments_comments_count;
+  meta: comments_comments_meta | null;
 }
 
 export interface comments {
@@ -922,7 +581,7 @@ export interface comments {
 }
 
 export interface commentsVariables {
-  pageId: string;
+  cardId: string;
   afterId?: string | null;
 }
 
@@ -993,17 +652,28 @@ export interface commentsBySymbol_commentsBySymbol_count {
   nDowns: number;
 }
 
+export interface commentsBySymbol_commentsBySymbol_meta {
+  __typename: "CommentMeta";
+  seq: number | null;
+  mark: string | null;
+  src: string | null;
+}
+
 export interface commentsBySymbol_commentsBySymbol {
   __typename: "Comment";
   id: string;
   userId: string;
+  cocardId: number | null;
+  ocardId: number | null;
+  selfcardId: number | null;
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
-  replies: commentsBySymbol_commentsBySymbol_replies[];
+  replies: commentsBySymbol_commentsBySymbol_replies[] | null;
   topReplies: commentsBySymbol_commentsBySymbol_topReplies[] | null;
   poll: commentsBySymbol_commentsBySymbol_poll | null;
   count: commentsBySymbol_commentsBySymbol_count;
+  meta: commentsBySymbol_commentsBySymbol_meta | null;
 }
 
 export interface commentsBySymbol {
@@ -1151,842 +821,6 @@ export interface me {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: latestPages
-// ====================================================
-
-export interface latestPages_latestPages_props_tickers_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_tickers_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: latestPages_latestPages_props_tickers_replies_count;
-}
-
-export interface latestPages_latestPages_props_tickers_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_tickers_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: latestPages_latestPages_props_tickers_topReplies_count;
-}
-
-export interface latestPages_latestPages_props_tickers_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface latestPages_latestPages_props_tickers_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: latestPages_latestPages_props_tickers_poll_count;
-  createdAt: any;
-}
-
-export interface latestPages_latestPages_props_tickers_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_tickers {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: latestPages_latestPages_props_tickers_replies[];
-  topReplies: latestPages_latestPages_props_tickers_topReplies[] | null;
-  poll: latestPages_latestPages_props_tickers_poll | null;
-  count: latestPages_latestPages_props_tickers_count;
-}
-
-export interface latestPages_latestPages_props_topics_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_topics_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: latestPages_latestPages_props_topics_replies_count;
-}
-
-export interface latestPages_latestPages_props_topics_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_topics_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: latestPages_latestPages_props_topics_topReplies_count;
-}
-
-export interface latestPages_latestPages_props_topics_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface latestPages_latestPages_props_topics_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: latestPages_latestPages_props_topics_poll_count;
-  createdAt: any;
-}
-
-export interface latestPages_latestPages_props_topics_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_topics {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: latestPages_latestPages_props_topics_replies[];
-  topReplies: latestPages_latestPages_props_topics_topReplies[] | null;
-  poll: latestPages_latestPages_props_topics_poll | null;
-  count: latestPages_latestPages_props_topics_count;
-}
-
-export interface latestPages_latestPages_props_links_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_links_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: latestPages_latestPages_props_links_replies_count;
-}
-
-export interface latestPages_latestPages_props_links_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_links_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: latestPages_latestPages_props_links_topReplies_count;
-}
-
-export interface latestPages_latestPages_props_links_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface latestPages_latestPages_props_links_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: latestPages_latestPages_props_links_poll_count;
-  createdAt: any;
-}
-
-export interface latestPages_latestPages_props_links_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_links {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: latestPages_latestPages_props_links_replies[];
-  topReplies: latestPages_latestPages_props_links_topReplies[] | null;
-  poll: latestPages_latestPages_props_links_poll | null;
-  count: latestPages_latestPages_props_links_count;
-}
-
-export interface latestPages_latestPages_props_pros_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_pros_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: latestPages_latestPages_props_pros_replies_count;
-}
-
-export interface latestPages_latestPages_props_pros_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_pros_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: latestPages_latestPages_props_pros_topReplies_count;
-}
-
-export interface latestPages_latestPages_props_pros_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface latestPages_latestPages_props_pros_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: latestPages_latestPages_props_pros_poll_count;
-  createdAt: any;
-}
-
-export interface latestPages_latestPages_props_pros_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_pros {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: latestPages_latestPages_props_pros_replies[];
-  topReplies: latestPages_latestPages_props_pros_topReplies[] | null;
-  poll: latestPages_latestPages_props_pros_poll | null;
-  count: latestPages_latestPages_props_pros_count;
-}
-
-export interface latestPages_latestPages_props_cons_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_cons_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: latestPages_latestPages_props_cons_replies_count;
-}
-
-export interface latestPages_latestPages_props_cons_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_cons_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: latestPages_latestPages_props_cons_topReplies_count;
-}
-
-export interface latestPages_latestPages_props_cons_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface latestPages_latestPages_props_cons_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: latestPages_latestPages_props_cons_poll_count;
-  createdAt: any;
-}
-
-export interface latestPages_latestPages_props_cons_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_cons {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: latestPages_latestPages_props_cons_replies[];
-  topReplies: latestPages_latestPages_props_cons_topReplies[] | null;
-  poll: latestPages_latestPages_props_cons_poll | null;
-  count: latestPages_latestPages_props_cons_count;
-}
-
-export interface latestPages_latestPages_props_act_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_act_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: latestPages_latestPages_props_act_replies_count;
-}
-
-export interface latestPages_latestPages_props_act_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_act_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: latestPages_latestPages_props_act_topReplies_count;
-}
-
-export interface latestPages_latestPages_props_act_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface latestPages_latestPages_props_act_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: latestPages_latestPages_props_act_poll_count;
-  createdAt: any;
-}
-
-export interface latestPages_latestPages_props_act_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_act {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: latestPages_latestPages_props_act_replies[];
-  topReplies: latestPages_latestPages_props_act_topReplies[] | null;
-  poll: latestPages_latestPages_props_act_poll | null;
-  count: latestPages_latestPages_props_act_count;
-}
-
-export interface latestPages_latestPages_props_intro_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_intro_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: latestPages_latestPages_props_intro_replies_count;
-}
-
-export interface latestPages_latestPages_props_intro_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_intro_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: latestPages_latestPages_props_intro_topReplies_count;
-}
-
-export interface latestPages_latestPages_props_intro_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface latestPages_latestPages_props_intro_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: latestPages_latestPages_props_intro_poll_count;
-  createdAt: any;
-}
-
-export interface latestPages_latestPages_props_intro_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_intro {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: latestPages_latestPages_props_intro_replies[];
-  topReplies: latestPages_latestPages_props_intro_topReplies[] | null;
-  poll: latestPages_latestPages_props_intro_poll | null;
-  count: latestPages_latestPages_props_intro_count;
-}
-
-export interface latestPages_latestPages_props_shortView_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_shortView_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: latestPages_latestPages_props_shortView_replies_count;
-}
-
-export interface latestPages_latestPages_props_shortView_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_shortView_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: latestPages_latestPages_props_shortView_topReplies_count;
-}
-
-export interface latestPages_latestPages_props_shortView_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface latestPages_latestPages_props_shortView_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: latestPages_latestPages_props_shortView_poll_count;
-  createdAt: any;
-}
-
-export interface latestPages_latestPages_props_shortView_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_shortView {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: latestPages_latestPages_props_shortView_replies[];
-  topReplies: latestPages_latestPages_props_shortView_topReplies[] | null;
-  poll: latestPages_latestPages_props_shortView_poll | null;
-  count: latestPages_latestPages_props_shortView_count;
-}
-
-export interface latestPages_latestPages_props_longView_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_longView_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: latestPages_latestPages_props_longView_replies_count;
-}
-
-export interface latestPages_latestPages_props_longView_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_longView_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: latestPages_latestPages_props_longView_topReplies_count;
-}
-
-export interface latestPages_latestPages_props_longView_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface latestPages_latestPages_props_longView_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: latestPages_latestPages_props_longView_poll_count;
-  createdAt: any;
-}
-
-export interface latestPages_latestPages_props_longView_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_longView {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: latestPages_latestPages_props_longView_replies[];
-  topReplies: latestPages_latestPages_props_longView_topReplies[] | null;
-  poll: latestPages_latestPages_props_longView_poll | null;
-  count: latestPages_latestPages_props_longView_count;
-}
-
-export interface latestPages_latestPages_props_voteCreate_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_voteCreate_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: latestPages_latestPages_props_voteCreate_replies_count;
-}
-
-export interface latestPages_latestPages_props_voteCreate_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_voteCreate_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: latestPages_latestPages_props_voteCreate_topReplies_count;
-}
-
-export interface latestPages_latestPages_props_voteCreate_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface latestPages_latestPages_props_voteCreate_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: latestPages_latestPages_props_voteCreate_poll_count;
-  createdAt: any;
-}
-
-export interface latestPages_latestPages_props_voteCreate_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_props_voteCreate {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: latestPages_latestPages_props_voteCreate_replies[];
-  topReplies: latestPages_latestPages_props_voteCreate_topReplies[] | null;
-  poll: latestPages_latestPages_props_voteCreate_poll | null;
-  count: latestPages_latestPages_props_voteCreate_count;
-}
-
-export interface latestPages_latestPages_props {
-  __typename: "PageProps";
-  selfSymbol: string | null;
-  tickers: latestPages_latestPages_props_tickers | null;
-  topics: latestPages_latestPages_props_topics | null;
-  links: latestPages_latestPages_props_links | null;
-  pros: latestPages_latestPages_props_pros | null;
-  cons: latestPages_latestPages_props_cons | null;
-  act: latestPages_latestPages_props_act | null;
-  wiki: string | null;
-  intro: latestPages_latestPages_props_intro | null;
-  shortView: latestPages_latestPages_props_shortView | null;
-  longView: latestPages_latestPages_props_longView | null;
-  srcAuthor: string | null;
-  srcTitle: string | null;
-  voteCreate: latestPages_latestPages_props_voteCreate | null;
-}
-
-export interface latestPages_latestPages_comments_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_comments_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: latestPages_latestPages_comments_replies_count;
-}
-
-export interface latestPages_latestPages_comments_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_comments_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: latestPages_latestPages_comments_topReplies_count;
-}
-
-export interface latestPages_latestPages_comments_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface latestPages_latestPages_comments_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: latestPages_latestPages_comments_poll_count;
-  createdAt: any;
-}
-
-export interface latestPages_latestPages_comments_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface latestPages_latestPages_comments {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: latestPages_latestPages_comments_replies[];
-  topReplies: latestPages_latestPages_comments_topReplies[] | null;
-  poll: latestPages_latestPages_comments_poll | null;
-  count: latestPages_latestPages_comments_count;
-}
-
-export interface latestPages_latestPages_link {
-  __typename: "Link";
-  id: string;
-  url: string;
-  domain: string;
-  contentType: string;
-  contentId: string | null;
-  contentAuthorId: string | null;
-}
-
-export interface latestPages_latestPages {
-  __typename: "Page";
-  id: string;
-  title: string;
-  template: string;
-  props: latestPages_latestPages_props;
-  comments: latestPages_latestPages_comments[] | null;
-  link: latestPages_latestPages_link | null;
-}
-
-export interface latestPages {
-  latestPages: latestPages_latestPages[];
-}
-
-export interface latestPagesVariables {
-  afterId?: string | null;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
 // GraphQL query operation: searchAll
 // ====================================================
 
@@ -2004,842 +838,6 @@ export interface searchAllVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: searchPage
-// ====================================================
-
-export interface searchPage_searchPage_props_tickers_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_tickers_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: searchPage_searchPage_props_tickers_replies_count;
-}
-
-export interface searchPage_searchPage_props_tickers_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_tickers_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: searchPage_searchPage_props_tickers_topReplies_count;
-}
-
-export interface searchPage_searchPage_props_tickers_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface searchPage_searchPage_props_tickers_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: searchPage_searchPage_props_tickers_poll_count;
-  createdAt: any;
-}
-
-export interface searchPage_searchPage_props_tickers_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_tickers {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: searchPage_searchPage_props_tickers_replies[];
-  topReplies: searchPage_searchPage_props_tickers_topReplies[] | null;
-  poll: searchPage_searchPage_props_tickers_poll | null;
-  count: searchPage_searchPage_props_tickers_count;
-}
-
-export interface searchPage_searchPage_props_topics_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_topics_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: searchPage_searchPage_props_topics_replies_count;
-}
-
-export interface searchPage_searchPage_props_topics_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_topics_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: searchPage_searchPage_props_topics_topReplies_count;
-}
-
-export interface searchPage_searchPage_props_topics_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface searchPage_searchPage_props_topics_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: searchPage_searchPage_props_topics_poll_count;
-  createdAt: any;
-}
-
-export interface searchPage_searchPage_props_topics_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_topics {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: searchPage_searchPage_props_topics_replies[];
-  topReplies: searchPage_searchPage_props_topics_topReplies[] | null;
-  poll: searchPage_searchPage_props_topics_poll | null;
-  count: searchPage_searchPage_props_topics_count;
-}
-
-export interface searchPage_searchPage_props_links_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_links_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: searchPage_searchPage_props_links_replies_count;
-}
-
-export interface searchPage_searchPage_props_links_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_links_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: searchPage_searchPage_props_links_topReplies_count;
-}
-
-export interface searchPage_searchPage_props_links_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface searchPage_searchPage_props_links_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: searchPage_searchPage_props_links_poll_count;
-  createdAt: any;
-}
-
-export interface searchPage_searchPage_props_links_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_links {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: searchPage_searchPage_props_links_replies[];
-  topReplies: searchPage_searchPage_props_links_topReplies[] | null;
-  poll: searchPage_searchPage_props_links_poll | null;
-  count: searchPage_searchPage_props_links_count;
-}
-
-export interface searchPage_searchPage_props_pros_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_pros_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: searchPage_searchPage_props_pros_replies_count;
-}
-
-export interface searchPage_searchPage_props_pros_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_pros_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: searchPage_searchPage_props_pros_topReplies_count;
-}
-
-export interface searchPage_searchPage_props_pros_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface searchPage_searchPage_props_pros_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: searchPage_searchPage_props_pros_poll_count;
-  createdAt: any;
-}
-
-export interface searchPage_searchPage_props_pros_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_pros {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: searchPage_searchPage_props_pros_replies[];
-  topReplies: searchPage_searchPage_props_pros_topReplies[] | null;
-  poll: searchPage_searchPage_props_pros_poll | null;
-  count: searchPage_searchPage_props_pros_count;
-}
-
-export interface searchPage_searchPage_props_cons_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_cons_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: searchPage_searchPage_props_cons_replies_count;
-}
-
-export interface searchPage_searchPage_props_cons_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_cons_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: searchPage_searchPage_props_cons_topReplies_count;
-}
-
-export interface searchPage_searchPage_props_cons_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface searchPage_searchPage_props_cons_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: searchPage_searchPage_props_cons_poll_count;
-  createdAt: any;
-}
-
-export interface searchPage_searchPage_props_cons_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_cons {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: searchPage_searchPage_props_cons_replies[];
-  topReplies: searchPage_searchPage_props_cons_topReplies[] | null;
-  poll: searchPage_searchPage_props_cons_poll | null;
-  count: searchPage_searchPage_props_cons_count;
-}
-
-export interface searchPage_searchPage_props_act_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_act_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: searchPage_searchPage_props_act_replies_count;
-}
-
-export interface searchPage_searchPage_props_act_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_act_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: searchPage_searchPage_props_act_topReplies_count;
-}
-
-export interface searchPage_searchPage_props_act_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface searchPage_searchPage_props_act_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: searchPage_searchPage_props_act_poll_count;
-  createdAt: any;
-}
-
-export interface searchPage_searchPage_props_act_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_act {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: searchPage_searchPage_props_act_replies[];
-  topReplies: searchPage_searchPage_props_act_topReplies[] | null;
-  poll: searchPage_searchPage_props_act_poll | null;
-  count: searchPage_searchPage_props_act_count;
-}
-
-export interface searchPage_searchPage_props_intro_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_intro_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: searchPage_searchPage_props_intro_replies_count;
-}
-
-export interface searchPage_searchPage_props_intro_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_intro_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: searchPage_searchPage_props_intro_topReplies_count;
-}
-
-export interface searchPage_searchPage_props_intro_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface searchPage_searchPage_props_intro_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: searchPage_searchPage_props_intro_poll_count;
-  createdAt: any;
-}
-
-export interface searchPage_searchPage_props_intro_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_intro {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: searchPage_searchPage_props_intro_replies[];
-  topReplies: searchPage_searchPage_props_intro_topReplies[] | null;
-  poll: searchPage_searchPage_props_intro_poll | null;
-  count: searchPage_searchPage_props_intro_count;
-}
-
-export interface searchPage_searchPage_props_shortView_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_shortView_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: searchPage_searchPage_props_shortView_replies_count;
-}
-
-export interface searchPage_searchPage_props_shortView_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_shortView_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: searchPage_searchPage_props_shortView_topReplies_count;
-}
-
-export interface searchPage_searchPage_props_shortView_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface searchPage_searchPage_props_shortView_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: searchPage_searchPage_props_shortView_poll_count;
-  createdAt: any;
-}
-
-export interface searchPage_searchPage_props_shortView_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_shortView {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: searchPage_searchPage_props_shortView_replies[];
-  topReplies: searchPage_searchPage_props_shortView_topReplies[] | null;
-  poll: searchPage_searchPage_props_shortView_poll | null;
-  count: searchPage_searchPage_props_shortView_count;
-}
-
-export interface searchPage_searchPage_props_longView_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_longView_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: searchPage_searchPage_props_longView_replies_count;
-}
-
-export interface searchPage_searchPage_props_longView_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_longView_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: searchPage_searchPage_props_longView_topReplies_count;
-}
-
-export interface searchPage_searchPage_props_longView_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface searchPage_searchPage_props_longView_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: searchPage_searchPage_props_longView_poll_count;
-  createdAt: any;
-}
-
-export interface searchPage_searchPage_props_longView_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_longView {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: searchPage_searchPage_props_longView_replies[];
-  topReplies: searchPage_searchPage_props_longView_topReplies[] | null;
-  poll: searchPage_searchPage_props_longView_poll | null;
-  count: searchPage_searchPage_props_longView_count;
-}
-
-export interface searchPage_searchPage_props_voteCreate_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_voteCreate_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: searchPage_searchPage_props_voteCreate_replies_count;
-}
-
-export interface searchPage_searchPage_props_voteCreate_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_voteCreate_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: searchPage_searchPage_props_voteCreate_topReplies_count;
-}
-
-export interface searchPage_searchPage_props_voteCreate_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface searchPage_searchPage_props_voteCreate_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: searchPage_searchPage_props_voteCreate_poll_count;
-  createdAt: any;
-}
-
-export interface searchPage_searchPage_props_voteCreate_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_props_voteCreate {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: searchPage_searchPage_props_voteCreate_replies[];
-  topReplies: searchPage_searchPage_props_voteCreate_topReplies[] | null;
-  poll: searchPage_searchPage_props_voteCreate_poll | null;
-  count: searchPage_searchPage_props_voteCreate_count;
-}
-
-export interface searchPage_searchPage_props {
-  __typename: "PageProps";
-  selfSymbol: string | null;
-  tickers: searchPage_searchPage_props_tickers | null;
-  topics: searchPage_searchPage_props_topics | null;
-  links: searchPage_searchPage_props_links | null;
-  pros: searchPage_searchPage_props_pros | null;
-  cons: searchPage_searchPage_props_cons | null;
-  act: searchPage_searchPage_props_act | null;
-  wiki: string | null;
-  intro: searchPage_searchPage_props_intro | null;
-  shortView: searchPage_searchPage_props_shortView | null;
-  longView: searchPage_searchPage_props_longView | null;
-  srcAuthor: string | null;
-  srcTitle: string | null;
-  voteCreate: searchPage_searchPage_props_voteCreate | null;
-}
-
-export interface searchPage_searchPage_comments_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_comments_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: searchPage_searchPage_comments_replies_count;
-}
-
-export interface searchPage_searchPage_comments_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_comments_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: searchPage_searchPage_comments_topReplies_count;
-}
-
-export interface searchPage_searchPage_comments_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface searchPage_searchPage_comments_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: searchPage_searchPage_comments_poll_count;
-  createdAt: any;
-}
-
-export interface searchPage_searchPage_comments_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface searchPage_searchPage_comments {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: searchPage_searchPage_comments_replies[];
-  topReplies: searchPage_searchPage_comments_topReplies[] | null;
-  poll: searchPage_searchPage_comments_poll | null;
-  count: searchPage_searchPage_comments_count;
-}
-
-export interface searchPage_searchPage_link {
-  __typename: "Link";
-  id: string;
-  url: string;
-  domain: string;
-  contentType: string;
-  contentId: string | null;
-  contentAuthorId: string | null;
-}
-
-export interface searchPage_searchPage {
-  __typename: "Page";
-  id: string;
-  title: string;
-  template: string;
-  props: searchPage_searchPage_props;
-  comments: searchPage_searchPage_comments[] | null;
-  link: searchPage_searchPage_link | null;
-}
-
-export interface searchPage {
-  searchPage: searchPage_searchPage | null;
-}
-
-export interface searchPageVariables {
-  url: string;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
 // GraphQL query operation: automark
 // ====================================================
 
@@ -2849,6 +847,337 @@ export interface automark {
 
 export interface automarkVariables {
   text: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: createMycard
+// ====================================================
+
+export interface createMycard_createMycard_comments_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface createMycard_createMycard_comments_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: createMycard_createMycard_comments_replies_count;
+}
+
+export interface createMycard_createMycard_comments_topReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface createMycard_createMycard_comments_topReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: createMycard_createMycard_comments_topReplies_count;
+}
+
+export interface createMycard_createMycard_comments_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
+export interface createMycard_createMycard_comments_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  count: createMycard_createMycard_comments_poll_count;
+  createdAt: any;
+}
+
+export interface createMycard_createMycard_comments_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface createMycard_createMycard_comments_meta {
+  __typename: "CommentMeta";
+  seq: number | null;
+  mark: string | null;
+  src: string | null;
+}
+
+export interface createMycard_createMycard_comments {
+  __typename: "Comment";
+  id: string;
+  userId: string;
+  cocardId: number | null;
+  ocardId: number | null;
+  selfcardId: number | null;
+  isTop: boolean | null;
+  text: string | null;
+  createdAt: any;
+  replies: createMycard_createMycard_comments_replies[] | null;
+  topReplies: createMycard_createMycard_comments_topReplies[] | null;
+  poll: createMycard_createMycard_comments_poll | null;
+  count: createMycard_createMycard_comments_count;
+  meta: createMycard_createMycard_comments_meta | null;
+}
+
+export interface createMycard_createMycard_symbol {
+  __typename: "Symbol";
+  name: string;
+  cat: SymbolCat;
+}
+
+export interface createMycard_createMycard {
+  __typename: "Selfcard";
+  id: string;
+  template: CardTemplate;
+  comments: createMycard_createMycard_comments[];
+  symbol: createMycard_createMycard_symbol;
+}
+
+export interface createMycard {
+  createMycard: createMycard_createMycard;
+}
+
+export interface createMycardVariables {
+  symbolName: string;
+  data: CommentInput[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: createOcard
+// ====================================================
+
+export interface createOcard_createOcard_comments_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface createOcard_createOcard_comments_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: createOcard_createOcard_comments_replies_count;
+}
+
+export interface createOcard_createOcard_comments_topReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface createOcard_createOcard_comments_topReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: createOcard_createOcard_comments_topReplies_count;
+}
+
+export interface createOcard_createOcard_comments_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
+export interface createOcard_createOcard_comments_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  count: createOcard_createOcard_comments_poll_count;
+  createdAt: any;
+}
+
+export interface createOcard_createOcard_comments_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface createOcard_createOcard_comments_meta {
+  __typename: "CommentMeta";
+  seq: number | null;
+  mark: string | null;
+  src: string | null;
+}
+
+export interface createOcard_createOcard_comments {
+  __typename: "Comment";
+  id: string;
+  userId: string;
+  cocardId: number | null;
+  ocardId: number | null;
+  selfcardId: number | null;
+  isTop: boolean | null;
+  text: string | null;
+  createdAt: any;
+  replies: createOcard_createOcard_comments_replies[] | null;
+  topReplies: createOcard_createOcard_comments_topReplies[] | null;
+  poll: createOcard_createOcard_comments_poll | null;
+  count: createOcard_createOcard_comments_count;
+  meta: createOcard_createOcard_comments_meta | null;
+}
+
+export interface createOcard_createOcard_symbol {
+  __typename: "Symbol";
+  name: string;
+  cat: SymbolCat;
+}
+
+export interface createOcard_createOcard {
+  __typename: "Ocard";
+  id: string;
+  template: CardTemplate;
+  comments: createOcard_createOcard_comments[];
+  symbol: createOcard_createOcard_symbol;
+  oauthorName: string;
+}
+
+export interface createOcard {
+  createOcard: createOcard_createOcard;
+}
+
+export interface createOcardVariables {
+  symbolName: string;
+  oauthorName: string;
+  data: CommentInput[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: createComments
+// ====================================================
+
+export interface createComments_createComments_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface createComments_createComments_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: createComments_createComments_replies_count;
+}
+
+export interface createComments_createComments_topReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface createComments_createComments_topReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: createComments_createComments_topReplies_count;
+}
+
+export interface createComments_createComments_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
+export interface createComments_createComments_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  count: createComments_createComments_poll_count;
+  createdAt: any;
+}
+
+export interface createComments_createComments_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface createComments_createComments_meta {
+  __typename: "CommentMeta";
+  seq: number | null;
+  mark: string | null;
+  src: string | null;
+}
+
+export interface createComments_createComments {
+  __typename: "Comment";
+  id: string;
+  userId: string;
+  cocardId: number | null;
+  ocardId: number | null;
+  selfcardId: number | null;
+  isTop: boolean | null;
+  text: string | null;
+  createdAt: any;
+  replies: createComments_createComments_replies[] | null;
+  topReplies: createComments_createComments_topReplies[] | null;
+  poll: createComments_createComments_poll | null;
+  count: createComments_createComments_count;
+  meta: createComments_createComments_meta | null;
+}
+
+export interface createComments {
+  createComments: createComments_createComments[];
+}
+
+export interface createCommentsVariables {
+  cardId: string;
+  cardType: string;
+  data: CommentInput[];
 }
 
 /* tslint:disable */
@@ -2918,17 +1247,28 @@ export interface createComment_createComment_count {
   nDowns: number;
 }
 
+export interface createComment_createComment_meta {
+  __typename: "CommentMeta";
+  seq: number | null;
+  mark: string | null;
+  src: string | null;
+}
+
 export interface createComment_createComment {
   __typename: "Comment";
   id: string;
   userId: string;
+  cocardId: number | null;
+  ocardId: number | null;
+  selfcardId: number | null;
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
-  replies: createComment_createComment_replies[];
+  replies: createComment_createComment_replies[] | null;
   topReplies: createComment_createComment_topReplies[] | null;
   poll: createComment_createComment_poll | null;
   count: createComment_createComment_count;
+  meta: createComment_createComment_meta | null;
 }
 
 export interface createComment {
@@ -2936,7 +1276,8 @@ export interface createComment {
 }
 
 export interface createCommentVariables {
-  pageId: string;
+  cardId: string;
+  cardType: string;
   data: CommentInput;
 }
 
@@ -3386,17 +1727,28 @@ export interface comment_count {
   nDowns: number;
 }
 
+export interface comment_meta {
+  __typename: "CommentMeta";
+  seq: number | null;
+  mark: string | null;
+  src: string | null;
+}
+
 export interface comment {
   __typename: "Comment";
   id: string;
   userId: string;
+  cocardId: number | null;
+  ocardId: number | null;
+  selfcardId: number | null;
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
-  replies: comment_replies[];
+  replies: comment_replies[] | null;
   topReplies: comment_topReplies[] | null;
   poll: comment_poll | null;
   count: comment_count;
+  meta: comment_meta | null;
 }
 
 /* tslint:disable */
@@ -3439,826 +1791,337 @@ export interface replyLike {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL fragment: pageFragment
+// GraphQL fragment: linkFragment
 // ====================================================
 
-export interface pageFragment_props_tickers_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_tickers_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: pageFragment_props_tickers_replies_count;
-}
-
-export interface pageFragment_props_tickers_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_tickers_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: pageFragment_props_tickers_topReplies_count;
-}
-
-export interface pageFragment_props_tickers_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface pageFragment_props_tickers_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: pageFragment_props_tickers_poll_count;
-  createdAt: any;
-}
-
-export interface pageFragment_props_tickers_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_tickers {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: pageFragment_props_tickers_replies[];
-  topReplies: pageFragment_props_tickers_topReplies[] | null;
-  poll: pageFragment_props_tickers_poll | null;
-  count: pageFragment_props_tickers_count;
-}
-
-export interface pageFragment_props_topics_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_topics_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: pageFragment_props_topics_replies_count;
-}
-
-export interface pageFragment_props_topics_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_topics_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: pageFragment_props_topics_topReplies_count;
-}
-
-export interface pageFragment_props_topics_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface pageFragment_props_topics_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: pageFragment_props_topics_poll_count;
-  createdAt: any;
-}
-
-export interface pageFragment_props_topics_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_topics {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: pageFragment_props_topics_replies[];
-  topReplies: pageFragment_props_topics_topReplies[] | null;
-  poll: pageFragment_props_topics_poll | null;
-  count: pageFragment_props_topics_count;
-}
-
-export interface pageFragment_props_links_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_links_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: pageFragment_props_links_replies_count;
-}
-
-export interface pageFragment_props_links_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_links_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: pageFragment_props_links_topReplies_count;
-}
-
-export interface pageFragment_props_links_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface pageFragment_props_links_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: pageFragment_props_links_poll_count;
-  createdAt: any;
-}
-
-export interface pageFragment_props_links_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_links {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: pageFragment_props_links_replies[];
-  topReplies: pageFragment_props_links_topReplies[] | null;
-  poll: pageFragment_props_links_poll | null;
-  count: pageFragment_props_links_count;
-}
-
-export interface pageFragment_props_pros_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_pros_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: pageFragment_props_pros_replies_count;
-}
-
-export interface pageFragment_props_pros_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_pros_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: pageFragment_props_pros_topReplies_count;
-}
-
-export interface pageFragment_props_pros_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface pageFragment_props_pros_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: pageFragment_props_pros_poll_count;
-  createdAt: any;
-}
-
-export interface pageFragment_props_pros_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_pros {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: pageFragment_props_pros_replies[];
-  topReplies: pageFragment_props_pros_topReplies[] | null;
-  poll: pageFragment_props_pros_poll | null;
-  count: pageFragment_props_pros_count;
-}
-
-export interface pageFragment_props_cons_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_cons_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: pageFragment_props_cons_replies_count;
-}
-
-export interface pageFragment_props_cons_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_cons_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: pageFragment_props_cons_topReplies_count;
-}
-
-export interface pageFragment_props_cons_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface pageFragment_props_cons_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: pageFragment_props_cons_poll_count;
-  createdAt: any;
-}
-
-export interface pageFragment_props_cons_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_cons {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: pageFragment_props_cons_replies[];
-  topReplies: pageFragment_props_cons_topReplies[] | null;
-  poll: pageFragment_props_cons_poll | null;
-  count: pageFragment_props_cons_count;
-}
-
-export interface pageFragment_props_act_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_act_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: pageFragment_props_act_replies_count;
-}
-
-export interface pageFragment_props_act_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_act_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: pageFragment_props_act_topReplies_count;
-}
-
-export interface pageFragment_props_act_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface pageFragment_props_act_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: pageFragment_props_act_poll_count;
-  createdAt: any;
-}
-
-export interface pageFragment_props_act_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_act {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: pageFragment_props_act_replies[];
-  topReplies: pageFragment_props_act_topReplies[] | null;
-  poll: pageFragment_props_act_poll | null;
-  count: pageFragment_props_act_count;
-}
-
-export interface pageFragment_props_intro_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_intro_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: pageFragment_props_intro_replies_count;
-}
-
-export interface pageFragment_props_intro_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_intro_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: pageFragment_props_intro_topReplies_count;
-}
-
-export interface pageFragment_props_intro_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface pageFragment_props_intro_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: pageFragment_props_intro_poll_count;
-  createdAt: any;
-}
-
-export interface pageFragment_props_intro_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_intro {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: pageFragment_props_intro_replies[];
-  topReplies: pageFragment_props_intro_topReplies[] | null;
-  poll: pageFragment_props_intro_poll | null;
-  count: pageFragment_props_intro_count;
-}
-
-export interface pageFragment_props_shortView_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_shortView_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: pageFragment_props_shortView_replies_count;
-}
-
-export interface pageFragment_props_shortView_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_shortView_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: pageFragment_props_shortView_topReplies_count;
-}
-
-export interface pageFragment_props_shortView_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface pageFragment_props_shortView_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: pageFragment_props_shortView_poll_count;
-  createdAt: any;
-}
-
-export interface pageFragment_props_shortView_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_shortView {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: pageFragment_props_shortView_replies[];
-  topReplies: pageFragment_props_shortView_topReplies[] | null;
-  poll: pageFragment_props_shortView_poll | null;
-  count: pageFragment_props_shortView_count;
-}
-
-export interface pageFragment_props_longView_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_longView_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: pageFragment_props_longView_replies_count;
-}
-
-export interface pageFragment_props_longView_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_longView_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: pageFragment_props_longView_topReplies_count;
-}
-
-export interface pageFragment_props_longView_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface pageFragment_props_longView_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: pageFragment_props_longView_poll_count;
-  createdAt: any;
-}
-
-export interface pageFragment_props_longView_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_longView {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: pageFragment_props_longView_replies[];
-  topReplies: pageFragment_props_longView_topReplies[] | null;
-  poll: pageFragment_props_longView_poll | null;
-  count: pageFragment_props_longView_count;
-}
-
-export interface pageFragment_props_voteCreate_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_voteCreate_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: pageFragment_props_voteCreate_replies_count;
-}
-
-export interface pageFragment_props_voteCreate_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_voteCreate_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: pageFragment_props_voteCreate_topReplies_count;
-}
-
-export interface pageFragment_props_voteCreate_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface pageFragment_props_voteCreate_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: pageFragment_props_voteCreate_poll_count;
-  createdAt: any;
-}
-
-export interface pageFragment_props_voteCreate_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_props_voteCreate {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: pageFragment_props_voteCreate_replies[];
-  topReplies: pageFragment_props_voteCreate_topReplies[] | null;
-  poll: pageFragment_props_voteCreate_poll | null;
-  count: pageFragment_props_voteCreate_count;
-}
-
-export interface pageFragment_props {
-  __typename: "PageProps";
-  selfSymbol: string | null;
-  tickers: pageFragment_props_tickers | null;
-  topics: pageFragment_props_topics | null;
-  links: pageFragment_props_links | null;
-  pros: pageFragment_props_pros | null;
-  cons: pageFragment_props_cons | null;
-  act: pageFragment_props_act | null;
-  wiki: string | null;
-  intro: pageFragment_props_intro | null;
-  shortView: pageFragment_props_shortView | null;
-  longView: pageFragment_props_longView | null;
-  srcAuthor: string | null;
-  srcTitle: string | null;
-  voteCreate: pageFragment_props_voteCreate | null;
-}
-
-export interface pageFragment_comments_replies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_comments_replies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: pageFragment_comments_replies_count;
-}
-
-export interface pageFragment_comments_topReplies_count {
-  __typename: "ReplyCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_comments_topReplies {
-  __typename: "Reply";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string;
-  updatedAt: any;
-  count: pageFragment_comments_topReplies_count;
-}
-
-export interface pageFragment_comments_poll_count {
-  __typename: "PollCount";
-  nVotes: number[];
-}
-
-export interface pageFragment_comments_poll {
-  __typename: "Poll";
-  id: string;
-  commentId: string;
-  choices: string[];
-  count: pageFragment_comments_poll_count;
-  createdAt: any;
-}
-
-export interface pageFragment_comments_count {
-  __typename: "CommentCount";
-  id: string;
-  nViews: number;
-  nUps: number;
-  nDowns: number;
-}
-
-export interface pageFragment_comments {
-  __typename: "Comment";
-  id: string;
-  userId: string;
-  isTop: boolean | null;
-  text: string | null;
-  createdAt: any;
-  replies: pageFragment_comments_replies[];
-  topReplies: pageFragment_comments_topReplies[] | null;
-  poll: pageFragment_comments_poll | null;
-  count: pageFragment_comments_count;
-}
-
-export interface pageFragment_link {
+export interface linkFragment {
   __typename: "Link";
   id: string;
   url: string;
   domain: string;
   contentType: string;
   contentId: string | null;
-  contentAuthorId: string | null;
+  oauthorName: string | null;
 }
 
-export interface pageFragment {
-  __typename: "Page";
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: cocardFragment
+// ====================================================
+
+export interface cocardFragment_comments_replies_count {
+  __typename: "ReplyCount";
   id: string;
-  title: string;
-  template: string;
-  props: pageFragment_props;
-  comments: pageFragment_comments[] | null;
-  link: pageFragment_link | null;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface cocardFragment_comments_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: cocardFragment_comments_replies_count;
+}
+
+export interface cocardFragment_comments_topReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface cocardFragment_comments_topReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: cocardFragment_comments_topReplies_count;
+}
+
+export interface cocardFragment_comments_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
+export interface cocardFragment_comments_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  count: cocardFragment_comments_poll_count;
+  createdAt: any;
+}
+
+export interface cocardFragment_comments_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface cocardFragment_comments_meta {
+  __typename: "CommentMeta";
+  seq: number | null;
+  mark: string | null;
+  src: string | null;
+}
+
+export interface cocardFragment_comments {
+  __typename: "Comment";
+  id: string;
+  userId: string;
+  cocardId: number | null;
+  ocardId: number | null;
+  selfcardId: number | null;
+  isTop: boolean | null;
+  text: string | null;
+  createdAt: any;
+  replies: cocardFragment_comments_replies[] | null;
+  topReplies: cocardFragment_comments_topReplies[] | null;
+  poll: cocardFragment_comments_poll | null;
+  count: cocardFragment_comments_count;
+  meta: cocardFragment_comments_meta | null;
+}
+
+export interface cocardFragment_link {
+  __typename: "Link";
+  id: string;
+  url: string;
+  domain: string;
+  contentType: string;
+  contentId: string | null;
+  oauthorName: string | null;
+}
+
+export interface cocardFragment {
+  __typename: "Cocard";
+  id: string;
+  template: CardTemplate;
+  comments: cocardFragment_comments[];
+  link: cocardFragment_link;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: ocardFragment
+// ====================================================
+
+export interface ocardFragment_comments_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface ocardFragment_comments_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: ocardFragment_comments_replies_count;
+}
+
+export interface ocardFragment_comments_topReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface ocardFragment_comments_topReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: ocardFragment_comments_topReplies_count;
+}
+
+export interface ocardFragment_comments_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
+export interface ocardFragment_comments_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  count: ocardFragment_comments_poll_count;
+  createdAt: any;
+}
+
+export interface ocardFragment_comments_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface ocardFragment_comments_meta {
+  __typename: "CommentMeta";
+  seq: number | null;
+  mark: string | null;
+  src: string | null;
+}
+
+export interface ocardFragment_comments {
+  __typename: "Comment";
+  id: string;
+  userId: string;
+  cocardId: number | null;
+  ocardId: number | null;
+  selfcardId: number | null;
+  isTop: boolean | null;
+  text: string | null;
+  createdAt: any;
+  replies: ocardFragment_comments_replies[] | null;
+  topReplies: ocardFragment_comments_topReplies[] | null;
+  poll: ocardFragment_comments_poll | null;
+  count: ocardFragment_comments_count;
+  meta: ocardFragment_comments_meta | null;
+}
+
+export interface ocardFragment_symbol {
+  __typename: "Symbol";
+  name: string;
+  cat: SymbolCat;
+}
+
+export interface ocardFragment {
+  __typename: "Ocard";
+  id: string;
+  template: CardTemplate;
+  comments: ocardFragment_comments[];
+  symbol: ocardFragment_symbol;
+  oauthorName: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: selfcardFragment
+// ====================================================
+
+export interface selfcardFragment_comments_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface selfcardFragment_comments_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: selfcardFragment_comments_replies_count;
+}
+
+export interface selfcardFragment_comments_topReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface selfcardFragment_comments_topReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: selfcardFragment_comments_topReplies_count;
+}
+
+export interface selfcardFragment_comments_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
+export interface selfcardFragment_comments_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  count: selfcardFragment_comments_poll_count;
+  createdAt: any;
+}
+
+export interface selfcardFragment_comments_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface selfcardFragment_comments_meta {
+  __typename: "CommentMeta";
+  seq: number | null;
+  mark: string | null;
+  src: string | null;
+}
+
+export interface selfcardFragment_comments {
+  __typename: "Comment";
+  id: string;
+  userId: string;
+  cocardId: number | null;
+  ocardId: number | null;
+  selfcardId: number | null;
+  isTop: boolean | null;
+  text: string | null;
+  createdAt: any;
+  replies: selfcardFragment_comments_replies[] | null;
+  topReplies: selfcardFragment_comments_topReplies[] | null;
+  poll: selfcardFragment_comments_poll | null;
+  count: selfcardFragment_comments_count;
+  meta: selfcardFragment_comments_meta | null;
+}
+
+export interface selfcardFragment_symbol {
+  __typename: "Symbol";
+  name: string;
+  cat: SymbolCat;
+}
+
+export interface selfcardFragment {
+  __typename: "Selfcard";
+  id: string;
+  template: CardTemplate;
+  comments: selfcardFragment_comments[];
+  symbol: selfcardFragment_symbol;
 }
 
 /* tslint:disable */
@@ -4270,14 +2133,27 @@ export interface pageFragment {
 // START Enums and Input Objects
 //==============================================================
 
+export enum CardTemplate {
+  TICKER = "TICKER",
+  WEBPAGE = "WEBPAGE",
+}
+
 export enum LikeChoice {
   DOWN = "DOWN",
   NEUTRAL = "NEUTRAL",
   UP = "UP",
 }
 
+export enum SymbolCat {
+  EVENT = "EVENT",
+  SYS_TICKER_FOLLOWERS = "SYS_TICKER_FOLLOWERS",
+  TAG = "TAG",
+  TICKER = "TICKER",
+}
+
 export interface CommentInput {
-  symbols: string[];
+  mark: string;
+  src?: string | null;
   text: string;
   poll?: PollInput | null;
 }

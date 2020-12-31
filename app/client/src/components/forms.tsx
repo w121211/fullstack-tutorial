@@ -178,125 +178,10 @@ import { SymbolAutoComplete } from './symbolHint'
 
 dayjs.extend(localizedFormat)
 
-const PLACEHOLDER = {
-  choice: "這是一個選項",
-  text: "這是一個預測這是一個預測這是一個預測這是一個預測這是一個預測這是一個預測這是一個預測這是一個預測這是一個預測",
-  symbols: ["#poll"],
-}
-
-interface CommentFormProps {
-  pageId: string
-  // cat?: QT.PollCat
-  // choice?: QT.pollFragment_choices
-}
-
-export const CommentForm: React.FC<CommentFormProps> = ({ pageId }) => {
-  const [form] = Form.useForm()
-  const [createPost] = useMutation<QT.createComment, QT.createCommentVariables>(
-    queries.CREATE_COMMENT,
-    // update(cache, { data }) {
-    // console.log(typeof data?.createPost.poll?.start)
-    // console.log(data?.createPost)
-    // try {
-    //   const res = cache.readQuery<QT.latestPosts>({ query: queries.LATEST_POLLS })
-    //   if (data?.createPost && res?.latestPolls) {
-    //     cache.writeQuery<QT.latestPolls>({
-    //       query: queries.LATEST_POLLS,
-    //       data: {
-    //         latestPolls: res.latestPolls.concat([data.createPoll]),
-    //       },
-    //     })
-    //   }
-    // } catch (e) {
-    //   if (e instanceof InvariantError) { }
-    //   else { console.error(e) }
-    // }
-    // navigate("/")
-    // },
-    // }
-  )
-
-  function onFinish(values: any) {
-    console.log('submit', values)
-
-    createPost({
-      variables: {
-        pageId,
-        data: {
-          // cat: values.cat,
-          symbols: values.symbols,
-          // symbolIds: values.symbols,
-          text: values.text,
-        }
-      }
-    })
-  }
-  function onFinishFailed(errorInfo: any) {
-    console.log('Failed:', errorInfo);
-  }
-
-  // const requireText = cat === QT.PollCat.ADD_BY_POST
-
-  return (
-    <Form
-      form={form}
-      name="basic"
-      size="small"
-      initialValues={PLACEHOLDER}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-    >
-
-      {/* <Form.Item {...layout} label="選項">
-        {choice?.text}
-      </Form.Item> */}
-
-      {/* {
-        cat === QT.PollCat.ADD &&
-        <Form.Item
-          {...layout}
-          label="選項"
-          name="choice"
-          rules={[{ required: true, message: '請輸入選項' }]}
-        >
-          <Input />
-        </Form.Item>
-      } */}
-
-      <Form.Item
-        label="內文"
-        name="text"
-        required={true}
-        rules={[{ required: true, message: '請輸入內文' }]}
-      >
-        <Input.TextArea rows={3} autoSize={{ minRows: 8 }} />
-      </Form.Item>
-
-      <Form.Item name="symbols" label="標籤">
-        <SymbolAutoComplete form={form} />
-      </Form.Item>
-
-      <Form.Item>
-        <Button type="primary" htmlType="submit">送出</Button>
-      </Form.Item>
-
-    </Form >
-  )
-}
 
 export function SearchAllForm() {
-  const [value, setValue] = useState('');
-  const [options, setOptions] = useState<{ value: string }[]>([{ value: "aaa" }, { value: "bbb" }]);
+  const [options, setOptions] = useState<{ value: string }[]>([])
   const [searchAll, { loading, data }] = useLazyQuery<QT.searchAll, QT.searchAllVariables>(queries.SEARCH_ALL)
-
-  function onChange(data: string) {
-    setValue(data)
-  }
-  // function onSearch(term: string) {
-  //   refetch({ variables: { term: "" })
-  //   if (data)
-  //     setOptions(data.map((e: string) => ({ value: e })))
-  // }
   function onSearch(term: string) {
     console.log(`search term: ${term}`)
     if (term.length === 0)
@@ -307,30 +192,21 @@ export function SearchAllForm() {
         setOptions(data.searchAll.map((e) => ({ value: e })))
     }
   }
-  function onSelect(data: string) {
-    console.log('onSelect', data)
-    // redirect('/topic/some_where')
+  function onSelect(value: string) {
+    // console.log('onSelect', data)
+    if (value.startsWith('$'))
+      navigate(`/ticker/${value}`)
+    // else if (value.startsWith('['))
   }
   return (
-    <>
-      <AutoComplete
-        options={options}
-        onSelect={onSelect}
-        onSearch={onSearch}
-        placeholder="input here"
-      >
-        <Input.Search placeholder="input here" loading={loading} />
-      </AutoComplete>
-      <br />
-      <AutoComplete
-        value={value}
-        options={options}
-        onSelect={onSelect}
-        onSearch={onSearch}
-        onChange={onChange}
-        placeholder="control mode"
-      />
-    </>
+    <AutoComplete
+      options={options}
+      onSelect={onSelect}
+      onSearch={onSearch}
+    // placeholder="input here"
+    >
+      <Input.Search placeholder="搜尋全站: $BA, Google, 自動駕駛" loading={loading} />
+    </AutoComplete>
   )
 }
 
@@ -358,58 +234,58 @@ function isValidDomain(value: string) {
   }
 }
 
-export function SearchPageForm() {
-  /** 
-   * 1. 有找到就redirect
-   * 2. 沒找到，新建一個page & redirect
-   * 3. 不符合要求者，提示錯誤訊息
-   * */
-  const [form] = Form.useForm()
-  const [searchPage, { loading, data }] = useLazyQuery<QT.searchPage, QT.searchPageVariables>(queries.SEARCH_PAGE)
-  function onFinish(values: any) {
-    console.log('submit', values)
-    searchPage({ variables: { url: values.url } })
-  }
-  // function onFinishFailed(errorInfo: any) {
-  //   console.log('Failed:', errorInfo);
-  // }
-  if (loading)
-    return <div>Searching...</div>
-  if (data && data.searchPage)
-    return <Redirect to="/" state={{ page: data.searchPage }} noThrow />
-  // return <Redirect to="/block/999" state={{ page: data.searchPage }} />
-  return (
-    <Form form={form} name="search-page-form" onFinish={onFinish}
-      initialValues={{ url: "https://www.youtube.com/watch?v=erJaXtindOo" }}>
-      <Form.Item label="URL" name="url" required={true} validateTrigger="onSubmit"
-        rules={[
-          { required: true, message: '請輸入URL' },
-          {
-            validator: async function (rule, value) {
-              if (isUrl(value))
-                return Promise.resolve()
-              form.resetFields()
-              return Promise.reject('錯誤的URL');
-              // throw new Error('URL錯誤')
-            }
-          },
-          {
-            validator: async function (rule, value) {
-              if (isValidDomain(value))
-                return Promise.resolve()
-              form.resetFields()
-              return Promise.reject('目前僅支援Youtube');
-            }
-          }
-        ]}>
-        <Input />
-      </Form.Item>
-      <Form.Item>
-        <Button type="primary" htmlType="submit">送出</Button>
-      </Form.Item>
-    </Form >
-  )
-}
+// export function SearchPageForm() {
+//   /** 
+//    * 1. 有找到就redirect
+//    * 2. 沒找到，新建一個page & redirect
+//    * 3. 不符合要求者，提示錯誤訊息
+//    * */
+//   const [form] = Form.useForm()
+//   const [searchPage, { loading, data }] = useLazyQuery<QT.searchPage, QT.searchPageVariables>(queries.SEARCH_PAGE)
+//   function onFinish(values: any) {
+//     console.log('submit', values)
+//     searchPage({ variables: { url: values.url } })
+//   }
+//   // function onFinishFailed(errorInfo: any) {
+//   //   console.log('Failed:', errorInfo);
+//   // }
+//   if (loading)
+//     return <div>Searching...</div>
+//   if (data && data.searchPage)
+//     return <Redirect to="/" state={{ page: data.searchPage }} noThrow />
+//   // return <Redirect to="/block/999" state={{ page: data.searchPage }} />
+//   return (
+//     <Form form={form} name="search-page-form" onFinish={onFinish}
+//       initialValues={{ url: "https://www.youtube.com/watch?v=erJaXtindOo" }}>
+//       <Form.Item label="URL" name="url" required={true} validateTrigger="onSubmit"
+//         rules={[
+//           { required: true, message: '請輸入URL' },
+//           {
+//             validator: async function (rule, value) {
+//               if (isUrl(value))
+//                 return Promise.resolve()
+//               form.resetFields()
+//               return Promise.reject('錯誤的URL');
+//               // throw new Error('URL錯誤')
+//             }
+//           },
+//           {
+//             validator: async function (rule, value) {
+//               if (isValidDomain(value))
+//                 return Promise.resolve()
+//               form.resetFields()
+//               return Promise.reject('目前僅支援Youtube');
+//             }
+//           }
+//         ]}>
+//         <Input />
+//       </Form.Item>
+//       <Form.Item>
+//         <Button type="primary" htmlType="submit">送出</Button>
+//       </Form.Item>
+//     </Form >
+//   )
+// }
 
 function NewLinkForm() {
   const [options, setOptions] = useState<{ value: string }[]>([]);
@@ -445,7 +321,7 @@ function NewLinkForm() {
         # ...
         # ...
     </pre>
-      <SearchPageForm />
+      {/* <SearchPageForm /> */}
 
       <AutoComplete
         disabled={true}
@@ -463,7 +339,7 @@ function NewLinkForm() {
   )
 }
 
-export function NoteForm() {
+function _NoteForm() {
   /**
    * 理想（類code-editor）：
    * 1. 自動在前方增加hash（無法消除）
@@ -474,6 +350,9 @@ export function NoteForm() {
    * | # OOOOOOO[[OO]]OOO
    * | # ...
    * ____________________
+   * 
+   * 
+   * 
    */
   // const [value, setValue] = useState("# ")
   // const [isHash, setIsHash] = useState(false)

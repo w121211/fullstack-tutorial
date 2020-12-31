@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react'
 import { Router } from '@reach/router'
-import { Card, Layout, Input } from 'antd'
+import { Card, Layout, Input, Radio } from 'antd'
 
 import '../appLayout/appLayout.less'
 import BlockMetaCss from '../components/blockMeta/blockMeta.module.scss'
@@ -8,7 +8,7 @@ import Tag from '../components/tag/tag'
 import ProsCons from '../components/prosCons/prosCons'
 import Anchor from '../components/anchor/tickerAnchor'
 import BlockCss from '../components/block/block.module.scss'
-import Radio from '../components/radios/radios'
+// import Radio from '../components/radios/radios'
 import CommenTemplate from '../components/commentTemplate/commentTemplate'
 import MyTextArea from '../components/myTextArea/myTextArea'
 import CssCommentList from '../components/commentList/commentList'
@@ -521,12 +521,215 @@ function AuthorPage({ path }: { path: string }) {
   )
 }
 
+function CardPage({ path }: { path: string }) {
+  return (
+    <Content className="site-layout-background content" style={{ minHeight: 280, }}>
+      <h1>Plantier, $PLTR</h1>
+      <pre>
+        [[aaa]] [[bbb]] [[ccc]]
+        [homesite] [YF!] [Wiki]
+      </pre>
+      <pre>
+        [my] [community(需解鎖)]
+        建立$PLTR的Card(?) 或 幫[______url______]做筆記(?)
+      </pre>
+
+      <CssBlockCard title="My Card">
+        <ul>
+          <li>
+            <span className={BlockMetaCss.span}>You are</span>
+            <Radio.Group >
+              <Radio value={1}>A</Radio>
+              <Radio value={2}>B</Radio>
+              <Radio value={3}>C</Radio>
+              <Radio value={4}>D</Radio>
+            </Radio.Group>
+          </li>
+          <li>
+            <span className={BlockMetaCss.span}>Verdict</span>
+            <Radio.Group >
+              <Radio value={1}>A</Radio>
+              <Radio value={2}>B</Radio>
+              <Radio value={3}>C</Radio>
+              <Radio value={4}>D</Radio>
+            </Radio.Group>
+          </li>
+          <li>
+            <textarea style={{ width: 600, height: 300 }} />
+          </li>
+          <span>[Preview]</span>
+          <li>
+            <span className={BlockMetaCss.span}>Pros</span>
+            <ul>
+              <li><span>&#8226;這是一個點</span></li>
+              <li><span>&#8226;這是一個點</span></li>
+              <li><span>&#8226;這是一個點</span></li>
+            </ul>
+          </li>
+          <li>
+            <span className={BlockMetaCss.span}>Cons</span>
+            <ul>
+              <li><span>&#8226;這是一個點</span></li>
+              <li><span>&#8226;這是一個點</span></li>
+              <li><span>&#8226;這是一個點</span></li>
+            </ul>
+            {/* <span>
+              預測率: OOO，排名: OO
+            </span> */}
+          </li>
+          <li>
+            <span className={BlockMetaCss.span}>目標價</span>
+            <span>$32.1</span>
+          </li>
+        </ul>
+      </CssBlockCard>
+
+      <CssBlockCard title="My Card (Editing)">
+        <ul>
+          <li>
+            <span className={BlockMetaCss.span}>You are</span>
+            <Radio.Group >
+              <Radio value={1}>A</Radio>
+              <Radio value={2}>B</Radio>
+              <Radio value={3}>C</Radio>
+              <Radio value={4}>D</Radio>
+            </Radio.Group>
+          </li>
+          <li>
+            <span className={BlockMetaCss.span}>Verdict</span>
+            <Radio.Group >
+              <Radio value={1}>A</Radio>
+              <Radio value={2}>B</Radio>
+              <Radio value={3}>C</Radio>
+              <Radio value={4}>D</Radio>
+            </Radio.Group>
+          </li>
+          <li>
+            {/* <span className={BlockMetaCss.span}>Note</span> */}
+            <textarea style={{ width: 600, height: 300 }} />
+          </li>
+        </ul>
+        <button>Preview</button>
+        <button>Submit</button>
+      </CssBlockCard>
+
+      <CssBlockCard title="Community Card">
+        <ul>
+          <li>
+            <span className={BlockMetaCss.span}>People</span>
+            <Radio.Group >
+              <Radio value={1}>A</Radio>
+              <Radio value={2}>B</Radio>
+              <Radio value={3}>C</Radio>
+              <Radio value={4}>D</Radio>
+            </Radio.Group>
+            <span>[結果]</span>
+            {/* <span>你在幾月幾日投(A)</span> */}
+          </li>
+          <li>
+            <span className={BlockMetaCss.span}>Verdict</span>
+            <Radio.Group >
+              <Radio value={1}>A</Radio>
+              <Radio value={2}>B</Radio>
+              <Radio value={3}>C</Radio>
+              <Radio value={4}>D</Radio>
+            </Radio.Group>
+          </li>
+          <li>
+            <span className={BlockMetaCss.span}>Pros</span>
+            <ul>
+              <li><span>&#8226;這是一個點 (點擊後開啟卡片) [Up] [Down]</span></li>
+              <li><span>&#8226;這是一個點</span></li>
+              <li><span>&#8226;這是一個點</span></li>
+            </ul>
+          </li>
+          <li>
+            <span className={BlockMetaCss.span}>Cons</span>
+            <ul>
+              <li><span>&#8226;這是一個點</span></li>
+              <li><span>&#8226;這是一個點</span></li>
+              <li><span>&#8226;這是一個點</span></li>
+            </ul>
+            {/* <span>
+              預測率: OOO，排名: OO
+            </span> */}
+          </li>
+          <li>
+            <span className={BlockMetaCss.span}>目標價</span>
+            <span>$32.1</span>
+          </li>
+        </ul>
+      </CssBlockCard>
+
+      <CssBlockCard title="Oauthor Card">
+        <pre>
+          @author, links
+        </pre>
+        <ul>
+          <li>
+            <span className={BlockMetaCss.span}>People</span>
+            <Radio.Group >
+              <Radio value={1}>A</Radio>
+              <Radio value={2}>B</Radio>
+              <Radio value={3}>C</Radio>
+            </Radio.Group>
+            <span>[結果]</span>
+            {/* <span>你在幾月幾日投(A)</span> */}
+          </li>
+          <li>
+            <span className={BlockMetaCss.span}>Verdict</span>
+            <Radio.Group >
+              <Radio value={1}>A</Radio>
+              <Radio value={2}>B</Radio>
+              <Radio value={3}>C</Radio>
+            </Radio.Group>
+          </li>
+          <li>
+            <span className={BlockMetaCss.span}>Pros</span>
+            <ul>
+              <li><span>&#8226;這是一個點[link]</span></li>
+              <li><span>&#8226;這是一個點[link]</span></li>
+              <li><span>&#8226;這是一個點</span></li>
+            </ul>
+          </li>
+          <li>
+            <span className={BlockMetaCss.span}>Cons</span>
+            <ul>
+              <li><span>&#8226;這是一個點</span></li>
+              <li><span>&#8226;這是一個點</span></li>
+              <li><span>&#8226;這是一個點</span></li>
+            </ul>
+            {/* <span>
+              預測率: OOO，排名: OO
+            </span> */}
+          </li>
+          <li>
+            <span className={BlockMetaCss.span}>目標價</span>
+            <span>$32.1</span>
+          </li>
+        </ul>
+      </CssBlockCard>
+
+      <CssBlockCard title="Link Note">
+        <pre>
+          @author, [link title]
+        </pre>
+        Mini Cards
+        [$AA 看多 / 這是一個理由 / 另一個理由]
+        [$AB 看空]
+      </CssBlockCard>
+
+      <CssBlockCard title="(NEXT)Discuss by filter">
+        <p>
+          Comments go here
+        </p>
+      </CssBlockCard>
+    </Content>
+  )
+}
+
 
 export function DemoPages() {
-  // const signup = <Signup />
-  // const post = <Post />
-  // const form = <FeedCreate />
-
   return (
     <Layout className="my-app">
       {/* <Sider
@@ -565,17 +768,7 @@ export function DemoPages() {
           <TickerPage path="ticker" />
           <TopicPage path="topic" />
           <AuthorPage path="author" />
-          {/* <Pane path="/" left={post} right={null} />
-          <Board path="board" />
-          <Pane path="form" left={form} right={null} />
-          <Post path="post" />
-          <Event path="event" />
-          <Ticker path="ticker" />
-          <TrackingEvents path="tracking/events" />
-          <CommitEvent path="commit/event" />
-          <CommitEventReview path="review/event" />
-          <Me path="me" />
-          <Signup path="signup" /> */}
+          <CardPage path="card" />
         </Router>
 
       </Layout>

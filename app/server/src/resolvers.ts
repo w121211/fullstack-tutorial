@@ -7,13 +7,27 @@ import { compare, hash } from 'bcryptjs'
 import { sign, JsonWebTokenError } from 'jsonwebtoken'
 import { GraphQLScalarType, Kind } from 'graphql'
 import { GraphQLResolverMap } from 'apollo-graphql'
+import { AuthenticationError, UserInputError } from 'apollo-server'
 import { GraphQLDateTime } from 'graphql-iso-date'
 import * as PA from '@prisma/client'
 import { Context } from './context'
 import { APP_SECRET } from '.'
 // import { fillBlock, PrismaBlockProperties } from './models/block'
-import { fillPage } from './models/page'
-import { searchTopic } from './store/fuzzy'
+import { symbolToUrl } from './models/symbol'
+import { fetchLink } from './models/link'
+import { CardMeta } from './models/card'
+import { searchAllSymbol } from './store/fuzzy'
+
+interface PollInput {
+  choices: string[]
+}
+
+interface CommentInput {
+  mark: string
+  src?: string
+  text: string
+  poll: PollInput
+}
 
 // function mapPostInput(post: ST.PostInput) {
 //   let content
@@ -86,10 +100,104 @@ function deltaLike(like: PA.CommentLike | PA.ReplyLike, oldLike?: PA.CommentLike
   return { dDowns, dUps }
 }
 
+
 export const resolvers: GraphQLResolverMap<Context> = {
   DateTime: GraphQLDateTime as GraphQLScalarType,
 
   Query: {
+    fetchLink: async function (parent, { url }, { prisma, req }) {
+      // TODO: 問題：不同的link但連到同一頁面時
+      const link = await prisma.link.findOne({ where: { url } })
+      if (link)
+        return link
+      const res = await fetchLink(url)
+      const oauthor = await prisma.oauthor.upsert({
+        where: { name: res.oauthorName },
+        create: { name: res.oauthorName },
+        update: {}
+      })
+      // TODO: 或是直接寫入comments？
+      const cardMeta: CardMeta = {
+        contentTitle: res.title,
+        contentPublishedAt: res.publishDate,
+      }
+      return await prisma.link.create({
+        data: {
+          url,
+          domain: res.domain,
+          contentType: PA.LinkContentType.VIDEO,
+          contentId: res.contentId,
+          oauthor: { connect: { id: oauthor.id } },
+          cocard: {
+            create: {
+              template: PA.CardTemplate.WEBPAGE,
+              meta: cardMeta,
+            }
+          }
+        }
+      })
+    },
+
+    cocard: function (parent, { symbolName, linkUrl }, { prisma }) {
+      // XOR check for variables: http://www.howtocreate.co.uk/xor.html
+      if (!(symbolName != linkUrl))
+        throw new UserInputError('')
+      return prisma.cocard.findOne({
+        // symbolToUrl(...)會throw error
+        where: { linkUrl: linkUrl ?? symbolToUrl(symbolName) },
+        include: {
+          link: true,
+          // TODO: 只包含active comments
+          comments: { include: { count: true } },
+        },
+      })
+    },
+    selfcard: function (parent, { id }, { prisma }) {
+      return prisma.selfcard.findOne({
+        where: { id: parseInt(id) },
+        include: {
+          symbol: true,
+          comments: { include: { count: true } },
+        },
+      })
+    },
+    ocard: async function (parent, { id, oauthorName, symbolName }, { prisma }) {
+      console.log(symbolName)
+      const symbol = await prisma.symbol.findOne({ where: { name: symbolName } })
+      if (symbol === null)
+        throw new Error("Symbol not found")
+      // throw new ApolloError('Symbol not found', 'NO_SYMBOL');
+      const oauthor = await prisma.oauthor.findOne({ where: { name: oauthorName } })
+      if (oauthor === null)
+        throw new Error("Oauthor not found")
+      return await prisma.ocard.findOne({
+        where: id ? { id: parseInt(id) } : { oauthorName_symbolName: { oauthorName, symbolName, } },
+        include: {
+          symbol: true,
+          comments: { include: { count: true } }
+        },
+      })
+    },
+    mycard: function (parent, { symbolName }, { prisma, req }) {
+      if (!req.userId)
+        throw new AuthenticationError('must authenticate')
+      // return null
+      if (symbolName === '')
+        throw new UserInputError('must gve ia symbol')
+      return prisma.selfcard.findOne({
+        where: {
+          userId_symbolName: {
+            userId: req.userId,
+            symbolName,
+          }
+        },
+        include: {
+          symbol: true,
+          comments: { include: { count: true } }
+        },
+      })
+    },
+
     // block: async (parent, { id, path }, { prisma }) => {
     //   if (id) {
     //     const bk = await prisma.block.findOne({
@@ -114,68 +222,55 @@ export const resolvers: GraphQLResolverMap<Context> = {
     //     return null
     //   throw new Error('Require block ID or path')
     // },
-
-    page: async (parent, { id, title, symbolName, symbolId }, { prisma }) => {
-      let where
-      if (id) {
-        where = { id: parseInt(id) }
-      } else if (title) {
-        where = { title }
-      } else if (symbolName) {
-        where = { symbolName }
-      } else if (symbolId) {
-        // TODO: 先用記憶體查找 & fallback才搜資料庫
-        const sb = await prisma.symbol.findOne({
-          where: { id: symbolId }
-        })
-        if (sb === null)
-          return null
-        where = { symbolName: sb.name }
-      } else {
-        throw new Error('Require block ID or path')
-      }
-      // Query
-      const pg = await prisma.page.findOne({
-        where,
-        include: {
-          propComments: {
-            include: {
-              count: true,
-              poll: { include: { count: true } },
-              replies: { include: { count: true } }
-            }
-          },
-          symbol: true,
-          // comments: { where: { isSpot: true }, include: { count: true } },
-        },
-      })
-      // console.log(JSON.stringify(pg, null, 4));
-      // 若沒找到，直接返回null
-      if (pg === null)
-        return null
-      return fillPage(pg)
-    },
-
-    latestPages: function (parent, { afterId }, { prisma }) {
-      // return prisma.comment.findMany({
-      //   where: { pageId: parseInt(pageId), isProp: false},
-      //   orderBy: { createdAt: "desc" },
-      //   include: { count: true, replies: true },
-      //   cursor: afterId ? { id: parseInt(afterId) } : undefined,
-      //   take: 20
-      // })
-      throw new Error('Not implemented yet')
-    },
-
-    comments: (parent, { pageId, afterId }, { prisma }) => {
-      return prisma.comment.findMany({
-        where: { pageId: parseInt(pageId), isProp: false },
-        orderBy: { createdAt: "desc" },
-        include: { count: true, replies: true },
-        cursor: afterId ? { id: parseInt(afterId) } : undefined,
-        take: 20
-      })
-    },
+    // page: async (parent, { id, title, symbolName, symbolId }, { prisma }) => {
+    //   let where
+    //   if (id) {
+    //     where = { id: parseInt(id) }
+    //   } else if (title) {
+    //     where = { title }
+    //   } else if (symbolName) {
+    //     where = { selfSymbolName: symbolName }
+    //   } else if (symbolId) {
+    //     // TODO: 先用記憶體查找 & fallback才搜資料庫
+    //     const sb = await prisma.symbol.findOne({
+    //       where: { id: symbolId }
+    //     })
+    //     if (sb === null)
+    //       return null
+    //     where = { selfSymbolName: sb.name }
+    //   } else {
+    //     throw new Error('Require block ID or path')
+    //   }
+    //   // Query
+    //   const pg = await prisma.page.findOne({
+    //     where,
+    //     include: {
+    //       propComments: {
+    //         include: {
+    //           count: true,
+    //           poll: { include: { count: true } },
+    //           replies: { include: { count: true } }
+    //         }
+    //       },
+    //       selfSymbol: true,
+    //       // comments: { where: { isSpot: true }, include: { count: true } },
+    //     },
+    //   })
+    //   // console.log(JSON.stringify(pg, null, 4));
+    //   // 若沒找到，直接返回null
+    //   if (pg === null)
+    //     return null
+    //   return fillPage(pg)
+    // },
+    // comments: (parent, { pageId, afterId }, { prisma }) => {
+    //   return prisma.comment.findMany({
+    //     where: { pageId: parseInt(pageId), isProp: false },
+    //     orderBy: { createdAt: "desc" },
+    //     include: { count: true, replies: true },
+    //     cursor: afterId ? { id: parseInt(afterId) } : undefined,
+    //     take: 20
+    //   })
+    // },
 
     commentsBySymbol: function (parent, { pageTitle, symbol, afterId }, { prisma }) {
       // return prisma.comment.findMany({
@@ -398,10 +493,7 @@ export const resolvers: GraphQLResolverMap<Context> = {
     // myCommitReviews: (parent, { after }, { prisma, req }) => {
     //   return prisma.commitReview.findMany({ where: { userId: req.userId }, take: 30 })
     // },
-    // fetchPage: (parent, { url }, { prisma, req }) => {
-    //   // grpc call to nlp-app
-    //   return null
-    // },
+
     // tagHints: (parent, { term }, { prisma }) => {
     //   return null
     // },
@@ -413,13 +505,7 @@ export const resolvers: GraphQLResolverMap<Context> = {
     // },
 
     searchAll: (parent, { term }, { prisma, req }) => {
-      return searchTopic(term)
-      // return searchAll(term)
-    },
-
-    searchPage: (parent, { url }, { prisma, req }) => {
-      return searchTopic(url)
-      // return searchPage(url)
+      return searchAllSymbol(term)
     },
 
   },
@@ -441,7 +527,7 @@ export const resolvers: GraphQLResolverMap<Context> = {
       }
     },
 
-    login: async (parent, { email, password }, { prisma, res }) => {
+    login: async function (parent, { email, password }, { prisma, res }) {
       const user = await prisma.user.findOne({
         where: { email },
       })
@@ -460,38 +546,105 @@ export const resolvers: GraphQLResolverMap<Context> = {
       return { token, user }
     },
 
-    logout: (parent, { email, password }, { prisma, res }) => {
+    logout: function (parent, { email, password }, { prisma, res }) {
       res.clearCookie('token')
       return true
     },
 
-    createComment: async function (parent, { data, pageId }, { prisma, req }) {
-      // Check can comment
-      const pg = await prisma.page.findOne({ where: { id: parseInt(pageId) } })
-      if (pg === null)
-        throw new Error('Page not exist')
-      // if (!(bk.props as PrismaBlockProperties).canComment)
-      //   throw new Error('Block not allow to comment')
-
-      // TODO: Create poll
-      return prisma.comment.create({
+    createMycard: async function (parent, { symbolName, data }, { prisma, req }) {
+      const cocard = await prisma.cocard.findOne({ where: { linkUrl: symbolToUrl(symbolName) } })
+      if (cocard === null)
+        throw new Error('Symbol not found, fail to create ticker-mycard')
+      // TODO:  需要確認comment的meta，又或者在這裡才加入meta
+      const card = await prisma.selfcard.create({
         data: {
-          text: data.text,
-          // cat: data.cat,
+          template: PA.CardTemplate.TICKER,
           user: { connect: { id: req.userId } },
-          page: { connect: { id: parseInt(pageId) } },
+          symbol: { connect: { name: symbolName } },
+          comments: {
+            create: data.map((e: CommentInput) => ({
+              meta: { mark: e.mark },
+              text: e.text,
+              user: { connect: { id: req.userId } },
+              // 同時間port至cocard
+              cocard: { connect: { id: cocard.id } },
+              count: { create: {} },
+            }))
+          }
+        },
+      })
+      // 無法直接include（prisma的bug）
+      return await prisma.selfcard.findOne({
+        where: { id: card.id },
+        include: {
+          symbol: true,
+          comments: { include: { count: true } },
+        },
+      })
+    },
+
+    createOcard: async function (parent, { symbolName, oauthorName, data }, { prisma, req }) {
+      const cocard = await prisma.cocard.findOne({ where: { linkUrl: symbolToUrl(symbolName) } })
+      if (cocard === null)
+        throw new Error('Symbol not found, fail to create ticker-ocard')
+      const card = await prisma.ocard.create({
+        data: {
+          template: PA.CardTemplate.TICKER,
+          oauthor: { connect: { name: oauthorName } },
+          symbol: { connect: { name: symbolName } },
+          comments: {
+            create: data.map((e: CommentInput) => ({
+              // TODO: meta資料要檢查完才能存進資料庫
+              meta: { mark: e.mark, src: e.src },
+              text: e.text,
+              user: { connect: { id: req.userId } },
+              // 同時間port至cocard
+              cocard: { connect: { id: cocard.id } },
+              count: { create: {} },
+            }))
+          }
+        },
+      })
+      // 無法直接include（prisma的bug）
+      return await prisma.ocard.findOne({
+        where: { id: card.id },
+        include: {
+          symbol: true,
+          comments: { include: { count: true } },
+        },
+      })
+    },
+
+    createComments: function (parent, { cardId, cardType, data }, { prisma, req }) {
+      // TODO: 
+      // - update/delete前comments的情形
+      // - 需要確認comment的meta，又或者在這裡才加入meta
+      // - Create poll
+      let connector: Record<string, Record<'id', string>>
+      if (cardType === 'Cocard')
+        connector = { cocard: { id: cardId } }
+      else if (cardType === 'Ocard')
+        connector = { ocard: { id: cardId } }
+      else if (cardType === 'Selfcard')
+        connector = { selfcard: { id: cardId } }
+      else
+        throw new Error('Unrecognized `cardType`')
+      return prisma.$transaction(data.map((e: CommentInput) => prisma.comment.create({
+        data: {
+          meta: { mark: e.mark },
+          text: e.text,
+          user: { connect: { id: req.userId } },
           // symbols: { connect: (data.symbolIds as string[]).map(x => ({ name: x })) },
           count: { create: {} },
-          // poll: data.poll ? { create: {} } : undefined,
-          // poll: { create: {} },
+          ...connector,
         },
         include: {
           symbols: true,
-          replies: true,
           count: true,
+          // replies: true,
           // poll: true,
         },
-      })
+      })))
     },
 
     createReply: async (parent, { commentId, data }, { prisma, req }) => {

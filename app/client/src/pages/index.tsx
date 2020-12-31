@@ -9,11 +9,10 @@ import { ProtectedRoute, LoginPage, AutoLogin } from './login'
 import { HomePage } from './homePage'
 import { TickerPage } from './tickerPage'
 import { TopicPage } from './topicPage'
-import { AuthorPage } from './authorPage'
-import { WebpagePage } from './webpagePage'
+// import { AuthorPage } from './authorPage'
+import { WebpagePage, WebpageFetchFormPage, WebpageCocardFormPage } from './webpagePage'
 
 import '../appLayout/appLayout.less'
-import Anchor from '../components/anchor/tickerAnchor'
 
 
 interface NotFoundProps extends RouteComponentProps { }
@@ -21,8 +20,6 @@ interface NotFoundProps extends RouteComponentProps { }
 const NotFoundPage: React.FC<NotFoundProps> = function () {
   return <h1>Page not found</h1>
 }
-
-const { Header, Sider, Content } = Layout
 
 function LayoutPages() {
   // useQuery<QT.myCommentLikes>(queries.MY_COMMENT_LIKES)
@@ -56,18 +53,17 @@ function LayoutPages() {
           </Menu>
         </Sider> */}
       <Layout className="site-layout" style={{ position: 'relative' }}>
-        <Header
+        <Layout.Header
           className="site-layout-background header "
           style={{ padding: 0 }}
         >
-        </Header>
+        </Layout.Header>
         {/* <div className="anchorWrapper">
           <Anchor />
         </div> */}
 
         <Router primary={false} component={Fragment}>
           {/* <BlockPage path="block/:id" me={data?.me} /> */}
-
           {/* <ProsCons />
             <TickerComment />
             <Tab /> */}
@@ -99,8 +95,12 @@ export function Pages() {
           <HomePage path="/" />
           <TickerPage path="ticker/:symbol" />
           <TopicPage path="topic/:title" />
-          <AuthorPage path="author/:symbol" />
+
+          <WebpageFetchFormPage path="webpage/fetch" />
+          <WebpageCocardFormPage path="webpage/form" />
           <WebpagePage path="webpage/:id" />
+
+          {/* <AuthorPage path="author/:symbol" /> */}
 
           {/* <BlockPage path="block/*path" me={data?.me} /> path可以為'/aaa/bbb/ccc' */}
 

@@ -14,7 +14,6 @@ const _eventContent = {
 }
 
 
-
 const keywordBlacklist = []
 const USERS = [
   {

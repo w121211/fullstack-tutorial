@@ -10,7 +10,7 @@ import * as QT from '../store/queryTypes'
 // import { PollChoiceRadioGroup } from './pollChoice'
 // import { PollFooter, PostFooter } from './tileFooter'
 // import { VotePostForm, NewChoicePostForm } from './postForm'
-import { Reply, Comment, WebpageTile, TileOptions, defaultTileOptions } from './tile'
+import { Reply, Comment, TileOptions, defaultTileOptions } from './tile'
 import commentListSmallCss from './commentListSmall/commentListSmall.module.scss'
 
 
@@ -86,9 +86,9 @@ export function CommentList({ comments }: { comments: QT.comment[] }) {
   )
 }
 
-export function QueryCommentList({ me, pageId }: { me?: QT.me_me, pageId: string }) {
+export function QueryCommentList({ me, cardId }: { me?: QT.me_me, cardId: string }) {
   const { data, loading, error, refetch } = useQuery<QT.comments, QT.commentsVariables>(
-    queries.COMMENTS, { variables: { pageId } }
+    queries.COMMENTS, { variables: { cardId } }
   )
   if (loading) return null
   if (error) return <p>ERROR: {error.message}</p>
@@ -102,9 +102,9 @@ interface CommentListProps extends QT.commentsVariables {
   toAddCommentCountByOne: () => void
 }
 
-const LoadMoreCommentList: React.FC<CommentListProps> = ({ me, pageId, toAddCommentCountByOne }) => {
+const LoadMoreCommentList: React.FC<CommentListProps> = ({ me, cardId, toAddCommentCountByOne }) => {
   const { data, loading, error, refetch } = useQuery<QT.comments, QT.commentsVariables>(
-    queries.COMMENTS, { variables: { pageId } }
+    queries.COMMENTS, { variables: { cardId } }
   )
   const [hasMore, setHasMore] = useState<boolean>(false)
   if (loading) return null
@@ -132,40 +132,40 @@ const LoadMoreCommentList: React.FC<CommentListProps> = ({ me, pageId, toAddComm
 }
 
 
-export function WebpageList({ webpages }: { webpages: QT.latestPages_latestPages[] }) {
-  return (
-    <>
-      {webpages.map(e => <WebpageTile page={e} />)}
-    </>
-  )
-}
+// export function WebpageList({ webpages }: { webpages: QT.latestPages_latestPages[] }) {
+//   return (
+//     <>
+//       {webpages.map(e => <WebpageTile page={e} />)}
+//     </>
+//   )
+// }
 
-export function QueryLatestWebpageList() {
-  const [isLoadingMore, setIsLoadingMore] = useState(false)
-  const { data, loading, error, fetchMore } = useQuery<QT.latestPages, QT.latestPagesVariables>(
-    queries.LATEST_PAGES, { variables: { afterId: null } }
-  )
-  async function onClick() {
-    setIsLoadingMore(true)
-    await fetchMore({ variables: { afterId: data?.latestPages[-1].id } })
-    setIsLoadingMore(false)
-  }
-  if (loading)
-    return null
-  if (error)
-    return <p>ERROR: {error.message}</p>
-  if (!data)
-    return null
-  return (
-    <>
-      <WebpageList webpages={data.latestPages} />
-      {
-        isLoadingMore ?
-          <button onClick={onClick}>Load more</button> : "loading"
-      }
-    </>
-  )
-}
+// export function QueryLatestWebpageList() {
+//   const [isLoadingMore, setIsLoadingMore] = useState(false)
+//   const { data, loading, error, fetchMore } = useQuery<QT.latestPages, QT.latestPagesVariables>(
+//     queries.LATEST_PAGES, { variables: { afterId: null } }
+//   )
+//   async function onClick() {
+//     setIsLoadingMore(true)
+//     await fetchMore({ variables: { afterId: data?.latestPages[-1].id } })
+//     setIsLoadingMore(false)
+//   }
+//   if (loading)
+//     return null
+//   if (error)
+//     return <p>ERROR: {error.message}</p>
+//   if (!data)
+//     return null
+//   return (
+//     <>
+//       <WebpageList webpages={data.latestPages} />
+//       {
+//         isLoadingMore ?
+//           <button onClick={onClick}>Load more</button> : "loading"
+//       }
+//     </>
+//   )
+// }
 
 
 // interface SymbolListProps {

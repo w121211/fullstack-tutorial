@@ -156,26 +156,25 @@ export function initTopicPage(title: string, wiki: string, replies?: Record<stri
   return temp
 }
 
-export function initAuthorPage(symbol: string, srcTitle?: string): PageTemplate {
-  const { links } = defaultProps
+export function initAuthorPage(symbol: string, srcTitle?: string, replies?: Record<string, string[]>): PageTemplate {
+  const props = _initProps(['links'], replies) as PagePropsTemplate
   const temp = {
-    title: `${symbol}`,
+    title: symbol,
     template: Template.Author,
     props: {
-      // author name
+      ...props,
       selfSymbol: symbol,
       srcTitle: srcTitle ?? null,
-      links,
     },
   }
   // validateBlock(template)  // If not valid, throw error
   return temp
 }
 
-export function initWebpagePage(url: string, srcAuthor: string, srcTitle: string): PageTemplate {
+export function initWebpagePage(url: string, srcTitle: string, srcAuthor: string): PageTemplate {
   const { tickers, topics, intro } = defaultProps
   const temp = {
-    title: `${url}`,
+    title: url,
     template: Template.Webpage,
     props: { srcAuthor, srcTitle, tickers, topics, intro, },
   }
@@ -197,7 +196,8 @@ export async function insertPage(botEmail: string, temp: PageTemplate): Promise<
       title: temp.title,
       template: temp.template,
       props: {},
-      symbol: temp.props.selfSymbol ? { connect: { name: temp.props.selfSymbol } } : undefined,
+      selfSymbol: temp.props.selfSymbol ? { connect: { name: temp.props.selfSymbol } } : undefined,
+      symbols: temp.props.srcAuthor ? { connect: { name: temp.props.srcAuthor } } : undefined,
       // link: {connect: {link.id}}
     },
   })

@@ -9,8 +9,7 @@
     "generate": "npm -s run gen:prisma && npm -s run generate:nexus",
     "postinstall": "npm -s run generate",
     "dev": "ts-node-dev --no-notify --respawn --transpile-only src/index.ts",
-    "migrate": "npx prisma migrate save --experimental",
-    "migrateup": "npx prisma migrate up --experimental --verbose",
+    "migratedev": "npx prisma migrate dev --preview-feature",
     "studio": "npx prisma studio --experimental",
     "seed": "npx ts-node prisma/seed.ts",
     "gen:schema": "graphql-schema-typescript generate-ts src/schema.gql --output src/schemaTypes.d.ts --typePrefix=''",
@@ -30,6 +29,7 @@
     "dotenv": "^8.2.0",
     "faker": "^4.1.0",
     "fuse.js": "^6.4.3",
+    "got": "^11.8.1",
     "graphql": "^14.6.0",
     "graphql-iso-date": "^3.6.1",
     "graphql-middleware": "^4.0.2",
@@ -42,7 +42,7 @@
     "request": "^2.88.2"
   },
   "devDependencies": {
-    "@prisma/cli": "^2.11.0",
+    "@prisma/cli": "^2.13.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/cookie-parser": "^1.4.2",
     "@types/cron": "^1.7.2",

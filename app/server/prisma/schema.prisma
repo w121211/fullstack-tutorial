@@ -22,6 +22,36 @@ model User {
   polls        Poll[]
   replies      Reply[]
   ReplyLike    ReplyLike[]
+  selfcards    Selfcard[]
+}
+
+// TODO: 非常像symbol，可以合併進symbol？ -> No!poll的情況需要以oauthor為代表
+model Oauthor {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ocards    Ocard[]
+  Vote      Vote[]
+  Link      Link[]
+}
+
+// Ref
+// 分成1.personal-page (facebook, twitter, etc), 2.third-content(news)
+// 一定會有author(open-user)，mentioned-open-users不考慮（因為可用voteCommits來表示）
+model Link {
+  id          Int             @id @default(autoincrement())
+  url         String          @unique
+  domain      String
+  contentType LinkContentType @default(OTHER)
+  contentId   String?
+  // 圖片存擋位址 or byte64?
+  // snapshot String
+  // 這個content是由這個oauthor建立
+  oauthor     Oauthor?        @relation(fields: [oauthorName], references: [name])
+  oauthorName String?
+  // 所有的extra資訊存在cocard.meta
+  cocard      Cocard?
 }
 
 model Symbol {
@@ -36,7 +66,8 @@ model Symbol {
   // follows   Follow[]
   // bets      Bet[]
   // roboPolls RoboPoll[]
-  Page      Page?
+  ocards    Ocard[]
+  selfcards Selfcard[]
 }
 
 // model Profile {
@@ -105,17 +136,18 @@ model Poll {
 }
 
 model Vote {
-  id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  poll      Poll     @relation(fields: [pollId], references: [id])
-  pollId    Int
-  choiceIdx Int
+  id          Int      @id @default(autoincrement())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  oauthor     Oauthor? @relation(fields: [oauthorName], references: [name])
+  oauthorName String?
+  poll        Poll     @relation(fields: [pollId], references: [id])
+  pollId      Int
+  choiceIdx   Int
   // reward    Float?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([userId, pollId])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  // @@unique([userId, pollId])
 }
 
 model ReplyLike {
@@ -181,68 +213,68 @@ model CommentCount {
 }
 
 model Comment {
-  id        Int           @id @default(autoincrement())
-  user      User          @relation(fields: [userId], references: [id])
-  userId    String
-  symbols   Symbol[]
-  // 確保每一個comment一定在page下
-  page      Page          @relation("Comments", fields: [pageId], references: [id])
-  pageId    Int
-  // propForId和pageId會相同
-  propFor   Page?         @relation("PropComments", fields: [propForId], references: [id])
-  propForId Int?
+  id         Int           @id @default(autoincrement())
+  user       User          @relation(fields: [userId], references: [id])
+  userId     String
+  symbols    Symbol[]
   // status    PostStatus    @default(ACTIVE)
-  isTop     Boolean       @default(false)
-  isProp    Boolean       @default(false)
-  props     Json?
-  text      String
-  count     CommentCount?
-  likes     CommentLike[]
-  replies   Reply[]
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-  poll      Poll?
+  isTop      Boolean       @default(false)
+  isProp     Boolean       @default(false)
+  meta       Json?
+  text       String
+  count      CommentCount?
+  likes      CommentLike[]
+  replies    Reply[]
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  poll       Poll?
+  cocard     Cocard?       @relation(fields: [cocardId], references: [id])
+  cocardId   Int?
+  ocard      Ocard?        @relation(fields: [ocardId], references: [id])
+  ocardId    Int?
+  selfcard   Selfcard?     @relation(fields: [selfcardId], references: [id])
+  selfcardId Int?
 }
 
-// Ref
-// 分成1.personal-page (facebook, twitter, etc), 2.third-content(news)
-// 一定會有author(open-user)，mentioned-open-users不考慮（因為可用voteCommits來表示）
-model Link {
-  id              Int             @id @default(autoincrement())
-  // 將link登陸至網站的user
-  // user       User     @relation(fields: [userId], references: [id])
-  // userId     String
-  // link內容的author
-  // openUser   OpenUser @relation(fields: [openUserId], references: [id])
-  // openUserId String
-  url             String          @unique
-  domain          String
-  contentType     LinkContentType @default(OTHER)
-  contentId       String?
-  contentAuthorId String?
-  // 圖片存擋位址 or byte64?
-  // snapshot String
-  // 連結端的文字，用於NLP，不顯示
-  // title    String?
-  // text     String
-  pageId          Int
-  page            Page            @relation(fields: [pageId], references: [id])
+model Cocard {
+  id        Int          @id @default(autoincrement())
+  template  CardTemplate
+  meta      Json
+  comments  Comment[]
+  link      Link         @relation(fields: [linkUrl], references: [url])
+  linkUrl   String       @unique
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
 }
 
-model Page {
-  id           Int       @id @default(autoincrement())
-  // status       PostStatus   @default(ACTIVE)
-  title        String    @unique
-  template     String
-  props        Json
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  propComments Comment[] @relation("PropComments")
-  comments     Comment[] @relation("Comments")
-  link         Link?
-  // 用於symbol page的情況，而非關聯symbols（寫入props）
-  symbol       Symbol?   @relation(fields: [symbolName], references: [name])
-  symbolName   String?   @unique
+model Ocard {
+  id          Int          @id @default(autoincrement())
+  template    CardTemplate
+  meta        Json?
+  oauthor     Oauthor      @relation(fields: [oauthorName], references: [name])
+  oauthorName String
+  symbol      Symbol       @relation(fields: [symbolName], references: [name])
+  symbolName  String
+  comments    Comment[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@unique([oauthorName, symbolName])
+}
+
+model Selfcard {
+  id         Int          @id @default(autoincrement())
+  template   CardTemplate
+  meta       Json?
+  user       User         @relation(fields: [userId], references: [id])
+  userId     String
+  symbol     Symbol       @relation(fields: [symbolName], references: [name])
+  symbolName String
+  comments   Comment[]
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  @@unique([userId, symbolName])
 }
 
 // model Block {
@@ -335,13 +367,15 @@ enum NoticeStatus {
 }
 
 enum SymbolCat {
-  TAG
   TICKER
-  EVENT
-  AUTHOR
-  DOMAIN
+  TOPIC
+  // TITLE
+  // TAG
+  // EVENT
+  // OAUTHOR
+  // DOMAIN
   // ?
-  SYS_TICKER_FOLLOWERS
+  // SYS_TICKER_FOLLOWERS
 }
 
 enum SymbolStatus {
@@ -375,6 +409,12 @@ enum LinkContentType {
   POST
   AUTHOR
   OTHER
+}
+
+enum CardTemplate {
+  TICKER
+  TOPIC
+  WEBPAGE
 }
 
 // entity? dummy? external user? usersymbol?

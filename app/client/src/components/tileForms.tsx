@@ -64,7 +64,7 @@ export function ReplyForm({ commentId, addReplyCountByOne, suggestText, onFinish
   )
 }
 
-export function CommentForm({ pageId, toAddCommentCountByOne }: { pageId: string, toAddCommentCountByOne: () => void }) {
+export function CommentForm({ cardId, toAddCommentCountByOne }: { cardId: string, toAddCommentCountByOne: () => void }) {
   const [form] = Form.useForm()
   const [createComment] = useMutation<QT.createComment, QT.createCommentVariables>(
     queries.CREATE_COMMENT, {
@@ -89,12 +89,12 @@ export function CommentForm({ pageId, toAddCommentCountByOne }: { pageId: string
 
       const res = cache.readQuery<QT.comments, QT.commentsVariables>({
         query: queries.COMMENTS,
-        variables: { pageId },
+        variables: { cardId },
       })
       if (data?.createComment && res?.comments) {
         cache.writeQuery<QT.comments, QT.commentsVariables>({
           query: queries.COMMENTS,
-          variables: { pageId },
+          variables: { cardId },
           data: { comments: res?.comments.concat([data?.createComment]) },
         })
         toAddCommentCountByOne()
@@ -105,10 +105,12 @@ export function CommentForm({ pageId, toAddCommentCountByOne }: { pageId: string
   const onFinish = (values: any) => {
     createComment({
       variables: {
-        pageId,
+        cardId,
+        cardType: 'Cocard',
         data: {
+          mark: "fake",
           text: values.text,
-          symbols: [],
+          // symbols: [],
         }
       }
     })

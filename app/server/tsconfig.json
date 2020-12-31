@@ -15,5 +15,9 @@
   "include": [
     "src/**/*",
     "prisma/*.ts"
+  ],
+  "exclude": [
+    "**/__tests__",
+    "**/__deprecated__",
   ]
 }

@@ -11,15 +11,13 @@ import { LineChart } from './charts'
 import ProsCons from './prosCons/prosCons'
 import Anchor from './anchor/tickerAnchor'
 import Tag from './tag/tag'
-import BlockCss from '../components/block/block.module.scss'
-import BlockMetaCss from '../components/blockMeta/blockMeta.module.scss'
+import BlockCss from './block/block.module.scss'
+import BlockMetaCss from './blockMeta/blockMeta.module.scss'
 import Radio from './radios/radios'
 import CommenTemplate from './commentTemplate/commentTemplate'
 import MyTextArea from './myTextArea/myTextArea'
 import CssCommentList from './commentList/commentList'
 import { SomeTable } from './tables'
-
-const { Header, Sider, Content } = Layout
 
 // function SymbolLink() { }
 // function SyntaxText() { }
@@ -380,9 +378,9 @@ export function CssBlockCard({ title, children }: { title: string, children: Rea
     <Card
       title={title}
       className={BlockCss.card}
-      hoverable
+      // hoverable
       // loading={isloadding}
-      bordered={false}
+      bordered={true}
     >
       {children}
     </Card>

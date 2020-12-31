@@ -34,3 +34,19 @@ export async function getOrCreateSymbol(cat: PA.SymbolCat, name: string): Promis
 //   .finally(async () => {
 //     await prisma.$disconnect()
 //   })
+
+const SYMBO_URL_DICT: Record<PA.SymbolCat, string> = {
+  [PA.SymbolCat.TICKER]: 'ticker/',
+  [PA.SymbolCat.TOPIC]: 'topic/'
+}
+
+function getSymbolCat(symbol: string): [PA.SymbolCat, string] {
+  if (symbol.startsWith('$'))
+    return [PA.SymbolCat.TICKER, symbol.slice(1)]
+  throw new Error('Symbol not found')
+}
+
+export function symbolToUrl(symbol: string): string {
+  const [cat, trimmed] = getSymbolCat(symbol)
+  return `${SYMBO_URL_DICT[cat]}${trimmed}`
+}
