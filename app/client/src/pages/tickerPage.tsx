@@ -1,18 +1,72 @@
 import React, { useState } from 'react'
-import { RouteComponentProps, Redirect, Link, navigate } from '@reach/router'
-import { useQuery, useMutation } from '@apollo/client'
+import { RouteComponentProps, Redirect, Link, navigate, createHistory } from '@reach/router'
+import { useQuery, useMutation, useLazyQuery } from '@apollo/client'
 import { Button, Layout, } from 'antd'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
-import { CssBlockCard } from '../components/block'
 import { On404 } from '../components/result'
-import { TickerCocard, TickerCard, TickerMycardForm } from '../components/card'
+import { CardBody, CardForm } from '../components/card'
+import { TICKER_ALLOWED_MARKERS } from '../utils/marker'
+
+// interface RouteProps extends RouteComponentProps<{ symbol: string, location: { state?: { mycard: QT.selfcardFragment } } }> {
+//   me?: QT.me_me
+// }
 
 interface RouteProps extends RouteComponentProps<{ symbol: string }> {
   me?: QT.me_me
 }
 
-export const TickerPage: React.FC<RouteProps> = function ({ symbol, me }) {
+function ResolvedForm({ card }: { card: QT.selfcard_selfcard }) {
+  const [mode, setMode] = useState<string>('EDIT')
+  return (
+    <Layout.Content className="site-layout-background content" style={{ minHeight: 280, }}>
+      <pre>
+        MyCard Header
+        {card.symbol.name}
+        -----------------
+      </pre>
+      <CardForm
+        card={card}
+        allowedSects={[]}
+        rootFormat={TICKER_ALLOWED_MARKERS}
+        onFinishFn={() => { navigate(`/ticker/${card.symbol.name}`) }}
+      />
+    </Layout.Content>
+  )
+}
+
+export const TickerFormPage: React.FC<RouteProps> = function ({ location, symbol, me }) {
+  const [card, cardResult] = useLazyQuery<QT.mycard, QT.mycardVariables>(
+    queries.MYCARD)
+  const [createCard, createCardResult] = useMutation<QT.createMycard, QT.createMycardVariables>(
+    queries.CREATE_MYCARD)
+
+  if (symbol === undefined)
+    return <h1>Require symbol</h1>
+  if (!cardResult.called) {
+    card({ variables: { symbolName: symbol } })
+  }
+
+  if (cardResult.loading || createCardResult.loading)
+    return null
+  if (cardResult.error)
+    return <h1>{cardResult.error.message}</h1>
+  if (createCardResult.error)
+    return <h1>{createCardResult.error.message}</h1>
+  // if (!data)
+  //   return <h1>Cocard not found</h1>
+  if (cardResult.data && cardResult.data.mycard !== null)
+    return <ResolvedForm card={cardResult.data.mycard} />
+  if (cardResult.data && cardResult.data.mycard === null && !createCardResult.called) {
+    createCard({ variables: { symbolName: symbol, data: [] } })
+      .catch(err => { console.log(err) })
+  }
+  if (createCardResult.data)
+    return <ResolvedForm card={createCardResult.data.createMycard} />
+  return <h1>Unpected error</h1>
+}
+
+export const TickerPage: React.FC<RouteProps> = function ({ symbol, me, location }) {
   const queryCocard = useQuery<QT.cocard, QT.cocardVariables>(
     queries.COCARD, { variables: { symbolName: symbol } }
   )
@@ -20,6 +74,12 @@ export const TickerPage: React.FC<RouteProps> = function ({ symbol, me }) {
     queries.MYCARD, { variables: { symbolName: symbol ?? '' } }
   )
   const [curCard, setCurCard] = useState<'COCARD' | 'MYCARD'>('COCARD')
+  // const showMycard = new URLSearchParams(location?.search).get("mycard") === 'true'
+  // console.log(showMycard)
+  // if (showMycard && curCard !== 'MYCARD')
+  //   setCurCard('MYCARD')
+  // else if (curCard !== 'COCARD')
+  //   setCurCard('COCARD')
   if (symbol === undefined)
     return <On404 />
   if (queryCocard.loading || queryMycard.loading)
@@ -42,54 +102,32 @@ export const TickerPage: React.FC<RouteProps> = function ({ symbol, me }) {
     </pre>
   )
   const cocard = queryMycard.data.mycard === null ?
-    <CssBlockCard title={symbol}>
-      <p>目前有3張卡片，需解鎖才能查看<br />解鎖方式：1. 建立你的卡片 或 2.做一張筆記卡</p>
-    </CssBlockCard>
-    :
-    <TickerCocard card={queryCocard.data.cocard} />
-  const mycard = queryMycard.data.mycard ?
-    <TickerCard card={queryMycard.data.mycard} /> :
-    <CssBlockCard title={symbol}>
-      <TickerMycardForm symbol={symbol} />
-    </CssBlockCard>
+    <p>目前有???張卡片，需解鎖才能查看<br />解鎖方式：1. 建立你的卡片 或 2.做一張筆記卡</p> :
+    <CardBody card={queryCocard.data.cocard} allowedMarkers={TICKER_ALLOWED_MARKERS} />
+  const mycard = queryMycard.data.mycard === null ?
+    <div>你還沒有寫{symbol}的卡片，<Link to={`/ticker/${symbol}/form`}>建立</Link></div> :
+    <CardBody card={queryMycard.data.mycard} allowedMarkers={TICKER_ALLOWED_MARKERS} />
+  // <TickerMycardForm symbol={symbol} />
   return (
     <Layout.Content className="site-layout-background content" style={{ minHeight: 280, }}>
-      {header}
+      {/* TODO: 轉到mycard時需要在URL加上?mycard=true */}
       <Button onClick={function () { setCurCard('COCARD') }} type={curCard === 'COCARD' ? 'primary' : undefined}>Co-Card</Button>
       <Button onClick={function () { setCurCard('MYCARD') }} type={curCard === 'MYCARD' ? 'primary' : undefined}>My-Card</Button>
-      <Link to="/">新增Note-Card</Link>
+      <Button onClick={() => { navigate(`/ticker/${symbol}/form`) }}>編輯</Button>
+      {/* <Button type={curCard === 'COCARD' ? 'primary' : undefined}>
+        <Link to={`/ticker/${symbol}`}>Co-Card</Link>
+      </Button>
+      <Button type={curCard === 'MYCARD' ? 'primary' : undefined}>
+        <Link to='?mycard=true'>My-Card</Link>
+      </Button> */}
+      {header}
+      {/* <Link to="/">新增Note-Card</Link> */}
       {curCard === 'COCARD' ? cocard : mycard}
-      <pre>(NEXT) Discuss (use filter)</pre>
-
-      {/* <hr />
-      <CssBlockCard title="My Card">
-        {
-          queryMycard.data.mycard ?
-            <TickerCard card={queryMycard.data.mycard} /> :
-            <p>建立$PLTR的Card(?) 或 幫[______url______]做筆記(?)</p>
-        }
-        <TickerMycardForm symbol={symbol} />
-      </CssBlockCard> */}
-
-      {/* <hr />
-      <h1>webpage card form (同時建立多個ocard)</h1> */}
-      {/* <WebpageFetchForm /> */}
-      {/* <WebpageCocardForm link={fakeLink} oauthor="oauthorName" /> */}
-
-
-      {/* <TickerOcardForm /> */}
-      {/* <QueryTickerOcardForm oauthor={"@aaa:youtube"} symbol={"$BA"} /> */}
-      {/* <pre>
-        [作者]@someone:youtube
-        [tickers][$AA|浮出$AA ocard] $BB $CC
-        MiniCard:$AA (點開)
-        MiniCard:$BB
-        MiniCard:Create One [$CC]
-      </pre> */}
-
+      {/* <pre>(NEXT) Discuss (use filter)</pre> */}
     </Layout.Content>
   )
 }
+
 
 // export const _TickerPage: React.FC<RouteProps> = function ({ symbol, me }) {
 //   /** @deprecated */

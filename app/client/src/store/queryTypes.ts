@@ -4,33 +4,6 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: fetchLink
-// ====================================================
-
-export interface fetchLink_fetchLink {
-  __typename: "Link";
-  id: string;
-  url: string;
-  domain: string;
-  contentType: string;
-  contentId: string | null;
-  oauthorName: string | null;
-}
-
-export interface fetchLink {
-  fetchLink: fetchLink_fetchLink;
-}
-
-export interface fetchLinkVariables {
-  url: string;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
 // GraphQL query operation: cocard
 // ====================================================
 
@@ -140,7 +113,7 @@ export interface cocard {
 
 export interface cocardVariables {
   symbolName?: string | null;
-  linkUrl?: string | null;
+  url?: string | null;
 }
 
 /* tslint:disable */
@@ -1177,6 +1150,7 @@ export interface createComments {
 export interface createCommentsVariables {
   cardId: string;
   cardType: string;
+  symbolName?: string | null;
   data: CommentInput[];
 }
 
@@ -1276,8 +1250,7 @@ export interface createComment {
 }
 
 export interface createCommentVariables {
-  cardId: string;
-  cardType: string;
+  cardIds?: CardIdInput[] | null;
   data: CommentInput;
 }
 
@@ -2145,10 +2118,13 @@ export enum LikeChoice {
 }
 
 export enum SymbolCat {
-  EVENT = "EVENT",
-  SYS_TICKER_FOLLOWERS = "SYS_TICKER_FOLLOWERS",
-  TAG = "TAG",
   TICKER = "TICKER",
+  TOPIC = "TOPIC",
+}
+
+export interface CardIdInput {
+  id: string;
+  type: string;
 }
 
 export interface CommentInput {

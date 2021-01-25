@@ -12,7 +12,7 @@
 # 用terminal進入container-bash
 sudo docker ps -a
 # 找到fullstack-tutorial的id（下面的範例為32ae50cd95fc），並將他替換
-sudo docker exec -it 32ae50cd95fc /bin/bash 
+sudo docker exec -it 32ae50cd95fc zsh
 ```
 
 ### 安裝server-app, client-app

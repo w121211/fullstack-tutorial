@@ -6,8 +6,8 @@ import { typeDefs } from './store/resolvers'
 import { cache } from './cache'
 import { Pages } from './pages'
 import { DemoPages } from './demo'
-import './index.less'
-
+// import { TextEditor } from './demo/textboxEditor'
+// import './index.less'
 
 const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
   cache,
@@ -29,10 +29,10 @@ const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
 })
 
 ReactDOM.render(
+  // <TextEditor />
   <ApolloProvider client={client}>
-    {/* <NoteForm /> */}
     <Pages />
-    {/* <DemoPages /> */}
-  </ApolloProvider>,
+  </ApolloProvider>
+  ,
   document.getElementById('root'),
 )

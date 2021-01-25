@@ -1,17 +1,22 @@
 /**
- * 僅用於初始資料庫建立
+ * 1. 僅用於初始資料庫建立 2. 作為server-side的測試demo
  * 
  * Run:
- * cd .../src && npx ts-node seed.ts 
+ * cd ...../server/src && npx ts-node seed.ts 
  */
 import { hash } from 'bcryptjs'
+import dotenv from 'dotenv'
 import * as PA from '@prisma/client'
 import * as CardOps from './models/card'
 import { symbolToUrl } from './models/symbol'
-
+import { getOrCreateLink } from './models/link'
+import { MARKER_FORMAT, CommentMeta } from './models/marker'
 // Dummy-data for test
 
-const BOT = { email: "bot@bot.bot", password: "robo" }
+if (!process.env.BOT_EMAIL || !process.env.BOT_PASSWORD)
+    throw new Error()
+
+const BOT = { email: process.env.BOT_EMAIL, password: process.env.BOT_PASSWORD }
 const TESTUSER = { email: "aaa@aaa.com", password: "aaa" }
 const TICKERS = [
     { title: "Boeing", symbol: "$BA", wiki: "Boeing", topics: "[[Airplane]], [[Aerospace]]", links: "[Wiki](https://en.wikipedia.org/wiki/Boeing)" },
@@ -34,19 +39,78 @@ const prisma = new PA.PrismaClient({
     log: ['query', 'info', 'warn'],
 })
 
+async function testTickerOps() {
+    // console.log("-- 新增 Selfcards & 把comments copy至cocard")
+    // const cocard = await prisma.cocard.findOne({ where: { linkUrl: symbolToUrl('$BA') } })
+    // if (cocard === null)
+    //     throw new Error()
+    // const selfcard = await prisma.selfcard.create({
+    //     data: {
+    //         user: { connect: { id: user1.id } },
+    //         template: PA.CardTemplate.TICKER,
+    //         comments: {
+    //             create: [
+    //                 { meta: { mark: "pros" }, text: "pros 111", user: { connect: { id: user1.id } }, cocard: { connect: { id: cocard.id } }, count: { create: {} } },
+    //                 { meta: { mark: "pros" }, text: "pros 222", user: { connect: { id: user1.id } }, cocard: { connect: { id: cocard.id } }, count: { create: {} } },
+    //                 { meta: { mark: "cons" }, text: "cons 111", user: { connect: { id: user1.id } }, cocard: { connect: { id: cocard.id } }, count: { create: {} } },
+    //                 { meta: { mark: "targetprice" }, text: "123.4", user: { connect: { id: user1.id } }, cocard: { connect: { id: cocard.id } }, count: { create: {} } },
+    //                 { meta: { mark: "act" }, text: "[X]buy []sell []watch", user: { connect: { id: user1.id } }, cocard: { connect: { id: cocard.id } }, count: { create: {} } },
+    //             ]
+    //         },
+    //         symbol: { connect: { name: "$BA" } }
+    //     }
+    // })
+
+    // console.log("-- 同步更新cocard:act的投票統計&存入meta(按期間分別統計會更好)")
+    // await prisma.cocard.update({
+    //     where: { id: cocard.id },
+    //     data: { meta: { ...(cocard.meta as object), actCount: [1, 2, 3, 4] } }
+    // })
+}
+
+async function testWebpageOps() {
+    console.log("----- 新增Webpage cocard -----")
+
+    console.log("1. 分析source url -> oauthor, contentType, contentTitle, ...")
+    console.log("2. 新增oauthor, link, cocard & 同步用card comments存link meta")
+    const [link, { fetched }] = await getOrCreateLink('https://www.youtube.com/watch?v=XVX4DNuV62s', BOT.email)
+
+    // console.log("-- 基於source webpage，新增oauthor對於某個ticker的看法, ie 建立Ocard & 同時port到ticker cocard")
+    // // TODO: 要怎樣紀錄oauthor的投票？ -> 1. 用comment紀錄 2. (NEXT)紀錄在vote上 -> 當前沒有看到為什麼一定要紀錄的原因
+    // await prisma.ocard.create({
+    //     data: {
+    //         oauthor: { connect: { id: oauthor1.id } },
+    //         template: PA.CardTemplate.TICKER,
+    //         comments: {
+    //             create: [
+    //                 // 來源，讓user能找到這條的來源
+    //                 // { meta: { key: "linkIds", linkIds: [webpages[0].id] }, user: { connect: { email: BOT.email } } },
+    //                 // 共筆
+    //                 { meta: { mark: "pros", sourceUrl: 'some/link/url' }, text: "pros 222", user: { connect: { id: user1.id } }, cocard: { connect: { id: cocard.id } }, count: { create: {} } },
+    //                 { meta: { mark: "cons" }, text: "cons 111", user: { connect: { id: user1.id } }, cocard: { connect: { id: cocard.id } }, count: { create: {} } },
+    //                 { meta: { mark: "targetprice" }, text: "123.4", user: { connect: { id: user1.id } }, cocard: { connect: { id: cocard.id } }, count: { create: {} } },
+    //                 { meta: { mark: "act" }, text: "3", user: { connect: { id: user1.id } }, cocard: { connect: { id: cocard.id } }, count: { create: {} } },
+    //             ]
+    //         },
+    //         symbol: { connect: { name: "$BA" } },
+    //     }
+    // })
+    // console.log("-- 同步更新cocard:act的投票統計&存入meta(按期間分別統計會更好)")
+    // await prisma.cocard.update({
+    //     where: { id: cocard.id },
+    //     data: { meta: { ...(cocard.meta as object), actCount: [1, 2, 3, 4] } }
+    // })
+    // console.log("-- 同步更新source cocard, ie 新增一個comment來連結oard")
+    // // TODO: 還缺考慮已經有這個comment的情況（不用再建立一個）
+    // prisma.comment.create({
+    //     data: { meta: { key: "ocard" }, text: "@someon:$BA", user: { connect: { id: user1.id } }, cocard: { connect: { id: sourceCocard.id } } },
+    // })
+
+}
+
 async function main() {
     console.log("-- 將Databse清空")
     await prisma.$executeRaw('TRUNCATE "User", "Oauthor", "Symbol", "Link", "Cocard", "Ocard", "Selfcard" CASCADE;')
-
-    console.log("-- Insert symbols")
-    await prisma.$transaction(
-        TICKERS.map(e => prisma.symbol.create(
-            { data: { name: e.symbol, cat: PA.SymbolCat.TICKER } }
-        )))
-    await prisma.$transaction(
-        TOPICS.map(e => prisma.symbol.create(
-            { data: { name: e.symbol, cat: PA.SymbolCat.TOPIC } }
-        )))
 
     console.log("-- Insert users")
     const bot = await prisma.user.create({
@@ -56,84 +120,28 @@ async function main() {
         data: { email: TESTUSER.email, password: await hash(TESTUSER.password, 10) }
     })
 
-    console.log("-- 建立Cocards")
-    for (const e of TICKERS) {
-        await CardOps.createTickerCocard(e.symbol, BOT.email, '', e.topics, e.links)
-    }
-    for (const e of TOPICS) {
-        await CardOps.createTopicCocard(e.symbol, BOT.email, '', e.topics, e.links)
-    }
+    console.log("-- Insert symbols")
+    const tickers = await prisma.$transaction(
+        TICKERS.map(e => prisma.symbol.create(
+            { data: { name: e.symbol, cat: PA.SymbolCat.TICKER } }
+        )))
+    const topics = await prisma.$transaction(
+        TOPICS.map(e => prisma.symbol.create(
+            { data: { name: e.symbol, cat: PA.SymbolCat.TOPIC } }
+        )))
 
-    console.log("-- 新增 Selfcards & 把comments copy至cocard")
-    const cocard = await prisma.cocard.findOne({ where: { linkUrl: symbolToUrl('$BA') } })
-    if (cocard === null)
-        throw new Error()
-    const selfcard = await prisma.selfcard.create({
-        data: {
-            user: { connect: { id: user1.id } },
-            template: PA.CardTemplate.TICKER,
-            comments: {
-                create: [
-                    { meta: { mark: "pros" }, text: "pros 111", user: { connect: { id: user1.id } }, cocard: { connect: { id: cocard.id } }, count: { create: {} } },
-                    { meta: { mark: "pros" }, text: "pros 222", user: { connect: { id: user1.id } }, cocard: { connect: { id: cocard.id } }, count: { create: {} } },
-                    { meta: { mark: "cons" }, text: "cons 111", user: { connect: { id: user1.id } }, cocard: { connect: { id: cocard.id } }, count: { create: {} } },
-                    { meta: { mark: "targetprice" }, text: "123.4", user: { connect: { id: user1.id } }, cocard: { connect: { id: cocard.id } }, count: { create: {} } },
-                    { meta: { mark: "act" }, text: "[X]buy []sell []watch", user: { connect: { id: user1.id } }, cocard: { connect: { id: cocard.id } }, count: { create: {} } },
-                ]
-            },
-            symbol: { connect: { name: "$BA" } }
-        }
-    })
-    console.log("-- 同步更新cocard:act的投票統計&存入meta(按期間分別統計會更好)")
-    await prisma.cocard.update({
-        where: { id: cocard.id },
-        data: { meta: { ...(cocard.meta as object), actCount: [1, 2, 3, 4] } }
-    })
+    console.log("-- 新增 Tickder Cocards")
+    for (const e of tickers) await CardOps.createTickerCocard(e)
 
-    console.log("-- 建立Ocard(從source建立)")
-    console.log("-- 分析source url -> 建立oauthor（若尚未建立）")
-    const oauthor1 = await prisma.oauthor.create({
-        data: { name: OAUTHOR.name }
-    })
-    console.log("-- 建立source link & source cocard")
-    const sourceCocard = await prisma.cocard.create({
-        data: {
-            template: PA.CardTemplate.WEBPAGE,
-            meta: {},
-            link: { create: { url: WEBPAGE.link.url, domain: WEBPAGE.link.domain } }
-        },
-        include: { link: true }
-    })
-    console.log("-- 基於source webpage，新增oauthor對於某個ticker的看法, ie 建立Ocard & 同時port到ticker cocard")
-    // TODO: 要怎樣紀錄oauthor的投票？ -> 1. 用comment紀錄 2. (NEXT)紀錄在vote上 -> 當前沒有看到為什麼一定要紀錄的原因
-    await prisma.ocard.create({
-        data: {
-            oauthor: { connect: { id: oauthor1.id } },
-            template: PA.CardTemplate.TICKER,
-            comments: {
-                create: [
-                    // 來源，讓user能找到這條的來源
-                    // { meta: { key: "linkIds", linkIds: [webpages[0].id] }, user: { connect: { email: BOT.email } } },
-                    // 共筆
-                    { meta: { mark: "pros", sourceUrl: 'some/link/url' }, text: "pros 222", user: { connect: { id: user1.id } }, cocard: { connect: { id: cocard.id } }, count: { create: {} } },
-                    { meta: { mark: "cons" }, text: "cons 111", user: { connect: { id: user1.id } }, cocard: { connect: { id: cocard.id } }, count: { create: {} } },
-                    { meta: { mark: "targetprice" }, text: "123.4", user: { connect: { id: user1.id } }, cocard: { connect: { id: cocard.id } }, count: { create: {} } },
-                    { meta: { mark: "act" }, text: "3", user: { connect: { id: user1.id } }, cocard: { connect: { id: cocard.id } }, count: { create: {} } },
-                ]
-            },
-            symbol: { connect: { name: "$BA" } },
-        }
-    })
-    console.log("-- 同步更新cocard:act的投票統計&存入meta(按期間分別統計會更好)")
-    await prisma.cocard.update({
-        where: { id: cocard.id },
-        data: { meta: { ...(cocard.meta as object), actCount: [1, 2, 3, 4] } }
-    })
-    console.log("-- 同步更新source cocard, ie 新增一個comment來連結ocard")
-    // TODO: 還缺考慮已經有這個comment的情況（不用再建立一個）
-    prisma.comment.create({
-        data: { meta: { key: "ocard" }, text: "@someon:$BA", user: { connect: { id: user1.id } }, cocard: { connect: { id: sourceCocard.id } } },
-    })
+    // for (const e of TICKERS) {
+    //     await CardOps.createTickerCocard(e.symbol, BOT.email, '', e.topics, e.links)
+    // }
+    // for (const e of TOPICS) {
+    //     await CardOps.createTopicCocard(e.symbol, BOT.email, '', e.topics, e.links)
+    // }
+
+    await testWebpageOps()
+    // await testTickerOps()
 
     console.log("(NEXT)-- Updating Cards: 所有的update都是創新comment --")
 
@@ -211,7 +219,6 @@ async function main() {
 
     console.log("-- All done!")
 }
-
 
 main()
     .catch(function (e) {

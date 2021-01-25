@@ -184,18 +184,18 @@ const SELFCARD_FRAGMENT = gql`
 // Query
 // ----------------------------
 
-export const FETCH_LINK = gql`
-  query fetchLink($url: String!) {
-    fetchLink(url: $url) {
-      ...linkFragment
-    }
-  }
-  ${LINK_FRAGMENT}
-`
+// export const FETCH_LINK = gql`
+//   query fetchLink($url: String!) {
+//     fetchLink(url: $url) {
+//       ...linkFragment
+//     }
+//   }
+//   ${LINK_FRAGMENT}
+// `
 
 export const COCARD = gql`
-  query cocard($symbolName: String, $linkUrl: String) {
-    cocard(symbolName: $symbolName, linkUrl: $linkUrl) {
+  query cocard($symbolName: String, $url: String) {
+    cocard(symbolName: $symbolName, url: $url) {
       ...cocardFragment
     }
   }
@@ -331,9 +331,19 @@ export const CREATE_OCARD = gql`
   ${OCARD_FRAGMENT}
 `
 
+// export const CREATE_COCARD = gql`
+//   mutation createCocard($url: String!) {
+//     createCocard(url: $url)  {
+//       ...cocardFragment
+//     }
+//   }
+//   ${COCARD_FRAGMENT}
+// `
+
+
 export const CREATE_COMMENTS = gql`
-  mutation createComments($cardId: ID!, $cardType: String! $data: [CommentInput!]!) {
-    createComments(cardId: $cardId,  cardType: $cardType, data: $data) {
+  mutation createComments($cardId: String!, $cardType: String!, $symbolName: String, $data: [CommentInput!]!) {
+    createComments(cardId: $cardId, cardType: $cardType, symbolName: $symbolName, data: $data) {
       ...comment
     }
   }
@@ -341,7 +351,7 @@ export const CREATE_COMMENTS = gql`
 `
 
 export const CREATE_COMMENT = gql`
-  mutation createComment($cardId: ID!, $cardType: String! $data: CommentInput!) {
+  mutation createComment($cardIds: [CardIdInput!], $data: CommentInput!) {
     createComment(cardId: $cardId,  cardType: $cardType, data: $data) {
       ...comment
     }

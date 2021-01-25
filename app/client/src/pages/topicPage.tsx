@@ -5,7 +5,7 @@ import { Layout } from 'antd'
 import * as queries from '../store/queries'
 import * as QT from '../store/queryTypes'
 import { CssBlockCard } from '../components/block'
-import { filterManyComments, filterOneComments, TopicCocardBody } from '../components/card'
+// import { filterManyComments, filterOneComments } from '../components/card'
 
 interface RouteProps extends RouteComponentProps<{ title: string }> {
   me?: QT.me_me
@@ -25,16 +25,16 @@ export const TopicPage: React.FC<RouteProps> = function ({ title, me }) {
     <Layout.Content className="site-layout-background content" style={{ minHeight: 280, }}>
       <h1>{title}</h1>
       <p>
-        {filterOneComments('description', data.cocard.comments)}
+        {/* {filterOneComments('description', data.cocard.comments)} */}
         <br />
-        {filterManyComments('link', data.cocard.comments).map(e => e.text)}
+        {/* {filterManyComments('link', data.cocard.comments).map(e => e.text)} */}
         <br />
-        {filterManyComments('ticker', data.cocard.comments).map(e => e.text)}
+        {/* {filterManyComments('ticker', data.cocard.comments).map(e => e.text)} */}
       </p>
 
-      <CssBlockCard title="">
+      {/* <CssBlockCard title="">
         <TopicCocardBody card={data.cocard} />
-      </CssBlockCard>
+      </CssBlockCard> */}
 
       <pre>(NEXT) Compare tickers table</pre>
       <pre>(NEXT) Discuss: by filter</pre>

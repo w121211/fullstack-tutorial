@@ -6,7 +6,7 @@ type Query {
   fetchLink(url: String!): Link!
 
   # 可允許用id、symbolName來尋找
-  cocard(symbolName: String, linkUrl: String): Cocard
+  cocard(symbolName: String, url: String): Cocard
   ocard(id: ID, oauthorName: String, symbolName: String): Ocard
   selfcard(id: ID!): Selfcard
   mycard(symbolName: String!): Selfcard
@@ -96,11 +96,15 @@ type Query {
 type Mutation {
   createMycard(symbolName: String!, data: [CommentInput!]!): Selfcard!
   createOcard(symbolName: String!, oauthorName: String!, data: [CommentInput!]!): Ocard!
-  # createOrGetCocard(url: String, data: [CommentInput!]!): Ocard!
+  # 用於webpage-cocard
+  # createCocard(url: String): Cocard!
 
-  createComments(cardId: ID!, cardType: String!,  data: [CommentInput!]!): [Comment!]!
+  createComments(cardId: String!, cardType: String!, symbolName: String, data: [CommentInput!]!): [Comment!]!
+  # createOcardComments(oauthorName: String, symbolName: String,  data: [CommentInput!]!): [Comment!]!
+  # createTopicCardComments(oauthorName: String, symbolName: String,  data: [CommentInput!]!): [Comment!]!
+  
+  createComment(cardIds: [CardIdInput!]!, data: CommentInput!): Comment!
   # updateComment(id: ID!, data: CommentInput!): Comment!
-  createComment(cardId: ID!, cardType: String!,  data: CommentInput!): Comment!
 
   createReply(commentId: ID!, data: ReplyInput!): Reply!
   # updateComment(id: ID!, data: CommentInput!): Comment!
@@ -391,6 +395,7 @@ type corrTicker {
 #   link: Link
 # }
 
+
 type CardMeta {
   tickers: [String!]
   topics: [String!]
@@ -466,6 +471,12 @@ enum LikeChoice {
   DOWN
   NEUTRAL
 }
+
+input CardIdInput {
+  id: String!
+  type: String!
+}
+
 
 input ReplyInput {
   text: String!

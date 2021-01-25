@@ -1,3 +1,4 @@
+import dotenv from 'dotenv'
 import express from 'express'
 import cookieParser from 'cookie-parser'
 import { verify } from 'jsonwebtoken'
@@ -24,7 +25,11 @@ interface Token {
   userId: string
 }
 
-export const APP_SECRET = 'appsecret321'
+if (!process.env.BOT_EMAIL || !process.env.APP_SECRET)
+  throw new Error("Required variables missing in .env file")
+
+export const APP_SECRET = process.env.APP_SECRET
+export const BOT_EMAIL = process.env.BOT_EMAIL
 
 // Ref: https://github.com/maticzav/graphql-shield/blob/master/examples/with-graphql-nexus/src/lib/middlewares/authorization.js
 function authorization(): express.RequestHandler {

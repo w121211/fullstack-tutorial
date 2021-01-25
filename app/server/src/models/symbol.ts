@@ -2,51 +2,55 @@
  * RUN: npx ts-node src/models/symbols.ts 
  */
 import * as PA from '@prisma/client'
+import { createTickerCocard } from './card'
 
 const prisma = new PA.PrismaClient({
   errorFormat: "pretty",
   log: ['query', 'info', 'warn'],
 })
 
-export async function getOrCreateSymbol(cat: PA.SymbolCat, name: string): Promise<[PA.Symbol, boolean]> {
-  /** 若已經存在則返回 */
-  const res = await prisma.symbol.findOne({ where: { name } })
-  if (res === null)
-    return [await prisma.symbol.create({ data: { cat, name } }), true]
+
+function parse(symbolName: string): { name: string, cat?: PA.SymbolCat, oauthoName?: string, error?: string } {
+  // TODO:
+  let cat: PA.SymbolCat | undefined
+  let error: string | undefined
+  let oauthoName: string | undefined
+
+  if (symbolName.startsWith('$'))
+    cat = PA.SymbolCat.TICKER
   else
-    return [res, false]
+    error = '尚未支援的symbol format'
+
+  return { name: symbolName, cat, oauthoName, error }
 }
 
-// async function main() {
-//   // S&P500
-//   const SYMBOLS_CSV = ""
-//   const symbols = ["$BA", "$AA", "$CC", "$DD"]
+export async function getOrCreateSymbol(symbolName: string): Promise<[PA.Symbol, { created: boolean }]> {
+  /** 若建立新symbol時，會同步建立cocard */
+  const res = await prisma.symbol.findOne({ where: { name: symbolName } })
+  if (res)
+    return [res, { created: false }]
 
-//   // console.log('start cron')
-//   console.log("將csv的symbols存入DB（若已存在則忽略）")
-//   await Promise.all(symbols.map(e => createSymbolIfNotExist(e)))
-// }
+  // 建立symbol
+  let cat: PA.SymbolCat
+  if (symbolName.startsWith('$'))
+    cat = PA.SymbolCat.TICKER
+  else
+    throw new Error("還沒考慮到的symbol format")
+  // TODO: symbol name需要先檢查format才存入
+  const symbol = await prisma.symbol.create({ data: { cat, name: symbolName } })
 
-// main()
-//   .catch(e => {
-//     throw e
-//   })
-//   .finally(async () => {
-//     await prisma.$disconnect()
-//   })
+  // 建立cocard
+  if (PA.SymbolCat.TICKER)
+    await createTickerCocard(symbol)
+  else
+    throw new Error("還沒考慮到的symbol format")
 
-const SYMBO_URL_DICT: Record<PA.SymbolCat, string> = {
-  [PA.SymbolCat.TICKER]: 'ticker/',
-  [PA.SymbolCat.TOPIC]: 'topic/'
+  return [symbol, { created: true }]
 }
 
-function getSymbolCat(symbol: string): [PA.SymbolCat, string] {
-  if (symbol.startsWith('$'))
-    return [PA.SymbolCat.TICKER, symbol.slice(1)]
-  throw new Error('Symbol not found')
-}
-
-export function symbolToUrl(symbol: string): string {
-  const [cat, trimmed] = getSymbolCat(symbol)
-  return `${SYMBO_URL_DICT[cat]}${trimmed}`
+export function symbolToUrl(symbolName: string): string {
+  const parsed = parse(symbolName)
+  if (parsed.error)
+    throw new Error(parsed.error)
+  return `//${parsed.name}`
 }

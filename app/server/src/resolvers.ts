@@ -10,13 +10,12 @@ import { GraphQLResolverMap } from 'apollo-graphql'
 import { AuthenticationError, UserInputError } from 'apollo-server'
 import { GraphQLDateTime } from 'graphql-iso-date'
 import * as PA from '@prisma/client'
+import { APP_SECRET, BOT_EMAIL } from '.'
 import { Context } from './context'
-import { APP_SECRET } from '.'
-// import { fillBlock, PrismaBlockProperties } from './models/block'
-import { symbolToUrl } from './models/symbol'
-import { fetchLink } from './models/link'
-import { CardMeta } from './models/card'
 import { searchAllSymbol } from './store/fuzzy'
+import { symbolToUrl, getOrCreateSymbol } from './models/symbol'
+import { getOrCreateLink } from './models/link'
+import { MARKER_FORMAT, CommentMeta } from './models/marker'
 
 interface PollInput {
   choices: string[]
@@ -106,52 +105,35 @@ export const resolvers: GraphQLResolverMap<Context> = {
 
   Query: {
     fetchLink: async function (parent, { url }, { prisma, req }) {
-      // TODO: 問題：不同的link但連到同一頁面時
-      const link = await prisma.link.findOne({ where: { url } })
-      if (link)
-        return link
-      const res = await fetchLink(url)
-      const oauthor = await prisma.oauthor.upsert({
-        where: { name: res.oauthorName },
-        create: { name: res.oauthorName },
-        update: {}
-      })
-      // TODO: 或是直接寫入comments？
-      const cardMeta: CardMeta = {
-        contentTitle: res.title,
-        contentPublishedAt: res.publishDate,
-      }
-      return await prisma.link.create({
-        data: {
-          url,
-          domain: res.domain,
-          contentType: PA.LinkContentType.VIDEO,
-          contentId: res.contentId,
-          oauthor: { connect: { id: oauthor.id } },
-          cocard: {
-            create: {
-              template: PA.CardTemplate.WEBPAGE,
-              meta: cardMeta,
-            }
-          }
-        }
-      })
+      throw new Error("考慮是否廢掉fetchLink")
     },
 
-    cocard: function (parent, { symbolName, linkUrl }, { prisma }) {
-      // XOR check for variables: http://www.howtocreate.co.uk/xor.html
-      if (!(symbolName != linkUrl))
-        throw new UserInputError('')
-      return prisma.cocard.findOne({
-        // symbolToUrl(...)會throw error
-        where: { linkUrl: linkUrl ?? symbolToUrl(symbolName) },
-        include: {
-          link: true,
-          // TODO: 只包含active comments
-          comments: { include: { count: true } },
-        },
-      })
+    cocard: async function (parent, { symbolName, url }, { prisma }) {
+      /**
+       * 會被使用在：1. webpage (給url) 2. symbol page（給symbol name）
+       */
+      // TODO: 只包含active comments
+
+      // 給SymbolName，返回ticker-cocard 
+      // TODO: 如果是topic symbol，可能會需要建立symbol, cocard，然後返回 
+      if (symbolName) {
+        return await prisma.cocard.findOne({
+          // symbolToUrl(...)會throw error
+          where: { linkUrl: symbolToUrl(symbolName) },
+          include: { link: true, comments: { include: { count: true } }, },
+        })
+      }
+      // 給url，先查link是否建立，若無fetchLink並建cocard，最後返回webpage-cocard
+      if (url) {
+        const [link] = await getOrCreateLink(url, BOT_EMAIL)
+        return await prisma.cocard.findOne({
+          where: { linkUrl: link.url },
+          include: { link: true, comments: { include: { count: true } }, },
+        })
+      }
+      throw new UserInputError('')
     },
+
     selfcard: function (parent, { id }, { prisma }) {
       return prisma.selfcard.findOne({
         where: { id: parseInt(id) },
@@ -161,23 +143,33 @@ export const resolvers: GraphQLResolverMap<Context> = {
         },
       })
     },
+
     ocard: async function (parent, { id, oauthorName, symbolName }, { prisma }) {
-      console.log(symbolName)
-      const symbol = await prisma.symbol.findOne({ where: { name: symbolName } })
-      if (symbol === null)
-        throw new Error("Symbol not found")
+      /** 若沒有 1. card 2. symbol -> 都建新的 */
+      // const symbol = await prisma.symbol.findOne({ where: { name: symbolName } })
+      // if (symbol === null)
+      //   throw new Error("Symbol not found")
       // throw new ApolloError('Symbol not found', 'NO_SYMBOL');
       const oauthor = await prisma.oauthor.findOne({ where: { name: oauthorName } })
       if (oauthor === null)
         throw new Error("Oauthor not found")
-      return await prisma.ocard.findOne({
+      const [symbol] = await getOrCreateSymbol(symbolName)
+
+      return await prisma.ocard.upsert({
         where: id ? { id: parseInt(id) } : { oauthorName_symbolName: { oauthorName, symbolName, } },
+        create: {
+          template: PA.CardTemplate.TICKER,
+          oauthor: { connect: { id: oauthor.id } },
+          symbol: { connect: { id: symbol.id } },
+        },
+        update: {},
         include: {
           symbol: true,
           comments: { include: { count: true } }
         },
       })
     },
+
     mycard: function (parent, { symbolName }, { prisma, req }) {
       if (!req.userId)
         throw new AuthenticationError('must authenticate')
@@ -615,28 +607,39 @@ export const resolvers: GraphQLResolverMap<Context> = {
       })
     },
 
-    createComments: function (parent, { cardId, cardType, data }, { prisma, req }) {
-      // TODO: 
-      // - update/delete前comments的情形
-      // - 需要確認comment的meta，又或者在這裡才加入meta
-      // - Create poll
-      let connector: Record<string, Record<'id', string>>
-      if (cardType === 'Cocard')
-        connector = { cocard: { id: cardId } }
-      else if (cardType === 'Ocard')
-        connector = { ocard: { id: cardId } }
-      else if (cardType === 'Selfcard')
-        connector = { selfcard: { id: cardId } }
-      else
+    createComments: function (parent, { cardId, cardType, symbolName, data }, { prisma, req }) {
+      /**
+       * TODO: 
+       * - update/delete前comments的情形
+       * - 需要確認comment的meta，又或者在這裡才加入meta
+       * - Create poll
+       */
+      console.log(cardId, cardType, symbolName, data)
+
+      // 讓`ocard`, `selfcard`的comments同步連結至`cocard`
+      let conn: Record<string, { connect: { id?: number, linkUrl?: string } }> = {}
+      if (cardType === 'Cocard') {
+        conn['cocard'] = { connect: { id: parseInt(cardId) } }
+      } else if (cardType === 'Ocard' && symbolName) {
+        conn['ocard'] = { connect: { id: parseInt(cardId) } }
+        conn['cocard'] = { connect: { linkUrl: symbolToUrl(symbolName) } }
+      } else if (cardType === 'Selfcard') {
+        conn['selfcard'] = { connect: { id: parseInt(cardId) } }
+        conn['cocard'] = { connect: { linkUrl: symbolToUrl(symbolName) } }
+      } else {
         throw new Error('Unrecognized `cardType`')
+      }
+      console.log(conn)
+
       return prisma.$transaction(data.map((e: CommentInput) => prisma.comment.create({
         data: {
+          // TODO: meta需要包含source, ...
           meta: { mark: e.mark },
           text: e.text,
           user: { connect: { id: req.userId } },
           // symbols: { connect: (data.symbolIds as string[]).map(x => ({ name: x })) },
           count: { create: {} },
-          ...connector,
+          ...conn,
         },
         include: {
           symbols: true,

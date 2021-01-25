@@ -7,10 +7,10 @@ import * as QT from '../store/queryTypes'
 import { PageContainer, Pane } from '../components/layout'
 import { ProtectedRoute, LoginPage, AutoLogin } from './login'
 import { HomePage } from './homePage'
-import { TickerPage } from './tickerPage'
+import { TickerPage, TickerFormPage } from './tickerPage'
 import { TopicPage } from './topicPage'
 // import { AuthorPage } from './authorPage'
-import { WebpagePage, WebpageFetchFormPage, WebpageCocardFormPage } from './webpagePage'
+import { WebpagePage, WebpageFormPage } from './webpagePage'
 
 import '../appLayout/appLayout.less'
 
@@ -85,24 +85,27 @@ export function Pages() {
     return null
   return (
     <Layout className="my-app">
+
       <AutoLogin />
 
       <Layout className="site-layout" style={{ position: 'relative' }}>
         {/* {!isLoggedIn && <Redirect from="" to="/login" noThrow />} */}
 
         <Router primary={false} component={Fragment}>
-          {/* <BlockPage path="block/:id" me={data?.me} /> */}
           <HomePage path="/" />
+
           <TickerPage path="ticker/:symbol" />
+          <TickerFormPage path="ticker/:symbol/form" />
+
+          <WebpagePage path="webpage" />
+          <WebpageFormPage path="webpage/form" />
+
           <TopicPage path="topic/:title" />
 
-          <WebpageFetchFormPage path="webpage/fetch" />
-          <WebpageCocardFormPage path="webpage/form" />
-          <WebpagePage path="webpage/:id" />
-
+          {/* <WebpageFetchFormPage path="webpage/fetch" /> */}
+          {/* <WebpageCocardFormPage path="webpage/form" /> */}
+          {/* <WebpagePage path="webpage/:id" /> */}
           {/* <AuthorPage path="author/:symbol" /> */}
-
-          {/* <BlockPage path="block/*path" me={data?.me} /> path可以為'/aaa/bbb/ccc' */}
 
           <PageContainer path="/" isLoggedIn={isLoggedIn}>
             {/* <ProtectedRoute as={Feed} isLoggedIn={isLoggedIn} default /> */}
@@ -113,6 +116,8 @@ export function Pages() {
 
           {/* <Pane path="/" left={<Feeds />} right={undefined} /> */}
           {/* <Pane path="feeds" left={Feeds} right={Tracks} /> */}
+
+          {/* <BlockPage path="block/*path" me={data?.me} /> path可以為'/aaa/bbb/ccc' */}
         </Router>
 
       </Layout>

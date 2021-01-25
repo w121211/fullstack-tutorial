@@ -103,17 +103,17 @@ export function CommentForm({ cardId, toAddCommentCountByOne }: { cardId: string
     }
   })
   const onFinish = (values: any) => {
-    createComment({
-      variables: {
-        cardId,
-        cardType: 'Cocard',
-        data: {
-          mark: "fake",
-          text: values.text,
-          // symbols: [],
-        }
-      }
-    })
+    // createComment({
+    //   variables: {
+    //     cardId,
+    //     cardType: 'Cocard',
+    //     data: {
+    //       mark: "fake",
+    //       text: values.text,
+    //       // symbols: [],
+    //     }
+    //   }
+    // })
   }
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
