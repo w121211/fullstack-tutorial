@@ -1,8 +1,11 @@
 import express from 'express'
 import { PrismaClient } from '@prisma/client'
 
-// const prisma = new PrismaClient({ errorFormat: "minimal" })
-const prisma = new PrismaClient()
+// export const prisma = new PrismaClient();
+export const prisma = new PrismaClient({
+  // errorFormat: 'pretty',
+  // log: ['query', 'info', 'warn'],
+})
 
 export interface ExpressContext {
   req: express.Request
@@ -16,14 +19,17 @@ export interface Context {
   res: express.Response
 }
 
-export function setCookie(res: express.Response, token: string) {
+export function setCookie(res: express.Response, token: string): void {
   res.cookie('token', `Bearer ${token}`, {
     httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 24
+    maxAge: 1000 * 60 * 60 * 24,
   })
 }
 
-export const createContext = ({ req, res }: ExpressContext) => ({
-  prisma, req, res
-})
-
+export function createContext({ req, res }: ExpressContext): Context {
+  return {
+    prisma,
+    req,
+    res,
+  }
+}

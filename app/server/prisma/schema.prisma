@@ -1,6 +1,6 @@
 // DROP DB: http://localhost:5050/
 // DROP ALL TABLES: DROP SCHEMA public CASCADE; CREATE SCHEMA public; GRANT ALL ON SCHEMA public TO postgres; GRANT ALL ON SCHEMA public TO public;
-// RUN: npm run migrate; npm run migrateup; npm run gen:prisma
+// RUN: npm run migratedev
 datasource db {
   provider = "postgresql"
   url      = "postgresql://postgres:postgrespassword@pg/prisma?schema=public"
@@ -21,8 +21,11 @@ model User {
   commentLikes CommentLike[]
   polls        Poll[]
   replies      Reply[]
-  ReplyLike    ReplyLike[]
+  replyLikes   ReplyLike[]
   selfcards    Selfcard[]
+  cardTexts    CardBody[]
+  anchors      Anchor[]
+  anchorLikes  AnchorLike[]
 }
 
 // TODO: 非常像symbol，可以合併進symbol？ -> No!poll的情況需要以oauthor為代表
@@ -31,26 +34,27 @@ model Oauthor {
   name      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  votes     Vote[]
+  links     Link[]
   ocards    Ocard[]
-  Vote      Vote[]
-  Link      Link[]
 }
 
 // Ref
 // 分成1.personal-page (facebook, twitter, etc), 2.third-content(news)
 // 一定會有author(open-user)，mentioned-open-users不考慮（因為可用voteCommits來表示）
 model Link {
-  id          Int             @id @default(autoincrement())
-  url         String          @unique
+  id          Int      @id @default(autoincrement())
+  url         String   @unique
   domain      String
-  contentType LinkContentType @default(OTHER)
-  contentId   String?
+  srcType     SrcType  @default(OTHER)
+  srcId       String?
+  // extra資訊
+  extra       Json?
   // 圖片存擋位址 or byte64?
   // snapshot String
   // 這個content是由這個oauthor建立
-  oauthor     Oauthor?        @relation(fields: [oauthorName], references: [name])
+  oauthor     Oauthor? @relation(fields: [oauthorName], references: [name])
   oauthorName String?
-  // 所有的extra資訊存在cocard.meta
   cocard      Cocard?
 }
 
@@ -213,38 +217,90 @@ model CommentCount {
 }
 
 model Comment {
-  id         Int           @id @default(autoincrement())
-  user       User          @relation(fields: [userId], references: [id])
-  userId     String
-  symbols    Symbol[]
+  id        Int           @id @default(autoincrement())
+  user      User          @relation(fields: [userId], references: [id])
+  userId    String
+  symbols   Symbol[]
   // status    PostStatus    @default(ACTIVE)
-  isTop      Boolean       @default(false)
-  isProp     Boolean       @default(false)
-  meta       Json?
-  text       String
-  count      CommentCount?
-  likes      CommentLike[]
-  replies    Reply[]
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
-  poll       Poll?
-  cocard     Cocard?       @relation(fields: [cocardId], references: [id])
+  // isTop     Boolean       @default(false)
+  // isProp    Boolean       @default(false)
+  // meta      Json?
+  text      String
+  count     CommentCount?
+  likes     CommentLike[]
+  replies   Reply[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  poll      Poll?
+}
+
+model AnchorLike {
+  id        Int        @id @default(autoincrement())
+  user      User       @relation(fields: [userId], references: [id])
+  userId    String
+  anchor    Anchor     @relation(fields: [anchorId], references: [id])
+  anchorId  Int
+  choice    LikeChoice
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@unique([userId, anchorId])
+}
+
+model AnchorCount {
+  id        Int      @id @default(autoincrement())
+  anchor    Anchor   @relation(fields: [anchorId], references: [id])
+  anchorId  Int      @unique
+  nViews    Int      @default(0)
+  nUps      Int      @default(0)
+  nDowns    Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Anchor {
+  id         Int          @id @default(autoincrement())
+  userId     String
+  user       User         @relation(fields: [userId], references: [id])
+  count      AnchorCount?
+  likes      AnchorLike[]
+  path       String?
   cocardId   Int?
-  ocard      Ocard?        @relation(fields: [ocardId], references: [id])
+  cocard     Cocard?      @relation(fields: [cocardId], references: [id])
   ocardId    Int?
-  selfcard   Selfcard?     @relation(fields: [selfcardId], references: [id])
+  ocard      Ocard?       @relation(fields: [ocardId], references: [id])
   selfcardId Int?
+  selfcard   Selfcard?    @relation(fields: [selfcardId], references: [id])
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+}
+
+model CardBody {
+  id        Int       @id @default(autoincrement())
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String
+  text      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  prevId    Int?
+  prev      CardBody? @relation("SelfCardBodyHistory", fields: [prevId], references: [id])
+  next      CardBody? @relation("SelfCardBodyHistory")
+  cocard    Cocard?
+  ocard     Ocard?
+  selfcard  Selfcard?
 }
 
 model Cocard {
   id        Int          @id @default(autoincrement())
   template  CardTemplate
   meta      Json
-  comments  Comment[]
   link      Link         @relation(fields: [linkUrl], references: [url])
   linkUrl   String       @unique
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
+  bodyId    Int
+  body      CardBody     @relation(fields: [bodyId], references: [id])
+  anchors   Anchor[]
 }
 
 model Ocard {
@@ -255,9 +311,11 @@ model Ocard {
   oauthorName String
   symbol      Symbol       @relation(fields: [symbolName], references: [name])
   symbolName  String
-  comments    Comment[]
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+  bodyId      Int
+  body        CardBody     @relation(fields: [bodyId], references: [id])
+  anchors     Anchor[]
 
   @@unique([oauthorName, symbolName])
 }
@@ -270,29 +328,14 @@ model Selfcard {
   userId     String
   symbol     Symbol       @relation(fields: [symbolName], references: [name])
   symbolName String
-  comments   Comment[]
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
+  bodyId     Int
+  body       CardBody     @relation(fields: [bodyId], references: [id])
+  anchors    Anchor[]
 
   @@unique([userId, symbolName])
 }
-
-// model Block {
-//   id           Int       @id @default(autoincrement())
-//   parentId     Int?
-//   parent       Block?    @relation("ParentChildren", fields: [parentId], references: [id])
-//   children     Block[]   @relation("ParentChildren")
-//   // status       PostStatus   @default(ACTIVE)
-//   template     String
-//   path         String    @unique
-//   props        Json
-//   body         Json
-//   propComments Comment[] @relation("PropComments")
-//   comments     Comment[] @relation("Comments")
-//   link         Link?
-//   createdAt    DateTime  @default(now())
-//   updatedAt    DateTime  @updatedAt
-// }
 
 // -----------------------
 
@@ -404,7 +447,7 @@ enum LikeChoice {
   NEUTRAL
 }
 
-enum LinkContentType {
+enum SrcType {
   VIDEO
   POST
   AUTHOR

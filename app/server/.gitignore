@@ -1,10 +1,10 @@
 node_modules/
 dist/
 src/generated/
-*.env*
+*.env
 *.db
 aadr.us.txt
 migrations/
-package-lock.lock
 seed.json
 downloads/
+test.txt

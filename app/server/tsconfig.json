@@ -1,23 +1,16 @@
 {
   "compilerOptions": {
+    "module": "commonjs",
+    "rootDir": ".",
     "outDir": "dist",
-    "rootDirs": [
-      "src",
-      "prisma",
-    ],
-    "lib": [
-      "esnext",
-      "dom"
-    ],
+    // "rootDirs": ["src", "prisma"],
+    "lib": ["esnext", "dom"],
     "esModuleInterop": true,
-    "strict": true
+    "strict": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "allowJs": false
   },
-  "include": [
-    "src/**/*",
-    "prisma/*.ts"
-  ],
-  "exclude": [
-    "**/__tests__",
-    "**/__deprecated__",
-  ]
+  "include": ["./src/**/*", "prisma/**/*"],
+  "exclude": ["**/__deprecated__", "node_modules"]
 }

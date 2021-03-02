@@ -1,0 +1,1462 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Parser tokenize to sections 1`] = `
+Array [
+  Object {
+    "breaker": undefined,
+    "nestedCard": undefined,
+    "root": undefined,
+    "ticker": undefined,
+    "topic": undefined,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "root": undefined,
+    "ticker": true,
+    "topic": undefined,
+  },
+]
+`;
+
+exports[`Parser tokenize to sections 2`] = `
+Array [
+  Object {
+    "breaker": undefined,
+    "nestedCard": undefined,
+    "root": undefined,
+    "ticker": undefined,
+    "topic": undefined,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "[[財政赤字貨幣化]]",
+    },
+    "root": true,
+    "ticker": undefined,
+    "topic": true,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "[[現代貨幣理論]]",
+    },
+    "root": true,
+    "ticker": undefined,
+    "topic": true,
+  },
+]
+`;
+
+exports[`Parser tokenize to sections 3`] = `
+Array [
+  Object {
+    "breaker": undefined,
+    "nestedCard": undefined,
+    "root": undefined,
+    "ticker": undefined,
+    "topic": undefined,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$HOL",
+    },
+    "root": undefined,
+    "ticker": true,
+    "topic": undefined,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$SPCE",
+    },
+    "root": undefined,
+    "ticker": true,
+    "topic": undefined,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "[[SPAC]]",
+    },
+    "root": true,
+    "ticker": undefined,
+    "topic": true,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "[[太空股]]",
+    },
+    "root": true,
+    "ticker": undefined,
+    "topic": true,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "[[ULA]]",
+    },
+    "root": true,
+    "ticker": undefined,
+    "topic": true,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "[[SpaceX]]",
+    },
+    "root": true,
+    "ticker": undefined,
+    "topic": true,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$BA",
+    },
+    "root": undefined,
+    "ticker": true,
+    "topic": undefined,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$LMT",
+    },
+    "root": undefined,
+    "ticker": true,
+    "topic": undefined,
+  },
+]
+`;
+
+exports[`Parser tokenize to sections 4`] = `
+Array [
+  Object {
+    "breaker": undefined,
+    "nestedCard": undefined,
+    "root": true,
+    "ticker": undefined,
+    "topic": undefined,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "root": undefined,
+    "ticker": true,
+    "topic": undefined,
+  },
+  Object {
+    "breaker": true,
+    "nestedCard": undefined,
+    "root": undefined,
+    "ticker": undefined,
+    "topic": undefined,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": undefined,
+    "root": true,
+    "ticker": undefined,
+    "topic": undefined,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": "@ME",
+      "symbol": "$PLTR",
+    },
+    "root": undefined,
+    "ticker": true,
+    "topic": undefined,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": "@ME",
+      "symbol": "[[大數據]]",
+    },
+    "root": true,
+    "ticker": undefined,
+    "topic": true,
+  },
+]
+`;
+
+exports[`Parser tokenize to sections 5`] = `
+Array [
+  Object {
+    "breaker": undefined,
+    "nestedCard": undefined,
+    "root": undefined,
+    "ticker": undefined,
+    "topic": undefined,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$ABBV",
+    },
+    "root": undefined,
+    "ticker": true,
+    "topic": undefined,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$CMLF",
+    },
+    "root": undefined,
+    "ticker": true,
+    "topic": undefined,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$ACIC",
+    },
+    "root": undefined,
+    "ticker": true,
+    "topic": undefined,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$VUZI",
+    },
+    "root": undefined,
+    "ticker": true,
+    "topic": undefined,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$TSLA",
+    },
+    "root": undefined,
+    "ticker": true,
+    "topic": undefined,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$SHOP",
+    },
+    "root": undefined,
+    "ticker": true,
+    "topic": undefined,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$SQ",
+    },
+    "root": undefined,
+    "ticker": true,
+    "topic": undefined,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$TDOC",
+    },
+    "root": undefined,
+    "ticker": true,
+    "topic": undefined,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$U",
+    },
+    "root": undefined,
+    "ticker": true,
+    "topic": undefined,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$SPLK",
+    },
+    "root": undefined,
+    "ticker": true,
+    "topic": undefined,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PSTG",
+    },
+    "root": undefined,
+    "ticker": true,
+    "topic": undefined,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PACB",
+    },
+    "root": undefined,
+    "ticker": true,
+    "topic": undefined,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$AYLA",
+    },
+    "root": undefined,
+    "ticker": true,
+    "topic": undefined,
+  },
+  Object {
+    "breaker": undefined,
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "[[中長線投資名單]]",
+    },
+    "root": true,
+    "ticker": undefined,
+    "topic": true,
+  },
+]
+`;
+
+exports[`TextEditor edit text from previous stored text 1`] = `
+"$PLTR
+[=] [[大數據]] [[SaaS]] %hF7
+[?] B@23-25 小倉位 %3qR
+[*]
+產品：用大數據和人工智能幫情報局及美軍尋找目標，戰略分析、決策模擬、分析關鍵訊息等數據，反金融犯罪 %3Wx
+- 情報 %5uM
+- 企業決策中心 %Bv0
+[+]
+提供政府服務 %nhh
+營收增長高 %Hfx
+利潤率進步 %xB7
+[-]
+至今10多年仍無法盈利 %i61
+需要商業化，不僅是做政府生意 %vYk
+
+[[太空股]]
+[+]
+有美國軍方、政府在背後支持扶持，有國家利益，藉資本市場孵化 %vjo"
+`;
+
+exports[`TextEditor edit text from previous stored text 2`] = `
+"$PLTR
+[=] [[大數據]] [[SaaS]] %hF7
+[?] B@23-25 小倉位 %3qR
+[*]
+產品：用大數據和人工智能幫情報局及美軍尋找目標，戰略分析、決策模擬、分析關鍵訊息等數據，反金融犯罪 %3Wx
+- 情報 %5uM
+- 企業決策中心 %Bv0
+對象：各國政府，FBI、CIA、美軍等 %7Wi
+有125個客戶，企業營收佔44%，除美國外商業營收增長低 %Kci
+[+]
+提供政府服務 %nhh
+營收增長高 %Hfx
+利潤率進步 %xB7
+現金充足，財務沒有問題 %00Y
+有炒股動力，@ARK、@WSB皆關注 %oQj
+[-]
+至今10多年仍無法盈利 %i61
+需要商業化，不僅是做政府生意 %vYk
+股權獎勵高，拉低盈利 %5KH
+很難做到像消費者級別的量，增長的想像空間不大 %Jrd
+
+[[太空股]]
+[+]
+有美國軍方、政府在背後支持扶持，有國家利益，藉資本市場孵化 %vjo
+[[Elon Musk]]、[[Bezos]]、[[Ark]]均投入太空市場 %iKS
+太空商業化將帶來新的商業模式 %psv"
+`;
+
+exports[`TextEditor generate markerline 1`] = `
+"$PLTR
+[=] [[大數據]] [[SaaS]] %a9g
+[?] B@23-25 小倉位 %57c
+[*]
+產品：用大數據和人工智能幫情報局及美軍尋找目標，戰略分析、決策模擬、分析關鍵訊息等數據，反金融犯罪 %f1n
+- 情報 %Utz
+- 企業決策中心 %5vE
+對象：各國政府，FBI、CIA、美軍等 %kFy
+有125個客戶，企業營收佔44%，除美國外商業營收增長低 %MNF
+[+]
+提供政府服務 %rjC
+營收增長高 %r2L
+利潤率進步 %yoL
+現金充足，財務沒有問題 %whh
+有炒股動力，@ARK、@WSB皆關注 %RJz
+[-]
+至今10多年仍無法盈利 %WvO
+需要商業化，不僅是做政府生意 %KPm
+股權獎勵高，拉低盈利 %sgP
+很難做到像消費者級別的量，增長的想像空間不大 %T4b"
+`;
+
+exports[`TextEditor generate markerline 2`] = `
+Array [
+  Object {
+    "linenumber": 1,
+    "marker": Object {
+      "mark": "[=]",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "str": "[=]",
+  },
+  Object {
+    "linenumber": 1,
+    "marker": Object {
+      "mark": "[=]",
+      "value": "[[大數據]] [[SaaS]]",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "new": true,
+    "oauthor": "@oauthor",
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "stampId": "%a9g",
+    "str": " [[大數據]] [[SaaS]]",
+  },
+  Object {
+    "linenumber": 2,
+    "marker": Object {
+      "mark": "[?]",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "str": "[?]",
+  },
+  Object {
+    "linenumber": 2,
+    "marker": Object {
+      "mark": "[?]",
+      "value": "B@23-25 小倉位",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "new": true,
+    "oauthor": "@oauthor",
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "stampId": "%57c",
+    "str": " B@23-25 小倉位",
+  },
+  Object {
+    "linenumber": 3,
+    "marker": Object {
+      "mark": "[*]",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "str": "[*]",
+  },
+  Object {
+    "linenumber": 4,
+    "marker": Object {
+      "mark": "[*]",
+      "value": "產品：用大數據和人工智能幫情報局及美軍尋找目標，戰略分析、決策模擬、分析關鍵訊息等數據，反金融犯罪",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "new": true,
+    "oauthor": "@oauthor",
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "stampId": "%f1n",
+    "str": "產品：用大數據和人工智能幫情報局及美軍尋找目標，戰略分析、決策模擬、分析關鍵訊息等數據，反金融犯罪",
+  },
+  Object {
+    "linenumber": 5,
+    "marker": Object {
+      "mark": "[*]",
+      "value": "- 情報",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "new": true,
+    "oauthor": "@oauthor",
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "stampId": "%Utz",
+    "str": "- 情報",
+  },
+  Object {
+    "linenumber": 6,
+    "marker": Object {
+      "mark": "[*]",
+      "value": "- 企業決策中心",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "new": true,
+    "oauthor": "@oauthor",
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "stampId": "%5vE",
+    "str": "- 企業決策中心",
+  },
+  Object {
+    "linenumber": 7,
+    "marker": Object {
+      "mark": "[*]",
+      "value": "對象：各國政府，FBI、CIA、美軍等",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "new": true,
+    "oauthor": "@oauthor",
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "stampId": "%kFy",
+    "str": "對象：各國政府，FBI、CIA、美軍等",
+  },
+  Object {
+    "linenumber": 8,
+    "marker": Object {
+      "mark": "[*]",
+      "value": "有125個客戶，企業營收佔44%，除美國外商業營收增長低",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "new": true,
+    "oauthor": "@oauthor",
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "stampId": "%MNF",
+    "str": "有125個客戶，企業營收佔44%，除美國外商業營收增長低",
+  },
+  Object {
+    "linenumber": 9,
+    "marker": Object {
+      "mark": "[+]",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "str": "[+]",
+  },
+  Object {
+    "linenumber": 10,
+    "marker": Object {
+      "mark": "[+]",
+      "value": "提供政府服務",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "new": true,
+    "oauthor": "@oauthor",
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "stampId": "%rjC",
+    "str": "提供政府服務",
+  },
+  Object {
+    "linenumber": 11,
+    "marker": Object {
+      "mark": "[+]",
+      "value": "營收增長高",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "new": true,
+    "oauthor": "@oauthor",
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "stampId": "%r2L",
+    "str": "營收增長高",
+  },
+  Object {
+    "linenumber": 12,
+    "marker": Object {
+      "mark": "[+]",
+      "value": "利潤率進步",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "new": true,
+    "oauthor": "@oauthor",
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "stampId": "%yoL",
+    "str": "利潤率進步",
+  },
+  Object {
+    "linenumber": 13,
+    "marker": Object {
+      "mark": "[+]",
+      "value": "現金充足，財務沒有問題",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "new": true,
+    "oauthor": "@oauthor",
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "stampId": "%whh",
+    "str": "現金充足，財務沒有問題",
+  },
+  Object {
+    "linenumber": 14,
+    "marker": Object {
+      "mark": "[+]",
+      "value": "有炒股動力，@ARK、@WSB皆關注",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "new": true,
+    "oauthor": "@oauthor",
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "stampId": "%RJz",
+    "str": "有炒股動力，@ARK、@WSB皆關注",
+  },
+  Object {
+    "linenumber": 15,
+    "marker": Object {
+      "mark": "[-]",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "str": "[-]",
+  },
+  Object {
+    "linenumber": 16,
+    "marker": Object {
+      "mark": "[-]",
+      "value": "至今10多年仍無法盈利",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "new": true,
+    "oauthor": "@oauthor",
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "stampId": "%WvO",
+    "str": "至今10多年仍無法盈利",
+  },
+  Object {
+    "linenumber": 17,
+    "marker": Object {
+      "mark": "[-]",
+      "value": "需要商業化，不僅是做政府生意",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "new": true,
+    "oauthor": "@oauthor",
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "stampId": "%KPm",
+    "str": "需要商業化，不僅是做政府生意",
+  },
+  Object {
+    "linenumber": 18,
+    "marker": Object {
+      "mark": "[-]",
+      "value": "股權獎勵高，拉低盈利",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "new": true,
+    "oauthor": "@oauthor",
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "stampId": "%sgP",
+    "str": "股權獎勵高，拉低盈利",
+  },
+  Object {
+    "linenumber": 19,
+    "marker": Object {
+      "mark": "[-]",
+      "value": "很難做到像消費者級別的量，增長的想像空間不大",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "new": true,
+    "oauthor": "@oauthor",
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "stampId": "%T4b",
+    "str": "很難做到像消費者級別的量，增長的想像空間不大",
+  },
+]
+`;
+
+exports[`TextEditor generate markerline 3`] = `
+"$PLTR
+[?] \\"预计该股票会有更大的波动性\\" #無幫助 %JD6
+[*]
+產品：3个软件平台 %fQE
+- Foundry：帮公司构建自己的SaaS来充当数据应用程序的操作系统，以获取预测，可能的结果，建议等。 %f0g
+- Gotham：用于情报，执法和国防安全领域的软件平台，它可以识别模式并预测数据以帮助预防犯罪。 %3eT
+- Apollo：平台背后的平台，自动监视,管理与更新Foundry和Gotham的软件。类似Microsoft，Apple或Google更新他们软件的方式。 %sVt
+[+]
+\\"并不完全地依赖政府。他们还拥有18亿现金\\" %IqD"
+`;
+
+exports[`TextEditor generate markerline 4`] = `
+Array [
+  Object {
+    "linenumber": 1,
+    "marker": Object {
+      "mark": "[?]",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "str": "[?]",
+  },
+  Object {
+    "linenumber": 1,
+    "marker": Object {
+      "mark": "[?]",
+      "value": "\\"预计该股票会有更大的波动性\\" #無幫助",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "new": true,
+    "oauthor": "@oauthor",
+    "src": "https://www.facebook.com/photo?fbid=252791219783086&set=a.235741574821384",
+    "stampId": "%JD6",
+    "str": " \\"预计该股票会有更大的波动性\\" #無幫助",
+  },
+  Object {
+    "linenumber": 2,
+    "marker": Object {
+      "mark": "[*]",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "str": "[*]",
+  },
+  Object {
+    "linenumber": 3,
+    "marker": Object {
+      "mark": "[*]",
+      "value": "產品：3个软件平台",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "new": true,
+    "oauthor": "@oauthor",
+    "src": "https://www.facebook.com/photo?fbid=252791219783086&set=a.235741574821384",
+    "stampId": "%fQE",
+    "str": "產品：3个软件平台",
+  },
+  Object {
+    "linenumber": 4,
+    "marker": Object {
+      "mark": "[*]",
+      "value": "- Foundry：帮公司构建自己的SaaS来充当数据应用程序的操作系统，以获取预测，可能的结果，建议等。",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "new": true,
+    "oauthor": "@oauthor",
+    "src": "https://www.facebook.com/photo?fbid=252791219783086&set=a.235741574821384",
+    "stampId": "%f0g",
+    "str": "- Foundry：帮公司构建自己的SaaS来充当数据应用程序的操作系统，以获取预测，可能的结果，建议等。",
+  },
+  Object {
+    "linenumber": 5,
+    "marker": Object {
+      "mark": "[*]",
+      "value": "- Gotham：用于情报，执法和国防安全领域的软件平台，它可以识别模式并预测数据以帮助预防犯罪。",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "new": true,
+    "oauthor": "@oauthor",
+    "src": "https://www.facebook.com/photo?fbid=252791219783086&set=a.235741574821384",
+    "stampId": "%3eT",
+    "str": "- Gotham：用于情报，执法和国防安全领域的软件平台，它可以识别模式并预测数据以帮助预防犯罪。",
+  },
+  Object {
+    "linenumber": 6,
+    "marker": Object {
+      "mark": "[*]",
+      "value": "- Apollo：平台背后的平台，自动监视,管理与更新Foundry和Gotham的软件。类似Microsoft，Apple或Google更新他们软件的方式。",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "new": true,
+    "oauthor": "@oauthor",
+    "src": "https://www.facebook.com/photo?fbid=252791219783086&set=a.235741574821384",
+    "stampId": "%sVt",
+    "str": "- Apollo：平台背后的平台，自动监视,管理与更新Foundry和Gotham的软件。类似Microsoft，Apple或Google更新他们软件的方式。",
+  },
+  Object {
+    "linenumber": 7,
+    "marker": Object {
+      "mark": "[+]",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "str": "[+]",
+  },
+  Object {
+    "linenumber": 8,
+    "marker": Object {
+      "mark": "[+]",
+      "value": "\\"并不完全地依赖政府。他们还拥有18亿现金\\"",
+    },
+    "nestedCard": Object {
+      "oauthor": undefined,
+      "symbol": "$PLTR",
+    },
+    "new": true,
+    "oauthor": "@oauthor",
+    "src": "https://www.facebook.com/photo?fbid=252791219783086&set=a.235741574821384",
+    "stampId": "%IqD",
+    "str": "\\"并不完全地依赖政府。他们还拥有18亿现金\\"",
+  },
+]
+`;
+
+exports[`TextEditor handle common cases 1`] = `
+"$PLTR
+[=] [[大數據]] [[SaaS]] %QXN
+[?] B@23-25 小倉位 %A8W
+[*]
+產品：用大數據和人工智能幫情報局及美軍尋找目標，戰略分析、決策模擬、分析關鍵訊息等數據，反金融犯罪 %DRq
+- 情報 %FuM
+- 企業決策中心 %2ER
+對象：各國政府，FBI、CIA、美軍等 %G8V
+有125個客戶，企業營收佔44%，除美國外商業營收增長低 %Dbp
+[+]
+提供政府服務 %P1q
+營收增長高 %wAR
+利潤率進步 %cTG
+現金充足，財務沒有問題 %Qwx
+有炒股動力，@ARK、@WSB皆關注 %7VK
+[-]
+至今10多年仍無法盈利 %czQ
+需要商業化，不僅是做政府生意 %UuQ
+股權獎勵高，拉低盈利 %x4P
+很難做到像消費者級別的量，增長的想像空間不大 %8LT"
+`;
+
+exports[`TextEditor handle common cases 2`] = `
+"[[財政赤字貨幣化]]
+[*]
+和[[現代貨幣理論]]緊密相關 %Rz6
+
+[[現代貨幣理論]]
+[*]
+成立前提： %95H
+- 政府沒有硬性承諾（硬錨），只有軟性承諾（軟錨），目前主流為國內通膨控制在2%左右 %CIN
+- 美、歐元等國際貨幣的通脹可由全球分攤，美歐通脹不會大幅上升 %1bb
+疫情後美國財政政策奉行現代貨幣理論 %Chg"
+`;
+
+exports[`TextEditor handle common cases 3`] = `
+"$HOL
+[#] 夢想股 %YCH
+[?] B %EyD
+[+]
+收購Astra ，Astra老闆為前NASA主任 %JCY
+發展小型運載火箭、運載小型衛星、可量產、天天發射 %nP1
+2025年營收達25億美元 %iLE
+和$SRAC相比 %ZhI
+想像空間大 %Hyg
+[-]
+短期有追高 %UOL
+
+$SPCE
+[?] Buy %Opn
+[+]
+重新舉行太空試飛計畫 %E40
+[-]
+試飛失敗將重挫（例2020試飛失敗後大跌） %mhZ
+
+[[SPAC]]
+操作需保持耐心、很少一次拉上去，以$SRAC為例，均在觸及20日均線後反彈
+
+[[太空股]]
+[+]
+有美國軍方、政府在背後支持扶持，有國家利益，藉資本市場孵化 %DCD
+[[Elon Musk]]、[[Bezos]]、[[Ark]]均投入太空市場 %8bE
+太空商業化將帶來新的商業模式 %Vyq
+
+[[ULA]]
+由$BA與$LMT聯合成立
+和[[SpaceX]]是競爭關係
+
+[[SpaceX]]
+尚未上市
+目前價值最高的太空股
+
+$BA
+[?] B (逐步買入) %8zN
+
+$LMT
+$300可能是底部"
+`;
+
+exports[`TextEditor handle common cases 4`] = `
+"[*]
+重點在翻譯$PLTR CEO財報發布會上所說的話 #求來源 \`> 相當繞口，確實數據真實度是個問題，但並沒有說如何解決\` %VtJ
+
+$PLTR
+[?] B 支撐@22 %SrE
+[*]
+產品：用[[AI]]幫政府情報單位執行機密軍事行動、大數據幫能源、航空公司、醫療藥品研究 %0Wf
+[+]
+[[ARK]]看好，在股票大跌後大買進 %OTp
+CEO是技術出身 %b84
+[-]
+目前收入有60%來自政府 %nHN
+[!]
+股價解禁日拋售，股價大跌 %Lk4
+
+//////
+
+$PLTR@ME
+[*]
+產品：[[大數據]]分析 %GrL
+[-]
+大數據分析無法量產，發展受限 %Efd
+[!]
+財報發布會 %MrQ
+
+[[大數據]]@ME
+[-]
+大數據分析一般只能做B2B，且需客製化，無法量產應用至不同客戶，無法發揮資訊公司可大量量產（scale）的優勢 %sKV"
+`;
+
+exports[`TextEditor handle common cases 5`] = `
+"$ABBV
+[key] [[生物技術]] %rHp
+[+]
+@ARK開倉 %mLk
+@巴菲特2020Q4加倉 %ALM
+
+$SGFY 
+[~] [[IPO]]  %Eyp
+[?] WATCH %5Ua
+[*]
+醫療保健支付 %ebo
+[+]
+@ARK開倉 %p3K
+
+$CMLF
+[~] [[SPAC]]  %vuU
+[*]
+目標合併公司=[[Sema4]] %34L
+[+]
+@ARK開倉 %lsB
+
+$ACIC
+[~] [[SPAC]]  %azN
+[+]
+@ARK開倉 %9XO
+
+$VUZI
+[~] [[AR/VR]]  %hR5
+[?] BUY %4u0
+[*]
+產品=AR眼鏡 %slh
+[+]
+@ARK開倉 %Nwy
+
+$TSLA
+[?] HOLD %CN9
+[*]
+[+]
+@ARK重倉 %hU7
+[-]
+股價太高，等高位回落，利好消息出來再買 %IUJ
+
+$SHOP
+[?] BUY %2Tm
+[+]
+@ARK重倉 %rn4
+2020財報佳  %4ae
+
+$SQ
+[?] BUY %Dhq
+[+]
+@ARK重倉 %9L2
+
+$TDOC
+[?] BUY %tqq
+[+]
+@ARK重倉 %PSn
+500強公司中有40%為$TDOC客戶 %zNR
+
+$U
+[?] BUY %o5X
+[+]
+@ARK重倉 %TLg
+[-]
+近期股價下跌趨勢 %kCp
+
+$SPLK
+[=] [[大數據]] %zSC
+[-]
+@ARK減倉 %CoM
+
+$PSTG
+[-]
+@ARK減倉 %VEI
+
+$PACB
+[-]
+@ARK減倉 %zGw
+
+$AYLA
+[*]
+研發治療腫瘤公司 %f8b
+[-]
+@ARK清倉 %TAN
+
+[[中長線投資名單]]
+[*]
+$U %be7"
+`;
+
+exports[`TextEditor insert markerlines 1`] = `
+"
+[=]
+[[大數據]] [[SaaS]] %v9A
+[?]
+B@23-25 小倉位 %93w
+\\"预计该股票会有更大的波动性\\" #無幫助 %Drx
+[*]
+產品：用大數據和人工智能幫情報局及美軍尋找目標，戰略分析、決策模擬、分析關鍵訊息等數據，反金融犯罪 %LIf
+- 情報 %pd8
+- 企業決策中心 %SY9
+對象：各國政府，FBI、CIA、美軍等 %cKz
+有125個客戶，企業營收佔44%，除美國外商業營收增長低 %Ubz
+產品：3个软件平台 %bL5
+- Foundry：帮公司构建自己的SaaS来充当数据应用程序的操作系统，以获取预测，可能的结果，建议等。 %PBO
+- Gotham：用于情报，执法和国防安全领域的软件平台，它可以识别模式并预测数据以帮助预防犯罪。 %zMR
+- Apollo：平台背后的平台，自动监视,管理与更新Foundry和Gotham的软件。类似Microsoft，Apple或Google更新他们软件的方式。 %BxZ
+[+]
+提供政府服務 %mnN
+營收增長高 %7Od
+利潤率進步 %pd9
+現金充足，財務沒有問題 %Lbz
+有炒股動力，@ARK、@WSB皆關注 %wYp
+\\"并不完全地依赖政府。他们还拥有18亿现金\\" %zKt
+[-]
+至今10多年仍無法盈利 %ulo
+需要商業化，不僅是做政府生意 %h5Q
+股權獎勵高，拉低盈利 %p2h
+很難做到像消費者級別的量，增長的想像空間不大 %rHQ
+
+"
+`;
+
+exports[`TextEditor insert markerlines 2`] = `
+Array [
+  Object {
+    "linenumber": 1,
+    "marker": Object {
+      "mark": "[=]",
+    },
+    "nestedCard": undefined,
+    "str": "[=]",
+  },
+  Object {
+    "linenumber": 2,
+    "marker": Object {
+      "mark": "[=]",
+      "value": "[[大數據]] [[SaaS]]",
+    },
+    "nestedCard": undefined,
+    "new": true,
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "srcStamp": "%niE",
+    "stampId": "%v9A",
+    "str": "[[大數據]] [[SaaS]] %v9A",
+  },
+  Object {
+    "linenumber": 3,
+    "marker": Object {
+      "mark": "[?]",
+    },
+    "nestedCard": undefined,
+    "str": "[?]",
+  },
+  Object {
+    "linenumber": 4,
+    "marker": Object {
+      "mark": "[?]",
+      "value": "B@23-25 小倉位",
+    },
+    "nestedCard": undefined,
+    "new": true,
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "srcStamp": "%fR6",
+    "stampId": "%93w",
+    "str": "B@23-25 小倉位 %93w",
+  },
+  Object {
+    "linenumber": 5,
+    "marker": Object {
+      "mark": "[?]",
+      "value": "\\"预计该股票会有更大的波动性\\" #無幫助",
+    },
+    "nestedCard": undefined,
+    "new": true,
+    "oauthor": undefined,
+    "src": "https://www.facebook.com/photo?fbid=252791219783086&set=a.235741574821384",
+    "srcStamp": "%cLk",
+    "stampId": "%Drx",
+    "str": "\\"预计该股票会有更大的波动性\\" #無幫助 %Drx",
+  },
+  Object {
+    "linenumber": 6,
+    "marker": Object {
+      "mark": "[*]",
+    },
+    "nestedCard": undefined,
+    "str": "[*]",
+  },
+  Object {
+    "linenumber": 7,
+    "marker": Object {
+      "mark": "[*]",
+      "value": "產品：用大數據和人工智能幫情報局及美軍尋找目標，戰略分析、決策模擬、分析關鍵訊息等數據，反金融犯罪",
+    },
+    "nestedCard": undefined,
+    "new": true,
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "srcStamp": "%7in",
+    "stampId": "%LIf",
+    "str": "產品：用大數據和人工智能幫情報局及美軍尋找目標，戰略分析、決策模擬、分析關鍵訊息等數據，反金融犯罪 %LIf",
+  },
+  Object {
+    "linenumber": 8,
+    "marker": Object {
+      "mark": "[*]",
+      "value": "- 情報",
+    },
+    "nestedCard": undefined,
+    "new": true,
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "srcStamp": "%NaN",
+    "stampId": "%pd8",
+    "str": "- 情報 %pd8",
+  },
+  Object {
+    "linenumber": 9,
+    "marker": Object {
+      "mark": "[*]",
+      "value": "- 企業決策中心",
+    },
+    "nestedCard": undefined,
+    "new": true,
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "srcStamp": "%eAf",
+    "stampId": "%SY9",
+    "str": "- 企業決策中心 %SY9",
+  },
+  Object {
+    "linenumber": 10,
+    "marker": Object {
+      "mark": "[*]",
+      "value": "對象：各國政府，FBI、CIA、美軍等",
+    },
+    "nestedCard": undefined,
+    "new": true,
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "srcStamp": "%jv1",
+    "stampId": "%cKz",
+    "str": "對象：各國政府，FBI、CIA、美軍等 %cKz",
+  },
+  Object {
+    "linenumber": 11,
+    "marker": Object {
+      "mark": "[*]",
+      "value": "有125個客戶，企業營收佔44%，除美國外商業營收增長低",
+    },
+    "nestedCard": undefined,
+    "new": true,
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "srcStamp": "%YQL",
+    "stampId": "%Ubz",
+    "str": "有125個客戶，企業營收佔44%，除美國外商業營收增長低 %Ubz",
+  },
+  Object {
+    "linenumber": 12,
+    "marker": Object {
+      "mark": "[*]",
+      "value": "產品：3个软件平台",
+    },
+    "nestedCard": undefined,
+    "new": true,
+    "oauthor": undefined,
+    "src": "https://www.facebook.com/photo?fbid=252791219783086&set=a.235741574821384",
+    "srcStamp": "%dhk",
+    "stampId": "%bL5",
+    "str": "產品：3个软件平台 %bL5",
+  },
+  Object {
+    "linenumber": 13,
+    "marker": Object {
+      "mark": "[*]",
+      "value": "- Foundry：帮公司构建自己的SaaS来充当数据应用程序的操作系统，以获取预测，可能的结果，建议等。",
+    },
+    "nestedCard": undefined,
+    "new": true,
+    "oauthor": undefined,
+    "src": "https://www.facebook.com/photo?fbid=252791219783086&set=a.235741574821384",
+    "srcStamp": "%b4r",
+    "stampId": "%PBO",
+    "str": "- Foundry：帮公司构建自己的SaaS来充当数据应用程序的操作系统，以获取预测，可能的结果，建议等。 %PBO",
+  },
+  Object {
+    "linenumber": 14,
+    "marker": Object {
+      "mark": "[*]",
+      "value": "- Gotham：用于情报，执法和国防安全领域的软件平台，它可以识别模式并预测数据以帮助预防犯罪。",
+    },
+    "nestedCard": undefined,
+    "new": true,
+    "oauthor": undefined,
+    "src": "https://www.facebook.com/photo?fbid=252791219783086&set=a.235741574821384",
+    "srcStamp": "%V0n",
+    "stampId": "%zMR",
+    "str": "- Gotham：用于情报，执法和国防安全领域的软件平台，它可以识别模式并预测数据以帮助预防犯罪。 %zMR",
+  },
+  Object {
+    "linenumber": 15,
+    "marker": Object {
+      "mark": "[*]",
+      "value": "- Apollo：平台背后的平台，自动监视,管理与更新Foundry和Gotham的软件。类似Microsoft，Apple或Google更新他们软件的方式。",
+    },
+    "nestedCard": undefined,
+    "new": true,
+    "oauthor": undefined,
+    "src": "https://www.facebook.com/photo?fbid=252791219783086&set=a.235741574821384",
+    "srcStamp": "%D6Y",
+    "stampId": "%BxZ",
+    "str": "- Apollo：平台背后的平台，自动监视,管理与更新Foundry和Gotham的软件。类似Microsoft，Apple或Google更新他们软件的方式。 %BxZ",
+  },
+  Object {
+    "linenumber": 16,
+    "marker": Object {
+      "mark": "[+]",
+    },
+    "nestedCard": undefined,
+    "str": "[+]",
+  },
+  Object {
+    "linenumber": 17,
+    "marker": Object {
+      "mark": "[+]",
+      "value": "提供政府服務",
+    },
+    "nestedCard": undefined,
+    "new": true,
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "srcStamp": "%fFJ",
+    "stampId": "%mnN",
+    "str": "提供政府服務 %mnN",
+  },
+  Object {
+    "linenumber": 18,
+    "marker": Object {
+      "mark": "[+]",
+      "value": "營收增長高",
+    },
+    "nestedCard": undefined,
+    "new": true,
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "srcStamp": "%YjD",
+    "stampId": "%7Od",
+    "str": "營收增長高 %7Od",
+  },
+  Object {
+    "linenumber": 19,
+    "marker": Object {
+      "mark": "[+]",
+      "value": "利潤率進步",
+    },
+    "nestedCard": undefined,
+    "new": true,
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "srcStamp": "%D70",
+    "stampId": "%pd9",
+    "str": "利潤率進步 %pd9",
+  },
+  Object {
+    "linenumber": 20,
+    "marker": Object {
+      "mark": "[+]",
+      "value": "現金充足，財務沒有問題",
+    },
+    "nestedCard": undefined,
+    "new": true,
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "srcStamp": "%liP",
+    "stampId": "%Lbz",
+    "str": "現金充足，財務沒有問題 %Lbz",
+  },
+  Object {
+    "linenumber": 21,
+    "marker": Object {
+      "mark": "[+]",
+      "value": "有炒股動力，@ARK、@WSB皆關注",
+    },
+    "nestedCard": undefined,
+    "new": true,
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "srcStamp": "%uNN",
+    "stampId": "%wYp",
+    "str": "有炒股動力，@ARK、@WSB皆關注 %wYp",
+  },
+  Object {
+    "linenumber": 22,
+    "marker": Object {
+      "mark": "[+]",
+      "value": "\\"并不完全地依赖政府。他们还拥有18亿现金\\"",
+    },
+    "nestedCard": undefined,
+    "new": true,
+    "oauthor": undefined,
+    "src": "https://www.facebook.com/photo?fbid=252791219783086&set=a.235741574821384",
+    "srcStamp": "%Qu5",
+    "stampId": "%zKt",
+    "str": "\\"并不完全地依赖政府。他们还拥有18亿现金\\" %zKt",
+  },
+  Object {
+    "linenumber": 23,
+    "marker": Object {
+      "mark": "[-]",
+    },
+    "nestedCard": undefined,
+    "str": "[-]",
+  },
+  Object {
+    "linenumber": 24,
+    "marker": Object {
+      "mark": "[-]",
+      "value": "至今10多年仍無法盈利",
+    },
+    "nestedCard": undefined,
+    "new": true,
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "srcStamp": "%zMj",
+    "stampId": "%ulo",
+    "str": "至今10多年仍無法盈利 %ulo",
+  },
+  Object {
+    "linenumber": 25,
+    "marker": Object {
+      "mark": "[-]",
+      "value": "需要商業化，不僅是做政府生意",
+    },
+    "nestedCard": undefined,
+    "new": true,
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "srcStamp": "%yoP",
+    "stampId": "%h5Q",
+    "str": "需要商業化，不僅是做政府生意 %h5Q",
+  },
+  Object {
+    "linenumber": 26,
+    "marker": Object {
+      "mark": "[-]",
+      "value": "股權獎勵高，拉低盈利",
+    },
+    "nestedCard": undefined,
+    "new": true,
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "srcStamp": "%fYt",
+    "stampId": "%p2h",
+    "str": "股權獎勵高，拉低盈利 %p2h",
+  },
+  Object {
+    "linenumber": 27,
+    "marker": Object {
+      "mark": "[-]",
+      "value": "很難做到像消費者級別的量，增長的想像空間不大",
+    },
+    "nestedCard": undefined,
+    "new": true,
+    "src": "https://www.youtube.com/watch?v=qSYGlOZNUCw",
+    "srcStamp": "%xaH",
+    "stampId": "%rHQ",
+    "str": "很難做到像消費者級別的量，增長的想像空間不大 %rHQ",
+  },
+]
+`;

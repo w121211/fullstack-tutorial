@@ -17,7 +17,7 @@ services:
       - ../..:/workspace:cached
     ports:
       - 4000:4000
-      - 3010:3010
+      - 3000:3000
       - 5555:5555
 
     # Overrides default command so things don't shut down after the process ends.
@@ -38,7 +38,7 @@ services:
   pgadmin:
     image: dpage/pgadmin4
     # container_name: pgadmin01
-    restart: unless-stopped
+    # restart: unless-stopped
     depends_on:
       - pg
     ports:
@@ -46,6 +46,19 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: pgadmin@example.com
       PGADMIN_DEFAULT_PASSWORD: admin
+
+  redis:
+    image: redis:latest
+    volumes:
+      # - data02:/data
+      - ./library-scripts/redis.conf:/usr/local/etc/redis/redis.conf
+    # ports:
+    #   - 6379:6379
+    command: redis-server /usr/local/etc/redis/redis.conf
+
+# volumes:
+#   data01:
+#   data02:
 
 networks:
   default: # this network
