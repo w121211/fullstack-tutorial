@@ -25,7 +25,7 @@ services:
 
     networks:
       - default
-      - twint_default
+      # - twint_default
 
   pg:
     image: postgres:latest
@@ -63,5 +63,5 @@ services:
 networks:
   default: # this network
     driver: bridge
-  twint_default: # external network
-    external: true
+  # twint_default: # external network
+  #   external: true
