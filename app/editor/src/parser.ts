@@ -5,10 +5,10 @@ import { streamToStr } from './helper'
 const GRAMMAR = {
   'multiline-marker': {
     // pattern: /^\[[^\s\]]*\]$(?:\n^(?!\[).+)+/m,
-    pattern: /^\[[^\s\]]*\]$(?:\n^(?!\[[^\s\]]*\]).+)+/m,
+    pattern: /^\[[^\s[\]]*\]$(?:\n^(?!\[[^\s[\]]*\]).+)+/m,
     inside: {
       'line-mark': {
-        pattern: /^\[[^\s\]]*\]$/m,
+        pattern: /^\[[^\s[\]]*\]$/m,
       },
       'line-value': {
         pattern: /^.+$/m,
@@ -24,10 +24,10 @@ const GRAMMAR = {
     },
   },
   'inline-marker': {
-    pattern: /^\[[^\s\]]+\].*$/m,
+    pattern: /^\[[^\s[\]]+\].*$/m,
     inside: {
       'inline-mark': {
-        pattern: /^\[[^\s\]]+\]/,
+        pattern: /^\[[^\s[\]]+\]/,
       },
       'inline-value': {
         pattern: /^.+$/,
@@ -55,23 +55,43 @@ const SYMBOL_GRAMMAR = {
 
 const SECTION_GRAMMAR = {
   'sect-ticker': {
-    pattern: /^\$[A-Z-]+(@\w+)?$/m,
+    alias: 'sect-ticker',
+    pattern: /^\n\$[A-Z-]+(@\w+)?$/m,
+    inside: {
+      'sect-symbol': { pattern: /^\n\$[A-Z-]+/ },
+      'sect-user': { pattern: /@\w+/ },
+    },
+  },
+  'sect-ticker-begin-line': {
+    alias: 'sect-ticker',
+    pattern: /^\$[A-Z-]+(@\w+)?\n/,
     inside: {
       'sect-symbol': { pattern: /^\$[A-Z-]+/ },
       'sect-user': { pattern: /@\w+/ },
     },
   },
   'sect-topic': {
-    pattern: /^\[\[[^\]]+\]\](@\w+)?$/m,
+    alias: 'sect-topic',
+    pattern: /^\n\[\[[^\]]+\]\](@\w+)?$/m,
+    inside: {
+      'sect-symbol': { pattern: /^\n\[\[[^\]]+\]\]/u },
+      'sect-user': { pattern: /@\w+/ },
+    },
+  },
+  'sect-topic-begin-line': {
+    alias: 'sect-topic',
+    pattern: /^\[\[[^\]]+\]\](@\w+)?\n/,
     inside: {
       'sect-symbol': { pattern: /^\[\[[^\]]+\]\]/u },
       'sect-user': { pattern: /@\w+/ },
     },
   },
   'sect-breaker': {
-    pattern: /^\/{3,}.+$/m,
+    alias: 'sect-breaker',
+    pattern: /^\n\/{3,}.+$/m,
   },
   'sect-url': {
+    alias: 'sect-url',
     pattern: /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/m,
   },
 }
@@ -133,8 +153,7 @@ export function tokenizeSection(
   allowedSects: ('ticker' | 'topic')[] = ['ticker', 'topic'],
 ): Section[] {
   // 分出text中的每個section
-  const sects: Section[] = []
-  let _sect: Section = { bodyTokens: [] }
+  // let _sect: {bodyTokens: []} = { bodyTokens: [] }
 
   function _parseSectToken(token: Prism.Token): { symbol: string; user?: string } {
     let symbol: string | undefined
@@ -144,7 +163,7 @@ export function tokenizeSection(
         if (typeof e === 'string') {
           // do nothing
         } else if (e.type === 'sect-symbol') {
-          symbol = streamToStr(e.content)
+          symbol = streamToStr(e.content).trim()
         } else if (e.type === 'sect-user') {
           user = streamToStr(e.content)
         }
@@ -155,55 +174,63 @@ export function tokenizeSection(
       }
       return { symbol, user }
     }
+    console.error(token)
     throw new Error()
   }
 
+  type TempSection = Section & { sectToken?: Prism.Token; bodyTokens: (Prism.Token | string)[] }
+  const sects: TempSection[] = []
+  let _sect: TempSection = {
+    bodyTokens: [],
+  }
+  // let _sectToken: Prism.Token
+  // let _bodyTokens: (Prism.Token | string)[] = []
+
   for (const e of Prism.tokenize(text, SECTION_GRAMMAR)) {
     if (typeof e === 'string') {
-      // _stream.push(e)
       _sect.bodyTokens.push(e)
-    } else if (e.type === 'sect-ticker') {
+    } else if (e.alias === 'sect-ticker') {
       // 先儲存之前的section
       sects.push({ ..._sect })
+      // TODO: @ME
       const parsed = _parseSectToken(e)
       _sect = {
         ticker: true,
+        nestedCard: { symbol: parsed.symbol, oauthor: parsed.user ?? oauthorName },
         sectToken: e,
         bodyTokens: [],
-        // TODO: @ME
-        nestedCard: { symbol: parsed.symbol, oauthor: parsed.user ?? oauthorName },
       }
-    } else if (e.type === 'sect-topic') {
+    } else if (e.alias === 'sect-topic') {
       sects.push({ ..._sect })
       const parsed = _parseSectToken(e)
       _sect = {
         topic: true,
+        nestedCard: { symbol: parsed.symbol, oauthor: parsed.user ?? oauthorName },
         sectToken: e,
         bodyTokens: [],
-        nestedCard: { symbol: parsed.symbol, oauthor: parsed.user ?? oauthorName },
       }
-    } else if (e.type === 'sect-breaker') {
+    } else if (e.alias === 'sect-breaker') {
       sects.push({ ..._sect })
-      // 把breaker視為獨立的section（空的bodyTokens）
+      // 把breaker視為獨立的section
       sects.push({ breaker: true, sectToken: e, bodyTokens: [] })
+      // breaker之後的新section
       _sect = { bodyTokens: [] }
     } else {
+      console.error(e)
       throw new Error('應該要處理但未處理的token-type')
     }
   }
   sects.push({ ..._sect })
 
-  // 所有非ticker、topic的card皆為root
   for (const e of sects) {
-    if (!e.ticker && !e.breaker && streamToStr(e.bodyTokens).length > 0) {
+    const body = streamToStr(e.bodyTokens)
+    if (e.ticker || e.topic) {
+      // 對section做tokenize section-body
+      e.bodyTokens = Prism.tokenize(body, GRAMMAR)
+    } else if (!e.breaker && body.length > 0) {
+      // 所有非ticker、topic的card & 有body-string的section皆視為root
       e.root = true
-    }
-  }
-
-  // 對section做tokenize section-body
-  for (const e of sects) {
-    if (e.root || e.ticker || e.topic) {
-      e.bodyTokens = Prism.tokenize(streamToStr(e.bodyTokens), GRAMMAR)
+      e.bodyTokens = Prism.tokenize(body, GRAMMAR)
     }
   }
 
@@ -237,9 +264,7 @@ export function tokenizeSection(
   for (const e of sects) {
     // section的全部stream（含section-token, body-tokens)
     let stream: (Prism.Token | string)[] = []
-    if (e.sectToken) {
-      stream.push(e.sectToken)
-    }
+    if (e.sectToken) stream.push(e.sectToken)
     stream = stream.concat(e.bodyTokens)
 
     // 轉成ext-token
@@ -247,7 +272,16 @@ export function tokenizeSection(
     e.stream = _recursiveExtend(stream)
   }
 
-  return sects
+  return sects.map<Section>(e => {
+    return {
+      root: e.root,
+      breaker: e.breaker,
+      ticker: e.ticker,
+      topic: e.topic,
+      nestedCard: e.nestedCard,
+      stream: e.stream,
+    }
+  })
 }
 
 export function findUrl(text: string): { url: string | undefined; textAfterUrl: string } {

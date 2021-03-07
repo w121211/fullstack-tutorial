@@ -13,7 +13,7 @@ const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
   uri: 'http://localhost:4000/graphql',
   headers: {
     // authorization: localStorage.getItem('token') || '',
-    'client-name': 'Conote[web]',
+    'client-name': 'conote[web]',
     'client-version': '0.1.0',
   },
   // TODO: 需設為'include'，否則cookies不會被儲存（不確定正式時是否需要）

@@ -1,4 +1,4 @@
-import Prism from 'prismjs'
+import * as Prism from 'prismjs'
 import { Marker, ExtToken, ExtTokenStream } from './typing'
 
 // export function randStr(nChar: number): string {
@@ -6,7 +6,7 @@ import { Marker, ExtToken, ExtTokenStream } from './typing'
 // }
 
 export function streamToStr(stream: Prism.TokenStream | ExtTokenStream, ignoreTokenType?: string): string {
-  let t: string = ''
+  let t = ''
 
   // console.log(ignoreTokenType);
   // console.log(stream);
@@ -46,7 +46,7 @@ export function filterTokens<T extends Prism.Token>(
   }
 }
 
-export function markerToStr(marker: Marker, addMarker: boolean = false): string {
+export function markerToStr(marker: Marker, addMarker = false): string {
   if (addMarker) {
     return `${marker.mark}\n${marker.value}`
   }

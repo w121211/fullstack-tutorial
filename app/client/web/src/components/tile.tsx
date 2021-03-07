@@ -8,9 +8,8 @@ import * as QT from '../graphql/query-types'
 // import { CommentList } from './commentList'
 import { PollChoices, PollForm } from './poll-choice'
 import { ReplyPanel, CommentPanel } from './tile-panel'
-import { ReplyList, QueryReplyList, CommentList, QueryCommentList } from './tile-list'
+import { ReplyList, QueryReplyList } from './tile-list'
 import { ReplyForm } from './tile-forms'
-import { SearchAllForm } from './forms'
 import tagCss from './tag/tag.module.scss'
 import tagPopoverCss from './tagPopover/tagPopover.module.scss'
 import commentListSmallCss from './commentListSmall/commentListSmall.module.scss'
@@ -43,7 +42,7 @@ export function Reply({
   reply: QT.replies_replies
   me?: QT.me_me
   options?: TileOptions
-}) {
+}): JSX.Element {
   // const edit = me?.id === post.userId ? <Link to={`/post/${post.id}?update`}>edit</Link> : null
   const panel = <ReplyPanel reply={reply} meAuthor={me?.id === reply.userId} />
   // return <MdText text={reply.text} />
@@ -87,13 +86,13 @@ export function Reply({
 
 export function SuggestReply({
   text,
-  onClick = function () {},
+  onClick = () => {},
   options = defaultTileOptions,
 }: {
   text: string
   onClick(): void
   options?: TileOptions
-}) {
+}): JSX.Element {
   return (
     <Tag style={{ background: '#fff', borderStyle: 'dashed' }} onClick={onClick}>
       {text}
@@ -101,11 +100,24 @@ export function SuggestReply({
   )
 }
 
-export function Comment({ comment, options = defaultTileOptions }: { comment: QT.comment; options?: TileOptions }) {
+export function QueryCommentModal({
+  // comment,
+  // options = defaultTileOptions,
+  id,
+  children,
+}: {
+  // comment: QT.commentFragment
+  // options?: TileOptions
+  id: string
+  children: React.ReactNode
+}): JSX.Element {
   // TODO: 增加fold/unfold
   // const [folded, setFolded] = useState<boolean>(true)
   const [showModal, setShowModal] = useState<boolean>(false)
   const [suggestReply, setSuggestReply] = useState<string | undefined>()
+  const { data, loading, error, refetch } = useQuery<QT.comment, QT.commentVariables>(queries.COMMENT, {
+    variables: { id },
+  })
 
   function onClickFactory(text: string) {
     return function () {
@@ -113,72 +125,64 @@ export function Comment({ comment, options = defaultTileOptions }: { comment: QT
       setShowModal(true)
     }
   }
-  if (comment.poll) return <PollComment comment={comment} poll={comment.poll} options={options} />
-  if (options.dispCommentAs === 'key-value') {
-    // if (folded)
-    //   return (
-    //     <li>
-    //       <span className={blockMetaCss.span}>{options.swapText ? options.swapText : comment.text}</span>
-    //       {/* TODO: 為了replyForm的cache而叫，但每個comment都叫太花費資源 */}
-    //       {<QueryReplyList commentId={comment.id} />}
-    //       {/* {comment.topReplies && <ReplyList replies={comment.topReplies} options={{ dispReplyAs: options.dispReplyAs }} />} */}
-    //       <Button type="link" onClick={function () { setShowModal(true) }}>
-    //         新增
-    //       </Button>
-    //       <Modal title="Reply" visible={showModal} footer={null} onCancel={function () { setShowModal(false) }}>
-    //         <ReplyForm commentId={comment.id} addReplyCountByOne={function () { }} onFinish={function () { setShowModal(false) }} />
-    //       </Modal>
-    //       {/* <p>{options.replacedText ? options.replacedText : comment.text}</p>
-    //       <CommentPanel comment={comment} />
-    //       <h4>-Spot Replies-</h4>
-    //       {comment.topReplies ? <ReplyList replies={comment.topReplies} /> : null}
-    //       <button onClick={function (e) { setFolded(!folded) }}>展開</button>
-    //       <br /> */}
-    //     </li>
-    //   )
-    return (
-      <li>
-        <span className={blockMetaCss.span}>{options.swapText ? options.swapText : comment.text}</span>
 
-        {/* TODO: 暫時不考慮topReplies */}
-        {/* {comment.topReplies && <ReplyList replies={comment.topReplies} options={{ dispReplyAs: options.dispReplyAs }} />} */}
-
-        {/* TODO: 為了replyForm的cache而叫，但每個comment都叫太花費資源 */}
-        <Space>
-          <QueryReplyList commentId={comment.id} options={options} />
-          {options.suggestReplies &&
-            options.suggestReplies.map((e, i) => <SuggestReply key={i} text={e} onClick={onClickFactory(e)} />)}
-          {/* <Button type="link" onClick={() => { setShowModal(true) }}>新增</Button> */}
-          <Button
-            shape="circle"
-            icon={<PlusOutlined />}
-            size="small"
-            onClick={() => {
-              setShowModal(true)
-            }}
-          />
-        </Space>
-        <Modal
-          title="Reply"
-          visible={showModal}
-          footer={null}
-          onCancel={() => {
+  if (loading) return <span>loading...</span>
+  if (error || !data) return <p>ERROR: {error?.message}</p>
+  if (data.comment === null) return <p>Comment not found</p>
+  if (data.comment.poll) return <PollComment comment={data.comment} poll={data.comment.poll} />
+  // if (options.dispCommentAs === 'key-value') {
+  // if (folded)
+  //   return (
+  //     <li>
+  //       <span className={blockMetaCss.span}>{options.swapText ? options.swapText : comment.text}</span>
+  //       {/* TODO: 為了replyForm的cache而叫，但每個comment都叫太花費資源 */}
+  //       {<QueryReplyList commentId={comment.id} />}
+  //       {/* {comment.topReplies && <ReplyList replies={comment.topReplies} options={{ dispReplyAs: options.dispReplyAs }} />} */}
+  //       <Button type="link" onClick={function () { setShowModal(true) }}>
+  //         新增
+  //       </Button>
+  //       <Modal title="Reply" visible={showModal} footer={null} onCancel={function () { setShowModal(false) }}>
+  //         <ReplyForm commentId={comment.id} addReplyCountByOne={function () { }} onFinish={function () { setShowModal(false) }} />
+  //       </Modal>
+  //       {/* <p>{options.replacedText ? options.replacedText : comment.text}</p>
+  //       <CommentPanel comment={comment} />
+  //       <h4>-Spot Replies-</h4>
+  //       {comment.topReplies ? <ReplyList replies={comment.topReplies} /> : null}
+  //       <button onClick={function (e) { setFolded(!folded) }}>展開</button>
+  //       <br /> */}
+  //     </li>
+  //   )
+  return (
+    <div>
+      <Button
+        onClick={() => {
+          setShowModal(true)
+        }}
+      >
+        {children}
+      </Button>
+      <Modal
+        title="Reply"
+        visible={showModal}
+        footer={null}
+        onCancel={() => {
+          setShowModal(false)
+        }}
+      >
+        <QueryReplyList commentId={data.comment.id} />
+        <ReplyForm
+          commentId={data.comment.id}
+          suggestText={suggestReply}
+          addReplyCountByOne={() => {}}
+          onFinish={() => {
             setShowModal(false)
           }}
-        >
-          <ReplyForm
-            commentId={comment.id}
-            suggestText={suggestReply}
-            addReplyCountByOne={() => {}}
-            onFinish={() => {
-              setShowModal(false)
-            }}
-          />
-          {/* <SearchAllForm /> */}
-        </Modal>
-      </li>
-    )
-  }
+        />
+        {/* <SearchAllForm /> */}
+      </Modal>
+    </div>
+  )
+  // }
   // if (folded)
   //   return (
   //     <div>
@@ -192,17 +196,17 @@ export function Comment({ comment, options = defaultTileOptions }: { comment: QT
   //       -------------
   //     </div>
   //   )
-  return (
-    <>
-      <span>{options.swapText ? options.swapText : comment.text}</span>
-      <CommentPanel comment={comment} />
+  // return (
+  //   <>
+  //     <span>{options.swapText ? options.swapText : comment.text}</span>
+  //     <CommentPanel comment={comment} />
 
-      {/* <h4>-Queried Replies-</h4> */}
-      {/* <QueryReplyList commentId={comment.id} /> */}
-      {/* <ReplyForm commentId={comment.id} addReplyCountByOne={function () { }} /> */}
-      {/* <button onClick={function (e) { setFolded(!folded) }}>折疊</button> */}
-    </>
-  )
+  //     {/* <h4>-Queried Replies-</h4> */}
+  //     {/* <QueryReplyList commentId={comment.id} /> */}
+  //     {/* <ReplyForm commentId={comment.id} addReplyCountByOne={function () { }} /> */}
+  //     {/* <button onClick={function (e) { setFolded(!folded) }}>折疊</button> */}
+  //   </>
+  // )
 }
 
 export function PollComment({
@@ -210,10 +214,10 @@ export function PollComment({
   poll,
   options = defaultTileOptions,
 }: {
-  comment: QT.comment
+  comment: QT.commentFragment
   poll: QT.poll
   options?: TileOptions
-}) {
+}): JSX.Element {
   const [pattern, setPattern] = useState<string | null>(null)
   const [showModal, setShowModal] = useState<boolean>(false)
   const [choiceIdx, setChoiceIdx] = useState<number | null>(null)
@@ -243,7 +247,7 @@ export function PollComment({
               </Button>
             )}
           </li>
-          <QueryReplyList commentId={comment.id} options={options} />
+          <QueryReplyList commentId={comment.id} />
         </ul>
 
         <Modal
@@ -277,68 +281,21 @@ export function PollComment({
   )
 }
 
-// export function WebpageTile({ page, showSpotReplies = true }: { page: QT.latestPages_latestPages, showSpotReplies?: boolean }) {
-//   const [folded, setFolded] = useState<boolean>(true)
-//   // const spotReplies = comment.replies.filter(e => e.isSpot)
-//   if (folded)
-//     return (
-//       <div>
-//         ------PageTile-------
-//         author:domain - title // top notes
-//         {/* <CommentList comments={page.topReplies} /> */}
-//         {/* <p>{comment.text}</p>
-//         <CommentPanel comment={comment} />
-//         <h4>-Spot Replies-</h4> */}
-//         {/* {comment.spotReplies ? <ReplyList replies={comment.spotReplies} /> : null} */}
-//         <button onClick={function (e) { setFolded(!folded) }}>展開</button>
-//         <br />
-//         -------------
-//       </div>
-//     )
+// export function CommentList({ comments }: { comments: QT.comment[] }) {
+//   const spotComments = comments.filter(e => e.isTop)
+//   const otherComments = comments.filter(e => !e.isTop)
 //   return (
-//     <div>
-//       ------PageTile-------
-//       author:domain - title // top notes
-//       <QueryCommentList pageId="123" />
-//       <button onClick={function (e) { setFolded(!folded) }}>折疊</button>
-//       -------------
-//     </div>
+//     <>
+//       <h3>Spot Comments</h3>
+//       {spotComments.map(function (e, i) {
+//         return <Comment comment={e} key={i} />
+//       })}
+//       <h3>Other Comments</h3>
+//       {otherComments.map(function (e, i) {
+//         return <Comment comment={e} key={i} />
+//       })}
+//     </>
 //   )
-// }
-
-// interface SymbolListProps {
-// symbols: QT.pollFragment_symbols[] | null
-// symbols: null
-// }
-
-// const SymbolList: React.FC<SymbolListProps> = ({ symbols }) => {
-//   if (symbols === null) return null
-//   return (
-//     <Space>
-//       {
-//         symbols.map((e, i) =>
-//           <Link key={i} to={`/symbol/${encodeURIComponent(e.name)}`}>
-//             {/* <i><Typography.Text type="secondary">{d.name}</Typography.Text></i> */}
-//             <i>{e.name}</i>
-//           </Link>
-//         )
-//       }
-//     </Space>
-//   )
-// }
-
-// interface PostCardProps {
-//   // createPostLike: (variables: QT.createPostLikeVariables) => void
-//   // updatePostLike: (variables: QT.updatePostLikeVariables) => void
-//   // comments: React.StatelessComponent
-//   post: QT.pollFragment_posts
-//   me?: QT.me_me
-//   toLogin?: () => void
-//   folded?: boolean
-//   noHeader?: boolean
-//   noSpin?: boolean
-//   noThread?: boolean
-//   choice: string
 // }
 
 // const PostCard: React.FC<PostCardProps> = ({ post, me, toLogin, choice, folded = true, noHeader = false, noSpin = false, noThread = false }) => {

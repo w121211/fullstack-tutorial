@@ -29,6 +29,7 @@ export interface latestCards_latestCards {
   __typename: "Cocard";
   id: string;
   template: CardTemplate;
+  meta: string | null;
   body: latestCards_latestCards_body | null;
   link: latestCards_latestCards_link;
 }
@@ -72,6 +73,7 @@ export interface cocard_cocard {
   __typename: "Cocard";
   id: string;
   template: CardTemplate;
+  meta: string | null;
   body: cocard_cocard_body | null;
   link: cocard_cocard_link;
 }
@@ -236,6 +238,105 @@ export interface anchor {
 }
 
 export interface anchorVariables {
+  id: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: comment
+// ====================================================
+
+export interface comment_comment_replies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface comment_comment_replies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: comment_comment_replies_count;
+}
+
+export interface comment_comment_topReplies_count {
+  __typename: "ReplyCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface comment_comment_topReplies {
+  __typename: "Reply";
+  id: string;
+  userId: string;
+  isTop: boolean | null;
+  text: string;
+  updatedAt: any;
+  count: comment_comment_topReplies_count;
+}
+
+export interface comment_comment_poll_count {
+  __typename: "PollCount";
+  nVotes: number[];
+}
+
+export interface comment_comment_poll {
+  __typename: "Poll";
+  id: string;
+  commentId: string;
+  choices: string[];
+  count: comment_comment_poll_count;
+  createdAt: any;
+}
+
+export interface comment_comment_count {
+  __typename: "CommentCount";
+  id: string;
+  nViews: number;
+  nUps: number;
+  nDowns: number;
+}
+
+export interface comment_comment_meta {
+  __typename: "CommentMeta";
+  seq: number | null;
+  mark: string | null;
+  src: string | null;
+}
+
+export interface comment_comment {
+  __typename: "Comment";
+  id: string;
+  userId: string;
+  cocardId: number | null;
+  ocardId: number | null;
+  selfcardId: number | null;
+  isTop: boolean | null;
+  text: string | null;
+  createdAt: any;
+  replies: comment_comment_replies[] | null;
+  topReplies: comment_comment_topReplies[] | null;
+  poll: comment_comment_poll | null;
+  count: comment_comment_count;
+  meta: comment_comment_meta | null;
+}
+
+export interface comment {
+  comment: comment_comment | null;
+}
+
+export interface commentVariables {
   id: string;
 }
 
@@ -1018,10 +1119,10 @@ export interface reply {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL fragment: comment
+// GraphQL fragment: commentFragment
 // ====================================================
 
-export interface comment_replies_count {
+export interface commentFragment_replies_count {
   __typename: "ReplyCount";
   id: string;
   nViews: number;
@@ -1029,17 +1130,17 @@ export interface comment_replies_count {
   nDowns: number;
 }
 
-export interface comment_replies {
+export interface commentFragment_replies {
   __typename: "Reply";
   id: string;
   userId: string;
   isTop: boolean | null;
   text: string;
   updatedAt: any;
-  count: comment_replies_count;
+  count: commentFragment_replies_count;
 }
 
-export interface comment_topReplies_count {
+export interface commentFragment_topReplies_count {
   __typename: "ReplyCount";
   id: string;
   nViews: number;
@@ -1047,31 +1148,31 @@ export interface comment_topReplies_count {
   nDowns: number;
 }
 
-export interface comment_topReplies {
+export interface commentFragment_topReplies {
   __typename: "Reply";
   id: string;
   userId: string;
   isTop: boolean | null;
   text: string;
   updatedAt: any;
-  count: comment_topReplies_count;
+  count: commentFragment_topReplies_count;
 }
 
-export interface comment_poll_count {
+export interface commentFragment_poll_count {
   __typename: "PollCount";
   nVotes: number[];
 }
 
-export interface comment_poll {
+export interface commentFragment_poll {
   __typename: "Poll";
   id: string;
   commentId: string;
   choices: string[];
-  count: comment_poll_count;
+  count: commentFragment_poll_count;
   createdAt: any;
 }
 
-export interface comment_count {
+export interface commentFragment_count {
   __typename: "CommentCount";
   id: string;
   nViews: number;
@@ -1079,14 +1180,14 @@ export interface comment_count {
   nDowns: number;
 }
 
-export interface comment_meta {
+export interface commentFragment_meta {
   __typename: "CommentMeta";
   seq: number | null;
   mark: string | null;
   src: string | null;
 }
 
-export interface comment {
+export interface commentFragment {
   __typename: "Comment";
   id: string;
   userId: string;
@@ -1096,11 +1197,11 @@ export interface comment {
   isTop: boolean | null;
   text: string | null;
   createdAt: any;
-  replies: comment_replies[] | null;
-  topReplies: comment_topReplies[] | null;
-  poll: comment_poll | null;
-  count: comment_count;
-  meta: comment_meta | null;
+  replies: commentFragment_replies[] | null;
+  topReplies: commentFragment_topReplies[] | null;
+  poll: commentFragment_poll | null;
+  count: commentFragment_count;
+  meta: commentFragment_meta | null;
 }
 
 /* tslint:disable */
@@ -1204,6 +1305,7 @@ export interface cocardFragment {
   __typename: "Cocard";
   id: string;
   template: CardTemplate;
+  meta: string | null;
   body: cocardFragment_body | null;
   link: cocardFragment_link;
 }

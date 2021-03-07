@@ -48,6 +48,10 @@
     {
       "directory": "./app/server",
       "changeProcessCWD": true
+    },
+    {
+      "directory": "./app/editor",
+      "changeProcessCWD": true
     }
   ],
   "typescript.enablePromptUseWorkspaceTsdk": true

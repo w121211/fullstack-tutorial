@@ -1,3 +1,4 @@
+import util from 'util'
 import dotenv from 'dotenv'
 import express from 'express'
 import cookieParser from 'cookie-parser'
@@ -110,7 +111,7 @@ const server = new ApolloServer({
   debug: true,
   // debug: false,
   formatError: err => {
-    console.error(err)
+    console.error(util.inspect(err, { showHidden: false, depth: null }))
     return err
   },
   // plugins: [ logError],

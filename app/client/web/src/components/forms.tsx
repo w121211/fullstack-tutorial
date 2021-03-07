@@ -19,12 +19,11 @@ import {
   Popover,
   Space,
 } from 'antd'
-import { FormInstance } from 'antd/lib/form'
-import { MinusCircleOutlined, PlusOutlined, SwapLeftOutlined } from '@ant-design/icons'
 import * as queries from '../graphql/queries'
 import * as QT from '../graphql/query-types'
 import { Pane } from './layout'
 import { SymbolAutoComplete } from './symbol-hint'
+import { toUrlParams } from '../helper'
 
 // interface VotePostFormProps {
 //   pollId: string
@@ -203,7 +202,9 @@ export function SearchAllForm() {
   }
   function onSelect(value: string) {
     // console.log('onSelect', data)
-    if (value.startsWith('$')) navigate(`/ticker/${value}`)
+    if (value.startsWith('$') || value.startsWith('[')) {
+      navigate(`/card?${toUrlParams({ s: value })}`)
+    }
     // else if (value.startsWith('['))
   }
   return (

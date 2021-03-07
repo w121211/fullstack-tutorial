@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react'
 // import 'chartjs-chart-financial'
-import Chart from 'react-apexcharts'
+// import Chart from 'react-apexcharts'
 
 export function BarChart() {
   const options = {
@@ -41,7 +41,8 @@ export function BarChart() {
     },
   ]
 
-  return <Chart options={options} series={series} type="bar" />
+  // return <Chart options={options} series={series} type="bar" />
+  return null
 }
 
 export function CandleChart() {
@@ -132,8 +133,8 @@ export function CandleChart() {
       ],
     },
   ]
-
-  return <Chart options={options} series={series} type="candlestick" />
+  return null
+  // return <Chart options={options} series={series} type="candlestick" />
   // return (
   //     <div id="wrapper">
   //         <div id="chart-line2">
@@ -234,5 +235,6 @@ export function LineChart() {
       },
     },
   }
-  return <Chart options={state.options} series={state.series} type="line" height={350} />
+  // return <Chart options={state.options} series={state.series} type="line" height={350} />
+  return null
 }

@@ -4,32 +4,22 @@ import * as PA from '@prisma/client'
 import { prisma } from '../context'
 import { getBotEmail } from './user'
 import { getOrCreateSymbol, symbolToUrl, SYMBOL_DOMAIN } from './symbol'
-import { TextEditor } from '../editor'
-
-interface ConnectedContent {
-  // 這行對應的是投票
-  poll?: true
-  pollId?: number
-
-  // 這行對應的是一個comment
-  comment?: true
-  commentId?: number
-}
+import { TextEditor, MarkToConnectedContentRecord } from '../../../editor/src'
 
 interface CardTemplate {
   body: string
-  connContents: Record<string, ConnectedContent>
+  connContents: MarkToConnectedContentRecord
 }
 
 interface CardMeta {
   symbol?: string
-  conn: Record<string, ConnectedContent>
+  conn: MarkToConnectedContentRecord
 }
 
 const TEMPLATE: Record<PA.CardTemplate, CardTemplate> = {
   [PA.CardTemplate.TICKER]: {
-    body: `[key]
-[?] (這行留空)
+    body: `[=]
+[?]買 vs 賣？
 [+]
 [-]
 [Alternative]
@@ -38,8 +28,8 @@ const TEMPLATE: Record<PA.CardTemplate, CardTemplate> = {
     connContents: { '[?]': { comment: true } },
   },
   [PA.CardTemplate.TOPIC]: {
-    body: `[key]
-[?] (這行留空)
+    body: `[=]
+[?]看多 vs 看空？
 [+]
 [-]
 [Q]`,
@@ -56,6 +46,38 @@ const SYMBOL_TO_TEMPLATE: Record<PA.SymbolCat, PA.CardTemplate> = {
   [PA.SymbolCat.TOPIC]: PA.CardTemplate.TOPIC,
 }
 
+async function createConnectedContents(contents: MarkToConnectedContentRecord): Promise<MarkToConnectedContentRecord> {
+  /** 創comments, polls */
+  const record: MarkToConnectedContentRecord = {}
+  for (const k in contents) {
+    const e = contents[k]
+    // await prisma.poll.create({
+    //   data: {
+    //     // cat?: PollCat
+    //     // status?: PollStatus
+    //     choices?: PollCreatechoicesInput | Enumerable<string>
+    //     user: UserCreateNestedOneWithoutPollsInput
+    //     comment: CommentCreateNestedOneWithoutPollInput
+    //     votes?: VoteCreateNestedManyWithoutPollInput
+    //     count?: PollCountCreateNestedOneWithoutPollInput
+    //   }
+    // });
+    if (e.comment) {
+      // eslint-disable-next-line no-await-in-loop
+      const comment = await prisma.comment.create({
+        data: {
+          // 直接用marker作為text
+          text: k,
+          user: { connect: { email: getBotEmail() } },
+          count: { create: {} },
+        },
+      })
+      record[k] = { ...e, commentId: comment.id }
+    }
+  }
+  return record
+}
+
 async function createCard(
   template: PA.CardTemplate,
   symbol?: PA.Symbol,
@@ -66,48 +88,17 @@ async function createCard(
     body: PA.CardBody
   }
 > {
-  // 創comments, polls
-  async function _createConnContents(
-    contents: Record<string, ConnectedContent>,
-  ): Promise<Record<string, ConnectedContent>> {
-    const created: Record<string, ConnectedContent> = {}
-    for (const k in contents) {
-      const e = contents[k]
-      // await prisma.poll.create({
-      //   data: {
-      //     // cat?: PollCat
-      //     // status?: PollStatus
-      //     choices?: PollCreatechoicesInput | Enumerable<string>
-      //     user: UserCreateNestedOneWithoutPollsInput
-      //     comment: CommentCreateNestedOneWithoutPollInput
-      //     votes?: VoteCreateNestedManyWithoutPollInput
-      //     count?: PollCountCreateNestedOneWithoutPollInput
-      //   }
-      // });
-      if (e.comment) {
-        // eslint-disable-next-line no-await-in-loop
-        const comment = await prisma.comment.create({
-          data: {
-            // 直接用marker作為text
-            text: k,
-            user: { connect: { email: getBotEmail() } },
-            count: { create: {} },
-          },
-        })
-        created[k] = { ...e, commentId: comment.id }
-      }
-    }
-    return created
-  }
-
   if (symbol === undefined && link === undefined) {
     throw new Error('`symbol`或`link`需要有其中一個')
   }
 
-  // 創body
+  const conn = await createConnectedContents(TEMPLATE[template].connContents)
+
+  // 創body，因為是初次創，不採用`createCardBody()`
   const editor = new TextEditor()
   editor.setBody(TEMPLATE[template].body)
   editor.flush()
+  editor.addConnectedContents(conn)
   const body = await prisma.cardBody.create({
     data: {
       text: editor.toStoredText(),
@@ -120,7 +111,7 @@ async function createCard(
   // 創meta
   const meta: CardMeta = {
     symbol: symbol ? symbol.name : undefined,
-    conn: await _createConnContents(TEMPLATE[template].connContents),
+    conn,
   }
 
   // 創card, link
@@ -143,7 +134,12 @@ async function createCard(
 export async function createCardBody(card: PA.Cocard, editor: TextEditor, userId: string): Promise<PA.CardBody> {
   const creaters: PA.Prisma.Prisma__AnchorClient<PA.Anchor>[] = []
   for (const e of editor.getMarkerLines()) {
+    if (e.comment && e.commentId && e.marker?.value) {
+      // TODO: 對comment創reply
+      // await prisma.reply.create({})
+    }
     if (e.new && e.stampId) {
+      // 創anchor
       creaters.push(
         prisma.anchor.create({
           data: {
@@ -162,7 +158,7 @@ export async function createCardBody(card: PA.Cocard, editor: TextEditor, userId
   const anchors = (await prisma.$transaction([...creaters])) as PA.Anchor[]
   editor.addAnchorIds(anchors.map(e => [e.id, e.path]))
 
-  // 創一個新body，並與cocard連結(cocard部分會自動更新)
+  // 創新body，連結prev-body（prev-body會自動與cocard斷開連結）
   return await prisma.cardBody.create({
     data: {
       text: editor.toStoredText(),
@@ -181,14 +177,12 @@ export async function getOrCreateCardBySymbol(
     body: PA.CardBody
   }
 > {
-  // 找cocard
-  const res = await prisma.cocard.findUnique({
-    // `symbolToUrl()`會throw error
+  const found = await prisma.cocard.findUnique({
     where: { linkUrl: symbolToUrl(symbolName) },
     include: { link: true, body: true },
   })
-  if (res) {
-    return res
+  if (found) {
+    return { ...found }
     // const [text, linemetas] = splitMetatext(card.body.text);
     // return { ...card, body: { ...card.body, text, linemetas } };
   }

@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import React, { useState } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
 import { Link } from '@reach/router'
-import ReactMarkdown from 'react-markdown'
+// import ReactMarkdown from 'react-markdown'
 import { wikiLinkPlugin } from 'remark-wiki-link'
 
 import * as queries from '../graphql/queries'
@@ -64,12 +64,13 @@ export function MdText({ text }: { text: string }) {
       return <Link to={`/topic/${value}`}>{value}</Link>
     },
   }
-  return (
-    <ReactMarkdown
-      plugins={[wikiLinkPlugin]}
-      allowedTypes={['text', 'paragraph', 'link']}
-      children={text}
-      renderers={renderers}
-    />
-  )
+  return null
+  // return (
+  //   <ReactMarkdown
+  //     plugins={[wikiLinkPlugin]}
+  //     allowedTypes={['text', 'paragraph', 'link']}
+  //     children={text}
+  //     renderers={renderers}
+  //   />
+  // )
 }

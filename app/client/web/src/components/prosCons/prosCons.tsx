@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react'
 import Block from '../block/block'
 import classes from './prosCons.module.scss'
 
-import { ReactComponent as CheckOutlined } from '../../assets/icons/checkOutlined.svg'
-import { ReactComponent as CloseOutlined } from '../../assets/icons/closeOutlined.svg'
+import CheckOutlined from '../../assets/icons/checkOutlined.svg'
+import CloseOutlined from '../../assets/icons/closeOutlined.svg'
 
 const ConsPros = (props: any) => {
   const [consPros, setConsPros] = useState([
@@ -14,8 +14,7 @@ const ConsPros = (props: any) => {
     },
     {
       type: 'con',
-      content:
-        '優勢優勢優勢優勢優勢優勢優勢優勢優勢優勢優勢優勢優勢優勢優勢優勢優勢優勢優勢優勢',
+      content: '優勢優勢優勢優勢優勢優勢優勢優勢優勢優勢優勢優勢優勢優勢優勢優勢優勢優勢優勢優勢',
     },
     {
       type: 'con',
@@ -33,18 +32,15 @@ const ConsPros = (props: any) => {
     },
     {
       type: 'pro',
-      content:
-        '劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢',
+      content: '劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢',
     },
     {
       type: 'pro',
-      content:
-        '劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢',
+      content: '劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢',
     },
     {
       type: 'pro',
-      content:
-        '劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢',
+      content: '劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢劣勢',
     },
   ])
 

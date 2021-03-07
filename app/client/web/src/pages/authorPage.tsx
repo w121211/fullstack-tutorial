@@ -5,8 +5,6 @@ import { Layout } from 'antd'
 import * as queries from '../graphql/queries'
 import * as QT from '../graphql/query-types'
 
-import { Comment } from '../components/tile'
-
 interface RouteProps extends RouteComponentProps<{ symbol: string }> {
   me?: QT.me_me
 }

@@ -12,7 +12,9 @@ interface RouteProps extends RouteComponentProps {
 }
 
 function LatestCards(): JSX.Element | null {
-  const { data, loading, error, fetchMore } = useQuery<QT.latestCards, QT.latestCardsVariables>(queries.LATEST_CARDS)
+  const { data, loading, error, fetchMore } = useQuery<QT.latestCards, QT.latestCardsVariables>(queries.LATEST_CARDS, {
+    fetchPolicy: 'cache-and-network',
+  })
   const [hasMore, setHasMore] = useState<boolean>(true)
 
   if (loading) return null
@@ -32,7 +34,7 @@ function LatestCards(): JSX.Element | null {
       {data.latestCards &&
         data.latestCards.map((e, i) => (
           <div key={i}>
-            <Link to={`/card?${getCardUrlParam(e)}`}>{e.link.url}</Link>
+            <Link to={`/card?${getCardUrlParam(e)}`}>{e.link.url.substring(0, 50)}</Link>
           </div>
         ))}
       {hasMore ? <div>{loading ? 'Loading' : <Button onClick={onClickMore}>更多</Button>}</div> : <div>已經到底</div>}
@@ -45,9 +47,6 @@ export function HomePage({ me }: RouteProps): JSX.Element {
   return (
     <Layout.Content className="site-layout-background content" style={{ minHeight: 280 }}>
       <SearchAllForm />
-      <pre>(NEXT)熱門: ...</pre>
-      <pre>(NEXT)抽卡</pre>
-      <pre>(NEXT)Card Deck</pre>
       <LatestCards />
     </Layout.Content>
   )

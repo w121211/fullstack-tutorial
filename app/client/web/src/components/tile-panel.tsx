@@ -113,7 +113,7 @@ export function ReplyPanel({ reply, meAuthor }: { reply: QT.replies_replies; meA
 }
 
 interface CommentPanelProps {
-  comment: QT.comment
+  comment: QT.commentFragment
   // nReplies: number
   // showReplies: boolean
   // setShowReplies: (a: boolean) => void
@@ -121,7 +121,7 @@ interface CommentPanelProps {
 }
 
 export const CommentPanel: React.FC<CommentPanelProps> = ({ comment, meAuthor = false }) => {
-  const [count, setCount] = useState<QT.comment_count>(comment.count)
+  const [count, setCount] = useState<QT.comment_comment_count>(comment.count)
   const [createCommentLike] = useMutation<QT.createCommentLike, QT.createCommentLikeVariables>(
     queries.CREATE_COMMENT_LIKE,
     {

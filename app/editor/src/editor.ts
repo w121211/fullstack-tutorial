@@ -10,7 +10,7 @@
  *
  * 步驟：
  * 1. 輸入text(string)
- * 2. 轉成section: 對texttokenize -> sections，section可分為root, ticker, topic, plain-string
+ * 2. 轉成section: 對texttokenize -> secteions，section可分為root, ticker, topic, plain-string
  * 3. 轉成markers: 對每個section tokenize -> markers
  * 4. 在編輯過程中不管stamp，user若將stamp刪除則會變成orphan-stamp
  * 5. 儲存時，依序 1. 對新的marker-line建立anchor 2. 存root-card 3. 插入marker-line至對應的nested-card
@@ -45,7 +45,16 @@
  */
 import { findLastIndex, cloneDeep } from 'lodash'
 import { Chance } from 'chance'
-import { CardLabel, Marker, MarkerFormat, MarkerLine, ExtToken, ExtTokenStream, Section } from './typing'
+import {
+  CardLabel,
+  Marker,
+  MarkerFormat,
+  MarkerLine,
+  ExtToken,
+  ExtTokenStream,
+  Section,
+  MarkToConnectedContentRecord,
+} from './typing'
 import { filterTokens, streamToStr, markerToStr } from './helper'
 import { tokenizeSection } from './parser'
 
@@ -262,32 +271,13 @@ export class TextEditor {
     return [markerLines, body]
   }
 
-  public addAnchorIds(zipAnchorStamp: [number, string | null][]): void {
-    const dict: Record<string, MarkerLine> = {}
-    for (const e of this._markerlines) {
-      dict[e.stampId as string] = e
-    }
-    for (const [anchor, stamp] of zipAnchorStamp) {
-      if (stamp === null) throw new Error()
-      const markerLine = dict[stamp]
-      markerLine.anchorId = anchor
-      delete markerLine.new
-    }
-  }
-
-  public getSections(embedMarkerline = false): Section[] {
-    if (embedMarkerline) {
-      // 將stamp-token與markerline做結合
-      const dict: Record<string, MarkerLine> = {}
-      for (const e of this._markerlines) {
-        dict[e.stampId as string] = e
-      }
-      for (const sect of this._sects) {
-        for (const e of filterTokens(sect.stream ?? [], e => e.type === 'stamp')) {
-          e.markerline = dict[(e.content as string).trim()]
-        }
-      }
-    }
+  public getSections(): Section[] {
+    // for (const sect of this._sects) {
+    //   for (const e of filterTokens(sect.stream ?? [], f => f.type === 'stamp' || f.type === 'line-value')) {
+    //     // e.markerline = dict[(e.content as string).trim()]
+    //     console.log(e)
+    //   }
+    // }
     return this._sects
   }
 
@@ -326,7 +316,7 @@ export class TextEditor {
     return TextEditor._toStoredText(this._body, this._markerlines)
   }
 
-  public flush(): void {
+  public flush(opt = { embedMarkerlinesToTokens: false }): void {
     /** 跑tokenizer、更新markerlines, stamp，因為expensive，所以將此步驟獨立出來 */
     if (this._markerlinesToInsert.length > 0) {
       const [body, markerlines] = insertMarkerlinesToBody(this._markerlines, this._body, this._markerlinesToInsert)
@@ -346,6 +336,58 @@ export class TextEditor {
       }
     }
     this._body = lns.join('\n')
+
+    if (opt.embedMarkerlinesToTokens) {
+      // embed marklines with tokens
+      const dict: Record<number, MarkerLine> = {}
+      for (const e of this._markerlines) {
+        dict[e.linenumber] = e
+      }
+      for (const sect of this._sects) {
+        for (const e of filterTokens(sect.stream ?? [], f =>
+          ['stamp', 'line-value', 'inline-value'].includes(f.type),
+        )) {
+          e.markerline = dict[e.linenumber]
+        }
+      }
+    }
+  }
+
+  public addAnchorIds(anchoridStampZip: [number, string | null][]): void {
+    const dict: Record<string, MarkerLine> = {}
+    for (const e of this._markerlines) {
+      dict[e.stampId as string] = e
+    }
+    for (const [anchorId, stamp] of anchoridStampZip) {
+      if (stamp === null) throw new Error()
+      const markerLine = dict[stamp]
+      markerLine.anchorId = anchorId
+      delete markerLine.new
+    }
+  }
+
+  public addConnectedContents(record: MarkToConnectedContentRecord): void {
+    /** 將connected-contents併入marker-lines，marker-line需要先有stamp-id，併入後會把該marker-line的new拿掉（表示不需要建立anchor） */
+    for (const k in record) {
+      const mkln = this._markerlines.find(e => e.stampId && e.marker?.mark === k)
+      if (mkln === undefined) throw new Error(`Card-body裡找不到${k}`)
+
+      const cont = record[k]
+
+      if (cont.comment && cont.commentId === undefined) throw new Error('缺commentId')
+      if (cont.poll && cont.pollId === undefined) throw new Error('缺pollId')
+
+      if (cont.comment && cont.commentId) {
+        mkln.comment = true
+        mkln.commentId = cont.commentId
+      }
+      if (cont.poll && cont.pollId) {
+        mkln.poll = true
+        mkln.pollId = cont.commentId
+      }
+
+      delete mkln.new
+    }
   }
 }
 

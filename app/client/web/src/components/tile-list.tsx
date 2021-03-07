@@ -10,7 +10,7 @@ import * as QT from '../graphql/query-types'
 // import { PollChoiceRadioGroup } from './pollChoice'
 // import { PollFooter, PostFooter } from './tileFooter'
 // import { VotePostForm, NewChoicePostForm } from './postForm'
-import { Reply, Comment, TileOptions, defaultTileOptions } from './tile'
+import { Reply, TileOptions, defaultTileOptions } from './tile'
 import commentListSmallCss from './commentListSmall/commentListSmall.module.scss'
 
 export function ReplyList({
@@ -63,40 +63,33 @@ export function ReplyList({
   return <>{filteredReplies} </>
 }
 
-export function QueryReplyList({
-  commentId,
-  pattern = null,
-  options = defaultTileOptions,
-}: {
-  commentId: string
-  pattern?: string | null
-  options?: TileOptions
-}) {
+export function QueryReplyList({ commentId }: { commentId: string }): JSX.Element {
   const { data, loading, error, refetch } = useQuery<QT.replies, QT.repliesVariables>(queries.REPLIES, {
     variables: { commentId },
   })
+
   if (loading) return <span>loading...</span>
-  if (error) return <p>ERROR: {error.message}</p>
-  if (!data) return null
-  return <ReplyList replies={data.replies} pattern={pattern} options={options} />
+  if (error || !data) return <p>ERROR: {error?.message}</p>
+
+  return <ReplyList replies={data.replies} />
 }
 
-export function CommentList({ comments }: { comments: QT.comment[] }) {
-  const spotComments = comments.filter(e => e.isTop)
-  const otherComments = comments.filter(e => !e.isTop)
-  return (
-    <>
-      <h3>Spot Comments</h3>
-      {spotComments.map(function (e, i) {
-        return <Comment comment={e} key={i} />
-      })}
-      <h3>Other Comments</h3>
-      {otherComments.map(function (e, i) {
-        return <Comment comment={e} key={i} />
-      })}
-    </>
-  )
-}
+// export function CommentList({ comments }: { comments: QT.commentFragment[] }) {
+//   const spotComments = comments.filter(e => e.isTop)
+//   const otherComments = comments.filter(e => !e.isTop)
+//   return (
+//     <>
+//       <h3>Spot Comments</h3>
+//       {spotComments.map(function (e, i) {
+//         return <Comment comment={e} key={i} />
+//       })}
+//       <h3>Other Comments</h3>
+//       {otherComments.map(function (e, i) {
+//         return <Comment comment={e} key={i} />
+//       })}
+//     </>
+//   )
+// }
 
 export function QueryCommentList({ me, cardId }: { me?: QT.me_me; cardId: string }) {
   // const { data, loading, error, refetch } = useQuery<QT.comments, QT.commentsVariables>(

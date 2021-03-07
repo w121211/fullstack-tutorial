@@ -29,32 +29,33 @@ export function Pages(): JSX.Element | null {
   if (loading) return null
 
   return (
-    <Layout className="my-app">
+    <Layout className="site-layout" style={{ position: 'relative' }}>
       <AutoLogin />
-      <Link to="/">HOME</Link>
+      <div>
+        <Link to="/">HOME</Link>&nbsp;|&nbsp;
+        <a href="https://www.notion.so/Work-Log-491e5e9bdff942cf96ab0e9dfbf86c4e">測試說明: 3/4 上線測試A1</a>
+      </div>
 
-      <Layout className="site-layout" style={{ position: 'relative' }}>
-        {/* {!isLoggedIn && <Redirect from="" to="/login" noThrow />} */}
+      {/* {!isLoggedIn && <Redirect from="" to="/login" noThrow />} */}
 
-        <Router primary={false} component={Fragment}>
-          <HomePage path="/" />
+      <Router primary={false} component={Fragment}>
+        <HomePage path="/" />
 
-          <CardPage path="card" />
-          <CardFormPage path="form" />
+        <CardPage path="card" />
+        <CardFormPage path="form" />
 
-          {/* <TickerPage path="ticker/:symbol" /> */}
-          {/* <TickerFormPage path="ticker/:symbol/form" /> */}
-          {/* <TopicPage path="topic/:title" /> */}
-          {/* <AuthorPage path="author/:symbol" /> */}
+        {/* <TickerPage path="ticker/:symbol" /> */}
+        {/* <TickerFormPage path="ticker/:symbol/form" /> */}
+        {/* <TopicPage path="topic/:title" /> */}
+        {/* <AuthorPage path="author/:symbol" /> */}
 
-          <PageContainer path="/" isLoggedIn={isLoggedIn}>
-            {/* <ProtectedRoute as={Feed} isLoggedIn={isLoggedIn} default /> */}
-            {/* <Pane left={<Board me={data?.me} />} right={<BoardRightPane />} default /> */}
-            <LoginPage path="login" />
-            <NotFoundPage default />
-          </PageContainer>
-        </Router>
-      </Layout>
+        <PageContainer path="/" isLoggedIn={isLoggedIn}>
+          {/* <ProtectedRoute as={Feed} isLoggedIn={isLoggedIn} default /> */}
+          {/* <Pane left={<Board me={data?.me} />} right={<BoardRightPane />} default /> */}
+          <LoginPage path="login" />
+          <NotFoundPage default />
+        </PageContainer>
+      </Router>
     </Layout>
   )
 }

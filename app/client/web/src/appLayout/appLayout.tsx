@@ -12,7 +12,7 @@ import BlockMeta from '../components/blockMeta/blockMeta'
 import ProsCons from '../components/prosCons/prosCons'
 import Anchor from '../components/anchor/tickerAnchor'
 import TickerComment from '../components/tickerComment/tickerComment'
-import Tab from '../components/tab/tab'
+// import Tab from '../components/tab/tab'
 
 const { Header, Sider, Content } = Layout
 
@@ -51,17 +51,11 @@ class AppLayout extends Component {
           </Menu>
         </Sider> */}
         <Layout className="site-layout" style={{ position: 'relative' }}>
-          <Header
-            className="site-layout-background header "
-            style={{ padding: 0 }}
-          >
-            {React.createElement(
-              this.state.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
-              {
-                className: 'trigger',
-                onClick: this.toggle,
-              },
-            )}
+          <Header className="site-layout-background header " style={{ padding: 0 }}>
+            {React.createElement(this.state.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
+              className: 'trigger',
+              onClick: this.toggle,
+            })}
           </Header>
           <div className="anchorWrapper">
             <Anchor />
@@ -75,7 +69,7 @@ class AppLayout extends Component {
             <BlockMeta />
             <ProsCons />
             <TickerComment />
-            <Tab />
+            {/* <Tab /> */}
           </Content>
         </Layout>
       </Layout>

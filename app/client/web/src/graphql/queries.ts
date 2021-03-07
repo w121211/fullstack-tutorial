@@ -99,8 +99,8 @@ const REPLY = gql`
   ${REPLY_COUNT}
 `
 
-const COMMENT = gql`
-  fragment comment on Comment {
+const COMMENT_FRAGMENT = gql`
+  fragment commentFragment on Comment {
     __typename
     id
     userId
@@ -195,6 +195,7 @@ const COCARD_FRAGMENT = gql`
     __typename
     id
     template
+    meta
     body {
       ...cardBody
     }
@@ -313,6 +314,15 @@ export const ANCHOR = gql`
     }
   }
   ${ANCHOR_FRAGMENT}
+`
+
+export const COMMENT = gql`
+  query comment($id: ID!) {
+    comment(id: $id) {
+      ...commentFragment
+    }
+  }
+  ${COMMENT_FRAGMENT}
 `
 
 export const REPLIES = gql`

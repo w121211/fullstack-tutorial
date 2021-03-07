@@ -52,7 +52,7 @@ async function getAllSymbols(): Promise<PA.Symbol[]> {
   while (true) {
     // eslint-disable-next-line no-await-in-loop
     const res: PA.Symbol[] = await prisma.symbol.findMany({
-      take: 10,
+      take: 100,
       // skip cursor
       skip: cursor ? 1 : undefined,
       orderBy: { id: 'asc' },

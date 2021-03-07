@@ -1,4 +1,5 @@
-import { InMemoryCache } from '@apollo/client'
+import { InMemoryCache, Reference } from '@apollo/client'
+import * as QT from './graphql/query-types'
 
 // const cache = new InMemoryCache({
 //   dataIdFromObject: (o: any) => {
@@ -58,8 +59,12 @@ export const cache: InMemoryCache = new InMemoryCache({
         },
         latestCards: {
           keyArgs: false,
-          merge(existing = [], incoming) {
-            return [...existing, ...incoming]
+          merge(existing: Reference[] = [], incoming: Reference[]) {
+            const filtered = existing.filter(e => {
+              return incoming.find(f => e.__ref === f.__ref) === undefined
+            })
+            return [...filtered, ...incoming]
+            // return [...existing, ...incoming]
           },
         },
       },

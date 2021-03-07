@@ -11,7 +11,7 @@ import { AuthenticationError, UserInputError } from 'apollo-server'
 import { GraphQLDateTime } from 'graphql-iso-date'
 import * as PA from '@prisma/client'
 import { APP_SECRET } from './main'
-import { TextEditor } from './editor'
+import { TextEditor } from '../../editor/src'
 import { Context } from './context'
 import { searchAllSymbol } from './store/fuzzy'
 import { symbolToUrl, urlToSymbol } from './models/symbol'
@@ -83,29 +83,34 @@ export const resolvers: GraphQLResolverMap<Context> = {
       return searchAllSymbol(term)
     },
 
-    latestCards: function (parent, { afterId }, { prisma }): Promise<PA.Cocard[]> {
+    latestCards: async function (parent, { afterId }, { prisma }): Promise<PA.Cocard[]> {
       const maxDate = dayjs().startOf('d').subtract(7, 'd')
-      return prisma.cocard.findMany({
-        take: 100,
-        skip: 1,
+      const cards = await prisma.cocard.findMany({
+        take: 10,
+        skip: afterId ? 1 : 0,
         where: {
           createdAt: { gte: maxDate.toDate() },
           // symbols: symbolId ? { some: { id: parseInt(symbolId) } } : undefined,
         },
         orderBy: { updatedAt: 'desc' },
         cursor: afterId ? { id: parseInt(afterId) } : undefined,
-        include: { link: true },
+        // TODO: 這裡含body會過於heavy
+        include: { link: true, body: true },
       })
+      // console.log(cards)
+      return cards.map(e => ({ ...e, meta: JSON.stringify(e.meta) }))
     },
 
     cocard: async function (parent, { url }, { prisma }): Promise<PA.Cocard> {
       const symbol = urlToSymbol(url)
+      let card: PA.Cocard
       if (symbol !== null) {
-        return await getOrCreateCardBySymbol(symbol)
+        card = await getOrCreateCardBySymbol(symbol)
       } else {
         const [link] = await getOrCreateLink(url)
-        return await getOrCreateCardByLink(link)
+        card = await getOrCreateCardByLink(link)
       }
+      return { ...card, meta: JSON.stringify(card.meta) }
     },
 
     selfcard: function (parent, { id }, { prisma }) {
@@ -168,6 +173,13 @@ export const resolvers: GraphQLResolverMap<Context> = {
 
     anchor: function (parent, { id }, { prisma }): Promise<PA.Anchor | null> {
       return prisma.anchor.findUnique({
+        where: { id: parseInt(id) },
+        include: { count: true },
+      })
+    },
+
+    comment: function (parent, { id }, { prisma }): Promise<PA.Comment | null> {
+      return prisma.comment.findUnique({
         where: { id: parseInt(id) },
         include: { count: true },
       })

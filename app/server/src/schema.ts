@@ -27,6 +27,8 @@ export const typeDefs = gql`
 
     anchor(id: ID!): Anchor
 
+    comment(id: ID!): Comment
+
     replies(commentId: ID!, afterId: ID): [Reply!]!
 
     me: User!
@@ -393,6 +395,7 @@ export const typeDefs = gql`
   type Cocard {
     id: ID!
     template: CardTemplate!
+    meta: String
     link: Link!
     body: CardBody
   }

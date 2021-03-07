@@ -6,7 +6,7 @@ import { hash } from 'bcryptjs'
 import * as PA from '@prisma/client'
 import { getOrCreateLink } from '../../src/models/link'
 import { getOrCreateCardBySymbol, getOrCreateCardByLink, createCardBody } from '../../src/models/card'
-import { splitByUrl, TextEditor } from '../../src/editor'
+import { splitByUrl, TextEditor } from '../../../editor/src'
 
 const config = dotenv.config()
 if (config.error) {

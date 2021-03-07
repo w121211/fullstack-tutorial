@@ -170,7 +170,7 @@ export function ReplyDislike({
 
 interface CommentLikeProps {
   commentId: string
-  count: QT.comment_count
+  count: QT.comment_comment_count
   meLike?: QT.commentLike
   createCommentLike: (a: { variables: QT.createCommentLikeVariables }) => void
   updateCommentLike: (a: { variables: QT.updateCommentLikeVariables }) => void

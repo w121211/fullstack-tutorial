@@ -2,6 +2,7 @@ import { readFileSync } from 'fs'
 import { resolve } from 'path'
 import { splitByUrl, tokenizeSection } from '../parser'
 import { TextEditor } from '../editor'
+import { MarkToConnectedContentRecord } from '../typing'
 
 function load(filepath: string): [string, string][] {
   return (
@@ -92,6 +93,33 @@ describe('TextEditor', () => {
   beforeEach(() => {
     // jest.resetModules()
   })
+
+  it('add connected contents', () => {
+    const body = '[key]\n[?]買 vs 賣？\n[+]\n[-]\n[Alternative]\n[Q]'
+    const conn: MarkToConnectedContentRecord = { '[?]': { comment: true, commentId: 3 } }
+
+    const editor = new TextEditor(undefined, 'a.source', '@oauthor')
+    editor.setBody(body)
+    editor.flush()
+    editor.addConnectedContents(conn)
+
+    expect(editor.getBody()).toMatchSnapshot()
+    expect(editor.getMarkerLines()).toMatchSnapshot()
+  })
+
+  it.each<string>(['[=]\n[?]買 vs 賣？\n[+]\n[-]\n', '$AAA\n[=]\n[?]買 vs 賣？\n[+]\n[-]\n'])(
+    'embed markerlines to tokens',
+    (body: string) => {
+      const conn: MarkToConnectedContentRecord = { '[?]': { comment: true, commentId: 3 } }
+
+      const editor = new TextEditor(undefined, 'a.source', '@oauthor')
+      editor.setBody(body)
+      editor.flush()
+      editor.addConnectedContents(conn)
+      editor.flush({ embedMarkerlinesToTokens: true })
+      expect(editor.getSections()).toMatchSnapshot()
+    },
+  )
 
   it('edit text from previous stored text', () => {
     const prevCases = load(resolve(__dirname, 'test-cases', 'edit-previous.txt'))

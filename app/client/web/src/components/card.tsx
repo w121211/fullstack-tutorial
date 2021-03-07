@@ -1,27 +1,19 @@
 import React, { ReactElement, useState, useEffect } from 'react'
 import { useQuery, useMutation, useLazyQuery, useApolloClient } from '@apollo/client'
 import { Link, navigate, redirectTo } from '@reach/router'
-import {
-  AutoComplete,
-  Button,
-  Modal,
-  Popover,
-  Tag,
-  Tooltip,
-  Radio,
-  Form,
-  Space,
-  Input,
-  Layout,
-  Row,
-  Col,
-  Spin,
-} from 'antd'
-import { TextEditor, Section, ExtTokenStream, streamToStr } from '../editor'
+import { AutoComplete, Button, Modal, Popover, Tag, Tooltip, Radio, Form, Input } from 'antd'
+import { TextEditor, Section, ExtTokenStream, streamToStr, MarkToConnectedContentRecord } from '@conote/editor'
 import * as queries from '../graphql/queries'
 import * as QT from '../graphql/query-types'
 import { AnchorPanel } from './tile-panel'
+import { QueryCommentModal } from './tile'
 import { toUrlParams } from '../helper'
+
+// Define in 'server/models/card.ts'
+interface CardMeta {
+  symbol?: string
+  conn: MarkToConnectedContentRecord
+}
 
 function RenderTokenStream({ stream }: { stream: ExtTokenStream }): JSX.Element | null {
   if (typeof stream === 'string') {
@@ -50,13 +42,22 @@ function RenderTokenStream({ stream }: { stream: ExtTokenStream }): JSX.Element 
     case 'multiline-marker':
     case 'inline-marker':
       return <RenderTokenStream stream={stream.content} />
-    case 'value':
-    case 'line-value':
+    case 'inline-value':
+    case 'line-value': {
+      if (stream.markerline?.comment && stream.markerline.commentId) {
+        return (
+          <QueryCommentModal id={stream.markerline.commentId.toString()}>
+            <RenderTokenStream stream={stream.content} />
+          </QueryCommentModal>
+        )
+      }
       return (
         <span style={{ color: '#905' }}>
           <RenderTokenStream stream={stream.content} />
         </span>
       )
+    }
+
     case 'line-mark':
     case 'inline-mark':
       return <span style={{ color: 'orange' }}>{content}</span>
@@ -109,11 +110,46 @@ function RenderCardBody({ sects }: { sects: Section[] }): JSX.Element {
   )
 }
 
+export function CardBody({ card, bySrc }: { card: QT.cocardFragment; bySrc?: string }): JSX.Element {
+  if (card.body === null) return <p>[Error]: null body</p>
+
+  const meta: CardMeta | undefined = card.meta ? (JSON.parse(card.meta) as CardMeta) : undefined
+  const editor = new TextEditor(card.body.text, card.link.url, card.link.oauthorName ?? undefined)
+  // console.log(meta?.conn)
+  editor.addConnectedContents(meta?.conn ?? {})
+  editor.flush({ embedMarkerlinesToTokens: true })
+
+  return <RenderCardBody sects={editor.getSections()} />
+}
+
 export function CardHead({ card }: { card: QT.cocardFragment }): JSX.Element {
   // const title = findOneComment(MARKER_FORMAT.srcTitle.mark, card.comments)
   // const publishDate = findOneComment(MARKER_FORMAT.srcPublishDate.mark, card.comments);
+  const comment: QT.commentFragment = {
+    __typename: 'Comment',
+    id: 'string',
+    userId: 'string',
+    cocardId: 10,
+    ocardId: null,
+    selfcardId: null,
+    isTop: false,
+    text: 'Buy vs Sell',
+    replies: [],
+    topReplies: null,
+    poll: null,
+    count: {
+      __typename: 'CommentCount',
+      id: 'string;',
+      nViews: 1,
+      nUps: 2,
+      nDowns: 3,
+    },
+    meta: null,
+    createdAt: null,
+  }
   return (
     <h1>
+      <div>{/* <Comment comment={comment} /> */}</div>
       {card.link.url}
       {/* {title && title.text + '\n'} */}
       {/* {publishDate && publishDate.text + '\n'} */}
@@ -122,15 +158,6 @@ export function CardHead({ card }: { card: QT.cocardFragment }): JSX.Element {
       {/* {card.comments.length === 0 ? "新建立" : undefined} */}
     </h1>
   )
-}
-
-export function CardBody({ card, bySrc }: { card: QT.cocardFragment; bySrc?: string }): JSX.Element {
-  if (card.body === null) return <p>[Error]: null body</p>
-
-  console.log(card.body)
-
-  const editor = new TextEditor(card.body.text, card.link.url, card.link.oauthorName ?? undefined)
-  return <RenderCardBody sects={editor.getSections(true)} />
 }
 
 // --------- Form ---------
@@ -326,7 +353,7 @@ export function CardForm({ card, onFinishFn }: { card: QT.cocardFragment; onFini
 
 // ------- Deprecated --------
 
-function makeCardId(comment: QT.comment): string {
+function makeCardId(comment: QT.commentFragment): string {
   let id: string
   if (comment.cocardId) id = 'Cocard:' + comment.ocardId
   else if (comment.ocardId) id = 'Ocard:' + comment.ocardId
@@ -349,7 +376,7 @@ function getVoteIdx(str: string): number | undefined {
   return matches.indexOf(1)
 }
 
-function mapVoters(voteComments: QT.comment[], nChoices: number): string[][] {
+function mapVoters(voteComments: QT.commentFragment[], nChoices: number): string[][] {
   const voters: string[][] = []
   for (let i = 0; i < nChoices; i++) {
     const _voteChoiceN: string[] = []
@@ -363,7 +390,11 @@ function mapVoters(voteComments: QT.comment[], nChoices: number): string[][] {
   return voters
 }
 
-function filterCommentsByVote(voteIdx: number, voters: string[][], comments: QT.comment[]): QT.comment[] {
+function filterCommentsByVote(
+  voteIdx: number,
+  voters: string[][],
+  comments: QT.commentFragment[],
+): QT.commentFragment[] {
   // const voters = ["Ocard:1", "Selfcard:1"]
   const votersByVote = voters[voteIdx]
   return comments.filter(e => votersByVote.indexOf(makeCardId(e)) >= 0)
@@ -385,7 +416,7 @@ function ShowCardClicker({
 function QueryCardModal({ card, mycard }: { card: QT.cocard_cocard; mycard?: QT.selfcard_selfcard }) {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false)
   const [cardId, setCardId] = useState<[string, number] | null>(null)
-  function onClick(comment: QT.comment): void {
+  function onClick(comment: QT.commentFragment): void {
     // console.log('onClick')
     if (comment.ocardId) setCardId(['Ocard', comment.ocardId])
     else if (comment.selfcardId) setCardId(['Selfcard', comment.selfcardId])
