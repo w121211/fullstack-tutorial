@@ -102,5 +102,12 @@ curl http://pgadmin:80
 
 1. Git push
 2. ssh cloud
-3. git pull && docker-compose up
-4.
+3. install tmux
+4. increase file watch
+   echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+5. git pull && docker-compose up
+   sudo docker-compose -f .devcontainer/docker-compose.yml up -d
+6. install package & build
+7. prisma migrate & import data to db
+8. 修 client 的 graphql uri & 修 server 的 CORS
+9. run client, server

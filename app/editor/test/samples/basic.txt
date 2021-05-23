@@ -1,3 +1,24 @@
+https://www.spliter.com
+
+[=]
+[?] 今晚你選哪一道？ <買> vs <賣>
+[+]
+[-]
+
+[VS] $AA $BB $CC
+[[VS:<$AAA> vs <$BBB>]]
+[[VS:<$AAA> vs <$CCC>]]
+
+
+[[Q:這是一個問題?]]
+- 這是一個回答
+- 
+
+[[Q:這是另一個問題]]
+- 這是另一個回答
+- 這是另一個回答
+
+
 https://www.youtube.com/watch?v=qSYGlOZNUCw
 
 $PLTR

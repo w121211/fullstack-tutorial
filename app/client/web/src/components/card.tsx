@@ -8,6 +8,7 @@ import * as QT from '../graphql/query-types'
 import { AnchorPanel } from './tile-panel'
 import { QueryCommentModal } from './tile'
 import { toUrlParams } from '../helper'
+import { PollChoices } from './poll-choice'
 
 // Define in 'server/models/card.ts'
 interface CardMeta {
@@ -44,12 +45,20 @@ function RenderTokenStream({ stream }: { stream: ExtTokenStream }): JSX.Element 
       return <RenderTokenStream stream={stream.content} />
     case 'inline-value':
     case 'line-value': {
+      // if (stream.markerline?.poll && stream.markerline.pollId) {
+      //   return (
+      //     <QueryCommentModal id={stream.markerline.commentId.toString()}>
+      //       <RenderTokenStream stream={stream.content} />
+      //     </QueryCommentModal>
+      //   )
+      // }
       if (stream.markerline?.comment && stream.markerline.commentId) {
-        return (
-          <QueryCommentModal id={stream.markerline.commentId.toString()}>
-            <RenderTokenStream stream={stream.content} />
-          </QueryCommentModal>
-        )
+        return <PollChoices pollId={'10'} choices={['aaa', 'bbb']} />
+        // return (
+        //   <QueryCommentModal id={stream.markerline.commentId.toString()}>
+        //     <RenderTokenStream stream={stream.content} />
+        //   </QueryCommentModal>
+        // )
       }
       return (
         <span style={{ color: '#905' }}>
@@ -100,7 +109,7 @@ function RenderSection({ sect }: { sect: Section }): JSX.Element | null {
   return null
 }
 
-function RenderCardBody({ sects }: { sects: Section[] }): JSX.Element {
+export function RenderCardBody({ sects }: { sects: Section[] }): JSX.Element {
   return (
     <pre>
       {sects.map((e, i) => (

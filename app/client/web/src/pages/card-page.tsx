@@ -11,7 +11,7 @@ interface RouteProps extends RouteComponentProps {
   me?: QT.me_me
 }
 
-function ResolvedCardPage({ card }: { card: QT.cocardFragment }): JSX.Element {
+export function ResolvedCardPage({ card }: { card: QT.cocardFragment }): JSX.Element {
   return (
     <Layout.Content className="site-layout-background content" style={{ minHeight: 280 }}>
       <CardHead card={card} />
@@ -32,22 +32,15 @@ function FetchCard({ url }: { url: string }) {
     variables: { url },
     // fetchPolicy: 'no-cache',
   })
-  if (loading) {
-    return <h1>loading</h1>
-  }
-  if (error) {
-    return <h1>{error.message}</h1>
-  }
-  if (data && data.cocard !== null) {
-    return <ResolvedCardPage card={data.cocard} />
-  }
-  if (data && data.cocard === null) {
+  if (loading) return <h1>loading</h1>
+  if (error || !data) return <h1>{error?.message}</h1>
+  if (data.cocard === null) {
     // 目前query cocard若沒找到會直接建立新的，所以這個原則上不會發生
     // navigate(`/webpage/form?${_toUrlParams('url', url)}`)
     console.error('something wrong')
     return <h1>Unpected error</h1>
   }
-  return <h1>Unpected error</h1>
+  return <ResolvedCardPage card={data.cocard} />
 }
 
 export function CardPage({ path }: RouteProps): JSX.Element {

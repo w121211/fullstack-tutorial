@@ -19,13 +19,15 @@ interface CardMeta {
 const TEMPLATE: Record<PA.CardTemplate, CardTemplate> = {
   [PA.CardTemplate.TICKER]: {
     body: `[=]
-[?]買 vs 賣？
+[?:poll] 今晚你選哪一道？ <買> vs <賣>
 [+]
 [-]
-[Alternative]
+[VS]
+- [[<$AAA> vs <$BBB>]]
+- [[<$AAA> vs <$CCC>]]
 [Q]
 `,
-    connContents: { '[?]': { comment: true } },
+    connContents: { '[?]': { poll: true, pollChoices: ['買', '賣'] } },
   },
   [PA.CardTemplate.TOPIC]: {
     body: `[=]
@@ -33,7 +35,7 @@ const TEMPLATE: Record<PA.CardTemplate, CardTemplate> = {
 [+]
 [-]
 [Q]`,
-    connContents: { '[?]': { comment: true } },
+    connContents: { '[?]': { comment: true, pollChoices: ['看多', '看空'] } },
   },
   [PA.CardTemplate.WEBPAGE]: {
     body: '',
@@ -62,7 +64,26 @@ async function createConnectedContents(contents: MarkToConnectedContentRecord): 
     //     count?: PollCountCreateNestedOneWithoutPollInput
     //   }
     // });
-    if (e.comment) {
+    if (e.poll && e.pollChoices) {
+      // eslint-disable-next-line no-await-in-loop
+      const comment = await prisma.comment.create({
+        data: {
+          // parse marker-value作為poll的內文及選項
+          text: k,
+          user: { connect: { email: getBotEmail() } },
+          count: { create: {} },
+          poll: {
+            create: {
+              choices: e.pollChoices,
+              user: { connect: { email: getBotEmail() } },
+              count: { create: {} },
+            },
+          },
+        },
+        include: { poll: true },
+      })
+      record[k] = { ...e, commentId: comment.id, pollId: comment.poll?.id }
+    } else if (e.comment) {
       // eslint-disable-next-line no-await-in-loop
       const comment = await prisma.comment.create({
         data: {

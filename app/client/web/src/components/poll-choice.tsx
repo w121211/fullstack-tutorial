@@ -417,25 +417,25 @@ export function PollForm({
 export function PollChoices({
   pollId,
   choices,
-  count,
+  // count,
   setShowReplies,
   setFilterRepliesPattern,
   setChoiceIdx,
 }: {
   pollId: string
   choices: string[]
-  count: any
+  // count: any
   setShowReplies?(a: boolean): void
   setFilterRepliesPattern?(a: string | null): void
-  setChoiceIdx(a: number | null): void
-}) {
+  setChoiceIdx?(a: number | null): void
+}): JSX.Element {
   const myVotes = useQuery<QT.myVotes>(queries.MY_VOTES, { fetchPolicy: 'cache-only' })
   const meVote = myVotes.data?.myVotes.find(e => e.pollId === pollId)
   const [selectedIdx, setSelectedIdx] = useState<number | null>()
   function onChange(e: RadioChangeEvent) {
     // console.log('radio checked', e.target.value)
     if (!meVote) {
-      setChoiceIdx(e.target.value)
+      // setChoiceIdx(e.target.value)
       setSelectedIdx(e.target.value)
     }
     //     setFilterRepliesPattern(`(${i})`)
@@ -488,6 +488,8 @@ export function PollChoices({
   //     </>
   // )
 }
+
+// --- Deprecated ---
 
 function _PollChoicesAndForm({
   poll,

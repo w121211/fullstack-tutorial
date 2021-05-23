@@ -77,6 +77,7 @@ interface ConnectedContent {
   // 這行對應的是投票
   poll?: true
   pollId?: number
+  pollChoices?: string[]
 
   // 這行對應的是一個comment
   comment?: true

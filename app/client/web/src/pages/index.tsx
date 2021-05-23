@@ -10,6 +10,7 @@ import { HomePage } from './home-page'
 // import { AuthorPage } from './authorPage'
 import { CardPage } from './card-page'
 import { CardFormPage } from './card-form-page'
+import { GiveandtakeCardPage } from './card-giveandtake'
 import '../appLayout/appLayout.less'
 
 function NotFoundPage({ path }: RouteComponentProps): JSX.Element {
@@ -43,6 +44,8 @@ export function Pages(): JSX.Element | null {
 
         <CardPage path="card" />
         <CardFormPage path="form" />
+
+        <GiveandtakeCardPage path="give" />
 
         {/* <TickerPage path="ticker/:symbol" /> */}
         {/* <TickerFormPage path="ticker/:symbol/form" /> */}
